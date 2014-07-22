@@ -4,9 +4,9 @@
 
   <name>Google Genomics Utils</name>
   <groupId>com.google.cloud.genomics</groupId>
-  <artifactId>genomics-utils</artifactId>
+  <artifactId>google-genomics-utils</artifactId>
   <packaging>jar</packaging>
-  <version>0.2-SNAPSHOT</version>
+  <version>0.1</version>
 
   <organization>
     <name>Google</name>
