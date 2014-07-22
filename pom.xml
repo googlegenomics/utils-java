@@ -3,6 +3,8 @@
   <modelVersion>4.0.0</modelVersion>
 
   <name>Google Genomics Utils</name>
+  <description>Common Java files for Google Genomics integrations.</description>
+  <url>https://github.com/googlegenomics/utils-java</url>
   <groupId>com.google.cloud.genomics</groupId>
   <artifactId>google-genomics-utils</artifactId>
   <packaging>jar</packaging>
@@ -40,7 +42,7 @@
   <distributionManagement>
     <snapshotRepository>
       <id>ossrh</id>
-      <url>https://oss.sonatype.org/content/repositories/google-snapshots/</url>
+      <url>https://oss.sonatype.org/content/repositories/releases/</url>
     </snapshotRepository>
     <repository>
       <id>ossrh</id>
