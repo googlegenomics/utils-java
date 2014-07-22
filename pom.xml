@@ -6,7 +6,7 @@
   <groupId>com.google.cloud.genomics</groupId>
   <artifactId>genomics-utils</artifactId>
   <packaging>jar</packaging>
-  <version>0.1</version>
+  <version>0.2-SNAPSHOT</version>
 
   <organization>
     <name>Google</name>
