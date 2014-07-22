@@ -7,7 +7,8 @@ This project's goal is to reduce duplicate code across different Google Genomics
 
 ###Note: this doesn't work yet! Maven artifact coming soon!
 
-To depend on this project with Maven, add the following to your `pom.xml` file:
+### Maven
+Add the following to your `pom.xml` file:
 ```
 <project>
   <dependencies>
@@ -18,4 +19,16 @@ To depend on this project with Maven, add the following to your `pom.xml` file:
     </dependency>
   </dependencies>
 </project>
+```
+
+### Gradle
+Add the following to your `build.gradle` file:
+```
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile 'com.google.cloud.genomics:google-genomics-utils:0.1'
+}
 ```
