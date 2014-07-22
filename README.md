@@ -1,4 +1,4 @@
-utils-java
+utils-java [![Build Status](https://travis-ci.org/googlegenomics/utils-java.svg?branch=master)](https://travis-ci.org/googlegenomics/utils-java)
 ==========
 
 This project's goal is to reduce duplicate code across different Google Genomics Java integrations. 
