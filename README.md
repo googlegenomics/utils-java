@@ -34,3 +34,7 @@ dependencies {
     compile 'com.google.cloud.genomics:google-genomics-utils:0.1'
 }
 ```
+
+##The code
+
+* [GenomicsAuth.java](src/main/java/com/google/cloud/genomics/utils/GenomicsAuth.java) makes it easier to construct an authenticated Genomics service
