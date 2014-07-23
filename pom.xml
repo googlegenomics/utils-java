@@ -97,7 +97,7 @@
 
   <profiles>
     <profile>
-      <id>release-profile</id>
+      <id>release</id>
       <build>
         <plugins>
           <plugin>
@@ -127,6 +127,7 @@
         <version>2.5</version>
         <configuration>
           <autoVersionSubmodules>true</autoVersionSubmodules>
+          <releaseProfiles>release</releaseProfiles>
           <goals>deploy</goals>
         </configuration>
       </plugin>
