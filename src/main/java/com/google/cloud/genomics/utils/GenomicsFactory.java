@@ -65,21 +65,21 @@ public class GenomicsFactory {
 
     private final String applicationName;
     private int connectTimeout = 20000;
-    private DataStoreFactory dataStoreFactory;
+    private final DataStoreFactory dataStoreFactory;
     private HttpTransport httpTransport;
     private JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
     private int readTimeout = 20000;
     private Optional<String> rootUrl = Optional.absent();
     private Collection<String> scopes = GenomicsScopes.all();
+    private final File userDir;
     private String userName = System.getProperty("user.name");
     private Supplier<? extends VerificationCodeReceiver>
         verificationCodeReceiver = Suppliers.ofInstance(new LocalServerReceiver());
 
     private Builder(String applicationName) throws GeneralSecurityException, IOException {
-      this.applicationName = applicationName;
-      setDataStoreFactory(new FileDataStoreFactory(new File(
+      this.dataStoreFactory = new FileDataStoreFactory(this.userDir = new File(
           System.getProperty("user.home"),
-          String.format(".store/%s", applicationName.replace("/", "_")))));
+          String.format(".store/%s", (this.applicationName = applicationName).replace("/", "_"))));
       setHttpTransport(GoogleNetHttpTransport.newTrustedTransport());
     }
 
@@ -99,7 +99,8 @@ public class GenomicsFactory {
           readTimeout,
           rootUrl,
           connectTimeout,
-          verificationCodeReceiver);
+          verificationCodeReceiver,
+          userDir);
     }
 
     /**
@@ -110,17 +111,6 @@ public class GenomicsFactory {
      */
     public Builder setConnectTimeout(int connectTimeout) {
       this.connectTimeout = connectTimeout;
-      return this;
-    }
-
-    /**
-     * Sets the {@link DataStoreFactory} to use. Most code will never need to call this method.
-     *
-     * @param dataStoreFactory the {@code DataStoreFactory} to use
-     * @return this builder
-     */
-    public Builder setDataStoreFactory(DataStoreFactory dataStoreFactory) {
-      this.dataStoreFactory = dataStoreFactory;
       return this;
     }
 
@@ -219,20 +209,8 @@ public class GenomicsFactory {
     return new Builder(applicationName);
   }
 
-  private static Credential refreshToken(Credential credential) throws IOException {
-    try {
-      credential.refreshToken();
-      return credential;
-    } catch (NullPointerException e) {
-      throw new IllegalStateException(
-          "Couldn't refresh the OAuth token. Are you using a different client secrets file? If you "
-              + "want to use a different file, first clear your stored credentials: http://google-g"
-              + "enomics.readthedocs.org/en/latest/api-client-java/resetting_auth.html",
-          e);
-    }
-  }
-
   private final String applicationName;
+
   private final int connectTimeout;
   private final DataStoreFactory dataStoreFactory;
   private final HttpTransport httpTransport;
@@ -240,9 +218,9 @@ public class GenomicsFactory {
   private final int readTimeout;
   private final Optional<String> rootUrl;
   private final Collection<String> scopes;
+  private final File userDir;
   private final String userName;
   private final Supplier<? extends VerificationCodeReceiver> verificationCodeReceiver;
-
   private GenomicsFactory(
       String applicationName,
       DataStoreFactory dataStoreFactory,
@@ -253,7 +231,8 @@ public class GenomicsFactory {
       int readTimeout,
       Optional<String> rootUrl,
       int connectTimeout,
-      Supplier<? extends VerificationCodeReceiver> verificationCodeReceiver) {
+      Supplier<? extends VerificationCodeReceiver> verificationCodeReceiver,
+      File userDir) {
     this.applicationName = applicationName;
     this.dataStoreFactory = dataStoreFactory;
     this.httpTransport = httpTransport;
@@ -264,6 +243,7 @@ public class GenomicsFactory {
     this.rootUrl = rootUrl;
     this.connectTimeout = connectTimeout;
     this.verificationCodeReceiver = verificationCodeReceiver;
+    this.userDir = userDir;
   }
 
   private Genomics create(
@@ -365,5 +345,18 @@ public class GenomicsFactory {
                 .setServiceAccountPrivateKeyFromP12File(p12File)
                 .build()),
         null);
+  }
+
+  private Credential refreshToken(Credential credential) throws IOException {
+    try {
+      credential.refreshToken();
+      return credential;
+    } catch (NullPointerException e) {
+      throw new IllegalStateException(
+          "Couldn't refresh the OAuth token. Are you using different client secrets? If so, you "
+              + "need to first clear the stored credentials by removing the file at "
+              + userDir.getPath(),
+          e);
+    }
   }
 }
