@@ -312,19 +312,35 @@ public class GenomicsFactory {
    * @throws IOException
    */
   public Genomics fromClientSecretsFile(File clientSecretsJson) throws IOException {
-    try (Reader in = new FileReader(clientSecretsJson)) {
+    Reader in = null;
+    boolean returnNormally = true;
+    try {
       GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow
           .Builder(
               httpTransport,
               jsonFactory,
-              GoogleClientSecrets.load(jsonFactory, in),
+              GoogleClientSecrets.load(jsonFactory, in = new FileReader(clientSecretsJson)),
               scopes)
           .setDataStoreFactory(dataStoreFactory)
           .build();
       return create(
-          refreshToken(new AuthorizationCodeInstalledApp(flow, verificationCodeReceiver.get())
-              .authorize(userName)),
+          refreshToken(
+              new AuthorizationCodeInstalledApp(flow, verificationCodeReceiver.get())
+                  .authorize(userName)),
           null);
+    } catch (IOException e) {
+      returnNormally = false;
+      throw e;
+    } finally {
+      if (null != in) {
+        try {
+          in.close();
+        } catch (IOException e) {
+          if (returnNormally) {
+            throw e;
+          }
+        }
+      }
     }
   }
 
