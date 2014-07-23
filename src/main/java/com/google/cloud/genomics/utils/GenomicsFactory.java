@@ -15,7 +15,9 @@
  */
 package com.google.cloud.genomics.utils;
 
+import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.extensions.java6.auth.oauth2.AuthorizationCodeInstalledApp;
+import com.google.api.client.extensions.java6.auth.oauth2.VerificationCodeReceiver;
 import com.google.api.client.extensions.jetty.auth.oauth2.LocalServerReceiver;
 import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeFlow;
 import com.google.api.client.googleapis.auth.oauth2.GoogleClientSecrets;
@@ -34,6 +36,8 @@ import com.google.api.services.genomics.Genomics;
 import com.google.api.services.genomics.GenomicsScopes;
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
+import com.google.common.base.Supplier;
+import com.google.common.base.Suppliers;
 
 import java.io.File;
 import java.io.FileReader;
@@ -54,6 +58,9 @@ import java.util.Collection;
  */
 public class GenomicsFactory {
 
+  /**
+   * A builder class for {@link GenomicsFactory} objects.
+   */
   public final static class Builder {
 
     private final String applicationName;
@@ -65,6 +72,8 @@ public class GenomicsFactory {
     private Optional<String> rootUrl = Optional.absent();
     private Collection<String> scopes = GenomicsScopes.all();
     private String userName = System.getProperty("user.name");
+    private Supplier<? extends VerificationCodeReceiver>
+        verificationCodeReceiver = Suppliers.ofInstance(new LocalServerReceiver());
 
     private Builder(String applicationName) throws GeneralSecurityException, IOException {
       this.applicationName = applicationName;
@@ -74,6 +83,11 @@ public class GenomicsFactory {
       setHttpTransport(GoogleNetHttpTransport.newTrustedTransport());
     }
 
+    /**
+     * Build the {@link GenomicsFactory}.
+     *
+     * @return The built {@link GenomicsFactory}
+     */
     public GenomicsFactory build() {
       return new GenomicsFactory(
           applicationName,
@@ -84,53 +98,138 @@ public class GenomicsFactory {
           userName,
           readTimeout,
           rootUrl,
-          connectTimeout);
+          connectTimeout,
+          verificationCodeReceiver);
     }
 
+    /**
+     * Set the connect timeout
+     *
+     * @param connectTimeout The connect timeout in milliseconds
+     * @return this builder
+     */
     public Builder setConnectTimeout(int connectTimeout) {
       this.connectTimeout = connectTimeout;
       return this;
     }
 
+    /**
+     * Sets the {@link DataStoreFactory} to use. Most code will never need to call this method.
+     *
+     * @param dataStoreFactory the {@code DataStoreFactory} to use
+     * @return this builder
+     */
     public Builder setDataStoreFactory(DataStoreFactory dataStoreFactory) {
       this.dataStoreFactory = dataStoreFactory;
       return this;
     }
 
+    /**
+     * Sets the {@link HttpTransport} to use. Most code will never need to call this method.
+     *
+     * @param httpTransport the {@code HttpTransport} to use
+     * @return this builder
+     */
     public Builder setHttpTransport(HttpTransport httpTransport) {
       this.httpTransport = httpTransport;
       return this;
     }
 
+    /**
+     * Sets the {@link JsonFactory} to use. Most code will never need to call this method.
+     *
+     * @param jsonFactory the {@code JsonFactory} to use
+     * @return this builder
+     */
     public Builder setJsonFactory(JsonFactory jsonFactory) {
       this.jsonFactory = jsonFactory;
       return this;
     }
 
+    /**
+     * Set the read timeout
+     *
+     * @param readTimeout The read timeout in milliseconds
+     * @return this builder
+     */
     public Builder setReadTimeout(int readTimeout) {
       this.readTimeout = readTimeout;
       return this;
     }
 
+    /**
+     * The URL of the endpoint to send requests to. The default is
+     * {@code https://www.googleapis.com/genomics/v1beta}.
+     *
+     * @param rootUrl The URL of the endpoint to send requests to
+     * @return this builder
+     */
     public Builder setRootUrl(String rootUrl) {
       this.rootUrl = Optional.of(rootUrl);
       return this;
     }
 
+    /**
+     * The OAuth scopes to attach to outgoing requests. Most code will not have to call this method.
+     *
+     * @param scopes The OAuth scopes to attach to outgoing requests 
+     * @return this builder
+     */
     public Builder setScopes(Collection<String> scopes) {
       this.scopes = scopes;
       return this;
     }
 
+    /**
+     * Set the user name. The default is {@code System.getProperty("user.name")}. Most code will
+     * rarely have to call this method.
+     *
+     * @param userName The user name to use.
+     * @return this builder
+     */
     public Builder setUserName(String userName) {
       this.userName = userName;
       return this;
     }
+
+    /**
+     * Sets the {@link Supplier} of the {@link VerificationCodeReceiver}.
+     *
+     * @param verificationCodeReceiver The {@code Supplier} of the {@code VerificationCodeReceiver}
+     *        to use.
+     * @return this builder
+     */
+    public Builder setVerificationCodeReceiver(
+        Supplier<? extends VerificationCodeReceiver> verificationCodeReceiver) {
+      this.verificationCodeReceiver = verificationCodeReceiver;
+      return this;
+    }
   }
 
+  /**
+   * Create a new {@link Builder} for {@code GenomicsFactory} objects.
+   *
+   * @param applicationName The name of this application.
+   * @return the new {@code Builder} object.
+   * @throws GeneralSecurityException
+   * @throws IOException
+   */
   public static Builder builder(String applicationName)
       throws GeneralSecurityException, IOException {
     return new Builder(applicationName);
+  }
+
+  private static Credential refreshToken(Credential credential) throws IOException {
+    try {
+      credential.refreshToken();
+      return credential;
+    } catch (NullPointerException e) {
+      throw new IllegalStateException(
+          "Couldn't refresh the OAuth token. Are you using a different client secrets file? If you "
+              + "want to use a different file, first clear your stored credentials: http://google-g"
+              + "enomics.readthedocs.org/en/latest/api-client-java/resetting_auth.html",
+          e);
+    }
   }
 
   private final String applicationName;
@@ -142,6 +241,7 @@ public class GenomicsFactory {
   private final Optional<String> rootUrl;
   private final Collection<String> scopes;
   private final String userName;
+  private final Supplier<? extends VerificationCodeReceiver> verificationCodeReceiver;
 
   private GenomicsFactory(
       String applicationName,
@@ -152,7 +252,8 @@ public class GenomicsFactory {
       String userName,
       int readTimeout,
       Optional<String> rootUrl,
-      int connectTimeout) {
+      int connectTimeout,
+      Supplier<? extends VerificationCodeReceiver> verificationCodeReceiver) {
     this.applicationName = applicationName;
     this.dataStoreFactory = dataStoreFactory;
     this.httpTransport = httpTransport;
@@ -162,6 +263,7 @@ public class GenomicsFactory {
     this.readTimeout = readTimeout;
     this.rootUrl = rootUrl;
     this.connectTimeout = connectTimeout;
+    this.verificationCodeReceiver = verificationCodeReceiver;
   }
 
   private Genomics create(
@@ -192,10 +294,23 @@ public class GenomicsFactory {
         .or(builder).build();
   }
 
+  /**
+   * Create a {@link Genomics} stub using an API key.
+   *
+   * @param apiKey The API key of the Google Cloud project to charge requests to.
+   * @return The new {@code Genomics} stub
+   */
   public Genomics fromApiKey(String apiKey) {
     return create(null, new CommonGoogleClientRequestInitializer(apiKey));
   }
 
+  /**
+   * Create a {@link Genomics} stub using a {@code client_secrets.json} {@link File}.
+   *
+   * @param clientSecretsJson {@code client_secrets.json} file.
+   * @return The new {@code Genomics} stub
+   * @throws IOException
+   */
   public Genomics fromClientSecretsFile(File clientSecretsJson) throws IOException {
     try (Reader in = new FileReader(clientSecretsJson)) {
       GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow
@@ -207,22 +322,32 @@ public class GenomicsFactory {
           .setDataStoreFactory(dataStoreFactory)
           .build();
       return create(
-          new AuthorizationCodeInstalledApp(flow, new LocalServerReceiver()).authorize(userName),
+          refreshToken(new AuthorizationCodeInstalledApp(flow, verificationCodeReceiver.get())
+              .authorize(userName)),
           null);
     }
   }
 
+  /**
+   * Create a new genomics stub from the given service account ID and private key {@link File}.
+   *
+   * @param serviceAccountId The service account ID (typically an email address)
+   * @param p12File The file on disk containing the private key
+   * @return The new {@code Genomics} stub
+   * @throws GeneralSecurityException
+   * @throws IOException
+   */
   public Genomics fromServiceAccount(String serviceAccountId, File p12File)
       throws GeneralSecurityException, IOException {
     return create(
-        new GoogleCredential.Builder()
-            .setTransport(httpTransport)
-            .setJsonFactory(jsonFactory)
-            .setServiceAccountId(serviceAccountId)
-            .setServiceAccountScopes(scopes)
-            .setServiceAccountPrivateKeyFromP12File(p12File)
-            .build(),
+        refreshToken(
+            new GoogleCredential.Builder()
+                .setTransport(httpTransport)
+                .setJsonFactory(jsonFactory)
+                .setServiceAccountId(serviceAccountId)
+                .setServiceAccountScopes(scopes)
+                .setServiceAccountPrivateKeyFromP12File(p12File)
+                .build()),
         null);
   }
 }
-
