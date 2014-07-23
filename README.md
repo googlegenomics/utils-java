@@ -7,8 +7,6 @@ If you have duplicate code appearing in your projects, or see useful functions i
 
 ##Depending on this project
 
-###Note: this doesn't work yet! Maven artifact coming soon!
-
 ### Maven
 Add the following to your `pom.xml` file:
 ```
@@ -37,7 +35,7 @@ dependencies {
 
 ##The code
 
-* [GenomicsAuth.java](src/main/java/com/google/cloud/genomics/utils/GenomicsAuth.java) makes it easier to construct an authenticated Genomics service
+* [GenomicsFactory.java](src/main/java/com/google/cloud/genomics/utils/GenomicsFactory.java) makes it easier to construct an authenticated Genomics service
 
 
 ##Releasing new versions
