@@ -17,7 +17,7 @@ Add the following to your `pom.xml` file:
     <dependency>
       <groupId>com.google.cloud.genomics</groupId>
       <artifactId>google-genomics-utils</artifactId>
-      <version>0.1</version>
+      <version>0.2</version>
     </dependency>
   </dependencies>
 </project>
@@ -31,7 +31,7 @@ repositories {
 }
 
 dependencies {
-    compile 'com.google.cloud.genomics:google-genomics-utils:0.1'
+    compile 'com.google.cloud.genomics:google-genomics-utils:0.2'
 }
 ```
 
@@ -42,14 +42,12 @@ dependencies {
 
 ##Releasing new versions
 
-This section contains details on getting a new release into Maven central and can be safely ignored by most people. 
-
-If you need a new release of this code, go ahead and just [file an issue](https://github.com/googlegenomics/utils-java/issues/new).
+This section contains details on getting a new release into Maven central and can be safely ignored by most people. If you need a new release of this code, go ahead and just [file an issue](https://github.com/googlegenomics/utils-java/issues/new).
 
 ###Prereqs
-* [File a ticket](http://central.sonatype.org/pages/ossrh-guide.html#initial-setup) to access to the Sonatype com.google.cloud.genomics group 
+* [File a ticket](http://central.sonatype.org/pages/ossrh-guide.html#initial-setup) to get access to the Sonatype com.google.cloud.genomics group 
 * [Setup gpg](http://central.sonatype.org/pages/working-with-pgp-signatures.html) (Don't forget to publish a public key)
-* Create ~/.m2/settings.xml file which has the following:
+* Create a `~/.m2/settings.xml` file which has the following:
 ```
 <settings>
   <servers>
