@@ -94,6 +94,11 @@
       <artifactId>google-api-services-genomics</artifactId>
       <version>v1beta-rev17-1.18.0-rc</version>
     </dependency>
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+      <version>17.0</version>
+    </dependency>
   </dependencies>
 
   <profiles>
