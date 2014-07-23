@@ -8,7 +8,7 @@
   <groupId>com.google.cloud.genomics</groupId>
   <artifactId>google-genomics-utils</artifactId>
   <packaging>jar</packaging>
-  <version>0.3-SNAPSHOT</version>
+  <version>0.2-SNAPSHOT</version>
 
   <organization>
     <name>Google</name>
@@ -97,7 +97,7 @@
 
   <profiles>
     <profile>
-      <id>release</id>
+      <id>release-profile</id>
       <build>
         <plugins>
           <plugin>
@@ -127,8 +127,6 @@
         <version>2.5</version>
         <configuration>
           <autoVersionSubmodules>true</autoVersionSubmodules>
-          <useReleaseProfile>false</useReleaseProfile>
-          <releaseProfiles>release</releaseProfiles>
           <goals>deploy</goals>
         </configuration>
       </plugin>
