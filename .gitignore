@@ -4,3 +4,7 @@ target
 *.releaseBackup
 release.properties
 settings.xml
+.project
+.classpath
+.settings
+
