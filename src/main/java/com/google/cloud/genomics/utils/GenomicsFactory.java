@@ -313,6 +313,10 @@ public class GenomicsFactory {
    * @throws IOException
    */
   public Genomics fromClientSecretsFile(File clientSecretsJson) throws IOException {
+    return create(makeCredential(clientSecretsJson), null);
+  }
+
+  public Credential makeCredential(File clientSecretsJson) throws IOException {
     Reader in = null;
     boolean returnNormally = true;
     try {
@@ -325,11 +329,9 @@ public class GenomicsFactory {
           .setDataStoreFactory(dataStoreFactory)
           .setAccessType("offline")
           .build();
-      return create(
-          refreshToken(
-              new AuthorizationCodeInstalledApp(flow, verificationCodeReceiver.get())
-                  .authorize(userName)),
-          null);
+      return refreshToken(
+          new AuthorizationCodeInstalledApp(flow, verificationCodeReceiver.get())
+              .authorize(userName));
     } catch (IOException e) {
       returnNormally = false;
       throw e;
