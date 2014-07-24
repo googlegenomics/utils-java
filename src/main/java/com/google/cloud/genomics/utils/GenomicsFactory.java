@@ -34,7 +34,6 @@ import com.google.api.client.util.store.DataStoreFactory;
 import com.google.api.client.util.store.FileDataStoreFactory;
 import com.google.api.services.genomics.Genomics;
 import com.google.api.services.genomics.GenomicsScopes;
-import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.base.Supplier;
 import com.google.common.base.Suppliers;
@@ -70,6 +69,7 @@ public class GenomicsFactory {
     private JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
     private int readTimeout = 20000;
     private Optional<String> rootUrl = Optional.absent();
+    private Optional<String> servicePath = Optional.absent();
     private Collection<String> scopes = GenomicsScopes.all();
     private final File userDir;
     private String userName = System.getProperty("user.name");
@@ -98,6 +98,7 @@ public class GenomicsFactory {
           userName,
           readTimeout,
           rootUrl,
+          servicePath,
           connectTimeout,
           verificationCodeReceiver,
           userDir);
@@ -160,6 +161,19 @@ public class GenomicsFactory {
     }
 
     /**
+     * Sets the URL-encoded service path of the service.
+     * Setting this field is uncommon and should only be used when trying to use a
+     * non-Google API provider.
+     *
+     * @param servicePath The URL-encoded service path of the service.
+     * @return this builder
+     */
+    public Builder setServicePath(String servicePath) {
+      this.servicePath = Optional.of(servicePath);
+      return this;
+    }
+
+    /**
      * The OAuth scopes to attach to outgoing requests. Most code will not have to call this method.
      *
      * @param scopes The OAuth scopes to attach to outgoing requests 
@@ -217,6 +231,7 @@ public class GenomicsFactory {
   private final JsonFactory jsonFactory;
   private final int readTimeout;
   private final Optional<String> rootUrl;
+  private final Optional<String> servicePath;
   private final Collection<String> scopes;
   private final File userDir;
   private final String userName;
@@ -230,6 +245,7 @@ public class GenomicsFactory {
       String userName,
       int readTimeout,
       Optional<String> rootUrl,
+      Optional<String> servicePath,
       int connectTimeout,
       Supplier<? extends VerificationCodeReceiver> verificationCodeReceiver,
       File userDir) {
@@ -241,6 +257,7 @@ public class GenomicsFactory {
     this.userName = userName;
     this.readTimeout = readTimeout;
     this.rootUrl = rootUrl;
+    this.servicePath = servicePath;
     this.connectTimeout = connectTimeout;
     this.verificationCodeReceiver = verificationCodeReceiver;
     this.userDir = userDir;
@@ -264,14 +281,18 @@ public class GenomicsFactory {
             })
         .setApplicationName(applicationName)
         .setGoogleClientRequestInitializer(googleClientRequestInitializer);
-    return rootUrl
-        .transform(
-            new Function<String, Genomics.Builder>() {
-              @Override public Genomics.Builder apply(String url) {
-                return builder.setRootUrl(url);
-              }
-            })
-        .or(builder).build();
+
+    if (rootUrl.isPresent()) {
+      builder.setRootUrl(rootUrl.get());
+    }
+    if (servicePath.isPresent()) {
+      builder.setServicePath(servicePath.get());
+    }
+    return builder.build();
+  }
+
+  public DataStoreFactory getDataStoreFactory() {
+    return dataStoreFactory;
   }
 
   /**
@@ -356,7 +377,7 @@ public class GenomicsFactory {
       throw new IllegalStateException(
           "Couldn't refresh the OAuth token. Are you using different client secrets? If so, you "
               + "need to first clear the stored credentials by removing the file at "
-              + userDir.getPath(),
+              + userDir.getPath() + "/StoredCredential",
           e);
     }
   }
