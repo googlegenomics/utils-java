@@ -7,6 +7,8 @@ If you have duplicate code appearing in your projects, or see useful functions i
 
 ##Depending on this project
 
+Note: you can find the latest available version of this project in [Maven's central repository](https://search.maven.org/#search%7Cga%7C1%7Ca%3A%22google-genomics-utils%22).
+
 ### Maven
 Add the following to your `pom.xml` file:
 ```
@@ -15,7 +17,7 @@ Add the following to your `pom.xml` file:
     <dependency>
       <groupId>com.google.cloud.genomics</groupId>
       <artifactId>google-genomics-utils</artifactId>
-      <version>0.2</version>
+      <version>0.5</version>
     </dependency>
   </dependencies>
 </project>
@@ -29,7 +31,7 @@ repositories {
 }
 
 dependencies {
-    compile 'com.google.cloud.genomics:google-genomics-utils:0.2'
+    compile 'com.google.cloud.genomics:google-genomics-utils:0.5'
 }
 ```
 
