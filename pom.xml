@@ -32,6 +32,12 @@
       <organizationUrl>http://www.google.com</organizationUrl>
       <timezone>-7</timezone>
     </developer>
+    <developer>
+      <id>kwestbrooks</id>
+      <organization>Google</organization>
+      <organizationUrl>http://www.google.com</organizationUrl>
+      <timezone>-7</timezone>
+    </developer>
   </developers>
 
   <scm>
@@ -92,12 +98,18 @@
     <dependency>
       <groupId>com.google.apis</groupId>
       <artifactId>google-api-services-genomics</artifactId>
-      <version>v1beta-rev17-1.18.0-rc</version>
+      <version>${google.api.genomics.version}</version>
     </dependency>
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
       <version>17.0</version>
+    </dependency>
+    <!-- TODO: Replace with official Picard dependency once available -->
+    <dependency>
+      <groupId>org.utgenome.thirdparty</groupId>
+      <artifactId>picard</artifactId>
+      <version>${picard.version}</version>
     </dependency>
   </dependencies>
 
@@ -143,5 +155,7 @@
   <properties>
     <junit.version>4.11</junit.version>
     <google.api.version>1.17.0-rc</google.api.version>
+    <google.api.genomics.version>v1beta-rev17-1.18.0-rc</google.api.genomics.version>
+    <picard.version>1.102.0</picard.version>
   </properties>
 </project>
