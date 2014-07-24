@@ -36,7 +36,7 @@ import java.util.Map;
  * Note: Conversion between Picard and Google Genomics is lossy, some information will be lost.
  *
  * Currently supported conversions:
- *      Read <-> SAMRecord
+ *      Read/SAMRecord
  */
 public abstract class GenomicsConverter {
 
