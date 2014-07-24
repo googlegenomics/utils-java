@@ -306,6 +306,17 @@ public class GenomicsFactory {
   }
 
   /**
+   * Create a {@link Genomics} stub from a {@link Credential}.
+   *
+   * @param credential A Credential that has already been authorized.
+   * @return The new {@code Genomics} stub
+   * @throws IOException
+   */
+  public Genomics fromCredential(Credential credential) throws IOException {
+    return create(credential, null);
+  }
+
+  /**
    * Create a {@link Genomics} stub using a {@code client_secrets.json} {@link File}.
    *
    * @param clientSecretsJson {@code client_secrets.json} file.
@@ -313,9 +324,19 @@ public class GenomicsFactory {
    * @throws IOException
    */
   public Genomics fromClientSecretsFile(File clientSecretsJson) throws IOException {
-    return create(makeCredential(clientSecretsJson), null);
+    return fromCredential(makeCredential(clientSecretsJson));
   }
 
+  /**
+   * Create an authorized credential using a {@code client_secrets.json} {@link File}.
+   * Use this method when you need to store the resulting accessToken for later use.
+   * Otherwise, you should create a {@link Genomics} object directly using
+   * {@code fromClientSecretsFile}.
+   *
+   * @param clientSecretsJson {@code client_secrets.json} file.
+   * @return An authorized {@link Credential}
+   * @throws IOException
+   */
   public Credential makeCredential(File clientSecretsJson) throws IOException {
     Reader in = null;
     boolean returnNormally = true;
@@ -359,7 +380,7 @@ public class GenomicsFactory {
    */
   public Genomics fromServiceAccount(String serviceAccountId, File p12File)
       throws GeneralSecurityException, IOException {
-    return create(
+    return fromCredential(
         refreshToken(
             new GoogleCredential.Builder()
                 .setTransport(httpTransport)
@@ -367,8 +388,7 @@ public class GenomicsFactory {
                 .setServiceAccountId(serviceAccountId)
                 .setServiceAccountScopes(scopes)
                 .setServiceAccountPrivateKeyFromP12File(p12File)
-                .build()),
-        null);
+                .build()));
   }
 
   private Credential refreshToken(Credential credential) throws IOException {
