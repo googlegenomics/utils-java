@@ -302,6 +302,7 @@ public class GenomicsFactory {
               GoogleClientSecrets.load(jsonFactory, in = new FileReader(clientSecretsJson)),
               scopes)
           .setDataStoreFactory(dataStoreFactory)
+          .setAccessType("offline")
           .build();
       return create(
           refreshToken(
