@@ -303,11 +303,9 @@ public class GenomicsFactory {
               scopes)
           .setDataStoreFactory(dataStoreFactory)
           .build();
-      return create(
-          refreshToken(
-              new AuthorizationCodeInstalledApp(flow, verificationCodeReceiver.get())
-                  .authorize(userName)),
-          null);
+      return fromCredential(
+          new AuthorizationCodeInstalledApp(flow, verificationCodeReceiver.get())
+              .authorize(userName));
     } catch (IOException e) {
       returnNormally = false;
       throw e;
@@ -325,6 +323,26 @@ public class GenomicsFactory {
   }
 
   /**
+   * Create a {@link Genomics} stub from the given {@link Credential}.
+   *
+   * @param credential The {@code Credential} to create the {@code Genomics} stub with
+   * @return The created {@code Genomics} stub.
+   * @throws IOException 
+   */
+  public Genomics fromCredential(Credential credential) throws IOException {
+    try {
+      credential.refreshToken();
+      return create(credential, null);
+    } catch (NullPointerException e) {
+      throw new IllegalStateException(
+          "Couldn't refresh the OAuth token. Are you using different client secrets? If so, you "
+              + "need to first clear the stored credentials by removing the file at "
+              + userDir.getPath(),
+          e);
+    }
+  }
+
+  /**
    * Create a new genomics stub from the given service account ID and private key {@link File}.
    *
    * @param serviceAccountId The service account ID (typically an email address)
@@ -335,28 +353,12 @@ public class GenomicsFactory {
    */
   public Genomics fromServiceAccount(String serviceAccountId, File p12File)
       throws GeneralSecurityException, IOException {
-    return create(
-        refreshToken(
-            new GoogleCredential.Builder()
-                .setTransport(httpTransport)
-                .setJsonFactory(jsonFactory)
-                .setServiceAccountId(serviceAccountId)
-                .setServiceAccountScopes(scopes)
-                .setServiceAccountPrivateKeyFromP12File(p12File)
-                .build()),
-        null);
-  }
-
-  private Credential refreshToken(Credential credential) throws IOException {
-    try {
-      credential.refreshToken();
-      return credential;
-    } catch (NullPointerException e) {
-      throw new IllegalStateException(
-          "Couldn't refresh the OAuth token. Are you using different client secrets? If so, you "
-              + "need to first clear the stored credentials by removing the file at "
-              + userDir.getPath(),
-          e);
-    }
+    return fromCredential(new GoogleCredential.Builder()
+        .setTransport(httpTransport)
+        .setJsonFactory(jsonFactory)
+        .setServiceAccountId(serviceAccountId)
+        .setServiceAccountScopes(scopes)
+        .setServiceAccountPrivateKeyFromP12File(p12File)
+        .build());
   }
 }
