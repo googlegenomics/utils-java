@@ -115,6 +115,16 @@ public abstract class Paginator<
      * Static factory method.
      *
      * @param genomics The {@link Genomics} stub.
+     * @return the new paginator.
+     */
+    public static Callsets create(Genomics genomics) {
+      return create(genomics, neverRetry());
+    }
+
+    /**
+     * Static factory method.
+     *
+     * @param genomics The {@link Genomics} stub.
      * @param retryPolicy A retry policy specifying behavior when a request fails.
      * @return the new paginator.
      */
@@ -184,6 +194,16 @@ public abstract class Paginator<
      * Static factory method.
      *
      * @param genomics The {@link Genomics} stub.
+     * @return the new paginator.
+     */
+    public static Jobs create(Genomics genomics) {
+      return create(genomics, neverRetry());
+    }
+
+    /**
+     * Static factory method.
+     *
+     * @param genomics The {@link Genomics} stub.
      * @param retryPolicy A retry policy specifying behavior when a request fails.
      * @return the new paginator.
      */
@@ -236,6 +256,16 @@ public abstract class Paginator<
      * Static factory method.
      *
      * @param genomics The {@link Genomics} stub.
+     * @return the new paginator.
+     */
+    public static Reads create(Genomics genomics) {
+      return create(genomics, neverRetry());
+    }
+
+    /**
+     * Static factory method.
+     *
+     * @param genomics The {@link Genomics} stub.
      * @param retryPolicy A retry policy specifying behavior when a request fails.
      * @return the new paginator.
      */
@@ -283,6 +313,16 @@ public abstract class Paginator<
       Genomics.Readsets.Search,
       SearchReadsetsResponse,
       Readset> {
+
+    /**
+     * Static factory method.
+     *
+     * @param genomics The {@link Genomics} stub.
+     * @return the new paginator.
+     */
+    public static Readsets create(Genomics genomics) {
+      return create(genomics, neverRetry());
+    }
 
     /**
      * Static factory method.
@@ -369,6 +409,16 @@ public abstract class Paginator<
       Genomics.Variants.Search,
       SearchVariantsResponse,
       Variant> {
+
+    /**
+     * Static factory method.
+     *
+     * @param genomics The {@link Genomics} stub.
+     * @return the new paginator.
+     */
+    public static Variants create(Genomics genomics) {
+      return create(genomics, neverRetry());
+    }
 
     /**
      * Static factory method.
