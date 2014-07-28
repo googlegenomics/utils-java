@@ -22,6 +22,7 @@ import com.google.api.client.json.GenericJson;
 import com.google.api.services.genomics.Genomics;
 import com.google.api.services.genomics.GenomicsRequest;
 import com.google.api.services.genomics.model.Callset;
+import com.google.api.services.genomics.model.Dataset;
 import com.google.api.services.genomics.model.Job;
 import com.google.api.services.genomics.model.Read;
 import com.google.api.services.genomics.model.Readset;
@@ -44,34 +45,53 @@ import com.google.common.collect.AbstractSequentialIterator;
 import com.google.common.collect.FluentIterable;
 
 /**
- * An abstraction that understands the {@code pageToken} / {@code nextPageToken} protocol for
- * paging results back to the user.
+ * An abstraction that understands the {@code pageToken} / {@code nextPageToken} protocol for paging
+ * results back to the user.
  *
- * The {@link #search(GenericJson, GenomicsRequestInitializer)} method can obtain an
- * {@link Iterable} to the objects returned from a search request. Although it is possible to
- * invoke this method directly, the {@code Iterable} that is returned may throw
- * {@link SearchException} during iteration. Client code is responsible for catching this exception
- * where the {@code Iterable} is consumed, unwrapping the underlying {@link IOException}, and
- * handling or rethrowing it.
+ * <p>The {@link #search(GenericJson, GenomicsRequestInitializer)} method can obtain an
+ * {@link Iterable} to the objects returned from a search request. Although it is possible to invoke
+ * this method directly, the {@code Iterable} that is returned may throw {@link SearchException}
+ * during iteration. Client code is responsible for catching this exception where the
+ * {@code Iterable} is consumed, unwrapping the underlying {@link IOException}, and handling or
+ * rethrowing it.</p>
  *
- * A safer alternative for consuming the results of a search is
+ * <p>A safer alternative for consuming the results of a search is
  * {@link #search(GenericJson, GenomicsRequestInitializer, Callback)}. This method requires the
- * client code to pass in a {@link Callback} object that consumes the search results and will
- * unwrap and rethrow {@link IOException}s that occur during iteration for you.
+ * client code to pass in a {@link Callback} object that consumes the search results and will unwrap
+ * and rethrow {@link IOException}s that occur during iteration for you.</p>
  *
- * @param <A> The API type. One of {@link Genomics.Callsets}, {@link Genomics.Jobs},
- *            {@link Genomics.Reads}, {@link Genomics.Readsets}, or {@link Genomics.Variants}.
+ * <p>Example usage: Fetching all {@link Readset}s in a {@link Dataset}:</p>
+ * <pre>
+ * {@code
+ * Genomics stub = ...;
+ * String datasetId = ...;
+ * Paginator.Readsets searchReadsets = Paginator.Readsets.create(stub);
+ * for (Readset readset =
+ *     searchReadsets.search(new SearchReadsetsRequest().setDatasetId(datasetId))) {
+ *   // do something with readset
+ * }
+ * }
+ * </pre>
+ *
+ * @param <A> The API type. One of {@link com.google.api.services.genomics.Genomics.Callsets},
+ *        {@link com.google.api.services.genomics.Genomics.Jobs},
+ *        {@link com.google.api.services.genomics.Genomics.Reads},
+ *        {@link com.google.api.services.genomics.Genomics.Readsets}, or
+ *        {@link com.google.api.services.genomics.Genomics.Variants}.
  * @param <B> The request type. One of {@link SearchCallsetsRequest}, {@link SearchJobsRequest},
- *            {@link SearchReadsRequest}, {@link SearchReadsetsRequest}, or
- *            {@link SearchVariantsRequest}.
- * @param <C> The {@link GenomicsRequest} type. One of {@link Genomics.Callsets.Search},
- *            {@link Genomics.Jobs.Search}, {@link Genomics.Reads.Search},
- *            {@link Genomics.Readsets.Search}, or {@link Genomics.Variants.Search}.
+ *        {@link SearchReadsRequest}, {@link SearchReadsetsRequest}, or
+ *        {@link SearchVariantsRequest}.
+ * @param <C> The {@link GenomicsRequest} type. One of
+ *        {@link com.google.api.services.genomics.Genomics.Callsets.Search},
+ *        {@link com.google.api.services.genomics.Genomics.Jobs.Search},
+ *        {@link com.google.api.services.genomics.Genomics.Reads.Search},
+ *        {@link com.google.api.services.genomics.Genomics.Readsets.Search}, or
+ *        {@link com.google.api.services.genomics.Genomics.Variants.Search}.
  * @param <D> The response type. One of {@link SearchCallsetsResponse}, {@link SearchJobsResponse},
- *            {@link SearchReadsResponse}, {@link SearchReadsetsResponse}, or
- *            {@link SearchVariantsResponse}.
+ *        {@link SearchReadsResponse}, {@link SearchReadsetsResponse}, or
+ *        {@link SearchVariantsResponse}.
  * @param <E> The type of object being streamed back to the user. One of {@link Callset},
- *            {@link Job}, {@link Read}, {@link Readset}, or {@link Variant}.
+ *        {@link Job}, {@link Read}, {@link Readset}, or {@link Variant}.
  */
 public abstract class Paginator<
     A,
