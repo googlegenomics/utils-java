@@ -17,7 +17,7 @@ Add the following to your `pom.xml` file:
     <dependency>
       <groupId>com.google.cloud.genomics</groupId>
       <artifactId>google-genomics-utils</artifactId>
-      <version>0.5</version>
+      <version>0.6</version>
     </dependency>
   </dependencies>
 </project>
@@ -31,14 +31,14 @@ repositories {
 }
 
 dependencies {
-    compile 'com.google.cloud.genomics:google-genomics-utils:0.5'
+    compile 'com.google.cloud.genomics:google-genomics-utils:0.6'
 }
 ```
 
 ##The code
 
 * [GenomicsFactory.java](src/main/java/com/google/cloud/genomics/utils/GenomicsFactory.java) makes it easier to construct an authenticated Genomics service
-
+* [Paginator.java](src/main/java/com/google/cloud/genomics/utils/Paginator.java) lazily paginates through readsets, reads, variants and callsets
 
 ##Releasing new versions
 
