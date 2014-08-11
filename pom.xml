@@ -162,7 +162,7 @@
 
   <properties>
     <junit.version>4.11</junit.version>
-    <google.api.version>1.17.0-rc</google.api.version>
+    <google.api.version>1.18.0-rc</google.api.version>
     <google.api.genomics.version>v1beta-rev17-1.18.0-rc</google.api.genomics.version>
     <picard.version>1.102.0</picard.version>
   </properties>
