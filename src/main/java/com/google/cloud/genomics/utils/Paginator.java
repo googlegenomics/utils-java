@@ -562,6 +562,7 @@ public abstract class Paginator<
       final GenomicsRequestInitializer<? super C> initializer) {
     class Pair {
 
+      @SuppressWarnings("hiding")
       final B request;
       final D response;
 
