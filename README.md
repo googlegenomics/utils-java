@@ -1,4 +1,4 @@
-utils-java [![Build Status](https://travis-ci.org/googlegenomics/utils-java.svg?branch=master)](https://travis-ci.org/googlegenomics/utils-java)
+utils-java [![Build Status](https://img.shields.io/travis/googlegenomics/utils-java.svg?style=flat)](https://travis-ci.org/googlegenomics/utils-java) [![Coverage Status](https://img.shields.io/coveralls/googlegenomics/utils-java.svg?style=flat)](https://coveralls.io/r/googlegenomics/utils-java)
 ==========
 
 This project's goal is to reduce duplicate code across different Google Genomics Java integrations. 
