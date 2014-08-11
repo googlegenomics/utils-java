@@ -37,8 +37,10 @@ dependencies {
 
 ##The code
 
+* [GenomicsConverter.java](src/main/java/com/google/cloud/genomics/utils/GenomicsConverter.java) converts Read objects into SAMRecords and back
 * [GenomicsFactory.java](src/main/java/com/google/cloud/genomics/utils/GenomicsFactory.java) makes it easier to construct an authenticated Genomics service
 * [Paginator.java](src/main/java/com/google/cloud/genomics/utils/Paginator.java) lazily paginates through readsets, reads, variants and callsets
+* [ReadFlagUtils.java](src/main/java/com/google/cloud/genomics/utils/ReadFlagUtils.java) defines the constant ints used by the Read.flags field as well as helper methods to get and set flag values
 
 ##Releasing new versions
 
