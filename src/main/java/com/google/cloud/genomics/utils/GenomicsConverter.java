@@ -65,7 +65,7 @@ public abstract class GenomicsConverter {
    * @param record The SAMRecord to transform into a Read.
    * @return The resulting Google Genomics Read.
    */
-  public static final Read makeRead(SAMRecord record) {
+  public static Read makeRead(SAMRecord record) {
     Read read = new Read();
     read.setName(record.getReadName());
     read.setFlags(record.getFlags());
@@ -101,7 +101,7 @@ public abstract class GenomicsConverter {
    * @param header The SAMFileHeader to initiate the SAMRecord from.
    * @return The resulting SAMRecord.
    */
-  public static final SAMRecord makeSAMRecord(Read read, SAMFileHeader header) {
+  public static SAMRecord makeSAMRecord(Read read, SAMFileHeader header) {
     SAMRecord record = new SAMRecord(header);
     if (read.getName() != null) {
       record.setReadName(read.getName());
@@ -160,7 +160,7 @@ public abstract class GenomicsConverter {
    * @param header The HeaderSection to initiate the SAMRecord from.
    * @return The resulting SAMRecord.
    */
-  public static final SAMRecord makeSAMRecord(Read read, HeaderSection header) {
+  public static SAMRecord makeSAMRecord(Read read, HeaderSection header) {
     return makeSAMRecord(read, makeSAMFileHeader(header));
   }
 
@@ -171,7 +171,7 @@ public abstract class GenomicsConverter {
    * @param read The Read to transform into a SAMRecord.
    * @return The resulting SAMRecord.
    */
-  public static final SAMRecord makeSAMRecord(Read read) {
+  public static SAMRecord makeSAMRecord(Read read) {
     return makeSAMRecord(read, new SAMFileHeader());
   }
 
@@ -184,7 +184,7 @@ public abstract class GenomicsConverter {
    * @param samHeader The SAMFileHeader to transform to a HeaderSection
    * @return The resulting HeaderSection
    */
-  public static final HeaderSection makeHeaderSection(SAMFileHeader samHeader) {
+  public static HeaderSection makeHeaderSection(SAMFileHeader samHeader) {
     HeaderSection headerSection = new HeaderSection();
 
     Header header = new Header();
@@ -263,7 +263,7 @@ public abstract class GenomicsConverter {
    * @param headerSection The HeaderSection to transform to SAMFileHeader.
    * @return The resulting SAMFileHeader.
    */
-  public static final SAMFileHeader makeSAMFileHeader(HeaderSection headerSection) {
+  public static SAMFileHeader makeSAMFileHeader(HeaderSection headerSection) {
     SAMFileHeader samHeader = new SAMFileHeader();
 
     Header header = GenomicsUtils.getHeader(headerSection);
