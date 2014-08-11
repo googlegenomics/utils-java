@@ -29,23 +29,24 @@ import java.util.logging.Logger;
 public class GenomicsUtils {
   private static final Logger LOG = Logger.getLogger(GenomicsUtils.class.getName());
   
-  // Can't return null for NO_READGROUP since dataflow gets mad when it gets null objects
-  public static final String NO_READGROUP = "NO_RG"; 
-  
   /**
-   * Returns the ReadGroup if it exists for a given Read, otherwise returns null.
+   * Returns the ReadGroup if it exists for a given Read, otherwise returns noReadgroup.
+   * 
+   * @param read The read to extract the readgroup from.
+   * @param noReadgroup The default value to return in case of no readgroup.
+   * @return The readgroup as a string if exists, otherwise noReadgroup.
    */
-  public final static String getReadgroup(Read read) {
+  public static final String getReadgroup(Read read, String noReadgroup) {
     if (read.getTags() == null) {
       LOG.fine("Read " + read.getName() + " with ID " 
-            + read.getId() + " has no tag field. Returning NO_READGROUP");
-      return NO_READGROUP;
+            + read.getId() + " has no tag field. Returning default");
+      return noReadgroup;
     }
     List<String> readgroups = read.getTags().get("RG");
     if (readgroups == null || readgroups.size() == 0) {
       LOG.fine("Read " + read.getName() + " with ID " 
-          + read.getId() + " has no RG. Returning NO_READGROUP");
-      return NO_READGROUP;
+          + read.getId() + " has no RG. Returning default");
+      return noReadgroup;
     } else { 
       if (readgroups.size() > 1) {
         LOG.warning("Read " + read.getName() + " with ID " 
@@ -56,9 +57,22 @@ public class GenomicsUtils {
   }
   
   /**
-   * Returns the HeaderSection if it exists for a given Readset, otherwise returns null.
+   * Returns the ReadGroup if it exists for a given Read, otherwise returns null.
+   * 
+   * @param read The read to extract the readgroup from.
+   * @return The readgroup as a string if exists, otherwise null.
    */
-  public final static HeaderSection getHeaderSection(Readset readset) {
+  public static final String getReadgroup(Read read) {
+    return getReadgroup(read, null);
+  }
+  
+  /**
+   * Returns the HeaderSection if it exists for a given Readset, otherwise returns null.
+   * 
+   * @param readset The readset to get the HeaderSection from.
+   * @return The resulting Headersection if exists, otherwise null.
+   */
+  public static final HeaderSection getHeaderSection(Readset readset) {
     List<HeaderSection> headers = readset.getFileData();
     if (headers == null || headers.size() == 0) {
       LOG.warning("Readset " + readset.getName() + " with ID "
@@ -75,8 +89,11 @@ public class GenomicsUtils {
   
   /**
    * Pulls the Header from a HeaderSection if exists, otherwise returns null.
+   * 
+   * @param headerSection The HeaderSection to extract the Header from.
+   * @return The resulting Header if exists, otherwise null.
    */
-  public final static Header getHeader(HeaderSection headerSection) {
+  public static final Header getHeader(HeaderSection headerSection) {
     List<Header> headers = headerSection.getHeaders();
     if (headers == null || headers.size() == 0) {
       LOG.warning("HeaderSection has no header section");

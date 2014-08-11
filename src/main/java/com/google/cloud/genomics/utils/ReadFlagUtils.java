@@ -39,149 +39,113 @@ public class ReadFlagUtils {
   
   // Getters
   
+  public static final boolean hasFlag(Read read, int flag) {
+    return read.getFlags() != null && ((read.getFlags() & flag) != 0);
+  }
+  
   public static final boolean hasReadPairedFlag(Read read) {
-    return read.getFlags() != null && ((read.getFlags() & READ_PAIRED_FLAG) != 0);
+    return hasFlag(read, READ_PAIRED_FLAG);
   }
 
   public static final boolean hasProperPairFlag(Read read) {
-    return read.getFlags() != null && ((read.getFlags() & PROPER_PAIR_FLAG) != 0);
+    return hasFlag(read, PROPER_PAIR_FLAG);
   }
   
   public static final boolean hasReadUnmappedFlag(Read read) {
-    return read.getFlags() != null && ((read.getFlags() & READ_UNMAPPED_FLAG) != 0);
+    return hasFlag(read, READ_UNMAPPED_FLAG);
   }
   
   public static final boolean hasMateUnmappedFlag(Read read) {
-    return read.getFlags() != null && ((read.getFlags() & MATE_UNMAPPED_FLAG) != 0);
+    return hasFlag(read, MATE_UNMAPPED_FLAG);
   }
   
   public static final boolean hasReadStrandFlag(Read read) {
-    return read.getFlags() != null && ((read.getFlags() & READ_STRAND_FLAG) != 0);
+    return hasFlag(read, READ_STRAND_FLAG);
   }
   
   public static final boolean hasMateStrandFlag(Read read) {
-    return read.getFlags() != null && ((read.getFlags() & MATE_STRAND_FLAG) != 0);
+    return hasFlag(read, MATE_STRAND_FLAG);
   }
   
   public static final boolean hasFirstOfPairFlag(Read read) {
-    return read.getFlags() != null && ((read.getFlags() & FIRST_OF_PAIR_FLAG) != 0);
+    return hasFlag(read, FIRST_OF_PAIR_FLAG);
   }
   
   public static final boolean hasSecondOfPairFlag(Read read) {
-    return read.getFlags() != null && ((read.getFlags() & SECOND_OF_PAIR_FLAG) != 0);
+    return hasFlag(read, SECOND_OF_PAIR_FLAG);
   }
   
   public static final boolean hasNotPrimaryAlignmentFlag(Read read) {
-    return read.getFlags() != null && ((read.getFlags() & NOT_PRIMARY_ALIGNMENT_FLAG) != 0);
+    return hasFlag(read, NOT_PRIMARY_ALIGNMENT_FLAG);
   }
   
   public static final boolean hasReadFailsVendorQualityCheckFlag(Read read) {
-    return read.getFlags() != null && ((read.getFlags() & READ_FAILS_VENDOR_QUALITY_CHECK_FLAG) != 0);
+    return hasFlag(read, READ_FAILS_VENDOR_QUALITY_CHECK_FLAG);
   }
   
   public static final boolean hasDuplicateReadFlag(Read read) {
-    return read.getFlags() != null && ((read.getFlags() & DUPLICATE_READ_FLAG) != 0);
+    return hasFlag(read, DUPLICATE_READ_FLAG);
   }
   
   public static final boolean hasSupplementaryAlignmentFlag(Read read) {
-    return read.getFlags() != null && ((read.getFlags() & SUPPLEMENTARY_ALIGNMENT_FLAG) != 0);
+    return hasFlag(read, SUPPLEMENTARY_ALIGNMENT_FLAG);
   }
   
   // Setters
   
-  public static final void setReadPairedFlag(Read read, boolean flag) {
-    if (flag) {
-      read.setFlags(read.getFlags() | READ_PAIRED_FLAG);
+  public static final void setFlag(Read read, int flag, boolean value) {
+    if (value) {
+      read.setFlags(read.getFlags() | flag);
     } else {
-      read.setFlags(read.getFlags() & ~READ_PAIRED_FLAG);
+      read.setFlags(read.getFlags() & ~flag);
     }
+  }
+  
+  public static final void setReadPairedFlag(Read read, boolean value) {
+    setFlag(read, READ_PAIRED_FLAG, value);
   }
 
-  public static final void setProperPairFlag(Read read, boolean flag) {
-    if (flag) {
-      read.setFlags(read.getFlags() | PROPER_PAIR_FLAG);
-    } else {
-      read.setFlags(read.getFlags() & ~PROPER_PAIR_FLAG);
-    }
+  public static final void setProperPairFlag(Read read, boolean value) {
+    setFlag(read, PROPER_PAIR_FLAG, value);
   }
   
-  public static final void setReadUnmappedFlag(Read read, boolean flag) {
-    if (flag) {
-      read.setFlags(read.getFlags() | READ_UNMAPPED_FLAG);
-    } else {
-      read.setFlags(read.getFlags() & ~READ_UNMAPPED_FLAG);
-    }
+  public static final void setReadUnmappedFlag(Read read, boolean value) {
+    setFlag(read, READ_UNMAPPED_FLAG, value);
   }
   
-  public static final void setMateUnmappedFlag(Read read, boolean flag) {
-    if (flag) {
-      read.setFlags(read.getFlags() | MATE_UNMAPPED_FLAG);
-    } else {
-      read.setFlags(read.getFlags() & ~MATE_UNMAPPED_FLAG);
-    }
+  public static final void setMateUnmappedFlag(Read read, boolean value) {
+    setFlag(read, MATE_UNMAPPED_FLAG, value);
   }
   
-  public static final void setReadStrandFlag(Read read, boolean flag) {
-    if (flag) {
-      read.setFlags(read.getFlags() | READ_STRAND_FLAG);
-    } else {
-      read.setFlags(read.getFlags() & ~READ_STRAND_FLAG);
-    }
+  public static final void setReadStrandFlag(Read read, boolean value) {
+    setFlag(read, READ_STRAND_FLAG, value);
   }
   
-  public static final void setMateStrandFlag(Read read, boolean flag) {
-    if (flag) {
-      read.setFlags(read.getFlags() | MATE_STRAND_FLAG);
-    } else {
-      read.setFlags(read.getFlags() & ~MATE_STRAND_FLAG);
-    }
+  public static final void setMateStrandFlag(Read read, boolean value) {
+    setFlag(read, MATE_STRAND_FLAG, value);
   }
   
-  public static final void setFirstOfPairFlag(Read read, boolean flag) {
-    if (flag) {
-      read.setFlags(read.getFlags() | FIRST_OF_PAIR_FLAG);
-    } else {
-      read.setFlags(read.getFlags() & ~FIRST_OF_PAIR_FLAG);
-    }
+  public static final void setFirstOfPairFlag(Read read, boolean value) {
+    setFlag(read, FIRST_OF_PAIR_FLAG, value);
   }
   
-  public static final void setSecondOfPairFlag(Read read, boolean flag) {
-    if (flag) {
-      read.setFlags(read.getFlags() | SECOND_OF_PAIR_FLAG);
-    } else {
-      read.setFlags(read.getFlags() & ~SECOND_OF_PAIR_FLAG);
-    }
+  public static final void setSecondOfPairFlag(Read read, boolean value) {
+    setFlag(read, SECOND_OF_PAIR_FLAG, value);
   }
   
-  public static final void setNotPrimaryAlignmentFlag(Read read, boolean flag) {
-    if (flag) {
-      read.setFlags(read.getFlags() | NOT_PRIMARY_ALIGNMENT_FLAG);
-    } else {
-      read.setFlags(read.getFlags() & ~NOT_PRIMARY_ALIGNMENT_FLAG);
-    }
+  public static final void setNotPrimaryAlignmentFlag(Read read, boolean value) {
+    setFlag(read, NOT_PRIMARY_ALIGNMENT_FLAG, value);
   }
   
-  public static final void setReadFailsVendorQualityCheckFlag(Read read, boolean flag) {
-    if (flag) {
-      read.setFlags(read.getFlags() | READ_FAILS_VENDOR_QUALITY_CHECK_FLAG);
-    } else {
-      read.setFlags(read.getFlags() & ~READ_FAILS_VENDOR_QUALITY_CHECK_FLAG);
-    }
+  public static final void setReadFailsVendorQualityCheckFlag(Read read, boolean value) {
+    setFlag(read, READ_FAILS_VENDOR_QUALITY_CHECK_FLAG, value);
   }
   
-  public static final void setDuplicateReadFlag(Read read, boolean flag) {
-    if (flag) {
-      read.setFlags(read.getFlags() | DUPLICATE_READ_FLAG);
-    } else {
-      read.setFlags(read.getFlags() & ~DUPLICATE_READ_FLAG);
-    }
+  public static final void setDuplicateReadFlag(Read read, boolean value) {
+    setFlag(read, DUPLICATE_READ_FLAG, value);
   }
   
-  public static final void setSupplementaryAlignmentFlag(Read read, boolean flag) {
-    if (flag) {
-      read.setFlags(read.getFlags() | SUPPLEMENTARY_ALIGNMENT_FLAG);
-    } else {
-      read.setFlags(read.getFlags() & ~SUPPLEMENTARY_ALIGNMENT_FLAG);
-    }
+  public static final void setSupplementaryAlignmentFlag(Read read, boolean value) {
+    setFlag(read, SUPPLEMENTARY_ALIGNMENT_FLAG, value);
   }
 }

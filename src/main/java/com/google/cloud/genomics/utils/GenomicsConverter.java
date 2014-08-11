@@ -42,22 +42,28 @@ import java.util.TimeZone;
 import javax.xml.bind.DatatypeConverter;
 
 /**
- * A utility class for converting between genomics data representations by the Cloud Genomics API
- * and that of Picard Tools
- * 
- * Notes: Conversion is not perfect, information WILL be lost!
- *        HTSJDK formats get very mad about passing nulls, so lots of null checks. Genomics API 
- *        classes however are fine with nulls so no checks need to be done.
- * 
+ * A utility class for converting between genomics data representations from the Google Genomics API
+ * and that of Picard Tools.
+ *
+ * Currently this is relying on the third party picard maven artifact, so the SAM objects are
+ * in net.sf.samtools. This code will switch to the real picard maven dependency as soon as it's
+ * available (in progress as of 8/2014).
+ *
+ * Note: Conversion between Picard and Google Genomics is lossy, some information will be lost.
+ *
  * Currently supported conversions:
- *      Read <-> SAMRecord
- *      HeaderSection <-> SAMFileHeader
+ *      Read/SAMRecord
+ *      HeaderSection/SAMFileHeader
  */
 public abstract class GenomicsConverter {
   private static final Calendar GMT_CALENDAR = new GregorianCalendar(TimeZone.getTimeZone("GMT"));
 
   /**
-   *  Generates a Read from a SAMRecord. Id, ReadsetId, and AlignedBases fields are lost.
+   * Create a Google Genomics Read from a SAMRecord, preserving as much information as possible.
+   * Note: Id, ReadsetId, and AlignedBases fields are lost.
+   *
+   * @param record The SAMRecord to transform into a Read.
+   * @return The resulting Google Genomics Read.
    */
   public static final Read makeRead(SAMRecord record) {
     Read read = new Read();
@@ -75,7 +81,7 @@ public abstract class GenomicsConverter {
 
     if (record.getAttributes() != null) {
       HashMap<String, List<String>> tags = new HashMap<String, List<String>>();
-      for(SAMTagAndValue tagPair : record.getAttributes()) {
+      for (SAMTagAndValue tagPair : record.getAttributes()) {
         if (tags.containsKey(tagPair.tag)) {
           tags.get(tagPair.tag).add(tagPair.value.toString());
         } else {
@@ -88,6 +94,13 @@ public abstract class GenomicsConverter {
     return read;
   }
 
+  /**
+   * Create a SAMRecord from a Google Genomics Read, preserving as much information as possible.
+   *
+   * @param read The Read to transform into a SAMRecord.
+   * @param header The SAMFileHeader to initiate the SAMRecord from.
+   * @return The resulting SAMRecord.
+   */
   public static final SAMRecord makeSAMRecord(Read read, SAMFileHeader header) {
     SAMRecord record = new SAMRecord(header);
     if (read.getName() != null) {
@@ -139,10 +152,25 @@ public abstract class GenomicsConverter {
     return record;
   }
 
+  /**
+   * Create a SAMRecord from a Google Genomics Read, preserving as much information as possible.
+   * Input HeaderSection will be converted to a SAMFileHeader and used to initialize the SAMRecord
+   * 
+   * @param read The Read to transform into a SAMRecord.
+   * @param header The HeaderSection to initiate the SAMRecord from.
+   * @return The resulting SAMRecord.
+   */
   public static final SAMRecord makeSAMRecord(Read read, HeaderSection header) {
     return makeSAMRecord(read, makeSAMFileHeader(header));
   }
 
+  /**
+   * Create a SAMRecord from a Google Genomics Read, preserving as much information as possible.
+   * Default SAMFileHeader will be used to initialize the SAMRecord.
+   * 
+   * @param read The Read to transform into a SAMRecord.
+   * @return The resulting SAMRecord.
+   */
   public static final SAMRecord makeSAMRecord(Read read) {
     return makeSAMRecord(read, new SAMFileHeader());
   }
@@ -152,101 +180,108 @@ public abstract class GenomicsConverter {
    * Lost fields:
    * FileUri, RefSequences.md5Checksum, RefSequences.uri, ReadGroups.ProcessingProgram,
    * ReadGroups.ReadGroupId, ProgramRecords.ProgramGroupId, ReferenceSequence.uri, etc
+   * 
+   * @param samHeader The SAMFileHeader to transform to a HeaderSection
+   * @return The resulting HeaderSection
    */
   public static final HeaderSection makeHeaderSection(SAMFileHeader samHeader) {
-    HeaderSection header = new HeaderSection();
+    HeaderSection headerSection = new HeaderSection();
 
-    Header HD = new Header();
-    HD.setVersion(samHeader.getVersion());
-    HD.setSortingOrder(samHeader.getSortOrder().toString());
-    header.setHeaders(Lists.newArrayList(HD));
+    Header header = new Header();
+    header.setVersion(samHeader.getVersion());
+    header.setSortingOrder(samHeader.getSortOrder().toString());
+    headerSection.setHeaders(Lists.newArrayList(header));
 
     if (samHeader.getSequenceDictionary() != null 
         && samHeader.getSequenceDictionary().getSequences() != null) {
-      List<ReferenceSequence> SQList = Lists.newArrayList();
+      List<ReferenceSequence> sequenceList = Lists.newArrayList();
       for (SAMSequenceRecord sequence : samHeader.getSequenceDictionary().getSequences()) {
-        ReferenceSequence SQ = new ReferenceSequence();
-        SQ.setAssemblyId(sequence.getAssembly());
-        SQ.setLength(sequence.getSequenceLength());
-        SQ.setName(sequence.getSequenceName());
-        SQ.setSpecies(sequence.getSpecies());
-        SQList.add(SQ);
+        ReferenceSequence refSequence = new ReferenceSequence();
+        refSequence.setAssemblyId(sequence.getAssembly());
+        refSequence.setLength(sequence.getSequenceLength());
+        refSequence.setName(sequence.getSequenceName());
+        refSequence.setSpecies(sequence.getSpecies());
+        sequenceList.add(refSequence);
       }
-      header.setRefSequences(SQList);
+      headerSection.setRefSequences(sequenceList);
     }
 
     if (samHeader.getReadGroups() != null) {
-      List<ReadGroup> RGList = Lists.newArrayList();
-      for (SAMReadGroupRecord readgroup : samHeader.getReadGroups()) {
-        ReadGroup RG = new ReadGroup();
-        if(readgroup.getRunDate() != null) {
+      List<ReadGroup> readgroupList = Lists.newArrayList();
+      for (SAMReadGroupRecord samReadgroup : samHeader.getReadGroups()) {
+        ReadGroup readgroup = new ReadGroup();
+        if(samReadgroup.getRunDate() != null) {
           Calendar calendar = GMT_CALENDAR;
-          calendar.setTime(readgroup.getRunDate());
-          RG.setDate(DatatypeConverter.printDateTime(calendar));
+          calendar.setTime(samReadgroup.getRunDate());
+          readgroup.setDate(DatatypeConverter.printDateTime(calendar));
         }
-        RG.setDescription(readgroup.getDescription());
-        RG.setFlowOrder(readgroup.getFlowOrder());
-        RG.setId(readgroup.getId());
-        RG.setKeySequence(readgroup.getKeySequence());
-        RG.setLibrary(readgroup.getLibrary());
-        RG.setPlatformUnit(readgroup.getPlatformUnit());
-        RG.setPredictedInsertSize(readgroup.getPredictedMedianInsertSize());
-        RG.setSample(readgroup.getSample());
-        RG.setSequencingCenterName(readgroup.getSequencingCenter());
-        RG.setSequencingTechnology(readgroup.getPlatform());
-        RGList.add(RG);
+        readgroup.setDescription(samReadgroup.getDescription());
+        readgroup.setFlowOrder(samReadgroup.getFlowOrder());
+        readgroup.setId(samReadgroup.getId());
+        readgroup.setKeySequence(samReadgroup.getKeySequence());
+        readgroup.setLibrary(samReadgroup.getLibrary());
+        readgroup.setPlatformUnit(samReadgroup.getPlatformUnit());
+        readgroup.setPredictedInsertSize(samReadgroup.getPredictedMedianInsertSize());
+        readgroup.setSample(samReadgroup.getSample());
+        readgroup.setSequencingCenterName(samReadgroup.getSequencingCenter());
+        readgroup.setSequencingTechnology(samReadgroup.getPlatform());
+        readgroupList.add(readgroup);
       }
-      header.setReadGroups(RGList);
+      headerSection.setReadGroups(readgroupList);
     }
 
     if (samHeader.getProgramRecords() != null) {
-      List<Program> PGList = Lists.newArrayList();
-      for (SAMProgramRecord program : samHeader.getProgramRecords()) {
-        Program PG = new Program();
-        PG.setCommandLine(program.getCommandLine());
-        PG.setId(program.getProgramGroupId());
-        PG.setName(program.getProgramName());
-        PG.setPrevProgramId(program.getPreviousProgramGroupId());
-        PG.setVersion(program.getProgramVersion());
-        PGList.add(PG);
+      List<Program> programList = Lists.newArrayList();
+      for (SAMProgramRecord samProgram : samHeader.getProgramRecords()) {
+        Program program = new Program();
+        program.setCommandLine(samProgram.getCommandLine());
+        program.setId(samProgram.getProgramGroupId());
+        program.setName(samProgram.getProgramName());
+        program.setPrevProgramId(samProgram.getPreviousProgramGroupId());
+        program.setVersion(samProgram.getProgramVersion());
+        programList.add(program);
       }
-      header.setPrograms(PGList);
+      headerSection.setPrograms(programList);
     }
 
     if (samHeader.getComments() != null) {
-      List<String> COList = Lists.newArrayList(); 
+      List<String> commentList = Lists.newArrayList(); 
       for (String comment : samHeader.getComments()) {
         // SAMFileHeader makes all comments have a @CO\t prefix
-        COList.add(comment.replaceAll("@CO\t", ""));
+        commentList.add(comment.replaceAll("@CO\t", ""));
       }
-      header.setComments(COList);
+      headerSection.setComments(commentList);
     }
 
-    return header;
+    return headerSection;
   }
 
   /**
    * Genereates a SAMFileHeader from a HeaderSection.
-   * NOTE: Version field is not setable and @CO\t is prepended to all comments
+   * Note: Version field is not setable and @CO\t is prepended to all comments.
+   * 
+   * @param headerSection The HeaderSection to transform to SAMFileHeader.
+   * @return The resulting SAMFileHeader.
    */
-  public static final SAMFileHeader makeSAMFileHeader(HeaderSection header) {
+  public static final SAMFileHeader makeSAMFileHeader(HeaderSection headerSection) {
     SAMFileHeader samHeader = new SAMFileHeader();
 
-    Header HD = GenomicsUtils.getHeader(header);
-    if (HD != null && HD.getSortingOrder() != null) {
-      samHeader.setSortOrder(SAMFileHeader.SortOrder.valueOf(HD.getSortingOrder()));
+    Header header = GenomicsUtils.getHeader(headerSection);
+    if (header != null && header.getSortingOrder() != null) {
+      samHeader.setSortOrder(SAMFileHeader.SortOrder.valueOf(header.getSortingOrder()));
     }
 
-    if (header.getRefSequences() != null) {
+    if (headerSection.getRefSequences() != null) {
       SAMSequenceDictionary dict = new SAMSequenceDictionary();
-      for (ReferenceSequence SQ : header.getRefSequences()) {
-        if (SQ.getName() != null && SQ.getLength() != null) {
-          SAMSequenceRecord sequence = new SAMSequenceRecord(SQ.getName(), SQ.getLength());
-          if (SQ.getAssemblyId() != null) {
-            sequence.setAssembly(SQ.getAssemblyId());
+      for (ReferenceSequence refSequence : headerSection.getRefSequences()) {
+        if (refSequence.getName() != null && refSequence.getLength() != null) {
+          SAMSequenceRecord sequence = new SAMSequenceRecord(
+              refSequence.getName(), refSequence.getLength());
+          if (refSequence.getAssemblyId() != null) {
+            sequence.setAssembly(refSequence.getAssemblyId());
           }
-          if (SQ.getSpecies() != null) {
-            sequence.setSpecies(SQ.getSpecies());
+          if (refSequence.getSpecies() != null) {
+            sequence.setSpecies(refSequence.getSpecies());
           }
           dict.addSequence(sequence);
         }
@@ -254,75 +289,75 @@ public abstract class GenomicsConverter {
       samHeader.setSequenceDictionary(dict);
     }
 
-    if (header.getReadGroups() != null) {
+    if (headerSection.getReadGroups() != null) {
       List<SAMReadGroupRecord> readgroups = Lists.newArrayList();
-      for (ReadGroup RG : header.getReadGroups()) {
-        if (RG.getId() != null) {
-          SAMReadGroupRecord readgroup = new SAMReadGroupRecord(RG.getId());
-          if (RG.getDate() != null) {
-            readgroup.setRunDate(DatatypeConverter.parseDateTime(RG.getDate()).getTime());
+      for (ReadGroup readgroup : headerSection.getReadGroups()) {
+        if (readgroup.getId() != null) {
+          SAMReadGroupRecord samReadgroup = new SAMReadGroupRecord(readgroup.getId());
+          if (readgroup.getDate() != null) {
+            samReadgroup.setRunDate(DatatypeConverter.parseDateTime(readgroup.getDate()).getTime());
           }
-          if (RG.getDescription() != null) {
-            readgroup.setDescription(RG.getDescription());
+          if (readgroup.getDescription() != null) {
+            samReadgroup.setDescription(readgroup.getDescription());
           }
-          if (RG.getFlowOrder() != null) {
-            readgroup.setFlowOrder(RG.getFlowOrder());
+          if (readgroup.getFlowOrder() != null) {
+            samReadgroup.setFlowOrder(readgroup.getFlowOrder());
           }
-          if (RG.getKeySequence() != null) {
-            readgroup.setKeySequence(RG.getKeySequence());
+          if (readgroup.getKeySequence() != null) {
+            samReadgroup.setKeySequence(readgroup.getKeySequence());
           }
-          if (RG.getLibrary() != null) {
-            readgroup.setLibrary(RG.getLibrary());
+          if (readgroup.getLibrary() != null) {
+            samReadgroup.setLibrary(readgroup.getLibrary());
           }
-          if (RG.getPlatformUnit() != null) {
-            readgroup.setPlatformUnit(RG.getPlatformUnit());
+          if (readgroup.getPlatformUnit() != null) {
+            samReadgroup.setPlatformUnit(readgroup.getPlatformUnit());
           }
-          if (RG.getPredictedInsertSize() != null) {
-            readgroup.setPredictedMedianInsertSize(RG.getPredictedInsertSize());
+          if (readgroup.getPredictedInsertSize() != null) {
+            samReadgroup.setPredictedMedianInsertSize(readgroup.getPredictedInsertSize());
           }
-          if (RG.getSample() != null) {
-            readgroup.setSample(RG.getSample());
+          if (readgroup.getSample() != null) {
+            samReadgroup.setSample(readgroup.getSample());
           }
-          if (RG.getSequencingCenterName() != null) {
-            readgroup.setSequencingCenter(RG.getSequencingCenterName());
+          if (readgroup.getSequencingCenterName() != null) {
+            samReadgroup.setSequencingCenter(readgroup.getSequencingCenterName());
           }
-          if (RG.getSequencingTechnology() != null) {
-            readgroup.setPlatform(RG.getSequencingTechnology());
+          if (readgroup.getSequencingTechnology() != null) {
+            samReadgroup.setPlatform(readgroup.getSequencingTechnology());
           }
-          readgroups.add(readgroup);
+          readgroups.add(samReadgroup);
         }
       }
       samHeader.setReadGroups(readgroups);
     }
 
-    if (header.getPrograms() != null) {
+    if (headerSection.getPrograms() != null) {
       List<SAMProgramRecord> programs = Lists.newArrayList();
-      for (Program PG : header.getPrograms()) {
-        if (PG.getId() != null) {
-          SAMProgramRecord program = new SAMProgramRecord(PG.getId());
-          if (PG.getCommandLine() != null) {
-            program.setCommandLine(PG.getCommandLine());
+      for (Program program : headerSection.getPrograms()) {
+        if (program.getId() != null) {
+          SAMProgramRecord samProgram = new SAMProgramRecord(program.getId());
+          if (program.getCommandLine() != null) {
+            samProgram.setCommandLine(program.getCommandLine());
           }
-          if (PG.getName() != null) {
-            program.setProgramName(PG.getName());
+          if (program.getName() != null) {
+            samProgram.setProgramName(program.getName());
           }
-          if (PG.getPrevProgramId() != null) {
-            program.setPreviousProgramGroupId(PG.getPrevProgramId());
+          if (program.getPrevProgramId() != null) {
+            samProgram.setPreviousProgramGroupId(program.getPrevProgramId());
           }
-          if (PG.getVersion() != null) {
-            program.setProgramVersion(PG.getVersion());
+          if (program.getVersion() != null) {
+            samProgram.setProgramVersion(program.getVersion());
           }
-          programs.add(program);
+          programs.add(samProgram);
         }
       }
       samHeader.setProgramRecords(programs);
     }
 
-    if (header.getComments() != null) {
+    if (headerSection.getComments() != null) {
       List<String> comments = Lists.newArrayList();
-      for (String CO : header.getComments()) {
-        if (CO != null) {
-          comments.add(CO);
+      for (String comment : headerSection.getComments()) {
+        if (comment != null) {
+          comments.add(comment);
         }
       }
       samHeader.setComments(comments);

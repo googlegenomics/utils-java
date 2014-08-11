@@ -17,6 +17,7 @@
 package com.google.cloud.genomics.utils;
 
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNull;
 
 import com.google.api.services.genomics.model.Header;
 import com.google.api.services.genomics.model.HeaderSection;
@@ -39,7 +40,7 @@ public class GenomicsUtilsTest {
   public void testGetReadgroup() {
     Read read = new Read();
     
-    assertTrue(GenomicsUtils.getReadgroup(read).equals(GenomicsUtils.NO_READGROUP));
+    assertNull(GenomicsUtils.getReadgroup(read));
     
     Map<String, List<String>> tags = new HashMap<String, List<String>>();
     tags.put("RG", Lists.newArrayList("TEST_READGROUP"));

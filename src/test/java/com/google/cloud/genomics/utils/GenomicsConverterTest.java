@@ -146,7 +146,7 @@ public class GenomicsConverterTest {
     
     Read read = GenomicsConverter.makeRead(record);
     
-    assertEquals(GenomicsUtils.getReadgroup(read), GenomicsUtils.NO_READGROUP);
+    assertEquals(GenomicsUtils.getReadgroup(read), null);
   }
   
   @Test
