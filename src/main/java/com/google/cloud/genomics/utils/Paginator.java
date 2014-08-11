@@ -15,9 +15,6 @@
  */
 package com.google.cloud.genomics.utils;
 
-import java.io.IOException;
-import java.util.Iterator;
-
 import com.google.api.client.json.GenericJson;
 import com.google.api.services.genomics.Genomics;
 import com.google.api.services.genomics.GenomicsRequest;
@@ -43,6 +40,9 @@ import com.google.common.base.Supplier;
 import com.google.common.base.Suppliers;
 import com.google.common.collect.AbstractSequentialIterator;
 import com.google.common.collect.FluentIterable;
+
+import java.io.IOException;
+import java.util.Iterator;
 
 /**
  * An abstraction that understands the {@code pageToken} / {@code nextPageToken} protocol for paging
@@ -548,6 +548,17 @@ public abstract class Paginator<
 
   abstract Iterable<E> getResponses(D response);
 
+  private class Pair {
+    @SuppressWarnings("hiding")
+    final B request;
+    final D response;
+
+    Pair(B request, D response) {
+      this.request = request;
+      this.response = response;
+    }
+  }
+
   /**
    * Search for objects. Warning: the returned {@link Iterable} may throw {@link SearchException}
    * during iteration; users are encouraged to call 
@@ -560,17 +571,6 @@ public abstract class Paginator<
   public final Iterable<E> search(
       final B request,
       final GenomicsRequestInitializer<? super C> initializer) {
-    class Pair {
-
-      @SuppressWarnings("hiding")
-      final B request;
-      final D response;
-
-      Pair(B request, D response) {
-        this.request = request;
-        this.response = response;
-      }
-    }
     return FluentIterable
         .from(new Iterable<Pair>() {
               @Override public Iterator<Pair> iterator() {
