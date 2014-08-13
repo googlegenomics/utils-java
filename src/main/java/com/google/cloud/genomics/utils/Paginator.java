@@ -652,8 +652,10 @@ public abstract class Paginator<
   }
 
   /**
+   * Search for objects with a partial response.
+   *
    * A convenience method that allows the client code to specify the value of
-   * {@link GenomicsRequest#setFields} with using a {@link GenomicsRequestInitializer}.
+   * {@link GenomicsRequest#setFields} using a {@link GenomicsRequestInitializer}.
    *
    * @param request The search request.
    * @param fields The fields to set.
@@ -664,10 +666,24 @@ public abstract class Paginator<
         request,
         new GenomicsRequestInitializer<C>() {
           @Override public void initialize(C search) {
-            if (fields != null) {
+            if (fields != null && !fields.isEmpty()) {
               search.setFields(fields);
             }
           }
+        });
+  }
+
+  /**
+   * Search for objects.
+   *
+   * @param request The search request.
+   * @return the stream of search results.
+   */
+  public final Iterable<E> search(final B request) {
+    return search(
+        request,
+        new GenomicsRequestInitializer<C>() {
+          @Override public void initialize(C search) {}
         });
   }
 
