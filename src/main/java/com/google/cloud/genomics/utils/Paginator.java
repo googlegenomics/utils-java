@@ -664,7 +664,9 @@ public abstract class Paginator<
         request,
         new GenomicsRequestInitializer<C>() {
           @Override public void initialize(C search) {
-            search.setFields(fields);
+            if (fields != null) {
+              search.setFields(fields);
+            }
           }
         });
   }
