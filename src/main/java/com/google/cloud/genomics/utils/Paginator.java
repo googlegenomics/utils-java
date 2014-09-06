@@ -40,6 +40,7 @@ import com.google.common.base.Supplier;
 import com.google.common.base.Suppliers;
 import com.google.common.collect.AbstractSequentialIterator;
 import com.google.common.collect.FluentIterable;
+import com.google.common.collect.Lists;
 
 import java.io.IOException;
 import java.util.Iterator;
@@ -624,7 +625,11 @@ public abstract class Paginator<
         .transformAndConcat(
             new Function<D, Iterable<E>>() {
               @Override public Iterable<E> apply(D response) {
-                return getResponses(response);
+                Iterable<E> responses = getResponses(response);
+                if (responses == null) {
+                  return Lists.newArrayList();
+                }
+                return responses;
               }
             });
   }
