@@ -349,6 +349,7 @@ public class GenomicsFactory {
               scopes)
           .setDataStoreFactory(dataStoreFactory)
           .setAccessType("offline")
+          .setApprovalPrompt("force")
           .build();
       return refreshToken(
           new AuthorizationCodeInstalledApp(flow, verificationCodeReceiver.get())
