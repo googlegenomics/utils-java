@@ -18,13 +18,13 @@ package com.google.cloud.genomics.utils;
 import com.google.api.client.json.GenericJson;
 import com.google.api.services.genomics.Genomics;
 import com.google.api.services.genomics.GenomicsRequest;
-import com.google.api.services.genomics.model.Callset;
+import com.google.api.services.genomics.model.CallSet;
 import com.google.api.services.genomics.model.Dataset;
 import com.google.api.services.genomics.model.Job;
 import com.google.api.services.genomics.model.Read;
 import com.google.api.services.genomics.model.Readset;
-import com.google.api.services.genomics.model.SearchCallsetsRequest;
-import com.google.api.services.genomics.model.SearchCallsetsResponse;
+import com.google.api.services.genomics.model.SearchCallSetsRequest;
+import com.google.api.services.genomics.model.SearchCallSetsResponse;
 import com.google.api.services.genomics.model.SearchJobsRequest;
 import com.google.api.services.genomics.model.SearchJobsResponse;
 import com.google.api.services.genomics.model.SearchReadsRequest;
@@ -79,7 +79,7 @@ import java.util.Iterator;
  *        {@link com.google.api.services.genomics.Genomics.Reads},
  *        {@link com.google.api.services.genomics.Genomics.Readsets}, or
  *        {@link com.google.api.services.genomics.Genomics.Variants}.
- * @param <B> The request type. One of {@link SearchCallsetsRequest}, {@link SearchJobsRequest},
+ * @param <B> The request type. One of {@link SearchCallSetsRequest}, {@link SearchJobsRequest},
  *        {@link SearchReadsRequest}, {@link SearchReadsetsRequest}, or
  *        {@link SearchVariantsRequest}.
  * @param <C> The {@link GenomicsRequest} type. One of
@@ -88,10 +88,10 @@ import java.util.Iterator;
  *        {@link com.google.api.services.genomics.Genomics.Reads.Search},
  *        {@link com.google.api.services.genomics.Genomics.Readsets.Search}, or
  *        {@link com.google.api.services.genomics.Genomics.Variants.Search}.
- * @param <D> The response type. One of {@link SearchCallsetsResponse}, {@link SearchJobsResponse},
+ * @param <D> The response type. One of {@link SearchCallSetsResponse}, {@link SearchJobsResponse},
  *        {@link SearchReadsResponse}, {@link SearchReadsetsResponse}, or
  *        {@link SearchVariantsResponse}.
- * @param <E> The type of object being streamed back to the user. One of {@link Callset},
+ * @param <E> The type of object being streamed back to the user. One of {@link CallSet},
  *        {@link Job}, {@link Read}, {@link Readset}, or {@link Variant}.
  */
 public abstract class Paginator<
@@ -127,10 +127,10 @@ public abstract class Paginator<
    */
   public static class Callsets extends Paginator<
       Genomics.Callsets,
-      SearchCallsetsRequest,
+      SearchCallSetsRequest,
       Genomics.Callsets.Search,
-      SearchCallsetsResponse,
-      Callset> {
+      SearchCallSetsResponse,
+      CallSet> {
 
     /**
      * Static factory method.
@@ -151,19 +151,19 @@ public abstract class Paginator<
      */
     public static Callsets create(
         Genomics genomics,
-        Supplier<? extends RetryPolicy<? super SearchCallsetsRequest>> retryPolicy) {
+        Supplier<? extends RetryPolicy<? super SearchCallSetsRequest>> retryPolicy) {
       return new Callsets(genomics, retryPolicy);
     }
 
     private Callsets(
         Genomics genomics,
-        Supplier<? extends RetryPolicy<? super SearchCallsetsRequest>> retryPolicy) {
+        Supplier<? extends RetryPolicy<? super SearchCallSetsRequest>> retryPolicy) {
       super(genomics, retryPolicy);
     }
 
     @Override Genomics.Callsets.Search createSearch(
         Genomics.Callsets api,
-        SearchCallsetsRequest request) throws IOException {
+        SearchCallSetsRequest request) throws IOException {
       return api.search(request);
     }
 
@@ -171,15 +171,15 @@ public abstract class Paginator<
       return genomics.callsets();
     }
 
-    @Override String getNextPageToken(SearchCallsetsResponse response) {
+    @Override String getNextPageToken(SearchCallSetsResponse response) {
       return response.getNextPageToken();
     }
 
-    @Override Iterable<Callset> getResponses(SearchCallsetsResponse response) {
-      return response.getCallsets();
+    @Override Iterable<CallSet> getResponses(SearchCallSetsResponse response) {
+      return response.getCallSets();
     }
 
-    @Override void setPageToken(SearchCallsetsRequest request, String pageToken) {
+    @Override void setPageToken(SearchCallSetsRequest request, String pageToken) {
       request.setPageToken(pageToken);
     }
   }
@@ -536,7 +536,7 @@ public abstract class Paginator<
   private final Genomics genomics;
   private final Supplier<? extends RetryPolicy<? super B>> retryPolicy;
 
-  Paginator(Genomics genomics, Supplier<? extends RetryPolicy<? super B>> retryPolicy) {
+  public Paginator(Genomics genomics, Supplier<? extends RetryPolicy<? super B>> retryPolicy) {
     this.genomics = genomics;
     this.retryPolicy = retryPolicy;
   }
