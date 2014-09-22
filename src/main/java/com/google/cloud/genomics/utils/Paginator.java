@@ -180,6 +180,19 @@ public abstract class Paginator<
   }
 
   /**
+   * A factory interface for paginators.
+   *
+   * @param <P> The paginator type.
+   */
+  public interface Factory<P extends Paginator<?, ?, ?, ?, ?>> extends Serializable {
+
+    /**
+     * Create the paginator from the given {@link Genomics} stub.
+     */
+    P createPaginator(Genomics genomics);
+  }
+
+  /**
    * A hook for customizing {@link GenomicsRequest} request objects before they are sent to the
    * server. Typically, users will use this to call {@link GenomicsRequest#setFields} to specify
    * which fields of the response object should be set.
@@ -539,8 +552,58 @@ public abstract class Paginator<
       request.setPageToken(pageToken);
     }
   }
-  private final Genomics genomics;
 
+  /**
+   * Callsets factory
+   */
+  public static final Factory<Callsets> CALLSETS =
+      new Factory<Callsets>() {
+        @Override public Callsets createPaginator(Genomics genomics) {
+          return Callsets.create(genomics);
+        }
+      };
+
+  /**
+   * Jobs factory
+   */
+  public static final Factory<Jobs> JOBS =
+      new Factory<Jobs>() {
+        @Override public Jobs createPaginator(Genomics genomics) {
+          return Jobs.create(genomics);
+        }
+      };
+
+  /**
+   * Reads factory
+   */
+  public static final Factory<Reads> READS =
+      new Factory<Reads>() {
+        @Override public Reads createPaginator(Genomics genomics) {
+          return Reads.create(genomics);
+        }
+      };
+
+  /**
+   * Readsets factory
+   */
+  public static final Factory<Readsets> READSETS =
+      new Factory<Readsets>() {
+        @Override public Readsets createPaginator(Genomics genomics) {
+          return Readsets.create(genomics);
+        }
+      };
+
+  /**
+   * Variants factory
+   */
+  public static final Factory<Variants> VARIANTS =
+      new Factory<Variants>() {
+        @Override public Variants createPaginator(Genomics genomics) {
+          return Variants.create(genomics);
+        }
+      };
+
+  private final Genomics genomics;
   private final RetryPolicy.Factory retryPolicy;
 
   public Paginator(Genomics genomics, RetryPolicy.Factory retryPolicy) {
