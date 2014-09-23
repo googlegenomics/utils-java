@@ -15,7 +15,6 @@
  */
 package com.google.cloud.genomics.utils;
 
-import com.google.api.client.json.GenericJson;
 import com.google.api.services.genomics.Genomics;
 import com.google.api.services.genomics.GenomicsRequest;
 import com.google.api.services.genomics.model.CallSet;
@@ -48,7 +47,7 @@ import java.util.Iterator;
  * An abstraction that understands the {@code pageToken} / {@code nextPageToken} protocol for paging
  * results back to the user.
  *
- * <p>The {@link #search(GenericJson, GenomicsRequestInitializer)} method can obtain an
+ * <p>The {@link #search(Object, GenomicsRequestInitializer)} method can obtain an
  * {@link Iterable} to the objects returned from a search request. Although it is possible to invoke
  * this method directly, the {@code Iterable} that is returned may throw {@link SearchException}
  * during iteration. Client code is responsible for catching this exception where the
@@ -56,7 +55,7 @@ import java.util.Iterator;
  * rethrowing it.</p>
  *
  * <p>A safer alternative for consuming the results of a search is
- * {@link #search(GenericJson, GenomicsRequestInitializer, Callback)}. This method requires the
+ * {@link #search(Object, GenomicsRequestInitializer, Callback)}. This method requires the
  * client code to pass in a {@link Callback} object that consumes the search results and will unwrap
  * and rethrow {@link IOException}s that occur during iteration for you.</p>
  *
@@ -93,23 +92,18 @@ import java.util.Iterator;
  * @param <E> The type of object being streamed back to the user. One of {@link CallSet},
  *        {@link Job}, {@link Read}, {@link Readset}, or {@link Variant}.
  */
-public abstract class Paginator<
-    A,
-    B extends GenericJson,
-    C extends GenomicsRequest<D>,
-    D extends GenericJson,
-    E extends GenericJson> {
+public abstract class Paginator<A, B, C extends GenomicsRequest<D>, D, E> {
 
   /**
-   * A callback object for {@link #search(GenericJson, GenomicsRequestInitializer, Callback)} that
+   * A callback object for {@link #search(Object, GenomicsRequestInitializer, Callback)} that
    * can consume all or part of the results from a search request and accumulate a value, which
    * becomes the value returned from the
-   * {@link #search(GenericJson, GenomicsRequestInitializer, Callback)} method.
+   * {@link #search(Object, GenomicsRequestInitializer, Callback)} method.
    *
    * @param <E> The type of objects returned from a search
    * @param <F> The type of object to accumulate when consuming search results.
    */
-  public interface Callback<E extends GenericJson, F> {
+  public interface Callback<E, F> {
 
     /**
      * Consume the search results and accumulate an object to return.
@@ -148,11 +142,11 @@ public abstract class Paginator<
      * @param retryPolicy A retry policy specifying behavior when a request fails.
      * @return the new paginator.
      */
-    public static Callsets create(Genomics genomics, RetryPolicy.Factory retryPolicy) {
+    public static Callsets create(Genomics genomics, RetryPolicy<? super Genomics.Callsets.Search> retryPolicy) {
       return new Callsets(genomics, retryPolicy);
     }
 
-    private Callsets(Genomics genomics, RetryPolicy.Factory retryPolicy) {
+    private Callsets(Genomics genomics, RetryPolicy<? super Genomics.Callsets.Search> retryPolicy) {
       super(genomics, retryPolicy);
     }
 
@@ -199,7 +193,7 @@ public abstract class Paginator<
    *
    * @param <C> The type of {@code GenomicsRequest} to initialize.
    */
-  public interface GenomicsRequestInitializer<C extends GenomicsRequest<? extends GenericJson>> {
+  public interface GenomicsRequestInitializer<C extends GenomicsRequest<?>> {
 
     /**
      * Initialize the given {@link GenomicsRequest} object.
@@ -236,11 +230,11 @@ public abstract class Paginator<
      * @param retryPolicy A retry policy specifying behavior when a request fails.
      * @return the new paginator.
      */
-    public static Jobs create(Genomics genomics, RetryPolicy.Factory retryPolicy) {
+    public static Jobs create(Genomics genomics, RetryPolicy<? super Genomics.Jobs.Search> retryPolicy) {
       return new Jobs(genomics, retryPolicy);
     }
 
-    private Jobs(Genomics genomics, RetryPolicy.Factory retryPolicy) {
+    private Jobs(Genomics genomics, RetryPolicy<? super Genomics.Jobs.Search> retryPolicy) {
       super(genomics, retryPolicy);
     }
 
@@ -305,11 +299,11 @@ public abstract class Paginator<
      * @param retryPolicy A retry policy specifying behavior when a request fails.
      * @return the new paginator.
      */
-    public static Reads create(Genomics genomics, RetryPolicy.Factory retryPolicy) {
+    public static Reads create(Genomics genomics, RetryPolicy<? super Genomics.Reads.Search> retryPolicy) {
       return new Reads(genomics, retryPolicy);
     }
 
-    private Reads(Genomics genomics, RetryPolicy.Factory retryPolicy) {
+    private Reads(Genomics genomics, RetryPolicy<? super Genomics.Reads.Search> retryPolicy) {
       super(genomics, retryPolicy);
     }
 
@@ -363,11 +357,11 @@ public abstract class Paginator<
      * @param retryPolicy A retry policy specifying behavior when a request fails.
      * @return the new paginator.
      */
-    public static Readsets create(Genomics genomics, RetryPolicy.Factory retryPolicy) {
+    public static Readsets create(Genomics genomics, RetryPolicy<? super Genomics.Readsets.Search> retryPolicy) {
       return new Readsets(genomics, retryPolicy);
     }
 
-    private Readsets(Genomics genomics, RetryPolicy.Factory retryPolicy) {
+    private Readsets(Genomics genomics, RetryPolicy<? super Genomics.Readsets.Search> retryPolicy) {
       super(genomics, retryPolicy);
     }
 
@@ -392,90 +386,6 @@ public abstract class Paginator<
     @Override void setPageToken(SearchReadsetsRequest request, String pageToken) {
       request.setPageToken(pageToken);
     }
-  }
-
-  /**
-   * An object describing when to retry requests when a request fails.
-   *
-   * @param <B> The request type.
-   */
-  public abstract static class RetryPolicy<B extends GenericJson, C extends GenomicsRequest<?>> {
-
-    /**
-     * A factory for {@link com.google.cloud.genomics.utils.Paginator.RetryPolicy} objects.
-     */
-    public interface Factory extends Serializable {
-
-      /**
-       * Factory method for {@link com.google.cloud.genomics.utils.Paginator.RetryPolicy} objects.
-       */
-      <B extends GenericJson, C extends GenomicsRequest<?>> RetryPolicy<B, C>
-          createRetryPolicy();
-    }
-
-    /**
-     * A {@link com.google.cloud.genomics.utils.Paginator.RetryPolicy} that retries requests
-     * indefinitely.
-     */
-    public static final RetryPolicy.Factory ALWAYS_RETRY =
-        new RetryPolicy.Factory() {
-          @Override public <B extends GenericJson, C extends GenomicsRequest<?>>
-              RetryPolicy<B, C> createRetryPolicy() {
-            return new RetryPolicy<B, C>() {
-                  @Override protected boolean retryRequest(B request, C genomicsRequest) {
-                    return true;
-                  }
-                };
-          }
-        };
-
-    /**
-     * A {@link com.google.cloud.genomics.utils.Paginator.RetryPolicy} that never retries
-     * requests.
-     */
-    public static final RetryPolicy.Factory NEVER_RETRY =
-        new RetryPolicy.Factory() {
-          @Override public <B extends GenericJson, C extends GenomicsRequest<?>>
-              RetryPolicy<B, C> createRetryPolicy() {
-            return new RetryPolicy<B, C>() {
-                  @Override protected boolean retryRequest(B request, C genomicsRequest) {
-                    return false;
-                  }
-                };
-          }
-        };
-
-    /**
-     * A static factory method for a {@link com.google.cloud.genomics.utils.Paginator.RetryPolicy}
-     * that retries up to {@code n} times before giving up.
-     *
-     * @param n The number of times to retry.
-     * @return the retry policy factory.
-     */
-    public static RetryPolicy.Factory retryNTimes(final int n) {
-      return new RetryPolicy.Factory() {
-            @Override public <B extends GenericJson, C extends GenomicsRequest<?>>
-                RetryPolicy<B, C> createRetryPolicy() {
-              return new RetryPolicy<B, C>() {
-
-                    private int count = 0;
-
-                    @Override protected boolean retryRequest(B request, C genomicsRequest) {
-                      return count++ < n;
-                    }
-                  };
-            }
-          };
-    }
-
-    /**
-     * Should we retry the request?
-     *
-     * @param request The request that failed.
-     * @param genomicsRequest The {@link GenomicsRequest} that failed.
-     * @return {@code true} if the request should be retried, {@code false} otherwise.
-     */
-    protected abstract boolean retryRequest(B request, C genomicsRequest);
   }
 
   /**
@@ -522,11 +432,11 @@ public abstract class Paginator<
      * @param retryPolicy A retry policy specifying behavior when a request fails.
      * @return the new paginator.
      */
-    public static Variants create(Genomics genomics, RetryPolicy.Factory retryPolicy) {
+    public static Variants create(Genomics genomics, RetryPolicy<? super Genomics.Variants.Search> retryPolicy) {
       return new Variants(genomics, retryPolicy);
     }
 
-    private Variants(Genomics genomics, RetryPolicy.Factory retryPolicy) {
+    private Variants(Genomics genomics, RetryPolicy<? super Genomics.Variants.Search> retryPolicy) {
       super(genomics, retryPolicy);
     }
 
@@ -604,9 +514,9 @@ public abstract class Paginator<
       };
 
   private final Genomics genomics;
-  private final RetryPolicy.Factory retryPolicy;
+  private final RetryPolicy<? super C> retryPolicy;
 
-  public Paginator(Genomics genomics, RetryPolicy.Factory retryPolicy) {
+  public Paginator(Genomics genomics, RetryPolicy<? super C> retryPolicy) {
     this.genomics = genomics;
     this.retryPolicy = retryPolicy;
   }
@@ -636,7 +546,7 @@ public abstract class Paginator<
   /**
    * Search for objects. Warning: the returned {@link Iterable} may throw {@link SearchException}
    * during iteration; users are encouraged to call 
-   * {@link #search(GenericJson, GenomicsRequestInitializer, Callback)} instead.
+   * {@link #search(Object, GenomicsRequestInitializer, Callback)} instead.
    *
    * @param request The search request.
    * @param initializer The {@link GenomicsRequestInitializer} to initialize requests with.
@@ -670,15 +580,15 @@ public abstract class Paginator<
                                   }
 
                                   private D createSearch(A api, B request) {
-                                    for (RetryPolicy<B, C> policy = retryPolicy.createRetryPolicy();
-                                        true;) {
+                                    for (RetryPolicy<? super C>.Instance policy =
+                                        retryPolicy.createInstance(); true;) {
                                       C search = null;
                                       try {
                                         initializer.initialize(
                                             search = Paginator.this.createSearch(api, request));
                                         return search.execute();
                                       } catch (IOException e) {
-                                        if (!policy.retryRequest(request, search)) {
+                                        if (!policy.shouldRetry(search, e)) {
                                           throw new SearchException(e);
                                         }
                                       }
