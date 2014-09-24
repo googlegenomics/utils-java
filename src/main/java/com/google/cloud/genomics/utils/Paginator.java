@@ -739,7 +739,9 @@ public abstract class Paginator<A, B, C extends GenomicsRequest<D>, D, E> {
       final String fields) {
     return new GenomicsRequestInitializer<GenomicsRequest<?>>() {
           @Override public void initialize(GenomicsRequest<?> search) {
-            search.setFields(fields);
+            if (null != fields) {
+              search.setFields(fields);
+            }
           }
         };
   }
