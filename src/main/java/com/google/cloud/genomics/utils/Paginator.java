@@ -18,8 +18,10 @@ package com.google.cloud.genomics.utils;
 import com.google.api.services.genomics.Genomics;
 import com.google.api.services.genomics.GenomicsRequest;
 import com.google.api.services.genomics.model.CallSet;
+import com.google.api.services.genomics.model.CoverageBucket;
 import com.google.api.services.genomics.model.Dataset;
 import com.google.api.services.genomics.model.Job;
+import com.google.api.services.genomics.model.ListCoverageBucketsResponse;
 import com.google.api.services.genomics.model.ListDatasetsResponse;
 import com.google.api.services.genomics.model.Read;
 import com.google.api.services.genomics.model.Readset;
@@ -408,6 +410,70 @@ public abstract class Paginator<A, B, C extends GenomicsRequest<D>, D, E> {
       Readset> {
 
     /**
+     * A {@link Paginator} for the {@code coveragebuckets()} API.
+     */
+    public static class Coveragebuckets extends Paginator<
+        Genomics.Readsets.Coveragebuckets,
+        String,
+        Genomics.Readsets.Coveragebuckets.List,
+        ListCoverageBucketsResponse,
+        CoverageBucket> {
+
+      /**
+       * Static factory method.
+       *
+       * @param genomics The {@link Genomics} stub.
+       * @return the new paginator.
+       */
+      public static Coveragebuckets create(Genomics genomics) {
+        return create(genomics, RetryPolicy.NEVER_RETRY);
+      }
+
+      /**
+       * Static factory method.
+       *
+       * @param genomics The {@link Genomics} stub.
+       * @param retryPolicy A retry policy specifying behavior when a request fails.
+       * @return the new paginator.
+       */
+      public static Coveragebuckets create(Genomics genomics,
+          RetryPolicy<? super Genomics.Readsets.Coveragebuckets.List> retryPolicy) {
+        return new Coveragebuckets(genomics, retryPolicy);
+      }
+
+      private Coveragebuckets(Genomics genomics,
+          RetryPolicy<? super Genomics.Readsets.Coveragebuckets.List> retryPolicy) {
+        super(genomics, retryPolicy);
+      }
+
+      @Override Genomics.Readsets.Coveragebuckets.List createSearch(
+          Genomics.Readsets.Coveragebuckets api, String request, Optional<String> pageToken)
+          throws IOException {
+        final Genomics.Readsets.Coveragebuckets.List list = api.list(request);
+        return pageToken
+            .transform(
+                new Function<String, Genomics.Readsets.Coveragebuckets.List>() {
+                  @Override public Genomics.Readsets.Coveragebuckets.List apply(String pageToken) {
+                    return list.setPageToken(pageToken);
+                  }
+                })
+            .or(list);
+      }
+
+      @Override Genomics.Readsets.Coveragebuckets getApi(Genomics genomics) {
+        return genomics.readsets().coveragebuckets();
+      }
+
+      @Override String getNextPageToken(ListCoverageBucketsResponse response) {
+        return response.getNextPageToken();
+      }
+
+      @Override Iterable<CoverageBucket> getResponses(ListCoverageBucketsResponse response) {
+        return response.getCoverageBuckets();
+      }
+    }
+
+    /**
      * Static factory method.
      *
      * @param genomics The {@link Genomics} stub.
@@ -600,7 +666,21 @@ public abstract class Paginator<A, B, C extends GenomicsRequest<D>, D, E> {
     }
   }
 
+  private static final GenomicsRequestInitializer<GenomicsRequest<?>> DEFAULT_INITIALIZER =
+      new GenomicsRequestInitializer<GenomicsRequest<?>>() {
+        @Override public void initialize(GenomicsRequest<?> search) {}
+      };
+  private static GenomicsRequestInitializer<GenomicsRequest<?>> setFieldsInitializer(
+      final String fields) {
+    return new GenomicsRequestInitializer<GenomicsRequest<?>>() {
+          @Override public void initialize(GenomicsRequest<?> search) {
+            search.setFields(fields);
+          }
+        };
+  }
+
   private final Genomics genomics;
+
   private final RetryPolicy<? super C> retryPolicy;
 
   public Paginator(Genomics genomics, RetryPolicy<? super C> retryPolicy) {
@@ -623,11 +703,12 @@ public abstract class Paginator<A, B, C extends GenomicsRequest<D>, D, E> {
    * @return the stream of search results.
    */
   public final Iterable<E> search(final B request) {
-    return search(
-        request,
-        new GenomicsRequestInitializer<C>() {
-          @Override public void initialize(C search) {}
-        });
+    return search(request, DEFAULT_INITIALIZER);
+  }
+
+  public final <F> F search(B request, Callback<E, ? extends F> callback)
+      throws IOException {
+    return search(request, DEFAULT_INITIALIZER, callback);
   }
 
   /**
@@ -730,30 +811,11 @@ public abstract class Paginator<A, B, C extends GenomicsRequest<D>, D, E> {
    * @return the stream of search results.
    */
   public final Iterable<E> search(final B request, final String fields) {
-    return search(
-        request,
-        new GenomicsRequestInitializer<C>() {
-          @Override public void initialize(C search) {
-            if (fields != null && !fields.isEmpty()) {
-              search.setFields(fields);
-            }
-          }
-        });
+    return search(request, setFieldsInitializer(fields));
   }
 
-  public final <F> F search(
-      B request,
-      final String fields,
-      Callback<E, ? extends F> callback) throws IOException {
-    try {
-      return callback.consumeResponses(search(request,
-          new GenomicsRequestInitializer<C>() {
-            @Override public void initialize(C search) {
-              search.setFields(fields);
-            }
-          }));
-    } catch (SearchException e) {
-      throw e.getCause();
-    }
+  public final <F> F search(B request, final String fields, Callback<E, ? extends F> callback)
+      throws IOException {
+    return search(request, setFieldsInitializer(fields), callback);
   }
 }
