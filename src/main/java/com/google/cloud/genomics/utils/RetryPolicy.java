@@ -52,7 +52,7 @@ public abstract class RetryPolicy<R extends GenomicsRequest<?>> implements Seria
                 }
               };
 
-          @Override protected Instance createInstance() {
+          @Override public Instance createInstance() {
             return instance;
           }
         };
@@ -63,7 +63,7 @@ public abstract class RetryPolicy<R extends GenomicsRequest<?>> implements Seria
    */
   public static RetryPolicy<GenomicsRequest<?>> nAttempts(final int n) {
     return new RetryPolicy<GenomicsRequest<?>>() {
-          @Override protected Instance createInstance() {
+          @Override public Instance createInstance() {
             return new Instance() {
 
               private int count = 0;
@@ -77,5 +77,5 @@ public abstract class RetryPolicy<R extends GenomicsRequest<?>> implements Seria
         };
   }
 
-  protected abstract Instance createInstance();
+  public abstract Instance createInstance();
 }
