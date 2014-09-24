@@ -20,6 +20,7 @@ import com.google.api.services.genomics.GenomicsRequest;
 import com.google.api.services.genomics.model.CallSet;
 import com.google.api.services.genomics.model.Dataset;
 import com.google.api.services.genomics.model.Job;
+import com.google.api.services.genomics.model.ListDatasetsResponse;
 import com.google.api.services.genomics.model.Read;
 import com.google.api.services.genomics.model.Readset;
 import com.google.api.services.genomics.model.SearchCallSetsRequest;
@@ -30,17 +31,19 @@ import com.google.api.services.genomics.model.SearchReadsRequest;
 import com.google.api.services.genomics.model.SearchReadsResponse;
 import com.google.api.services.genomics.model.SearchReadsetsRequest;
 import com.google.api.services.genomics.model.SearchReadsetsResponse;
+import com.google.api.services.genomics.model.SearchVariantSetsRequest;
+import com.google.api.services.genomics.model.SearchVariantSetsResponse;
 import com.google.api.services.genomics.model.SearchVariantsRequest;
 import com.google.api.services.genomics.model.SearchVariantsResponse;
 import com.google.api.services.genomics.model.Variant;
+import com.google.api.services.genomics.model.VariantSet;
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.collect.AbstractSequentialIterator;
 import com.google.common.collect.FluentIterable;
-import com.google.common.collect.Lists;
 
 import java.io.IOException;
-import java.io.Serializable;
+import java.util.Collections;
 import java.util.Iterator;
 
 /**
@@ -75,22 +78,24 @@ import java.util.Iterator;
  * @param <A> The API type. One of {@link com.google.api.services.genomics.Genomics.Callsets},
  *        {@link com.google.api.services.genomics.Genomics.Jobs},
  *        {@link com.google.api.services.genomics.Genomics.Reads},
- *        {@link com.google.api.services.genomics.Genomics.Readsets}, or
- *        {@link com.google.api.services.genomics.Genomics.Variants}.
+ *        {@link com.google.api.services.genomics.Genomics.Readsets},
+ *        {@link com.google.api.services.genomics.Genomics.Variants}, or
+ *        {@link com.google.api.services.genomics.Genomics.Variantsets}.
  * @param <B> The request type. One of {@link SearchCallSetsRequest}, {@link SearchJobsRequest},
- *        {@link SearchReadsRequest}, {@link SearchReadsetsRequest}, or
- *        {@link SearchVariantsRequest}.
+ *        {@link SearchReadsRequest}, {@link SearchReadsetsRequest}, {@link SearchVariantsRequest},
+ *        or {@link SearchVariantSetsRequest}.
  * @param <C> The {@link GenomicsRequest} type. One of
  *        {@link com.google.api.services.genomics.Genomics.Callsets.Search},
  *        {@link com.google.api.services.genomics.Genomics.Jobs.Search},
  *        {@link com.google.api.services.genomics.Genomics.Reads.Search},
- *        {@link com.google.api.services.genomics.Genomics.Readsets.Search}, or
- *        {@link com.google.api.services.genomics.Genomics.Variants.Search}.
+ *        {@link com.google.api.services.genomics.Genomics.Readsets.Search},
+ *        {@link com.google.api.services.genomics.Genomics.Variants.Search}, or
+ *        {@link com.google.api.services.genomics.Genomics.Variantsets.Search}.
  * @param <D> The response type. One of {@link SearchCallSetsResponse}, {@link SearchJobsResponse},
- *        {@link SearchReadsResponse}, {@link SearchReadsetsResponse}, or
- *        {@link SearchVariantsResponse}.
+ *        {@link SearchReadsResponse}, {@link SearchReadsetsResponse},
+ *        {@link SearchVariantsResponse}, or {@link SearchVariantSetsResponse}.
  * @param <E> The type of object being streamed back to the user. One of {@link CallSet},
- *        {@link Job}, {@link Read}, {@link Readset}, or {@link Variant}.
+ *        {@link Job}, {@link Read}, {@link Readset}, {@link Variant}, or {@link VariantSet}.
  */
 public abstract class Paginator<A, B, C extends GenomicsRequest<D>, D, E> {
 
@@ -142,18 +147,26 @@ public abstract class Paginator<A, B, C extends GenomicsRequest<D>, D, E> {
      * @param retryPolicy A retry policy specifying behavior when a request fails.
      * @return the new paginator.
      */
-    public static Callsets create(Genomics genomics, RetryPolicy<? super Genomics.Callsets.Search> retryPolicy) {
+    public static Callsets create(
+        Genomics genomics, RetryPolicy<? super Genomics.Callsets.Search> retryPolicy) {
       return new Callsets(genomics, retryPolicy);
     }
 
-    private Callsets(Genomics genomics, RetryPolicy<? super Genomics.Callsets.Search> retryPolicy) {
+    private Callsets(
+        Genomics genomics, RetryPolicy<? super Genomics.Callsets.Search> retryPolicy) {
       super(genomics, retryPolicy);
     }
 
-    @Override Genomics.Callsets.Search createSearch(
-        Genomics.Callsets api,
-        SearchCallSetsRequest request) throws IOException {
-      return api.search(request);
+    @Override Genomics.Callsets.Search createSearch(Genomics.Callsets api,
+        final SearchCallSetsRequest request, Optional<String> pageToken) throws IOException {
+      return api.search(pageToken
+          .transform(
+              new Function<String, SearchCallSetsRequest>() {
+                @Override public SearchCallSetsRequest apply(String pageToken) {
+                  return request.setPageToken(pageToken);
+                }
+              })
+          .or(request));
     }
 
     @Override Genomics.Callsets getApi(Genomics genomics) {
@@ -167,23 +180,69 @@ public abstract class Paginator<A, B, C extends GenomicsRequest<D>, D, E> {
     @Override Iterable<CallSet> getResponses(SearchCallSetsResponse response) {
       return response.getCallSets();
     }
-
-    @Override void setPageToken(SearchCallSetsRequest request, String pageToken) {
-      request.setPageToken(pageToken);
-    }
   }
 
   /**
-   * A factory interface for paginators.
-   *
-   * @param <P> The paginator type.
+   * A {@link Paginator} for the {@code searchDatasets()} API.
    */
-  public interface Factory<P extends Paginator<?, ?, ?, ?, ?>> extends Serializable {
+  public static class Datasets extends Paginator<
+      Genomics.Datasets,
+      Long,
+      Genomics.Datasets.List,
+      ListDatasetsResponse,
+      Dataset> {
 
     /**
-     * Create the paginator from the given {@link Genomics} stub.
+     * Static factory method.
+     *
+     * @param genomics The {@link Genomics} stub.
+     * @return the new paginator.
      */
-    P createPaginator(Genomics genomics);
+    public static Datasets create(Genomics genomics) {
+      return create(genomics, RetryPolicy.NEVER_RETRY);
+    }
+
+    /**
+     * Static factory method.
+     *
+     * @param genomics The {@link Genomics} stub.
+     * @param retryPolicy A retry policy specifying behavior when a request fails.
+     * @return the new paginator.
+     */
+    public static Datasets create(
+        Genomics genomics, RetryPolicy<? super Genomics.Datasets.List> retryPolicy) {
+      return new Datasets(genomics, retryPolicy);
+    }
+
+    private Datasets(
+        Genomics genomics, RetryPolicy<? super Genomics.Datasets.List> retryPolicy) {
+      super(genomics, retryPolicy);
+    }
+
+    @Override Genomics.Datasets.List createSearch(Genomics.Datasets api,
+        Long request, Optional<String> pageToken) throws IOException {
+      final Genomics.Datasets.List list = api.list().setProjectId(request);
+      return pageToken
+          .transform(
+              new Function<String, Genomics.Datasets.List>() {
+                @Override public Genomics.Datasets.List apply(String pageToken) {
+                  return list.setPageToken(pageToken);
+                }
+              })
+          .or(list);
+    }
+
+    @Override Genomics.Datasets getApi(Genomics genomics) {
+      return genomics.datasets();
+    }
+
+    @Override String getNextPageToken(ListDatasetsResponse response) {
+      return response.getNextPageToken();
+    }
+
+    @Override Iterable<Dataset> getResponses(ListDatasetsResponse response) {
+      return response.getDatasets();
+    }
   }
 
   /**
@@ -230,18 +289,26 @@ public abstract class Paginator<A, B, C extends GenomicsRequest<D>, D, E> {
      * @param retryPolicy A retry policy specifying behavior when a request fails.
      * @return the new paginator.
      */
-    public static Jobs create(Genomics genomics, RetryPolicy<? super Genomics.Jobs.Search> retryPolicy) {
+    public static Jobs create(
+        Genomics genomics, RetryPolicy<? super Genomics.Jobs.Search> retryPolicy) {
       return new Jobs(genomics, retryPolicy);
     }
 
-    private Jobs(Genomics genomics, RetryPolicy<? super Genomics.Jobs.Search> retryPolicy) {
+    private Jobs(
+        Genomics genomics, RetryPolicy<? super Genomics.Jobs.Search> retryPolicy) {
       super(genomics, retryPolicy);
     }
 
-    @Override Genomics.Jobs.Search createSearch(
-        Genomics.Jobs api,
-        SearchJobsRequest request) throws IOException {
-      return api.search(request);
+    @Override Genomics.Jobs.Search createSearch(Genomics.Jobs api,
+        final SearchJobsRequest request, Optional<String> pageToken) throws IOException {
+      return api.search(pageToken
+          .transform(
+              new Function<String, SearchJobsRequest>() {
+                @Override public SearchJobsRequest apply(String pageToken) {
+                  return request.setPageToken(pageToken);
+                }
+              })
+          .or(request));
     }
 
     @Override Genomics.Jobs getApi(Genomics genomics) {
@@ -255,18 +322,14 @@ public abstract class Paginator<A, B, C extends GenomicsRequest<D>, D, E> {
     @Override Iterable<Job> getResponses(SearchJobsResponse response) {
       return response.getJobs();
     }
-
-    @Override void setPageToken(SearchJobsRequest request, String pageToken) {
-      request.setPageToken(pageToken);
-    }
   }
 
   private class Pair {
-    @SuppressWarnings("hiding")
-    final B request;
+
+    final C request;
     final D response;
 
-    Pair(B request, D response) {
+    Pair(C request, D response) {
       this.request = request;
       this.response = response;
     }
@@ -299,18 +362,26 @@ public abstract class Paginator<A, B, C extends GenomicsRequest<D>, D, E> {
      * @param retryPolicy A retry policy specifying behavior when a request fails.
      * @return the new paginator.
      */
-    public static Reads create(Genomics genomics, RetryPolicy<? super Genomics.Reads.Search> retryPolicy) {
+    public static Reads create(
+        Genomics genomics, RetryPolicy<? super Genomics.Reads.Search> retryPolicy) {
       return new Reads(genomics, retryPolicy);
     }
 
-    private Reads(Genomics genomics, RetryPolicy<? super Genomics.Reads.Search> retryPolicy) {
+    private Reads(
+        Genomics genomics, RetryPolicy<? super Genomics.Reads.Search> retryPolicy) {
       super(genomics, retryPolicy);
     }
 
-    @Override Genomics.Reads.Search createSearch(
-        Genomics.Reads api,
-        SearchReadsRequest request) throws IOException {
-      return api.search(request);
+    @Override Genomics.Reads.Search createSearch(Genomics.Reads api,
+        final SearchReadsRequest request, Optional<String> pageToken) throws IOException {
+      return api.search(pageToken
+          .transform(
+              new Function<String, SearchReadsRequest>() {
+                @Override public SearchReadsRequest apply(String pageToken) {
+                  return request.setPageToken(pageToken);
+                }
+              })
+          .or(request));
     }
 
     @Override Genomics.Reads getApi(Genomics genomics) {
@@ -323,10 +394,6 @@ public abstract class Paginator<A, B, C extends GenomicsRequest<D>, D, E> {
 
     @Override Iterable<Read> getResponses(SearchReadsResponse response) {
       return response.getReads();
-    }
-
-    @Override void setPageToken(SearchReadsRequest request, String pageToken) {
-      request.setPageToken(pageToken);
     }
   }
 
@@ -357,18 +424,26 @@ public abstract class Paginator<A, B, C extends GenomicsRequest<D>, D, E> {
      * @param retryPolicy A retry policy specifying behavior when a request fails.
      * @return the new paginator.
      */
-    public static Readsets create(Genomics genomics, RetryPolicy<? super Genomics.Readsets.Search> retryPolicy) {
+    public static Readsets create(
+        Genomics genomics, RetryPolicy<? super Genomics.Readsets.Search> retryPolicy) {
       return new Readsets(genomics, retryPolicy);
     }
 
-    private Readsets(Genomics genomics, RetryPolicy<? super Genomics.Readsets.Search> retryPolicy) {
+    private Readsets(
+        Genomics genomics, RetryPolicy<? super Genomics.Readsets.Search> retryPolicy) {
       super(genomics, retryPolicy);
     }
 
-    @Override Genomics.Readsets.Search createSearch(
-        Genomics.Readsets api,
-        SearchReadsetsRequest request) throws IOException {
-      return api.search(request);
+    @Override Genomics.Readsets.Search createSearch(Genomics.Readsets api,
+        final SearchReadsetsRequest request, Optional<String> pageToken) throws IOException {
+      return api.search(pageToken
+          .transform(
+              new Function<String, SearchReadsetsRequest>() {
+                @Override public SearchReadsetsRequest apply(String pageToken) {
+                  return request.setPageToken(pageToken);
+                }
+              })
+          .or(request));
     }
 
     @Override Genomics.Readsets getApi(Genomics genomics) {
@@ -381,10 +456,6 @@ public abstract class Paginator<A, B, C extends GenomicsRequest<D>, D, E> {
 
     @Override Iterable<Readset> getResponses(SearchReadsetsResponse response) {
       return response.getReadsets();
-    }
-
-    @Override void setPageToken(SearchReadsetsRequest request, String pageToken) {
-      request.setPageToken(pageToken);
     }
   }
 
@@ -432,18 +503,26 @@ public abstract class Paginator<A, B, C extends GenomicsRequest<D>, D, E> {
      * @param retryPolicy A retry policy specifying behavior when a request fails.
      * @return the new paginator.
      */
-    public static Variants create(Genomics genomics, RetryPolicy<? super Genomics.Variants.Search> retryPolicy) {
+    public static Variants create(
+        Genomics genomics, RetryPolicy<? super Genomics.Variants.Search> retryPolicy) {
       return new Variants(genomics, retryPolicy);
     }
 
-    private Variants(Genomics genomics, RetryPolicy<? super Genomics.Variants.Search> retryPolicy) {
+    private Variants(
+        Genomics genomics, RetryPolicy<? super Genomics.Variants.Search> retryPolicy) {
       super(genomics, retryPolicy);
     }
 
-    @Override Genomics.Variants.Search createSearch(
-        Genomics.Variants api,
-        SearchVariantsRequest request) throws IOException {
-      return api.search(request);
+    @Override Genomics.Variants.Search createSearch(Genomics.Variants api,
+        final SearchVariantsRequest request, Optional<String> pageToken) throws IOException {
+      return api.search(pageToken
+          .transform(
+              new Function<String, SearchVariantsRequest>() {
+                @Override public SearchVariantsRequest apply(String pageToken) {
+                  return request.setPageToken(pageToken);
+                }
+              })
+          .or(request));
     }
 
     @Override Genomics.Variants getApi(Genomics genomics) {
@@ -457,61 +536,69 @@ public abstract class Paginator<A, B, C extends GenomicsRequest<D>, D, E> {
     @Override Iterable<Variant> getResponses(SearchVariantsResponse response) {
       return response.getVariants();
     }
-
-    @Override void setPageToken(SearchVariantsRequest request, String pageToken) {
-      request.setPageToken(pageToken);
-    }
   }
 
   /**
-   * Callsets factory
+   * A {@link Paginator} for the {@code searchVariantsets()} API.
    */
-  public static final Factory<Callsets> CALLSETS =
-      new Factory<Callsets>() {
-        @Override public Callsets createPaginator(Genomics genomics) {
-          return Callsets.create(genomics);
-        }
-      };
+  public static class Variantsets extends Paginator<
+      Genomics.Variantsets,
+      SearchVariantSetsRequest,
+      Genomics.Variantsets.Search,
+      SearchVariantSetsResponse,
+      VariantSet> {
 
-  /**
-   * Jobs factory
-   */
-  public static final Factory<Jobs> JOBS =
-      new Factory<Jobs>() {
-        @Override public Jobs createPaginator(Genomics genomics) {
-          return Jobs.create(genomics);
-        }
-      };
+    /**
+     * Static factory method.
+     *
+     * @param genomics The {@link Genomics} stub.
+     * @return the new paginator.
+     */
+    public static Variantsets create(Genomics genomics) {
+      return create(genomics, RetryPolicy.NEVER_RETRY);
+    }
 
-  /**
-   * Reads factory
-   */
-  public static final Factory<Reads> READS =
-      new Factory<Reads>() {
-        @Override public Reads createPaginator(Genomics genomics) {
-          return Reads.create(genomics);
-        }
-      };
+    /**
+     * Static factory method.
+     *
+     * @param genomics The {@link Genomics} stub.
+     * @param retryPolicy A retry policy specifying behavior when a request fails.
+     * @return the new paginator.
+     */
+    public static Variantsets create(
+        Genomics genomics, RetryPolicy<? super Genomics.Variantsets.Search> retryPolicy) {
+      return new Variantsets(genomics, retryPolicy);
+    }
 
-  /**
-   * Readsets factory
-   */
-  public static final Factory<Readsets> READSETS =
-      new Factory<Readsets>() {
-        @Override public Readsets createPaginator(Genomics genomics) {
-          return Readsets.create(genomics);
-        }
-      };
+    private Variantsets(
+        Genomics genomics, RetryPolicy<? super Genomics.Variantsets.Search> retryPolicy) {
+      super(genomics, retryPolicy);
+    }
 
-  /**
-   * Variants factory
-   */
-  public static final Factory<Variants> VARIANTS =
-      new Factory<Variants>() {
-        @Override public Variants createPaginator(Genomics genomics) {
-          return Variants.create(genomics);
-        }
-      };
+    @Override Genomics.Variantsets.Search createSearch(Genomics.Variantsets api,
+        final SearchVariantSetsRequest request, Optional<String> pageToken) throws IOException {
+      return api.search(pageToken
+          .transform(
+              new Function<String, SearchVariantSetsRequest>() {
+                @Override public SearchVariantSetsRequest apply(String pageToken) {
+                  return request.setPageToken(pageToken);
+                }
+              })
+          .or(request));
+    }
+
+    @Override Genomics.Variantsets getApi(Genomics genomics) {
+      return genomics.variantsets();
+    }
+
+    @Override String getNextPageToken(SearchVariantSetsResponse response) {
+      return response.getNextPageToken();
+    }
+
+    @Override Iterable<VariantSet> getResponses(SearchVariantSetsResponse response) {
+      return response.getVariantSets();
+    }
+  }
 
   private final Genomics genomics;
   private final RetryPolicy<? super C> retryPolicy;
@@ -521,7 +608,7 @@ public abstract class Paginator<A, B, C extends GenomicsRequest<D>, D, E> {
     this.retryPolicy = retryPolicy;
   }
 
-  abstract C createSearch(A api, B request) throws IOException;
+  abstract C createSearch(A api, B request, Optional<String> pageToken) throws IOException;
 
   abstract A getApi(Genomics genomics);
 
@@ -555,49 +642,44 @@ public abstract class Paginator<A, B, C extends GenomicsRequest<D>, D, E> {
   public final Iterable<E> search(
       final B request,
       final GenomicsRequestInitializer<? super C> initializer) {
+    final A api = getApi(genomics);
     return FluentIterable
-        .from(new Iterable<Pair>() {
+        .from(
+            new Iterable<Pair>() {
               @Override public Iterator<Pair> iterator() {
-                return new AbstractSequentialIterator<Pair>(new Pair(request, null)) {
-                      @Override protected Pair computeNext(Pair pair) {
-                        return Optional.fromNullable(pair.request)
-                            .transform(
-                                new Function<B, Pair>() {
-
-                                  @Override public Pair apply(final B request) {
-                                    D response = createSearch(getApi(genomics), request);
-                                    return new Pair(
-                                        Optional.fromNullable(getNextPageToken(response))
-                                            .transform(
-                                                new Function<String, B>() {
-                                                  @Override public B apply(String pageToken) {
-                                                    setPageToken(request, pageToken);
-                                                    return request;
-                                                  }
-                                                })
-                                            .orNull(),
-                                        response);
-                                  }
-
-                                  private D createSearch(A api, B request) {
-                                    for (RetryPolicy<? super C>.Instance policy =
-                                        retryPolicy.createInstance(); true;) {
-                                      C search = null;
-                                      try {
-                                        initializer.initialize(
-                                            search = Paginator.this.createSearch(api, request));
-                                        return search.execute();
-                                      } catch (IOException e) {
-                                        if (!policy.shouldRetry(search, e)) {
-                                          throw new SearchException(e);
+                try {
+                  return new AbstractSequentialIterator<Pair>(new Pair(
+                          createSearch(api, request, Optional.<String>absent()), null)) {
+                        @Override protected Pair computeNext(Pair pair) {
+                          return Optional.fromNullable(pair.request)
+                              .transform(
+                                  new Function<C, Pair>() {
+                                    @Override public Pair apply(C search) {
+                                      for (RetryPolicy<? super C>.Instance instance =
+                                          retryPolicy.createInstance(); true;) {
+                                        try {
+                                          D response = search.execute();
+                                          Optional<String> pageToken =
+                                              Optional.fromNullable(getNextPageToken(response));
+                                          return new Pair(
+                                              pageToken.isPresent()
+                                                  ? createSearch(api, request, pageToken)
+                                                  : null,
+                                              response);
+                                        } catch (IOException e) {
+                                          if (!instance.shouldRetry(search, e)) {
+                                            throw new SearchException(e);
+                                          }
                                         }
                                       }
                                     }
-                                  }
-                                })
-                            .orNull();
-                      }
-                    };
+                                  })
+                              .orNull();
+                        }
+                      };
+                } catch (IOException e) {
+                  throw new SearchException(e);
+                }
               }
             })
         .skip(1)
@@ -610,11 +692,7 @@ public abstract class Paginator<A, B, C extends GenomicsRequest<D>, D, E> {
         .transformAndConcat(
             new Function<D, Iterable<E>>() {
               @Override public Iterable<E> apply(D response) {
-                Iterable<E> responses = getResponses(response);
-                if (responses == null) {
-                  return Lists.newArrayList();
-                }
-                return responses;
+                return Optional.fromNullable(getResponses(response)).or(Collections.<E>emptyList());
               }
             });
   }
@@ -663,5 +741,19 @@ public abstract class Paginator<A, B, C extends GenomicsRequest<D>, D, E> {
         });
   }
 
-  abstract void setPageToken(B request, String pageToken);
+  public final <F> F search(
+      B request,
+      final String fields,
+      Callback<E, ? extends F> callback) throws IOException {
+    try {
+      return callback.consumeResponses(search(request,
+          new GenomicsRequestInitializer<C>() {
+            @Override public void initialize(C search) {
+              search.setFields(fields);
+            }
+          }));
+    } catch (SearchException e) {
+      throw e.getCause();
+    }
+  }
 }
