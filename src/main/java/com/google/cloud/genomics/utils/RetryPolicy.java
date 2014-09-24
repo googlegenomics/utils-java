@@ -32,7 +32,7 @@ public abstract class RetryPolicy<R extends GenomicsRequest<?>> implements Seria
     /**
      * Should we retry the request or not?
      */
-    protected abstract boolean shouldRetry(R request, IOException e);
+    public abstract boolean shouldRetry(R request, IOException e);
   }
 
   public static final RetryPolicy<GenomicsRequest<?>>
@@ -46,7 +46,7 @@ public abstract class RetryPolicy<R extends GenomicsRequest<?>> implements Seria
 
           private final Instance instance =
               new Instance() {
-                @Override protected boolean shouldRetry(
+                @Override public boolean shouldRetry(
                     GenomicsRequest<?> genomicsRequest, IOException e) {
                   return retry;
                 }
@@ -68,7 +68,7 @@ public abstract class RetryPolicy<R extends GenomicsRequest<?>> implements Seria
 
               private int count = 0;
 
-              @Override protected boolean shouldRetry(
+              @Override public boolean shouldRetry(
                   GenomicsRequest<?> genomicsRequest, IOException e) {
                 return count++ < n;
               }
