@@ -127,7 +127,7 @@ public abstract class Paginator<A, B, C extends GenomicsRequest<D>, D, E> {
      * @return the new paginator.
      */
     public static Callsets create(Genomics genomics) {
-      return create(genomics, RetryPolicy.NEVER_RETRY);
+      return create(genomics, RetryPolicy.DEFAULT);
     }
 
     /**
@@ -189,7 +189,7 @@ public abstract class Paginator<A, B, C extends GenomicsRequest<D>, D, E> {
      * @return the new paginator.
      */
     public static Datasets create(Genomics genomics) {
-      return create(genomics, RetryPolicy.NEVER_RETRY);
+      return create(genomics, RetryPolicy.DEFAULT);
     }
 
     /**
@@ -275,7 +275,7 @@ public abstract class Paginator<A, B, C extends GenomicsRequest<D>, D, E> {
      * @return the new paginator.
      */
     public static Jobs create(Genomics genomics) {
-      return create(genomics, RetryPolicy.NEVER_RETRY);
+      return create(genomics, RetryPolicy.DEFAULT);
     }
 
     /**
@@ -348,7 +348,7 @@ public abstract class Paginator<A, B, C extends GenomicsRequest<D>, D, E> {
      * @return the new paginator.
      */
     public static Reads create(Genomics genomics) {
-      return create(genomics, RetryPolicy.NEVER_RETRY);
+      return create(genomics, RetryPolicy.DEFAULT);
     }
 
     /**
@@ -420,7 +420,7 @@ public abstract class Paginator<A, B, C extends GenomicsRequest<D>, D, E> {
        * @return the new paginator.
        */
       public static Coveragebuckets create(Genomics genomics) {
-        return create(genomics, RetryPolicy.NEVER_RETRY);
+        return create(genomics, RetryPolicy.DEFAULT);
       }
 
       /**
@@ -474,7 +474,7 @@ public abstract class Paginator<A, B, C extends GenomicsRequest<D>, D, E> {
      * @return the new paginator.
      */
     public static Readsets create(Genomics genomics) {
-      return create(genomics, RetryPolicy.NEVER_RETRY);
+      return create(genomics, RetryPolicy.DEFAULT);
     }
 
     /**
@@ -568,7 +568,7 @@ public abstract class Paginator<A, B, C extends GenomicsRequest<D>, D, E> {
      * @return the new paginator.
      */
     public static Variants create(Genomics genomics) {
-      return create(genomics, RetryPolicy.NEVER_RETRY);
+      return create(genomics, RetryPolicy.DEFAULT);
     }
 
     /**
@@ -630,7 +630,7 @@ public abstract class Paginator<A, B, C extends GenomicsRequest<D>, D, E> {
      * @return the new paginator.
      */
     public static Variantsets create(Genomics genomics) {
-      return create(genomics, RetryPolicy.NEVER_RETRY);
+      return create(genomics, RetryPolicy.DEFAULT);
     }
 
     /**

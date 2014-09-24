@@ -39,7 +39,9 @@ public abstract class RetryPolicy<R extends GenomicsRequest<?>> implements Seria
       /** Retry requests indefinitely */
       ALWAYS_RETRY = constant(true),
       /** Never retry requests */
-      NEVER_RETRY = constant(false);
+      NEVER_RETRY = constant(false),
+      /** Use for defaults */
+      DEFAULT = NEVER_RETRY;
 
   private static RetryPolicy<GenomicsRequest<?>> constant(final boolean retry) {
     return new RetryPolicy<GenomicsRequest<?>>() {
