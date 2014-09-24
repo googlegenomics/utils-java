@@ -712,7 +712,7 @@ public abstract class Paginator<A, B, C extends GenomicsRequest<D>, D, E> {
         }
       };
 
-  public static final Factory<Readsets, Genomics.Readsets.Search> READSETS =
+  public static final ReadsetsFactory READSETS =
       new ReadsetsFactory() {
         @Override public Readsets createPaginator(
             Genomics genomics, RetryPolicy<? super Search> retryPolicy) {
