@@ -16,6 +16,8 @@
 package com.google.cloud.genomics.utils;
 
 import com.google.api.services.genomics.Genomics;
+import com.google.api.services.genomics.Genomics.Readsets.Coveragebuckets.List;
+import com.google.api.services.genomics.Genomics.Readsets.Search;
 import com.google.api.services.genomics.GenomicsRequest;
 import com.google.api.services.genomics.model.CallSet;
 import com.google.api.services.genomics.model.CoverageBucket;
@@ -39,12 +41,14 @@ import com.google.api.services.genomics.model.SearchVariantsRequest;
 import com.google.api.services.genomics.model.SearchVariantsResponse;
 import com.google.api.services.genomics.model.Variant;
 import com.google.api.services.genomics.model.VariantSet;
+import com.google.cloud.genomics.utils.Paginator.Readsets.Coveragebuckets;
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.collect.AbstractSequentialIterator;
 import com.google.common.collect.FluentIterable;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.Iterator;
 
@@ -77,27 +81,11 @@ import java.util.Iterator;
  * }
  * </pre>
  *
- * @param <A> The API type. One of {@link com.google.api.services.genomics.Genomics.Callsets},
- *        {@link com.google.api.services.genomics.Genomics.Jobs},
- *        {@link com.google.api.services.genomics.Genomics.Reads},
- *        {@link com.google.api.services.genomics.Genomics.Readsets},
- *        {@link com.google.api.services.genomics.Genomics.Variants}, or
- *        {@link com.google.api.services.genomics.Genomics.Variantsets}.
- * @param <B> The request type. One of {@link SearchCallSetsRequest}, {@link SearchJobsRequest},
- *        {@link SearchReadsRequest}, {@link SearchReadsetsRequest}, {@link SearchVariantsRequest},
- *        or {@link SearchVariantSetsRequest}.
- * @param <C> The {@link GenomicsRequest} type. One of
- *        {@link com.google.api.services.genomics.Genomics.Callsets.Search},
- *        {@link com.google.api.services.genomics.Genomics.Jobs.Search},
- *        {@link com.google.api.services.genomics.Genomics.Reads.Search},
- *        {@link com.google.api.services.genomics.Genomics.Readsets.Search},
- *        {@link com.google.api.services.genomics.Genomics.Variants.Search}, or
- *        {@link com.google.api.services.genomics.Genomics.Variantsets.Search}.
- * @param <D> The response type. One of {@link SearchCallSetsResponse}, {@link SearchJobsResponse},
- *        {@link SearchReadsResponse}, {@link SearchReadsetsResponse},
- *        {@link SearchVariantsResponse}, or {@link SearchVariantSetsResponse}.
- * @param <E> The type of object being streamed back to the user. One of {@link CallSet},
- *        {@link Job}, {@link Read}, {@link Readset}, {@link Variant}, or {@link VariantSet}.
+ * @param <A> The API type.
+ * @param <B> The request type.
+ * @param <C> The {@link GenomicsRequest} subtype.
+ * @param <D> The response type.
+ * @param <E> The type of object being streamed back to the user.
  */
 public abstract class Paginator<A, B, C extends GenomicsRequest<D>, D, E> {
 
@@ -245,6 +233,12 @@ public abstract class Paginator<A, B, C extends GenomicsRequest<D>, D, E> {
     @Override Iterable<Dataset> getResponses(ListDatasetsResponse response) {
       return response.getDatasets();
     }
+  }
+
+  public interface Factory<P extends Paginator<?, ?, C, ?, ?>, C extends GenomicsRequest<?>>
+      extends Serializable {
+
+    P createPaginator(Genomics genomics, RetryPolicy<? super C> retryPolicy);
   }
 
   /**
@@ -525,6 +519,21 @@ public abstract class Paginator<A, B, C extends GenomicsRequest<D>, D, E> {
     }
   }
 
+  public abstract static class ReadsetsFactory
+      implements Factory<Readsets, Genomics.Readsets.Search> {
+
+    public final Factory<Readsets.Coveragebuckets, Genomics.Readsets.Coveragebuckets.List>
+        COVERAGEBUCKETS =
+        new Factory<Readsets.Coveragebuckets, Genomics.Readsets.Coveragebuckets.List>() {
+          @Override public Coveragebuckets createPaginator(
+              Genomics genomics, RetryPolicy<? super List> retryPolicy) {
+            return null;
+          }
+        };
+
+    private ReadsetsFactory() {}
+  }
+
   /**
    * A {@link RuntimeException} for wrapping {@link IOException}s that occur during lazy consumption
    * of search results.
@@ -666,9 +675,65 @@ public abstract class Paginator<A, B, C extends GenomicsRequest<D>, D, E> {
     }
   }
 
+  public static final Factory<Callsets, Genomics.Callsets.Search> CALLSETS =
+      new Factory<Callsets, Genomics.Callsets.Search>() {
+        @Override public Callsets createPaginator(
+            Genomics genomics, RetryPolicy<? super Genomics.Callsets.Search> retryPolicy) {
+          return Callsets.create(genomics, retryPolicy);
+        }
+      };
+
+  public static final Factory<Datasets, Genomics.Datasets.List> DATASETS =
+      new Factory<Datasets, Genomics.Datasets.List>() {
+        @Override public Datasets createPaginator(
+            Genomics genomics, RetryPolicy<? super Genomics.Datasets.List> retryPolicy) {
+          return Datasets.create(genomics, retryPolicy);
+        }
+      };
+
   private static final GenomicsRequestInitializer<GenomicsRequest<?>> DEFAULT_INITIALIZER =
       new GenomicsRequestInitializer<GenomicsRequest<?>>() {
         @Override public void initialize(GenomicsRequest<?> search) {}
+      };
+
+  public static final Factory<Jobs, Genomics.Jobs.Search> JOBS =
+      new Factory<Jobs, Genomics.Jobs.Search>() {
+        @Override public Jobs createPaginator(
+            Genomics genomics, RetryPolicy<? super Genomics.Jobs.Search> retryPolicy) {
+          return Jobs.create(genomics, retryPolicy);
+        }
+      };
+
+  public static final Factory<Reads, Genomics.Reads.Search> READS =
+      new Factory<Reads, Genomics.Reads.Search>() {
+        @Override public Reads createPaginator(
+            Genomics genomics, RetryPolicy<? super Genomics.Reads.Search> retryPolicy) {
+          return Reads.create(genomics, retryPolicy);
+        }
+      };
+
+  public static final Factory<Readsets, Genomics.Readsets.Search> READSETS =
+      new ReadsetsFactory() {
+        @Override public Readsets createPaginator(
+            Genomics genomics, RetryPolicy<? super Search> retryPolicy) {
+          return Readsets.create(genomics, retryPolicy);
+        }
+      };
+
+  public static final Factory<Variants, Genomics.Variants.Search> VARIANTS =
+      new Factory<Variants, Genomics.Variants.Search>() {
+        @Override public Variants createPaginator(
+            Genomics genomics, RetryPolicy<? super Genomics.Variants.Search> retryPolicy) {
+          return Variants.create(genomics, retryPolicy);
+        }
+      };
+
+  public static final Factory<Variantsets, Genomics.Variantsets.Search> VARIANTSETS =
+      new Factory<Variantsets, Genomics.Variantsets.Search>() {
+        @Override public Variantsets createPaginator(
+            Genomics genomics, RetryPolicy<? super Genomics.Variantsets.Search> retryPolicy) {
+          return Variantsets.create(genomics, retryPolicy);
+        }
       };
   private static GenomicsRequestInitializer<GenomicsRequest<?>> setFieldsInitializer(
       final String fields) {
