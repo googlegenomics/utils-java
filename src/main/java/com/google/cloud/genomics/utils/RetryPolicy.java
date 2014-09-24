@@ -16,11 +16,12 @@ package com.google.cloud.genomics.utils;
 import com.google.api.services.genomics.GenomicsRequest;
 
 import java.io.IOException;
+import java.io.Serializable;
 
 /**
  * An object describing when to retry if a request fails.
  */
-public abstract class RetryPolicy<R extends GenomicsRequest<?>> {
+public abstract class RetryPolicy<R extends GenomicsRequest<?>> implements Serializable {
 
   /**
    * An instance is instantiated each time a request is made to the API and is consulted only if
