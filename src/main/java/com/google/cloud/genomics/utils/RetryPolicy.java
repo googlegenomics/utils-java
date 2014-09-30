@@ -84,6 +84,19 @@ public abstract class RetryPolicy<C extends GenomicsRequest<D>, D>
 
   public abstract Instance createInstance();
 
+  /**
+   * Execute the given {@link GenomicsRequest} and return the response.
+   *
+   * This method begins by creating an {@code RetryPolicy.Instance} and then attempts to execute the
+   * request by invoking {@link GenomicsRequest#execute}. If the request fails with an
+   * {@link IOException}, the {@link RetryPolicy.Instance#shouldRetry} method is consulted to
+   * determine if the request should be retried.
+   *
+   * @param request The {@code GenomicsRequest} to execute.
+   * @return The response from executing the request.
+   * @throws IOException if executing the request fails and {@code this} RetryPolicy decides not to
+   *         retry the request.
+   */
   public final D execute(C request) throws IOException {
     for (Instance instance = createInstance(); true;) {
       try {
