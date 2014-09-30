@@ -21,7 +21,8 @@ import java.io.Serializable;
 /**
  * An object describing when to retry if a request fails.
  */
-public abstract class RetryPolicy<R extends GenomicsRequest<?>> implements Serializable {
+public abstract class RetryPolicy<C extends GenomicsRequest<D>, D>
+    implements Serializable {
 
   /**
    * An instance is instantiated each time a request is made to the API and is consulted only if
@@ -32,24 +33,27 @@ public abstract class RetryPolicy<R extends GenomicsRequest<?>> implements Seria
     /**
      * Should we retry the request or not?
      */
-    public abstract boolean shouldRetry(R request, IOException e);
+    public abstract boolean shouldRetry(C request, IOException e);
   }
 
-  public static final RetryPolicy<GenomicsRequest<?>>
-      /** Retry requests indefinitely */
-      ALWAYS_RETRY = constant(true),
-      /** Never retry requests */
-      NEVER_RETRY = constant(false),
-      /** Use for defaults */
-      DEFAULT = NEVER_RETRY;
+  public static <C extends GenomicsRequest<D>, D> RetryPolicy<C, D> alwaysRetry() {
+    return constant(true);
+  }
 
-  private static RetryPolicy<GenomicsRequest<?>> constant(final boolean retry) {
-    return new RetryPolicy<GenomicsRequest<?>>() {
+  public static <C extends GenomicsRequest<D>, D> RetryPolicy<C, D> defaultPolicy() {
+    return neverRetry();
+  }
+
+  public static <C extends GenomicsRequest<D>, D> RetryPolicy<C, D> neverRetry() {
+    return constant(false);
+  }
+
+  private static <C extends GenomicsRequest<D>, D> RetryPolicy<C, D> constant(final boolean retry) {
+    return new RetryPolicy<C, D>() {
 
           private final Instance instance =
               new Instance() {
-                @Override public boolean shouldRetry(
-                    GenomicsRequest<?> genomicsRequest, IOException e) {
+                @Override public boolean shouldRetry(C genomicsRequest, IOException e) {
                   return retry;
                 }
               };
@@ -63,15 +67,14 @@ public abstract class RetryPolicy<R extends GenomicsRequest<?>> implements Seria
   /**
    * Retry requests up to {@code n} times.
    */
-  public static RetryPolicy<GenomicsRequest<?>> nAttempts(final int n) {
-    return new RetryPolicy<GenomicsRequest<?>>() {
+  public static <C extends GenomicsRequest<D>, D> RetryPolicy<C, D> nAttempts(final int n) {
+    return new RetryPolicy<C, D>() {
           @Override public Instance createInstance() {
             return new Instance() {
 
               private int count = 0;
 
-              @Override public boolean shouldRetry(
-                  GenomicsRequest<?> genomicsRequest, IOException e) {
+              @Override public boolean shouldRetry(C genomicsRequest, IOException e) {
                 return count++ < n;
               }
             };
@@ -80,4 +83,16 @@ public abstract class RetryPolicy<R extends GenomicsRequest<?>> implements Seria
   }
 
   public abstract Instance createInstance();
+
+  public final D execute(C request) throws IOException {
+    for (Instance instance = createInstance(); true;) {
+      try {
+        return request.execute();
+      } catch (IOException e) {
+        if (!instance.shouldRetry(request, e)) {
+          throw e;
+        }
+      }
+    }
+  }
 }
