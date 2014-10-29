@@ -17,7 +17,7 @@ Add the following to your `pom.xml` file:
     <dependency>
       <groupId>com.google.cloud.genomics</groupId>
       <artifactId>google-genomics-utils</artifactId>
-      <version>0.6</version>
+      <version>v1beta2-0.1</version>
     </dependency>
   </dependencies>
 </project>
@@ -31,16 +31,14 @@ repositories {
 }
 
 dependencies {
-    compile 'com.google.cloud.genomics:google-genomics-utils:0.6'
+    compile 'com.google.cloud.genomics:google-genomics-utils:v1beta2-0.1'
 }
 ```
 
 ##The code
 
-* [GenomicsConverter.java](src/main/java/com/google/cloud/genomics/utils/GenomicsConverter.java) converts Read objects into SAMRecords and back
 * [GenomicsFactory.java](src/main/java/com/google/cloud/genomics/utils/GenomicsFactory.java) makes it easier to construct an authenticated Genomics service
 * [Paginator.java](src/main/java/com/google/cloud/genomics/utils/Paginator.java) lazily paginates through readsets, reads, variants and callsets
-* [ReadFlagUtils.java](src/main/java/com/google/cloud/genomics/utils/ReadFlagUtils.java) defines the constant ints used by the Read.flags field as well as helper methods to get and set flag values
 
 ##Releasing new versions
 

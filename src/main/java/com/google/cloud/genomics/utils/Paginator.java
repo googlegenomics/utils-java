@@ -23,15 +23,15 @@ import com.google.api.services.genomics.model.Job;
 import com.google.api.services.genomics.model.ListCoverageBucketsResponse;
 import com.google.api.services.genomics.model.ListDatasetsResponse;
 import com.google.api.services.genomics.model.Read;
-import com.google.api.services.genomics.model.Readset;
+import com.google.api.services.genomics.model.ReadGroupSet;
 import com.google.api.services.genomics.model.SearchCallSetsRequest;
 import com.google.api.services.genomics.model.SearchCallSetsResponse;
 import com.google.api.services.genomics.model.SearchJobsRequest;
 import com.google.api.services.genomics.model.SearchJobsResponse;
 import com.google.api.services.genomics.model.SearchReadsRequest;
 import com.google.api.services.genomics.model.SearchReadsResponse;
-import com.google.api.services.genomics.model.SearchReadsetsRequest;
-import com.google.api.services.genomics.model.SearchReadsetsResponse;
+import com.google.api.services.genomics.model.SearchReadGroupSetsRequest;
+import com.google.api.services.genomics.model.SearchReadGroupSetsResponse;
 import com.google.api.services.genomics.model.SearchVariantSetsRequest;
 import com.google.api.services.genomics.model.SearchVariantSetsResponse;
 import com.google.api.services.genomics.model.SearchVariantsRequest;
@@ -65,9 +65,7 @@ import java.util.Iterator;
  * rethrow {@link IOException}s that occur during iteration for you.
  * </p>
  *
- * <p>Example usage: Fetching all {@link Readset}s in a {@link Dataset}:
- * </p>
- *
+ * <p>Example usage: Fetching all {@link ReadGroupSet}s in a {@link Dataset}:</p>
  * <pre>
  *{@code
  *Genomics stub = ...;
@@ -246,7 +244,7 @@ public abstract class Paginator<A, B, C extends GenomicsRequest<D>, D, E> {
     }
 
     @Override void setRequest(Genomics.Datasets.List list, Long projectId) {
-      list.setProjectId(projectId);
+      list.setProjectNumber(projectId);
     }
   }
 
@@ -470,23 +468,24 @@ public abstract class Paginator<A, B, C extends GenomicsRequest<D>, D, E> {
     }
 
     @Override Iterable<Read> getResponses(SearchReadsResponse response) {
-      return response.getReads();
+      return response.getAlignments();
     }
   }
 
   /**
-   * A {@link Paginator} for the {@code searchReadsets()} API.
+   * A {@link Paginator} for the {@code searchReadGroupSets()} API.
    */
-  public static class Readsets extends Paginator<Genomics.Readsets, SearchReadsetsRequest,
-      Genomics.Readsets.Search, SearchReadsetsResponse, Readset> {
+  public static class ReadGroupSets extends Paginator<Genomics.Readgroupsets,
+      SearchReadGroupSetsRequest, Genomics.Readgroupsets.Search, SearchReadGroupSetsResponse,
+      ReadGroupSet> {
 
     /**
      * A {@link Paginator} for the {@code coveragebuckets()} API.
      */
     public static class Coveragebuckets extends Paginator<
-        Genomics.Readsets.Coveragebuckets,
+        Genomics.Readgroupsets.Coveragebuckets,
         String,
-        Genomics.Readsets.Coveragebuckets.List,
+        Genomics.Readgroupsets.Coveragebuckets.List,
         ListCoverageBucketsResponse,
         CoverageBucket> {
 
@@ -497,8 +496,8 @@ public abstract class Paginator<A, B, C extends GenomicsRequest<D>, D, E> {
        * @return the new paginator.
        */
       public static Coveragebuckets create(Genomics genomics) {
-        return create(genomics, RetryPolicy
-            .<Genomics.Readsets.Coveragebuckets.List, ListCoverageBucketsResponse>defaultPolicy());
+        return create(genomics, RetryPolicy.<Genomics.Readgroupsets.Coveragebuckets.List,
+            ListCoverageBucketsResponse>defaultPolicy());
       }
 
       /**
@@ -509,30 +508,32 @@ public abstract class Paginator<A, B, C extends GenomicsRequest<D>, D, E> {
        * @return the new paginator.
        */
       public static Coveragebuckets create(Genomics genomics, RetryPolicy<
-          Genomics.Readsets.Coveragebuckets.List, ListCoverageBucketsResponse> retryPolicy) {
+          Genomics.Readgroupsets.Coveragebuckets.List, ListCoverageBucketsResponse> retryPolicy) {
         return new Coveragebuckets(genomics, retryPolicy);
       }
 
-      private Coveragebuckets(Genomics genomics, RetryPolicy<Genomics.Readsets.Coveragebuckets.List,
-          ListCoverageBucketsResponse> retryPolicy) {
+      private Coveragebuckets(Genomics genomics, RetryPolicy<
+          Genomics.Readgroupsets.Coveragebuckets.List, ListCoverageBucketsResponse> retryPolicy) {
         super(genomics, retryPolicy);
       }
 
-      @Override Genomics.Readsets.Coveragebuckets.List createSearch(Genomics.Readsets.Coveragebuckets api,
+      @Override Genomics.Readgroupsets.Coveragebuckets.List createSearch(
+          Genomics.Readgroupsets.Coveragebuckets api,
           String request, Optional<String> pageToken) throws IOException {
-        final Genomics.Readsets.Coveragebuckets.List list = api.list(request);
+        final Genomics.Readgroupsets.Coveragebuckets.List list = api.list(request);
         return pageToken
             .transform(
-                new Function<String, Genomics.Readsets.Coveragebuckets.List>() {
-                  @Override public Genomics.Readsets.Coveragebuckets.List apply(String pageToken) {
+                new Function<String, Genomics.Readgroupsets.Coveragebuckets.List>() {
+                  @Override public Genomics.Readgroupsets.Coveragebuckets.List apply(
+                      String pageToken) {
                     return list.setPageToken(pageToken);
                   }
                 })
             .or(list);
       }
 
-      @Override Genomics.Readsets.Coveragebuckets getApi(Genomics genomics) {
-        return genomics.readsets().coveragebuckets();
+      @Override Genomics.Readgroupsets.Coveragebuckets getApi(Genomics genomics) {
+        return genomics.readgroupsets().coveragebuckets();
       }
 
       @Override String getNextPageToken(ListCoverageBucketsResponse response) {
@@ -550,9 +551,9 @@ public abstract class Paginator<A, B, C extends GenomicsRequest<D>, D, E> {
      * @param genomics The {@link Genomics} stub.
      * @return the new paginator.
      */
-    public static Readsets create(Genomics genomics) {
+    public static ReadGroupSets create(Genomics genomics) {
       return create(genomics,
-          RetryPolicy.<Genomics.Readsets.Search, SearchReadsetsResponse>defaultPolicy());
+          RetryPolicy.<Genomics.Readgroupsets.Search, SearchReadGroupSetsResponse>defaultPolicy());
     }
 
     /**
@@ -562,54 +563,54 @@ public abstract class Paginator<A, B, C extends GenomicsRequest<D>, D, E> {
      * @param retryPolicy A retry policy specifying behavior when a request fails.
      * @return the new paginator.
      */
-    public static Readsets create(Genomics genomics,
-        RetryPolicy<Genomics.Readsets.Search, SearchReadsetsResponse> retryPolicy) {
-      return new Readsets(genomics, retryPolicy);
+    public static ReadGroupSets create(Genomics genomics,
+        RetryPolicy<Genomics.Readgroupsets.Search, SearchReadGroupSetsResponse> retryPolicy) {
+      return new ReadGroupSets(genomics, retryPolicy);
     }
 
-    private Readsets(Genomics genomics,
-        RetryPolicy<Genomics.Readsets.Search, SearchReadsetsResponse> retryPolicy) {
+    private ReadGroupSets(Genomics genomics,
+        RetryPolicy<Genomics.Readgroupsets.Search, SearchReadGroupSetsResponse> retryPolicy) {
       super(genomics, retryPolicy);
     }
 
-    @Override Genomics.Readsets.Search createSearch(Genomics.Readsets api,
-        final SearchReadsetsRequest request, Optional<String> pageToken) throws IOException {
+    @Override Genomics.Readgroupsets.Search createSearch(Genomics.Readgroupsets api,
+        final SearchReadGroupSetsRequest request, Optional<String> pageToken) throws IOException {
       return api.search(pageToken
           .transform(
-              new Function<String, SearchReadsetsRequest>() {
-                @Override public SearchReadsetsRequest apply(String pageToken) {
+              new Function<String, SearchReadGroupSetsRequest>() {
+                @Override public SearchReadGroupSetsRequest apply(String pageToken) {
                   return request.setPageToken(pageToken);
                 }
               })
           .or(request));
     }
 
-    @Override Genomics.Readsets getApi(Genomics genomics) {
-      return genomics.readsets();
+    @Override Genomics.Readgroupsets getApi(Genomics genomics) {
+      return genomics.readgroupsets();
     }
 
-    @Override String getNextPageToken(SearchReadsetsResponse response) {
+    @Override String getNextPageToken(SearchReadGroupSetsResponse response) {
       return response.getNextPageToken();
     }
 
-    @Override Iterable<Readset> getResponses(SearchReadsetsResponse response) {
-      return response.getReadsets();
+    @Override Iterable<ReadGroupSet> getResponses(SearchReadGroupSetsResponse response) {
+      return response.getReadGroupSets();
     }
   }
 
-  public abstract static class ReadsetsFactory
-      implements Factory<Readsets, Genomics.Readsets.Search, SearchReadsetsResponse> {
+  public abstract static class ReadGroupSetsFactory implements Factory<ReadGroupSets,
+      Genomics.Readgroupsets.Search, SearchReadGroupSetsResponse> {
 
-    public final Factory<Readsets.Coveragebuckets, Genomics.Readsets.Coveragebuckets.List,
-        ListCoverageBucketsResponse> COVERAGEBUCKETS = new Factory<Readsets.Coveragebuckets,
-        Genomics.Readsets.Coveragebuckets.List, ListCoverageBucketsResponse>() {
-      @Override public Readsets.Coveragebuckets createPaginator(Genomics genomics, RetryPolicy<
-          Genomics.Readsets.Coveragebuckets.List, ListCoverageBucketsResponse> retryPolicy) {
-        return Readsets.Coveragebuckets.create(genomics, retryPolicy);
+    public final Factory<ReadGroupSets.Coveragebuckets, Genomics.Readgroupsets.Coveragebuckets.List,
+        ListCoverageBucketsResponse> COVERAGEBUCKETS = new Factory<ReadGroupSets.Coveragebuckets,
+        Genomics.Readgroupsets.Coveragebuckets.List, ListCoverageBucketsResponse>() {
+      @Override public ReadGroupSets.Coveragebuckets createPaginator(Genomics genomics, RetryPolicy<
+          Genomics.Readgroupsets.Coveragebuckets.List, ListCoverageBucketsResponse> retryPolicy) {
+        return ReadGroupSets.Coveragebuckets.create(genomics, retryPolicy);
       }
     };
 
-    private ReadsetsFactory() {}
+    private ReadGroupSetsFactory() {}
   }
 
   /**
@@ -801,11 +802,11 @@ public abstract class Paginator<A, B, C extends GenomicsRequest<D>, D, E> {
         }
       };
 
-  public static final ReadsetsFactory READSETS =
-      new ReadsetsFactory() {
-        @Override public Readsets createPaginator(Genomics genomics,
-            RetryPolicy<Genomics.Readsets.Search, SearchReadsetsResponse> retryPolicy) {
-          return Readsets.create(genomics, retryPolicy);
+  public static final ReadGroupSetsFactory READGROUPSETS =
+      new ReadGroupSetsFactory() {
+        @Override public ReadGroupSets createPaginator(Genomics genomics,
+            RetryPolicy<Genomics.Readgroupsets.Search, SearchReadGroupSetsResponse> retryPolicy) {
+          return ReadGroupSets.create(genomics, retryPolicy);
         }
       };
 

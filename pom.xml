@@ -8,7 +8,7 @@
   <groupId>com.google.cloud.genomics</groupId>
   <artifactId>google-genomics-utils</artifactId>
   <packaging>jar</packaging>
-  <version>0.19-SNAPSHOT</version>
+  <version>v1beta2-0.1-SNAPSHOT</version>
 
   <organization>
     <name>Google</name>
@@ -95,30 +95,6 @@
         </exclusion>
       </exclusions>
     </dependency>
-    <!-- TODO: Replace with official Picard dependency once available -->
-    <dependency>
-      <groupId>org.utgenome.thirdparty</groupId>
-      <artifactId>picard</artifactId>
-      <version>${picard.version}</version>
-      <exclusions>
-        <exclusion>
-          <groupId>org.apache.ant</groupId>
-          <artifactId>ant</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.xerial.snappy</groupId>
-          <artifactId>snappy-java</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.apache.commons</groupId>
-          <artifactId>commons-jexl</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.apache.ant</groupId>
-          <artifactId>ant-apache-bcel</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
@@ -189,9 +165,8 @@
   <properties>
     <junit.version>4.11</junit.version>
     <google.api.version>1.19.0</google.api.version>
-    <google.api.genomics.version>v1beta-rev46-1.19.0</google.api.genomics.version>
+    <google.api.genomics.version>v1beta2-rev1-1.19.0</google.api.genomics.version>
     <mockito.version>1.10.8</mockito.version>
-    <picard.version>1.102.0</picard.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.build.targetEncoding>UTF-8</project.build.targetEncoding>
     <java.version>1.6</java.version>
