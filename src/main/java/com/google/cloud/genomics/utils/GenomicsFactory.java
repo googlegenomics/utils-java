@@ -269,7 +269,7 @@ public class GenomicsFactory {
       final GoogleClientRequestInitializer googleClientRequestInitializer) {
     try {
       return JsonClientFactory
-          .create(
+          .of(
               new JsonClientFactory.Logic<Genomics, Genomics.Builder>() {
 
                 @Override public Genomics build(Genomics.Builder builder) {

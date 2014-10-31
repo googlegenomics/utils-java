@@ -19,81 +19,75 @@ import com.google.api.client.googleapis.util.Utils;
 import com.google.api.client.http.HttpRequestInitializer;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
-import com.google.common.base.Function;
-import com.google.common.base.Functions;
+import com.google.common.base.Optional;
 
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
 
 public final class JsonClientFactory<
-    C extends AbstractGoogleJsonClient, B extends AbstractGoogleJsonClient.Builder> {
+    C extends AbstractGoogleJsonClient,
+    B extends AbstractGoogleJsonClient.Builder> {
 
   public interface Logic<
-      C extends AbstractGoogleJsonClient, B extends AbstractGoogleJsonClient.Builder> {
+      C extends AbstractGoogleJsonClient,
+      B extends AbstractGoogleJsonClient.Builder> {
 
     C build(B builder);
 
-    B newBuilder(HttpTransport transport, JsonFactory jsonFactory,
+    B newBuilder(
+        HttpTransport transport,
+        JsonFactory jsonFactory,
         HttpRequestInitializer requestInitializer);
   }
 
+  private static GoogleCredential googleCredential(
+      Collection<String> scopes,
+      HttpTransport transport,
+      JsonFactory jsonFactory) throws IOException {
+    GoogleCredential credential = GoogleCredential.getApplicationDefault(transport, jsonFactory);
+    return scopes.isEmpty() ? credential : credential.createScoped(scopes);
+  }
+
   public static <C extends AbstractGoogleJsonClient, B extends AbstractGoogleJsonClient.Builder>
-      JsonClientFactory<C, B> create(Logic<? extends C, B> logic) {
+      JsonClientFactory<C, B> of(Logic<? extends C, B> logic) {
     return new JsonClientFactory<C, B>(logic);
   }
 
-  private Function<? super JsonFactory, ? extends JsonFactory> jsonFactory = Functions.identity();
+  private Optional<JsonFactory> jsonFactory = Optional.absent();
   private final Logic<? extends C, B> logic;
-  private Function<? super HttpRequestInitializer, ? extends HttpRequestInitializer>
-      requestInitializer = Functions.identity();
-  private Function<? super HttpTransport, ? extends HttpTransport> transport = Functions.identity();
+  private Optional<HttpRequestInitializer> requestInitializer = Optional.absent();
+  private Optional<HttpTransport> transport = Optional.absent();
 
   private JsonClientFactory(Logic<? extends C, B> logic) {
     this.logic = logic;
   }
 
   public C create(Collection<String> scopes) throws IOException {
-    HttpTransport transport = this.transport.apply(Utils.getDefaultTransport());
-    JsonFactory jsonFactory = this.jsonFactory.apply(Utils.getDefaultJsonFactory());
-    GoogleCredential credential = GoogleCredential.getApplicationDefault(transport, jsonFactory);
+    HttpTransport transport = this.transport.or(Utils.getDefaultTransport());
+    JsonFactory jsonFactory = this.jsonFactory.or(Utils.getDefaultJsonFactory());
     return logic.build(logic.newBuilder(
         transport,
         jsonFactory,
-        requestInitializer.apply(scopes.isEmpty() ? credential : credential.createScoped(scopes))));
+        this.requestInitializer.or(googleCredential(scopes, transport, jsonFactory))));
   }
 
   public C create(String... scopes) throws IOException {
     return create(Arrays.asList(scopes));
   }
 
-  public JsonClientFactory<C, B> setJsonFactory(
-      Function<? super JsonFactory, ? extends JsonFactory> jsonFactory) {
-    this.jsonFactory = jsonFactory;
-    return this;
-  }
-
   public JsonClientFactory<C, B> setJsonFactory(JsonFactory jsonFactory) {
-    return setJsonFactory(Functions.constant(jsonFactory));
-  }
-
-  public JsonClientFactory<C, B> setRequestInitializer(
-      Function<? super HttpRequestInitializer, ? extends HttpRequestInitializer> initializer) {
-    this.requestInitializer = initializer;
+    this.jsonFactory = Optional.of(jsonFactory);
     return this;
   }
 
   public JsonClientFactory<C, B> setRequestInitializer(HttpRequestInitializer requestInitializer) {
-    return setRequestInitializer(Functions.constant(requestInitializer));
-  }
-
-  public JsonClientFactory<C, B> setTransport(
-      Function<? super HttpTransport, ? extends HttpTransport> transport) {
-    this.transport = transport;
+    this.requestInitializer = Optional.of(requestInitializer);
     return this;
   }
 
   public JsonClientFactory<C, B> setTransport(HttpTransport transport) {
-    return setTransport(Functions.constant(transport));
+    this.transport = Optional.of(transport);
+    return this;
   }
 }
