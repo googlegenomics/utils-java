@@ -14,209 +14,86 @@
 package com.google.cloud.genomics.utils;
 
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
-import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.googleapis.services.json.AbstractGoogleJsonClient;
+import com.google.api.client.googleapis.util.Utils;
 import com.google.api.client.http.HttpRequestInitializer;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
-import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.common.base.Optional;
-import com.google.common.base.Supplier;
-import com.google.common.base.Suppliers;
-import com.google.common.base.Throwables;
+import com.google.common.base.Function;
+import com.google.common.base.Functions;
 
 import java.io.IOException;
-import java.security.GeneralSecurityException;
 import java.util.Arrays;
 import java.util.Collection;
 
 public final class JsonClientFactory<
-    C extends AbstractGoogleJsonClient,
-    B extends AbstractGoogleJsonClient.Builder> {
-
-  public static final class Builder<
-      C extends AbstractGoogleJsonClient,
-      B extends AbstractGoogleJsonClient.Builder> {
-
-    private Optional<HttpTransport> httpTransport = Optional.absent();
-    private Optional<JsonFactory> jsonFactory = Optional.absent();
-    private final Logic<? extends C, B> logic;
-    private Optional<HttpRequestInitializer> requestInitializer = Optional.absent();
-
-    Builder(Logic<? extends C, B> logic) {
-      this.logic = logic;
-    }
-
-    public JsonClientFactory<C, B> build() {
-      final Supplier<HttpTransport> httpTransport = this.httpTransport.isPresent()
-          ? supplier(this.httpTransport)
-          : Suppliers.memoize(
-              new Supplier<HttpTransport>() {
-                @Override public HttpTransport get() {
-                  try {
-                    return GoogleNetHttpTransport.newTrustedTransport();
-                  } catch (GeneralSecurityException e) {
-                    throw ExceptionWrapper.wrap(e);
-                  } catch (IOException e) {
-                    throw ExceptionWrapper.wrap(e);
-                  }
-                }
-              });
-      final Supplier<JsonFactory> jsonFactory = this.jsonFactory.isPresent()
-          ? supplier(this.jsonFactory)
-          : Suppliers.<JsonFactory>ofInstance(JacksonFactory.getDefaultInstance());
-      final boolean requestInitializerIsPresent = this.requestInitializer.isPresent();
-      return new JsonClientFactory<C, B>(
-          requestInitializerIsPresent
-              ? this.<GoogleCredential>illegalStateException(
-                  "Expected requestInitializerIsPresent == false")
-              : Suppliers.memoize(
-                  new Supplier<GoogleCredential>() {
-                    @Override public GoogleCredential get() {
-                      try {
-                        return GoogleCredential.getApplicationDefault(
-                            httpTransport.get(),
-                            jsonFactory.get());
-                      } catch (IOException e) {
-                        throw ExceptionWrapper.wrap(e);
-                      }
-                    }
-                  }),
-          httpTransport,
-          jsonFactory,
-          logic,
-          requestInitializerIsPresent
-              ? supplier(this.requestInitializer)
-              : this.<HttpRequestInitializer>illegalStateException(
-                  "Expected requestInitializerIsPresent == true"),
-          requestInitializerIsPresent);
-    }
-
-    private <T> Supplier<T> illegalStateException(final String message) {
-      return new Supplier<T>() {
-            @Override public T get() {
-              throw new IllegalStateException(message);
-            }
-          };
-    }
-
-    public final Builder<C, B> setHttpTransport(HttpTransport httpTransport) {
-      this.httpTransport = Optional.of(httpTransport);
-      return this;
-    }
-
-    public final Builder<C, B> setJsonFactory(JsonFactory jsonFactory) {
-      this.jsonFactory = Optional.of(jsonFactory);
-      return this;
-    }
-
-    public final Builder<C, B> setRequestInitializer(HttpRequestInitializer requestInitializer) {
-      this.requestInitializer = Optional.of(requestInitializer);
-      return this;
-    }
-
-    private <T> Supplier<T> supplier(final Optional<? extends T> optional) {
-      return new Supplier<T>() {
-            @Override public T get() {
-              return optional.get();
-            }
-          };
-    }
-  }
-
-  private static class ExceptionWrapper extends RuntimeException {
-
-    static ExceptionWrapper wrap(GeneralSecurityException cause) {
-      return new ExceptionWrapper(cause);
-    }
-
-    static ExceptionWrapper wrap(IOException cause) {
-      return new ExceptionWrapper(cause);
-    }
-
-    private ExceptionWrapper(Exception cause) {
-      super(cause);
-    }
-
-    IllegalStateException unwrap() throws GeneralSecurityException, IOException {
-      Throwable cause = getCause();
-      if (cause instanceof GeneralSecurityException) {
-        throw (GeneralSecurityException) cause;
-      }
-      if (cause instanceof IOException) {
-        throw (IOException) cause;
-      }
-      return new IllegalStateException(
-          String.format("Unexpected cause type: %s", cause.getClass()));
-    }
-  }
+    C extends AbstractGoogleJsonClient, B extends AbstractGoogleJsonClient.Builder> {
 
   public interface Logic<
-      C extends AbstractGoogleJsonClient,
-      B extends AbstractGoogleJsonClient.Builder> {
+      C extends AbstractGoogleJsonClient, B extends AbstractGoogleJsonClient.Builder> {
 
-    C build(B builder) throws GeneralSecurityException, IOException;
+    C build(B builder);
 
-    B newBuilder(HttpTransport httpTransport, JsonFactory jsonFactory,
-        HttpRequestInitializer requestInitializer) throws GeneralSecurityException, IOException;
+    B newBuilder(HttpTransport transport, JsonFactory jsonFactory,
+        HttpRequestInitializer requestInitializer);
   }
 
   public static <C extends AbstractGoogleJsonClient, B extends AbstractGoogleJsonClient.Builder>
-      Builder<C, B> builder(Logic<? extends C, B> logic) {
-    return new Builder<C, B>(logic);
+      JsonClientFactory<C, B> create(Logic<? extends C, B> logic) {
+    return new JsonClientFactory<C, B>(logic);
   }
 
-  private final Supplier<GoogleCredential> credential;
-  private final Supplier<HttpTransport> httpTransport;
-  private final Supplier<JsonFactory> jsonFactory;
+  private Function<? super JsonFactory, ? extends JsonFactory> jsonFactory = Functions.identity();
   private final Logic<? extends C, B> logic;
-  private final Supplier<HttpRequestInitializer> requestInitializer;
-  private final boolean requestInitializerIsPresent;
+  private Function<? super HttpRequestInitializer, ? extends HttpRequestInitializer>
+      requestInitializer = Functions.identity();
+  private Function<? super HttpTransport, ? extends HttpTransport> transport = Functions.identity();
 
-  private JsonClientFactory(
-      Supplier<GoogleCredential> credential,
-      Supplier<HttpTransport> httpTransport,
-      Supplier<JsonFactory> jsonFactory,
-      Logic<? extends C, B> logic,
-      Supplier<HttpRequestInitializer> requestInitializer,
-      boolean requestInitializerIsPresent) {
-    this.credential = credential;
-    this.httpTransport = httpTransport;
-    this.jsonFactory = jsonFactory;
+  private JsonClientFactory(Logic<? extends C, B> logic) {
     this.logic = logic;
-    this.requestInitializer = requestInitializer;
-    this.requestInitializerIsPresent = requestInitializerIsPresent;
   }
 
-  public C create(Collection<String> scopes) throws GeneralSecurityException, IOException {
-    try {
-      return logic.build(logic.newBuilder(
-          httpTransport.get(),
-          jsonFactory.get(),
-          requestInitializerIsPresent ? requestInitializer.get() : credential(scopes)));
-    } catch (ExceptionWrapper e) {
-      throw e.unwrap();
-    }
+  public C create(Collection<String> scopes) throws IOException {
+    HttpTransport transport = this.transport.apply(Utils.getDefaultTransport());
+    JsonFactory jsonFactory = this.jsonFactory.apply(Utils.getDefaultJsonFactory());
+    GoogleCredential credential = GoogleCredential.getApplicationDefault(transport, jsonFactory);
+    return logic.build(logic.newBuilder(
+        transport,
+        jsonFactory,
+        requestInitializer.apply(scopes.isEmpty() ? credential : credential.createScoped(scopes))));
   }
 
-  public C create(String... scopes) throws GeneralSecurityException, IOException {
+  public C create(String... scopes) throws IOException {
     return create(Arrays.asList(scopes));
   }
 
-  public C createUnchecked(Collection<String> scopes) {
-    try {
-      return create(scopes);
-    } catch (Exception e) {
-      throw Throwables.propagate(e);
-    }
+  public JsonClientFactory<C, B> setJsonFactory(
+      Function<? super JsonFactory, ? extends JsonFactory> jsonFactory) {
+    this.jsonFactory = jsonFactory;
+    return this;
   }
 
-  public C createUnchecked(String... scopes) {
-    return createUnchecked(Arrays.asList(scopes));
+  public JsonClientFactory<C, B> setJsonFactory(JsonFactory jsonFactory) {
+    return setJsonFactory(Functions.constant(jsonFactory));
   }
 
-  private GoogleCredential credential(Collection<String> scopes) {
-    GoogleCredential credential = this.credential.get();
-    return scopes.isEmpty() ? credential : credential.createScoped(scopes);
+  public JsonClientFactory<C, B> setRequestInitializer(
+      Function<? super HttpRequestInitializer, ? extends HttpRequestInitializer> initializer) {
+    this.requestInitializer = initializer;
+    return this;
+  }
+
+  public JsonClientFactory<C, B> setRequestInitializer(HttpRequestInitializer requestInitializer) {
+    return setRequestInitializer(Functions.constant(requestInitializer));
+  }
+
+  public JsonClientFactory<C, B> setTransport(
+      Function<? super HttpTransport, ? extends HttpTransport> transport) {
+    this.transport = transport;
+    return this;
+  }
+
+  public JsonClientFactory<C, B> setTransport(HttpTransport transport) {
+    return setTransport(Functions.constant(transport));
   }
 }
