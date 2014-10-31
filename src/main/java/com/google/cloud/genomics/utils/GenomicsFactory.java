@@ -224,7 +224,6 @@ public class GenomicsFactory {
   }
 
   private final String applicationName;
-
   private final int connectTimeout;
   private final DataStoreFactory dataStoreFactory;
   private final HttpTransport httpTransport;
@@ -236,6 +235,7 @@ public class GenomicsFactory {
   private final File userDir;
   private final String userName;
   private final Supplier<? extends VerificationCodeReceiver> verificationCodeReceiver;
+
   private GenomicsFactory(
       String applicationName,
       DataStoreFactory dataStoreFactory,
@@ -265,11 +265,34 @@ public class GenomicsFactory {
 
   private Genomics create(
       final HttpRequestInitializer delegate,
-      GoogleClientRequestInitializer googleClientRequestInitializer) {
-    final Genomics.Builder builder = new Genomics
-        .Builder(
-            httpTransport,
-            jsonFactory,
+      final GoogleClientRequestInitializer googleClientRequestInitializer) {
+    return JsonClientFactory
+        .builder(
+            new JsonClientFactory.Logic<Genomics, Genomics.Builder>() {
+
+              @Override public Genomics build(Genomics.Builder builder) {
+                builder
+                    .setApplicationName(applicationName)
+                    .setGoogleClientRequestInitializer(googleClientRequestInitializer);
+                if (rootUrl.isPresent()) {
+                  builder.setRootUrl(rootUrl.get());
+                }
+                if (servicePath.isPresent()) {
+                  builder.setServicePath(servicePath.get());
+                }
+                return builder.build();
+              }
+
+              @Override public Genomics.Builder newBuilder(
+                  HttpTransport httpTransport,
+                  JsonFactory jsonFactory,
+                  HttpRequestInitializer requestInitializer) {
+                return new Genomics.Builder(httpTransport, jsonFactory, requestInitializer);
+              }
+            })
+        .setHttpTransport(httpTransport)
+        .setJsonFactory(jsonFactory)
+        .setRequestInitializer(
             new HttpRequestInitializer() {
               @Override public void initialize(HttpRequest httpRequest) throws IOException {
                 if (null != delegate) {
@@ -279,16 +302,8 @@ public class GenomicsFactory {
                 httpRequest.setConnectTimeout(connectTimeout);
               }
             })
-        .setApplicationName(applicationName)
-        .setGoogleClientRequestInitializer(googleClientRequestInitializer);
-
-    if (rootUrl.isPresent()) {
-      builder.setRootUrl(rootUrl.get());
-    }
-    if (servicePath.isPresent()) {
-      builder.setServicePath(servicePath.get());
-    }
-    return builder.build();
+        .build()
+        .createUnchecked();
   }
 
   public DataStoreFactory getDataStoreFactory() {
