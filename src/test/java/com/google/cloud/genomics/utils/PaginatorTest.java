@@ -19,7 +19,9 @@ import com.google.api.services.genomics.Genomics;
 import com.google.api.services.genomics.model.ReadGroupSet;
 import com.google.api.services.genomics.model.SearchReadGroupSetsRequest;
 import com.google.api.services.genomics.model.SearchReadGroupSetsResponse;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -88,6 +90,32 @@ public class PaginatorTest {
 
     // No results and no exceptions
     assertTrue(ids.isEmpty());
+  }
+
+  @Test
+  public void testrequestsCount() throws Exception {
+    // Page 1
+    Mockito.when(readGroupSets.search(new SearchReadGroupSetsRequest().setName("HG")))
+        .thenReturn(readGroupSetSearch);
+    // Page 2
+    Mockito.when(readGroupSets.search(new SearchReadGroupSetsRequest().setName("HG")
+        .setPageToken("page2")))
+        .thenReturn(readGroupSetSearch);
+
+    Mockito.when(readGroupSetSearch.execute()).thenReturn(
+        new SearchReadGroupSetsResponse()
+            .setReadGroupSets(Lists.newArrayList(new ReadGroupSet().setId("r1")))
+            .setNextPageToken("page2"),
+        new SearchReadGroupSetsResponse()
+            .setReadGroupSets(Lists.newArrayList(new ReadGroupSet().setId("r2"))));
+
+    Paginator.ReadGroupSets paginator = Paginator.ReadGroupSets.create(genomics);
+    Iterable<ReadGroupSet> it =
+        paginator.search(new SearchReadGroupSetsRequest().setName("HG"));
+
+    Iterables.size(it); // Consume all the elements on the Iterable.
+
+    assertEquals(2L, paginator.getSuccessfulRequestsCount());
   }
 
 }
