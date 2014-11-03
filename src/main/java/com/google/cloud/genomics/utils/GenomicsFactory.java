@@ -37,7 +37,6 @@ import com.google.api.services.genomics.GenomicsScopes;
 import com.google.common.base.Optional;
 import com.google.common.base.Supplier;
 import com.google.common.base.Suppliers;
-import com.google.common.base.Throwables;
 
 import java.io.File;
 import java.io.FileReader;
@@ -266,49 +265,30 @@ public class GenomicsFactory {
 
   private Genomics create(
       final HttpRequestInitializer delegate,
-      final GoogleClientRequestInitializer googleClientRequestInitializer) {
-    try {
-      return JsonClientFactory
-          .of(
-              new JsonClientFactory.Logic<Genomics, Genomics.Builder>() {
+      GoogleClientRequestInitializer googleClientRequestInitializer) {
+    final Genomics.Builder builder = new Genomics
+        .Builder(
+            httpTransport,
+            jsonFactory,
+            new HttpRequestInitializer() {
+              @Override public void initialize(HttpRequest httpRequest) throws IOException {
+                if (null != delegate) {
+                  delegate.initialize(httpRequest);
+                }
+                httpRequest.setReadTimeout(readTimeout);
+                httpRequest.setConnectTimeout(connectTimeout);
+              }
+            })
+        .setApplicationName(applicationName)
+        .setGoogleClientRequestInitializer(googleClientRequestInitializer);
 
-                @Override public Genomics build(Genomics.Builder builder) {
-                  builder
-                      .setApplicationName(applicationName)
-                      .setGoogleClientRequestInitializer(
-                      googleClientRequestInitializer);
-                  if (rootUrl.isPresent()) {
-                    builder.setRootUrl(rootUrl.get());
-                  }
-                  if (servicePath.isPresent()) {
-                    builder.setServicePath(servicePath.get());
-                  }
-                  return builder.build();
-                }
-
-                @Override public Genomics.Builder newBuilder(
-                    HttpTransport transport,
-                    JsonFactory jsonFactory,
-                    HttpRequestInitializer requestInitializer) {
-                  return new Genomics.Builder(httpTransport, jsonFactory, requestInitializer);
-                }
-              })
-          .setTransport(httpTransport)
-          .setJsonFactory(jsonFactory)
-          .setRequestInitializer(
-              new HttpRequestInitializer() {
-                @Override public void initialize(HttpRequest httpRequest) throws IOException {
-                  if (null != delegate) {
-                    delegate.initialize(httpRequest);
-                  }
-                  httpRequest.setReadTimeout(readTimeout);
-                  httpRequest.setConnectTimeout(connectTimeout);
-                }
-              })
-          .create();
-    } catch (IOException e) {
-      throw Throwables.propagate(e);
+    if (rootUrl.isPresent()) {
+      builder.setRootUrl(rootUrl.get());
     }
+    if (servicePath.isPresent()) {
+      builder.setServicePath(servicePath.get());
+    }
+    return builder.build();
   }
 
   public DataStoreFactory getDataStoreFactory() {
