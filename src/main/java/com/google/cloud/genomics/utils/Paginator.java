@@ -14,7 +14,6 @@
 package com.google.cloud.genomics.utils;
 
 import com.google.api.services.genomics.Genomics;
-import com.google.api.services.genomics.Genomics.Datasets.List;
 import com.google.api.services.genomics.GenomicsRequest;
 import com.google.api.services.genomics.model.CallSet;
 import com.google.api.services.genomics.model.CoverageBucket;
@@ -28,10 +27,10 @@ import com.google.api.services.genomics.model.SearchCallSetsRequest;
 import com.google.api.services.genomics.model.SearchCallSetsResponse;
 import com.google.api.services.genomics.model.SearchJobsRequest;
 import com.google.api.services.genomics.model.SearchJobsResponse;
-import com.google.api.services.genomics.model.SearchReadsRequest;
-import com.google.api.services.genomics.model.SearchReadsResponse;
 import com.google.api.services.genomics.model.SearchReadGroupSetsRequest;
 import com.google.api.services.genomics.model.SearchReadGroupSetsResponse;
+import com.google.api.services.genomics.model.SearchReadsRequest;
+import com.google.api.services.genomics.model.SearchReadsResponse;
 import com.google.api.services.genomics.model.SearchVariantSetsRequest;
 import com.google.api.services.genomics.model.SearchVariantSetsResponse;
 import com.google.api.services.genomics.model.SearchVariantsRequest;
@@ -93,9 +92,8 @@ public abstract class Paginator<A, B, C extends GenomicsRequest<D>, D, E> {
       ListDatasetsResponse,
       Dataset> {
 
-    AbstractDatasets(Genomics genomics,
-        RetryPolicy<Genomics.Datasets.List, ListDatasetsResponse> retryPolicy) {
-      super(genomics, retryPolicy);
+    AbstractDatasets(Genomics genomics) {
+      super(genomics);
     }
 
     @Override final Genomics.Datasets.List createSearch(Genomics.Datasets api, B request,
@@ -165,25 +163,11 @@ public abstract class Paginator<A, B, C extends GenomicsRequest<D>, D, E> {
      * @return the new paginator.
      */
     public static Callsets create(Genomics genomics) {
-      return create(genomics,
-          RetryPolicy.<Genomics.Callsets.Search, SearchCallSetsResponse>defaultPolicy());
+      return create(genomics);
     }
 
-    /**
-     * Static factory method.
-     *
-     * @param genomics The {@link Genomics} stub.
-     * @param retryPolicy A retry policy specifying behavior when a request fails.
-     * @return the new paginator.
-     */
-    public static Callsets create(Genomics genomics,
-        RetryPolicy<Genomics.Callsets.Search, SearchCallSetsResponse> retryPolicy) {
-      return new Callsets(genomics, retryPolicy);
-    }
-
-    private Callsets(Genomics genomics,
-        RetryPolicy<Genomics.Callsets.Search, SearchCallSetsResponse> retryPolicy) {
-      super(genomics, retryPolicy);
+    private Callsets(Genomics genomics) {
+      super(genomics);
     }
 
     @Override Genomics.Callsets.Search createSearch(Genomics.Callsets api,
@@ -223,24 +207,11 @@ public abstract class Paginator<A, B, C extends GenomicsRequest<D>, D, E> {
      * @return the new paginator.
      */
     public static Datasets create(Genomics genomics) {
-      return create(genomics,
-          RetryPolicy.<Genomics.Datasets.List, ListDatasetsResponse>defaultPolicy());
+      return new Datasets(genomics);
     }
 
-    /**
-     * Static factory method.
-     *
-     * @param genomics The {@link Genomics} stub.
-     * @param retryPolicy A retry policy specifying behavior when a request fails.
-     * @return the new paginator.
-     */
-    public static Datasets create(Genomics genomics,
-        RetryPolicy<Genomics.Datasets.List, ListDatasetsResponse> retryPolicy) {
-      return new Datasets(genomics, retryPolicy);
-    }
-
-    private Datasets(Genomics genomics, RetryPolicy<List, ListDatasetsResponse> retryPolicy) {
-      super(genomics, retryPolicy);
+    private Datasets(Genomics genomics) {
+      super(genomics);
     }
 
     @Override void setRequest(Genomics.Datasets.List list, Long projectId) {
@@ -251,7 +222,7 @@ public abstract class Paginator<A, B, C extends GenomicsRequest<D>, D, E> {
   public interface Factory<P extends Paginator<?, ?, C, D, ?>, C extends GenomicsRequest<D>, D>
       extends Serializable {
 
-    P createPaginator(Genomics genomics, RetryPolicy<C, D> retryPolicy);
+    P createPaginator(Genomics genomics);
   }
 
   /**
@@ -288,25 +259,11 @@ public abstract class Paginator<A, B, C extends GenomicsRequest<D>, D, E> {
      * @return the new paginator.
      */
     public static Jobs create(Genomics genomics) {
-      return create(genomics,
-          RetryPolicy.<Genomics.Jobs.Search, SearchJobsResponse>defaultPolicy());
+      return create(genomics);
     }
 
-    /**
-     * Static factory method.
-     *
-     * @param genomics The {@link Genomics} stub.
-     * @param retryPolicy A retry policy specifying behavior when a request fails.
-     * @return the new paginator.
-     */
-    public static Jobs create(Genomics genomics,
-        RetryPolicy<Genomics.Jobs.Search, SearchJobsResponse> retryPolicy) {
-      return new Jobs(genomics, retryPolicy);
-    }
-
-    private Jobs(Genomics genomics,
-        RetryPolicy<Genomics.Jobs.Search, SearchJobsResponse> retryPolicy) {
-      super(genomics, retryPolicy);
+    private Jobs(Genomics genomics) {
+      super(genomics);
     }
 
     @Override Genomics.Jobs.Search createSearch(Genomics.Jobs api, final SearchJobsRequest request,
@@ -358,24 +315,11 @@ public abstract class Paginator<A, B, C extends GenomicsRequest<D>, D, E> {
      * @return the new paginator.
      */
     public static PublicDatasets create(Genomics genomics) {
-      return create(genomics,
-          RetryPolicy.<Genomics.Datasets.List, ListDatasetsResponse>defaultPolicy());
+      return create(genomics);
     }
 
-    /**
-     * Static factory method.
-     *
-     * @param genomics The {@link Genomics} stub.
-     * @param retryPolicy A retry policy specifying behavior when a request fails.
-     * @return the new paginator.
-     */
-    public static PublicDatasets create(Genomics genomics,
-        RetryPolicy<Genomics.Datasets.List, ListDatasetsResponse> retryPolicy) {
-      return new PublicDatasets(genomics, retryPolicy);
-    }
-
-    private PublicDatasets(Genomics genomics, RetryPolicy<List, ListDatasetsResponse> retryPolicy) {
-      super(genomics, retryPolicy);
+    private PublicDatasets(Genomics genomics) {
+      super(genomics);
     }
 
     public Iterable<Dataset> search() {
@@ -426,25 +370,11 @@ public abstract class Paginator<A, B, C extends GenomicsRequest<D>, D, E> {
      * @return the new paginator.
      */
     public static Reads create(Genomics genomics) {
-      return create(genomics,
-          RetryPolicy.<Genomics.Reads.Search, SearchReadsResponse>defaultPolicy());
+      return create(genomics);
     }
 
-    /**
-     * Static factory method.
-     *
-     * @param genomics The {@link Genomics} stub.
-     * @param retryPolicy A retry policy specifying behavior when a request fails.
-     * @return the new paginator.
-     */
-    public static Reads create(Genomics genomics,
-        RetryPolicy<Genomics.Reads.Search, SearchReadsResponse> retryPolicy) {
-      return new Reads(genomics, retryPolicy);
-    }
-
-    private Reads(Genomics genomics,
-        RetryPolicy<Genomics.Reads.Search, SearchReadsResponse> retryPolicy) {
-      super(genomics, retryPolicy);
+    private Reads(Genomics genomics) {
+      super(genomics);
     }
 
     @Override Genomics.Reads.Search createSearch(Genomics.Reads api, final SearchReadsRequest request,
@@ -496,25 +426,11 @@ public abstract class Paginator<A, B, C extends GenomicsRequest<D>, D, E> {
        * @return the new paginator.
        */
       public static Coveragebuckets create(Genomics genomics) {
-        return create(genomics, RetryPolicy.<Genomics.Readgroupsets.Coveragebuckets.List,
-            ListCoverageBucketsResponse>defaultPolicy());
+        return create(genomics);
       }
 
-      /**
-       * Static factory method.
-       *
-       * @param genomics The {@link Genomics} stub.
-       * @param retryPolicy A retry policy specifying behavior when a request fails.
-       * @return the new paginator.
-       */
-      public static Coveragebuckets create(Genomics genomics, RetryPolicy<
-          Genomics.Readgroupsets.Coveragebuckets.List, ListCoverageBucketsResponse> retryPolicy) {
-        return new Coveragebuckets(genomics, retryPolicy);
-      }
-
-      private Coveragebuckets(Genomics genomics, RetryPolicy<
-          Genomics.Readgroupsets.Coveragebuckets.List, ListCoverageBucketsResponse> retryPolicy) {
-        super(genomics, retryPolicy);
+      private Coveragebuckets(Genomics genomics) {
+        super(genomics);
       }
 
       @Override Genomics.Readgroupsets.Coveragebuckets.List createSearch(
@@ -552,25 +468,11 @@ public abstract class Paginator<A, B, C extends GenomicsRequest<D>, D, E> {
      * @return the new paginator.
      */
     public static ReadGroupSets create(Genomics genomics) {
-      return create(genomics,
-          RetryPolicy.<Genomics.Readgroupsets.Search, SearchReadGroupSetsResponse>defaultPolicy());
+      return new ReadGroupSets(genomics);
     }
 
-    /**
-     * Static factory method.
-     *
-     * @param genomics The {@link Genomics} stub.
-     * @param retryPolicy A retry policy specifying behavior when a request fails.
-     * @return the new paginator.
-     */
-    public static ReadGroupSets create(Genomics genomics,
-        RetryPolicy<Genomics.Readgroupsets.Search, SearchReadGroupSetsResponse> retryPolicy) {
-      return new ReadGroupSets(genomics, retryPolicy);
-    }
-
-    private ReadGroupSets(Genomics genomics,
-        RetryPolicy<Genomics.Readgroupsets.Search, SearchReadGroupSetsResponse> retryPolicy) {
-      super(genomics, retryPolicy);
+    private ReadGroupSets(Genomics genomics) {
+      super(genomics);
     }
 
     @Override Genomics.Readgroupsets.Search createSearch(Genomics.Readgroupsets api,
@@ -604,9 +506,8 @@ public abstract class Paginator<A, B, C extends GenomicsRequest<D>, D, E> {
     public final Factory<ReadGroupSets.Coveragebuckets, Genomics.Readgroupsets.Coveragebuckets.List,
         ListCoverageBucketsResponse> COVERAGEBUCKETS = new Factory<ReadGroupSets.Coveragebuckets,
         Genomics.Readgroupsets.Coveragebuckets.List, ListCoverageBucketsResponse>() {
-      @Override public ReadGroupSets.Coveragebuckets createPaginator(Genomics genomics, RetryPolicy<
-          Genomics.Readgroupsets.Coveragebuckets.List, ListCoverageBucketsResponse> retryPolicy) {
-        return ReadGroupSets.Coveragebuckets.create(genomics, retryPolicy);
+      @Override public ReadGroupSets.Coveragebuckets createPaginator(Genomics genomics) {
+        return ReadGroupSets.Coveragebuckets.create(genomics);
       }
     };
 
@@ -647,25 +548,11 @@ public abstract class Paginator<A, B, C extends GenomicsRequest<D>, D, E> {
      * @return the new paginator.
      */
     public static Variants create(Genomics genomics) {
-      return create(genomics,
-          RetryPolicy.<Genomics.Variants.Search, SearchVariantsResponse>defaultPolicy());
+      return create(genomics);
     }
 
-    /**
-     * Static factory method.
-     *
-     * @param genomics The {@link Genomics} stub.
-     * @param retryPolicy A retry policy specifying behavior when a request fails.
-     * @return the new paginator.
-     */
-    public static Variants create(Genomics genomics,
-        RetryPolicy<Genomics.Variants.Search, SearchVariantsResponse> retryPolicy) {
-      return new Variants(genomics, retryPolicy);
-    }
-
-    private Variants(Genomics genomics,
-        RetryPolicy<Genomics.Variants.Search, SearchVariantsResponse> retryPolicy) {
-      super(genomics, retryPolicy);
+    private Variants(Genomics genomics) {
+      super(genomics);
     }
 
     @Override Genomics.Variants.Search createSearch(Genomics.Variants api,
@@ -710,25 +597,11 @@ public abstract class Paginator<A, B, C extends GenomicsRequest<D>, D, E> {
      * @return the new paginator.
      */
     public static Variantsets create(Genomics genomics) {
-      return create(genomics,
-          RetryPolicy.<Genomics.Variantsets.Search, SearchVariantSetsResponse>defaultPolicy());
+      return create(genomics);
     }
 
-    /**
-     * Static factory method.
-     *
-     * @param genomics The {@link Genomics} stub.
-     * @param retryPolicy A retry policy specifying behavior when a request fails.
-     * @return the new paginator.
-     */
-    public static Variantsets create(Genomics genomics,
-        RetryPolicy<Genomics.Variantsets.Search, SearchVariantSetsResponse> retryPolicy) {
-      return new Variantsets(genomics, retryPolicy);
-    }
-
-    private Variantsets(Genomics genomics,
-        RetryPolicy<Genomics.Variantsets.Search, SearchVariantSetsResponse> retryPolicy) {
-      super(genomics, retryPolicy);
+    private Variantsets(Genomics genomics) {
+      super(genomics);
     }
 
     @Override Genomics.Variantsets.Search createSearch(Genomics.Variantsets api,
@@ -758,17 +631,15 @@ public abstract class Paginator<A, B, C extends GenomicsRequest<D>, D, E> {
 
   public static final Factory<Callsets, Genomics.Callsets.Search, SearchCallSetsResponse> CALLSETS =
       new Factory<Callsets, Genomics.Callsets.Search, SearchCallSetsResponse>() {
-        @Override public Callsets createPaginator(Genomics genomics,
-            RetryPolicy<Genomics.Callsets.Search, SearchCallSetsResponse> retryPolicy) {
-          return Callsets.create(genomics, retryPolicy);
+        @Override public Callsets createPaginator(Genomics genomics) {
+          return Callsets.create(genomics);
         }
       };
 
   public static final Factory<Datasets, Genomics.Datasets.List, ListDatasetsResponse> DATASETS =
       new Factory<Datasets, Genomics.Datasets.List, ListDatasetsResponse>() {
-        @Override public Datasets createPaginator(Genomics genomics,
-            RetryPolicy<Genomics.Datasets.List, ListDatasetsResponse> retryPolicy) {
-          return Datasets.create(genomics, retryPolicy);
+        @Override public Datasets createPaginator(Genomics genomics) {
+          return Datasets.create(genomics);
         }
       };
 
@@ -779,51 +650,45 @@ public abstract class Paginator<A, B, C extends GenomicsRequest<D>, D, E> {
 
   public static final Factory<Jobs, Genomics.Jobs.Search, SearchJobsResponse> JOBS =
       new Factory<Jobs, Genomics.Jobs.Search, SearchJobsResponse>() {
-        @Override public Jobs createPaginator(Genomics genomics,
-            RetryPolicy<Genomics.Jobs.Search, SearchJobsResponse> retryPolicy) {
-          return Jobs.create(genomics, retryPolicy);
+        @Override public Jobs createPaginator(Genomics genomics) {
+          return Jobs.create(genomics);
         }
       };
 
   public static final Factory<PublicDatasets, Genomics.Datasets.List, ListDatasetsResponse>
       PUBLIC_DATASETS =
       new Factory<PublicDatasets, Genomics.Datasets.List, ListDatasetsResponse>() {
-        @Override public PublicDatasets createPaginator(Genomics genomics,
-            RetryPolicy<Genomics.Datasets.List, ListDatasetsResponse> retryPolicy) {
-          return PublicDatasets.create(genomics, retryPolicy);
+        @Override public PublicDatasets createPaginator(Genomics genomics) {
+          return PublicDatasets.create(genomics);
         }
       };
 
   public static final Factory<Reads, Genomics.Reads.Search, SearchReadsResponse> READS =
       new Factory<Reads, Genomics.Reads.Search, SearchReadsResponse>() {
-        @Override public Reads createPaginator(Genomics genomics,
-            RetryPolicy<Genomics.Reads.Search, SearchReadsResponse> retryPolicy) {
-          return Reads.create(genomics, retryPolicy);
+        @Override public Reads createPaginator(Genomics genomics) {
+          return Reads.create(genomics);
         }
       };
 
   public static final ReadGroupSetsFactory READGROUPSETS =
       new ReadGroupSetsFactory() {
-        @Override public ReadGroupSets createPaginator(Genomics genomics,
-            RetryPolicy<Genomics.Readgroupsets.Search, SearchReadGroupSetsResponse> retryPolicy) {
-          return ReadGroupSets.create(genomics, retryPolicy);
+        @Override public ReadGroupSets createPaginator(Genomics genomics) {
+          return ReadGroupSets.create(genomics);
         }
       };
 
   public static final Factory<Variants, Genomics.Variants.Search, SearchVariantsResponse> VARIANTS =
       new Factory<Variants, Genomics.Variants.Search, SearchVariantsResponse>() {
-        @Override public Variants createPaginator(Genomics genomics,
-            RetryPolicy<Genomics.Variants.Search, SearchVariantsResponse> retryPolicy) {
-          return Variants.create(genomics, retryPolicy);
+        @Override public Variants createPaginator(Genomics genomics) {
+          return Variants.create(genomics);
         }
       };
 
   public static final
       Factory<Variantsets, Genomics.Variantsets.Search, SearchVariantSetsResponse> VARIANTSETS =
           new Factory<Variantsets, Genomics.Variantsets.Search, SearchVariantSetsResponse>() {
-            @Override public Variantsets createPaginator(Genomics genomics,
-                RetryPolicy<Genomics.Variantsets.Search, SearchVariantSetsResponse> retryPolicy) {
-              return Variantsets.create(genomics, retryPolicy);
+            @Override public Variantsets createPaginator(Genomics genomics) {
+              return Variantsets.create(genomics);
             }
           };
 
@@ -839,11 +704,9 @@ public abstract class Paginator<A, B, C extends GenomicsRequest<D>, D, E> {
   }
 
   private final Genomics genomics;
-  private final RetryPolicy<C, D> retryPolicy;
 
-  public Paginator(Genomics genomics, RetryPolicy<C, D> retryPolicy) {
+  public Paginator(Genomics genomics) {
     this.genomics = genomics;
-    this.retryPolicy = retryPolicy;
   }
 
   abstract C createSearch(A api, B request, Optional<String> pageToken) throws IOException;
@@ -894,7 +757,7 @@ public abstract class Paginator<A, B, C extends GenomicsRequest<D>, D, E> {
                                   new Function<C, Pair>() {
                                     @Override public Pair apply(C search) {
                                       try {
-                                        D response = retryPolicy.execute(search);
+                                        D response = search.execute();
                                         Optional<String> pageToken =
                                             Optional.fromNullable(getNextPageToken(response));
                                         return new Pair(

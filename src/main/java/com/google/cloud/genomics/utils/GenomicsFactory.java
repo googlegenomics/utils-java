@@ -22,14 +22,17 @@ import com.google.api.client.extensions.jetty.auth.oauth2.LocalServerReceiver;
 import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeFlow;
 import com.google.api.client.googleapis.auth.oauth2.GoogleClientSecrets;
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
-import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.googleapis.services.CommonGoogleClientRequestInitializer;
 import com.google.api.client.googleapis.services.GoogleClientRequestInitializer;
+import com.google.api.client.googleapis.util.Utils;
+import com.google.api.client.http.HttpBackOffUnsuccessfulResponseHandler;
 import com.google.api.client.http.HttpRequest;
 import com.google.api.client.http.HttpRequestInitializer;
+import com.google.api.client.http.HttpResponse;
 import com.google.api.client.http.HttpTransport;
+import com.google.api.client.http.HttpUnsuccessfulResponseHandler;
 import com.google.api.client.json.JsonFactory;
-import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.client.util.ExponentialBackOff;
 import com.google.api.client.util.store.DataStoreFactory;
 import com.google.api.client.util.store.FileDataStoreFactory;
 import com.google.api.services.genomics.Genomics;
@@ -65,22 +68,36 @@ public class GenomicsFactory {
     private final String applicationName;
     private int connectTimeout = 20000;
     private final DataStoreFactory dataStoreFactory;
-    private HttpTransport httpTransport;
-    private JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+    private HttpTransport httpTransport = Utils.getDefaultTransport();
+    private JsonFactory jsonFactory = Utils.getDefaultJsonFactory();
     private int readTimeout = 20000;
     private Optional<String> rootUrl = Optional.absent();
     private Optional<String> servicePath = Optional.absent();
     private Collection<String> scopes = GenomicsScopes.all();
+    private HttpUnsuccessfulResponseHandler unsuccessfulResponseHandler =
+        new HttpUnsuccessfulResponseHandler() {
+
+          private final HttpUnsuccessfulResponseHandler delegate =
+              new HttpBackOffUnsuccessfulResponseHandler(new ExponentialBackOff());
+
+          @Override public boolean handleResponse(HttpRequest request,
+              HttpResponse response, boolean supportsRetry) throws IOException {
+            int statusCode = response.getStatusCode();
+            return 500 <= statusCode
+                && statusCode < 600
+                && delegate.handleResponse(request, response, supportsRetry);
+          }
+        };
+
     private final File userDir;
     private String userName = System.getProperty("user.name");
     private Supplier<? extends VerificationCodeReceiver>
         verificationCodeReceiver = Suppliers.ofInstance(new LocalServerReceiver());
 
-    private Builder(String applicationName) throws GeneralSecurityException, IOException {
+    private Builder(String applicationName) throws IOException {
       this.dataStoreFactory = new FileDataStoreFactory(this.userDir = new File(
           System.getProperty("user.home"),
           String.format(".store/%s", (this.applicationName = applicationName).replace("/", "_"))));
-      setHttpTransport(GoogleNetHttpTransport.newTrustedTransport());
     }
 
     /**
@@ -101,6 +118,7 @@ public class GenomicsFactory {
           servicePath,
           connectTimeout,
           verificationCodeReceiver,
+          unsuccessfulResponseHandler,
           userDir);
     }
 
@@ -185,6 +203,18 @@ public class GenomicsFactory {
     }
 
     /**
+     * Set the unsuccessful response handler for this client.
+     *
+     * @param unsuccessfulResponseHandler the unsuccessful response handler
+     * @return this builder
+     */
+    public Builder setUnsuccessfulResponseHandler(
+        HttpUnsuccessfulResponseHandler unsuccessfulResponseHandler) {
+      this.unsuccessfulResponseHandler = unsuccessfulResponseHandler;
+      return this;
+    }
+
+    /**
      * Set the user name. The default is {@code System.getProperty("user.name")}. Most code will
      * rarely have to call this method.
      *
@@ -234,8 +264,10 @@ public class GenomicsFactory {
   private final Optional<String> servicePath;
   private final Collection<String> scopes;
   private final File userDir;
+  private final HttpUnsuccessfulResponseHandler unsuccessfulResponseHandler;
   private final String userName;
   private final Supplier<? extends VerificationCodeReceiver> verificationCodeReceiver;
+
   private GenomicsFactory(
       String applicationName,
       DataStoreFactory dataStoreFactory,
@@ -248,6 +280,7 @@ public class GenomicsFactory {
       Optional<String> servicePath,
       int connectTimeout,
       Supplier<? extends VerificationCodeReceiver> verificationCodeReceiver,
+      HttpUnsuccessfulResponseHandler unsuccessfulResponseHandler,
       File userDir) {
     this.applicationName = applicationName;
     this.dataStoreFactory = dataStoreFactory;
@@ -260,6 +293,7 @@ public class GenomicsFactory {
     this.servicePath = servicePath;
     this.connectTimeout = connectTimeout;
     this.verificationCodeReceiver = verificationCodeReceiver;
+    this.unsuccessfulResponseHandler = unsuccessfulResponseHandler;
     this.userDir = userDir;
   }
 
@@ -275,8 +309,10 @@ public class GenomicsFactory {
                 if (null != delegate) {
                   delegate.initialize(httpRequest);
                 }
-                httpRequest.setReadTimeout(readTimeout);
-                httpRequest.setConnectTimeout(connectTimeout);
+                httpRequest
+                    .setConnectTimeout(connectTimeout)
+                    .setReadTimeout(readTimeout)
+                    .setUnsuccessfulResponseHandler(unsuccessfulResponseHandler);
               }
             })
         .setApplicationName(applicationName)
