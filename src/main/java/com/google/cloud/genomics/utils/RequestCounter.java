@@ -26,7 +26,7 @@ import java.io.IOException;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * A utility for counting the number of requests that were initialized, successful and unsuccessful
+ * A utility for counting the number of requests that were initialized and unsuccessful
  * for a given instance of {@link AbstractGoogleJsonClient}.
  */
 public abstract class RequestCounter<
@@ -83,12 +83,10 @@ public abstract class RequestCounter<
     return initializedRequestsCount.get();
   }
 
-  protected abstract ClientBuilder newClientBuilder(HttpTransport transport,
-      JsonFactory jsonFactory, HttpRequestInitializer httpRequestInitializer);
-
-  public final int successfulRequestsCount() {
-    return initializedRequestsCount() - unsuccessfulRequestsCount();
-  }
+  protected abstract ClientBuilder newClientBuilder(
+      HttpTransport transport,
+      JsonFactory jsonFactory,
+      HttpRequestInitializer initializer);
 
   public final int unsuccessfulRequestsCount() {
     return unsuccessfulRequestsCount.get();

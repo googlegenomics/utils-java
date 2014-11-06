@@ -297,7 +297,7 @@ public class GenomicsFactory {
     this.userDir = userDir;
   }
 
-  private Genomics create(
+  private RequestCountingGenomics create(
       final HttpRequestInitializer delegate,
       GoogleClientRequestInitializer googleClientRequestInitializer) {
     final Genomics.Builder builder = new Genomics
@@ -324,7 +324,7 @@ public class GenomicsFactory {
     if (servicePath.isPresent()) {
       builder.setServicePath(servicePath.get());
     }
-    return builder.build();
+    return RequestCountingGenomics.of(builder.build());
   }
 
   public DataStoreFactory getDataStoreFactory() {
@@ -337,7 +337,7 @@ public class GenomicsFactory {
    * @param apiKey The API key of the Google Cloud project to charge requests to.
    * @return The new {@code Genomics} stub
    */
-  public Genomics fromApiKey(String apiKey) {
+  public RequestCountingGenomics fromApiKey(String apiKey) {
     return create(null, new CommonGoogleClientRequestInitializer(apiKey));
   }
 
@@ -348,7 +348,7 @@ public class GenomicsFactory {
    * @return The new {@code Genomics} stub
    * @throws IOException
    */
-  public Genomics fromCredential(Credential credential) throws IOException {
+  public RequestCountingGenomics fromCredential(Credential credential) throws IOException {
     return create(credential, null);
   }
 
@@ -359,7 +359,7 @@ public class GenomicsFactory {
    * @return The new {@code Genomics} stub
    * @throws IOException
    */
-  public Genomics fromClientSecretsFile(File clientSecretsJson) throws IOException {
+  public RequestCountingGenomics fromClientSecretsFile(File clientSecretsJson) throws IOException {
     return fromCredential(makeCredential(clientSecretsJson));
   }
 
@@ -415,7 +415,7 @@ public class GenomicsFactory {
    * @throws GeneralSecurityException
    * @throws IOException
    */
-  public Genomics fromServiceAccount(String serviceAccountId, File p12File)
+  public RequestCountingGenomics fromServiceAccount(String serviceAccountId, File p12File)
       throws GeneralSecurityException, IOException {
     return fromCredential(
         refreshToken(
