@@ -25,7 +25,9 @@ import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.services.CommonGoogleClientRequestInitializer;
 import com.google.api.client.googleapis.services.GoogleClientRequestInitializer;
 import com.google.api.client.googleapis.util.Utils;
+import com.google.api.client.http.HttpBackOffIOExceptionHandler;
 import com.google.api.client.http.HttpBackOffUnsuccessfulResponseHandler;
+import com.google.api.client.http.HttpIOExceptionHandler;
 import com.google.api.client.http.HttpRequest;
 import com.google.api.client.http.HttpRequestInitializer;
 import com.google.api.client.http.HttpResponse;
@@ -88,6 +90,8 @@ public class GenomicsFactory {
                 && delegate.handleResponse(request, response, supportsRetry);
           }
         };
+    private HttpIOExceptionHandler ioExceptionHandler = new HttpBackOffIOExceptionHandler(
+        new ExponentialBackOff());
 
     private final File userDir;
     private String userName = System.getProperty("user.name");
@@ -119,6 +123,7 @@ public class GenomicsFactory {
           connectTimeout,
           verificationCodeReceiver,
           unsuccessfulResponseHandler,
+          ioExceptionHandler,
           userDir);
     }
 
@@ -215,6 +220,17 @@ public class GenomicsFactory {
     }
 
     /**
+     * Set the IO exception handler for this client.
+     *
+     * @param ioExceptionHandler the IO exception handler
+     * @return this builder
+     */
+    public Builder setIOExceptionHandler(HttpIOExceptionHandler ioExceptionHandler) {
+      this.ioExceptionHandler = ioExceptionHandler;
+      return this;
+    }
+
+    /**
      * Set the user name. The default is {@code System.getProperty("user.name")}. Most code will
      * rarely have to call this method.
      *
@@ -265,6 +281,7 @@ public class GenomicsFactory {
   private final Collection<String> scopes;
   private final File userDir;
   private final HttpUnsuccessfulResponseHandler unsuccessfulResponseHandler;
+  private final HttpIOExceptionHandler ioExceptionHandler;
   private final String userName;
   private final Supplier<? extends VerificationCodeReceiver> verificationCodeReceiver;
 
@@ -281,6 +298,7 @@ public class GenomicsFactory {
       int connectTimeout,
       Supplier<? extends VerificationCodeReceiver> verificationCodeReceiver,
       HttpUnsuccessfulResponseHandler unsuccessfulResponseHandler,
+      HttpIOExceptionHandler ioExceptionHandler,
       File userDir) {
     this.applicationName = applicationName;
     this.dataStoreFactory = dataStoreFactory;
@@ -294,6 +312,7 @@ public class GenomicsFactory {
     this.connectTimeout = connectTimeout;
     this.verificationCodeReceiver = verificationCodeReceiver;
     this.unsuccessfulResponseHandler = unsuccessfulResponseHandler;
+    this.ioExceptionHandler = ioExceptionHandler;
     this.userDir = userDir;
   }
 
@@ -312,7 +331,8 @@ public class GenomicsFactory {
                 httpRequest
                     .setConnectTimeout(connectTimeout)
                     .setReadTimeout(readTimeout)
-                    .setUnsuccessfulResponseHandler(unsuccessfulResponseHandler);
+                    .setUnsuccessfulResponseHandler(unsuccessfulResponseHandler)
+                    .setIOExceptionHandler(ioExceptionHandler);
               }
             })
         .setApplicationName(applicationName)
