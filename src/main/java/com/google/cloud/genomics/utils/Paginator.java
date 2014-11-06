@@ -163,7 +163,7 @@ public abstract class Paginator<A, B, C extends GenomicsRequest<D>, D, E> {
      * @return the new paginator.
      */
     public static Callsets create(Genomics genomics) {
-      return create(genomics);
+      return new Callsets(genomics);
     }
 
     private Callsets(Genomics genomics) {
@@ -259,7 +259,7 @@ public abstract class Paginator<A, B, C extends GenomicsRequest<D>, D, E> {
      * @return the new paginator.
      */
     public static Jobs create(Genomics genomics) {
-      return create(genomics);
+      return new Jobs(genomics);
     }
 
     private Jobs(Genomics genomics) {
@@ -315,7 +315,7 @@ public abstract class Paginator<A, B, C extends GenomicsRequest<D>, D, E> {
      * @return the new paginator.
      */
     public static PublicDatasets create(Genomics genomics) {
-      return create(genomics);
+      return new PublicDatasets(genomics);
     }
 
     private PublicDatasets(Genomics genomics) {
@@ -370,7 +370,7 @@ public abstract class Paginator<A, B, C extends GenomicsRequest<D>, D, E> {
      * @return the new paginator.
      */
     public static Reads create(Genomics genomics) {
-      return create(genomics);
+      return new Reads(genomics);
     }
 
     private Reads(Genomics genomics) {
@@ -426,7 +426,7 @@ public abstract class Paginator<A, B, C extends GenomicsRequest<D>, D, E> {
        * @return the new paginator.
        */
       public static Coveragebuckets create(Genomics genomics) {
-        return create(genomics);
+        return new Coveragebuckets(genomics);
       }
 
       private Coveragebuckets(Genomics genomics) {
@@ -548,7 +548,7 @@ public abstract class Paginator<A, B, C extends GenomicsRequest<D>, D, E> {
      * @return the new paginator.
      */
     public static Variants create(Genomics genomics) {
-      return create(genomics);
+      return new Variants(genomics);
     }
 
     private Variants(Genomics genomics) {
@@ -597,7 +597,7 @@ public abstract class Paginator<A, B, C extends GenomicsRequest<D>, D, E> {
      * @return the new paginator.
      */
     public static Variantsets create(Genomics genomics) {
-      return create(genomics);
+      return new Variantsets(genomics);
     }
 
     private Variantsets(Genomics genomics) {
