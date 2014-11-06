@@ -705,6 +705,8 @@ public abstract class Paginator<A, B, C extends GenomicsRequest<D>, D, E> {
 
   private final Genomics genomics;
 
+  private long successfulRequests = 0;
+
   public Paginator(Genomics genomics) {
     this.genomics = genomics;
   }
@@ -758,6 +760,7 @@ public abstract class Paginator<A, B, C extends GenomicsRequest<D>, D, E> {
                                     @Override public Pair apply(C search) {
                                       try {
                                         D response = search.execute();
+                                        successfulRequests++;
                                         Optional<String> pageToken =
                                             Optional.fromNullable(getNextPageToken(response));
                                         return new Pair(
@@ -832,5 +835,13 @@ public abstract class Paginator<A, B, C extends GenomicsRequest<D>, D, E> {
   public final <F> F search(B request, final String fields, Callback<E, ? extends F> callback)
       throws IOException {
     return search(request, setFieldsInitializer(fields), callback);
+  }
+
+  /**
+   * Get the number of successful requests to the API on this paginator.
+   * @return the number of successful requests.
+   */
+  public final long getSuccessfulRequestsCount() {
+    return successfulRequests;
   }
 }
