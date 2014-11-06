@@ -706,7 +706,6 @@ public abstract class Paginator<A, B, C extends GenomicsRequest<D>, D, E> {
   private final Genomics genomics;
 
   private long successfulRequests = 0;
-  private long attemptedRequests = 0;
 
   public Paginator(Genomics genomics) {
     this.genomics = genomics;
@@ -761,7 +760,7 @@ public abstract class Paginator<A, B, C extends GenomicsRequest<D>, D, E> {
                                     @Override public Pair apply(C search) {
                                       try {
                                         D response = search.execute();
-                                        successfulRequests += 1;
+                                        successfulRequests++;
                                         Optional<String> pageToken =
                                             Optional.fromNullable(getNextPageToken(response));
                                         return new Pair(
