@@ -508,20 +508,6 @@ public abstract class Paginator<A, B, C extends GenomicsRequest<D>, D, E> {
     }
   }
 
-  public abstract static class ReadGroupSetsFactory implements Factory<ReadGroupSets,
-      Genomics.Readgroupsets.Search, SearchReadGroupSetsResponse> {
-
-    public final Factory<ReadGroupSets.Coveragebuckets, Genomics.Readgroupsets.Coveragebuckets.List,
-        ListCoverageBucketsResponse> COVERAGEBUCKETS = new Factory<ReadGroupSets.Coveragebuckets,
-        Genomics.Readgroupsets.Coveragebuckets.List, ListCoverageBucketsResponse>() {
-      @Override public ReadGroupSets.Coveragebuckets createPaginator(Genomics genomics) {
-        return ReadGroupSets.Coveragebuckets.create(genomics);
-      }
-    };
-
-    private ReadGroupSetsFactory() {}
-  }
-
   /**
    * A {@link Paginator} for the {@code searchReferenceSets()} API.
    */
@@ -787,70 +773,10 @@ public abstract class Paginator<A, B, C extends GenomicsRequest<D>, D, E> {
     }
   }
 
-  // TODO: Are these factory fields actually being used?
-
-  public static final Factory<Callsets, Genomics.Callsets.Search, SearchCallSetsResponse> CALLSETS =
-      new Factory<Callsets, Genomics.Callsets.Search, SearchCallSetsResponse>() {
-        @Override public Callsets createPaginator(Genomics genomics) {
-          return Callsets.create(genomics);
-        }
-      };
-
-  public static final Factory<Datasets, Genomics.Datasets.List, ListDatasetsResponse> DATASETS =
-      new Factory<Datasets, Genomics.Datasets.List, ListDatasetsResponse>() {
-        @Override public Datasets createPaginator(Genomics genomics) {
-          return Datasets.create(genomics);
-        }
-      };
-
   private static final GenomicsRequestInitializer<GenomicsRequest<?>> DEFAULT_INITIALIZER =
       new GenomicsRequestInitializer<GenomicsRequest<?>>() {
         @Override public void initialize(GenomicsRequest<?> search) {}
       };
-
-  public static final Factory<Jobs, Genomics.Jobs.Search, SearchJobsResponse> JOBS =
-      new Factory<Jobs, Genomics.Jobs.Search, SearchJobsResponse>() {
-        @Override public Jobs createPaginator(Genomics genomics) {
-          return Jobs.create(genomics);
-        }
-      };
-
-  public static final Factory<PublicDatasets, Genomics.Datasets.List, ListDatasetsResponse>
-      PUBLIC_DATASETS =
-      new Factory<PublicDatasets, Genomics.Datasets.List, ListDatasetsResponse>() {
-        @Override public PublicDatasets createPaginator(Genomics genomics) {
-          return PublicDatasets.create(genomics);
-        }
-      };
-
-  public static final Factory<Reads, Genomics.Reads.Search, SearchReadsResponse> READS =
-      new Factory<Reads, Genomics.Reads.Search, SearchReadsResponse>() {
-        @Override public Reads createPaginator(Genomics genomics) {
-          return Reads.create(genomics);
-        }
-      };
-
-  public static final ReadGroupSetsFactory READGROUPSETS =
-      new ReadGroupSetsFactory() {
-        @Override public ReadGroupSets createPaginator(Genomics genomics) {
-          return ReadGroupSets.create(genomics);
-        }
-      };
-
-  public static final Factory<Variants, Genomics.Variants.Search, SearchVariantsResponse> VARIANTS =
-      new Factory<Variants, Genomics.Variants.Search, SearchVariantsResponse>() {
-        @Override public Variants createPaginator(Genomics genomics) {
-          return Variants.create(genomics);
-        }
-      };
-
-  public static final
-      Factory<Variantsets, Genomics.Variantsets.Search, SearchVariantSetsResponse> VARIANTSETS =
-          new Factory<Variantsets, Genomics.Variantsets.Search, SearchVariantSetsResponse>() {
-            @Override public Variantsets createPaginator(Genomics genomics) {
-              return Variantsets.create(genomics);
-            }
-          };
 
   private static GenomicsRequestInitializer<GenomicsRequest<?>> setFieldsInitializer(
       final String fields) {
