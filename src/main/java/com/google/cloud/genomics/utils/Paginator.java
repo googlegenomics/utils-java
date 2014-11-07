@@ -19,10 +19,13 @@ import com.google.api.services.genomics.model.CallSet;
 import com.google.api.services.genomics.model.CoverageBucket;
 import com.google.api.services.genomics.model.Dataset;
 import com.google.api.services.genomics.model.Job;
+import com.google.api.services.genomics.model.ListBasesResponse;
 import com.google.api.services.genomics.model.ListCoverageBucketsResponse;
 import com.google.api.services.genomics.model.ListDatasetsResponse;
 import com.google.api.services.genomics.model.Read;
 import com.google.api.services.genomics.model.ReadGroupSet;
+import com.google.api.services.genomics.model.Reference;
+import com.google.api.services.genomics.model.ReferenceSet;
 import com.google.api.services.genomics.model.SearchCallSetsRequest;
 import com.google.api.services.genomics.model.SearchCallSetsResponse;
 import com.google.api.services.genomics.model.SearchJobsRequest;
@@ -31,6 +34,10 @@ import com.google.api.services.genomics.model.SearchReadGroupSetsRequest;
 import com.google.api.services.genomics.model.SearchReadGroupSetsResponse;
 import com.google.api.services.genomics.model.SearchReadsRequest;
 import com.google.api.services.genomics.model.SearchReadsResponse;
+import com.google.api.services.genomics.model.SearchReferenceSetsRequest;
+import com.google.api.services.genomics.model.SearchReferenceSetsResponse;
+import com.google.api.services.genomics.model.SearchReferencesRequest;
+import com.google.api.services.genomics.model.SearchReferencesResponse;
 import com.google.api.services.genomics.model.SearchVariantSetsRequest;
 import com.google.api.services.genomics.model.SearchVariantSetsResponse;
 import com.google.api.services.genomics.model.SearchVariantsRequest;
@@ -41,6 +48,7 @@ import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.collect.AbstractSequentialIterator;
 import com.google.common.collect.FluentIterable;
+import com.google.common.collect.Lists;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -515,6 +523,156 @@ public abstract class Paginator<A, B, C extends GenomicsRequest<D>, D, E> {
   }
 
   /**
+   * A {@link Paginator} for the {@code searchReferenceSets()} API.
+   */
+  public static class ReferenceSets extends Paginator<
+      Genomics.Referencesets,
+      SearchReferenceSetsRequest,
+      Genomics.Referencesets.Search,
+      SearchReferenceSetsResponse,
+      ReferenceSet> {
+
+    /**
+     * Static factory method.
+     *
+     * @param genomics The {@link Genomics} stub.
+     * @return the new paginator.
+     */
+    public static ReferenceSets create(Genomics genomics) {
+      return new ReferenceSets(genomics);
+    }
+
+    private ReferenceSets(Genomics genomics) {
+      super(genomics);
+    }
+
+    @Override Genomics.Referencesets.Search createSearch(Genomics.Referencesets api,
+        final SearchReferenceSetsRequest request, Optional<String> pageToken) throws IOException {
+      return api.search(pageToken
+          .transform(
+              new Function<String, SearchReferenceSetsRequest>() {
+                @Override public SearchReferenceSetsRequest apply(String pageToken) {
+                  return request.setPageToken(pageToken);
+                }
+              })
+          .or(request));
+    }
+
+    @Override Genomics.Referencesets getApi(Genomics genomics) {
+      return genomics.referencesets();
+    }
+
+    @Override String getNextPageToken(SearchReferenceSetsResponse response) {
+      return response.getNextPageToken();
+    }
+
+    @Override Iterable<ReferenceSet> getResponses(SearchReferenceSetsResponse response) {
+      return response.getReferenceSets();
+    }
+  }
+
+  /**
+   * A {@link Paginator} for the {@code searchReferences()} API.
+   */
+  public static class References extends Paginator<
+      Genomics.References,
+      SearchReferencesRequest,
+      Genomics.References.Search,
+      SearchReferencesResponse,
+      Reference> {
+
+    /**
+     * A {@link Paginator} for the {@code bases()} API.
+     */
+    public static class Bases extends Paginator<
+        Genomics.References.Bases,
+        String,
+        Genomics.References.Bases.List,
+        ListBasesResponse,
+        String> {
+
+      /**
+       * Static factory method.
+       *
+       * @param genomics The {@link Genomics} stub.
+       * @return the new paginator.
+       */
+      public static Bases create(Genomics genomics) {
+        return new Bases(genomics);
+      }
+
+      private Bases(Genomics genomics) {
+        super(genomics);
+      }
+
+      @Override Genomics.References.Bases.List createSearch(
+          Genomics.References.Bases api,
+          String request, Optional<String> pageToken) throws IOException {
+        final Genomics.References.Bases.List list = api.list(request);
+        return pageToken
+            .transform(
+                new Function<String, Genomics.References.Bases.List>() {
+                  @Override public Genomics.References.Bases.List apply(
+                      String pageToken) {
+                    return list.setPageToken(pageToken);
+                  }
+                })
+            .or(list);
+      }
+
+      @Override Genomics.References.Bases getApi(Genomics genomics) {
+        return genomics.references().bases();
+      }
+
+      @Override String getNextPageToken(ListBasesResponse response) {
+        return response.getNextPageToken();
+      }
+
+      @Override Iterable<String> getResponses(ListBasesResponse response) {
+        return Lists.newArrayList(response.getSequence());
+      }
+    }
+
+    /**
+     * Static factory method.
+     *
+     * @param genomics The {@link Genomics} stub.
+     * @return the new paginator.
+     */
+    public static References create(Genomics genomics) {
+      return new References(genomics);
+    }
+
+    private References(Genomics genomics) {
+      super(genomics);
+    }
+
+    @Override Genomics.References.Search createSearch(Genomics.References api,
+        final SearchReferencesRequest request, Optional<String> pageToken) throws IOException {
+      return api.search(pageToken
+          .transform(
+              new Function<String, SearchReferencesRequest>() {
+                @Override public SearchReferencesRequest apply(String pageToken) {
+                  return request.setPageToken(pageToken);
+                }
+              })
+          .or(request));
+    }
+
+    @Override Genomics.References getApi(Genomics genomics) {
+      return genomics.references();
+    }
+
+    @Override String getNextPageToken(SearchReferencesResponse response) {
+      return response.getNextPageToken();
+    }
+
+    @Override Iterable<Reference> getResponses(SearchReferencesResponse response) {
+      return response.getReferences();
+    }
+  }
+
+  /**
    * A {@link RuntimeException} for wrapping {@link IOException}s that occur during lazy consumption
    * of search results.
    */
@@ -628,6 +786,8 @@ public abstract class Paginator<A, B, C extends GenomicsRequest<D>, D, E> {
       return response.getVariantSets();
     }
   }
+
+  // TODO: Are these factory fields actually being used?
 
   public static final Factory<Callsets, Genomics.Callsets.Search, SearchCallSetsResponse> CALLSETS =
       new Factory<Callsets, Genomics.Callsets.Search, SearchCallSetsResponse>() {
