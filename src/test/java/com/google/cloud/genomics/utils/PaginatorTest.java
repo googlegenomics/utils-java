@@ -90,4 +90,27 @@ public class PaginatorTest {
     assertTrue(ids.isEmpty());
   }
 
+  @Test
+  public void testFields() throws Exception {
+    Mockito.when(readGroupSets.search(new SearchReadGroupSetsRequest().setName("HG")))
+        .thenReturn(readGroupSetSearch);
+    Mockito.when(readGroupSetSearch.setFields(Mockito.anyString()))
+        .thenReturn(readGroupSetSearch);
+    Mockito.when(readGroupSetSearch.execute()).thenReturn(
+        new SearchReadGroupSetsResponse()
+            .setReadGroupSets(Lists.newArrayList(new ReadGroupSet().setId("r1"))));
+
+    Paginator.ReadGroupSets paginator = Paginator.ReadGroupSets.create(genomics);
+    List<String> ids = Lists.newArrayList();
+    for (ReadGroupSet set : paginator.search(
+        new SearchReadGroupSetsRequest().setName("HG"), "readGroupSets(id,name)")) {
+      ids.add(set.getId());
+    }
+
+    assertEquals(Lists.newArrayList("r1"), ids);
+
+    // Make sure the fields parameter actually gets passed along
+    Mockito.verify(readGroupSetSearch, Mockito.atLeastOnce()).setFields("readGroupSets(id,name)");
+  }
+
 }
