@@ -843,6 +843,7 @@ public abstract class Paginator<A, B, C extends GenomicsRequest<D>, D, E> {
                                   new Function<C, Pair>() {
                                     @Override public Pair apply(C search) {
                                       try {
+                                        initializer.initialize(search);
                                         D response = search.execute();
                                         Optional<String> pageToken =
                                             Optional.fromNullable(getNextPageToken(response));
