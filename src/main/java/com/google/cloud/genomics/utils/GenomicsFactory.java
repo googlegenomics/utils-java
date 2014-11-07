@@ -49,6 +49,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.security.GeneralSecurityException;
 import java.util.Collection;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Code required to manufacture instances of a {@link Genomics} stub. Right now, there are 3
@@ -285,6 +286,8 @@ public class GenomicsFactory {
   private final String userName;
   private final Supplier<? extends VerificationCodeReceiver> verificationCodeReceiver;
 
+  private final AtomicInteger initializedRequestsCount = new AtomicInteger();
+
   private GenomicsFactory(
       String applicationName,
       DataStoreFactory dataStoreFactory,
@@ -316,7 +319,7 @@ public class GenomicsFactory {
     this.userDir = userDir;
   }
 
-  private RequestCountingGenomics create(
+  private Genomics create(
       final HttpRequestInitializer delegate,
       GoogleClientRequestInitializer googleClientRequestInitializer) {
     final Genomics.Builder builder = new Genomics
@@ -325,6 +328,7 @@ public class GenomicsFactory {
             jsonFactory,
             new HttpRequestInitializer() {
               @Override public void initialize(HttpRequest httpRequest) throws IOException {
+                initializedRequestsCount.incrementAndGet();
                 if (null != delegate) {
                   delegate.initialize(httpRequest);
                 }
@@ -344,11 +348,15 @@ public class GenomicsFactory {
     if (servicePath.isPresent()) {
       builder.setServicePath(servicePath.get());
     }
-    return RequestCountingGenomics.of(builder.build());
+    return builder.build();
   }
 
   public DataStoreFactory getDataStoreFactory() {
     return dataStoreFactory;
+  }
+
+  public final int initializedRequestsCount() {
+    return initializedRequestsCount.get();
   }
 
   /**
@@ -357,7 +365,7 @@ public class GenomicsFactory {
    * @param apiKey The API key of the Google Cloud project to charge requests to.
    * @return The new {@code Genomics} stub
    */
-  public RequestCountingGenomics fromApiKey(String apiKey) {
+  public Genomics fromApiKey(String apiKey) {
     return create(null, new CommonGoogleClientRequestInitializer(apiKey));
   }
 
@@ -368,7 +376,7 @@ public class GenomicsFactory {
    * @return The new {@code Genomics} stub
    * @throws IOException
    */
-  public RequestCountingGenomics fromCredential(Credential credential) throws IOException {
+  public Genomics fromCredential(Credential credential) throws IOException {
     return create(credential, null);
   }
 
@@ -379,7 +387,7 @@ public class GenomicsFactory {
    * @return The new {@code Genomics} stub
    * @throws IOException
    */
-  public RequestCountingGenomics fromClientSecretsFile(File clientSecretsJson) throws IOException {
+  public Genomics fromClientSecretsFile(File clientSecretsJson) throws IOException {
     return fromCredential(makeCredential(clientSecretsJson));
   }
 
@@ -435,7 +443,7 @@ public class GenomicsFactory {
    * @throws GeneralSecurityException
    * @throws IOException
    */
-  public RequestCountingGenomics fromServiceAccount(String serviceAccountId, File p12File)
+  public Genomics fromServiceAccount(String serviceAccountId, File p12File)
       throws GeneralSecurityException, IOException {
     return fromCredential(
         refreshToken(
