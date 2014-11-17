@@ -51,6 +51,8 @@ import java.security.GeneralSecurityException;
 import java.util.Collection;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import javax.annotation.Nullable;
+
 /**
  * Code required to manufacture instances of a {@link Genomics} stub. Right now, there are 3
  * supported methods of obtaining a stub:
@@ -327,16 +329,43 @@ public class GenomicsFactory {
             httpTransport,
             jsonFactory,
             new HttpRequestInitializer() {
-              @Override public void initialize(HttpRequest httpRequest) throws IOException {
+              @Override public void initialize(final HttpRequest request) throws IOException {
                 initializedRequestsCount.incrementAndGet();
                 if (null != delegate) {
-                  delegate.initialize(httpRequest);
+                  delegate.initialize(request);
                 }
-                httpRequest
+                request
                     .setConnectTimeout(connectTimeout)
                     .setReadTimeout(readTimeout)
-                    .setUnsuccessfulResponseHandler(unsuccessfulResponseHandler)
-                    .setIOExceptionHandler(ioExceptionHandler);
+                    .setUnsuccessfulResponseHandler(
+                        new HttpUnsuccessfulResponseHandler() {
+
+                          @Nullable private final HttpUnsuccessfulResponseHandler
+                              delegate = request.getUnsuccessfulResponseHandler();
+
+                          @Override public boolean handleResponse(HttpRequest request,
+                              HttpResponse response, boolean supportsRetry) throws IOException {
+                            return null != delegate
+                                && delegate.handleResponse(request, response, supportsRetry)
+                                || null != unsuccessfulResponseHandler
+                                && unsuccessfulResponseHandler.handleResponse(
+                                    request, response, supportsRetry);
+                          }
+                        })
+                    .setIOExceptionHandler(
+                        new HttpIOExceptionHandler() {
+
+                          @Nullable private final HttpIOExceptionHandler
+                              delegate = request.getIOExceptionHandler();
+
+                          @Override public boolean handleIOException(HttpRequest request,
+                              boolean supportsRetry) throws IOException {
+                            return null != delegate
+                                && delegate.handleIOException(request, supportsRetry)
+                                || null != ioExceptionHandler
+                                && ioExceptionHandler.handleIOException(request, supportsRetry);
+                          }
+                        });
               }
             })
         .setApplicationName(applicationName)

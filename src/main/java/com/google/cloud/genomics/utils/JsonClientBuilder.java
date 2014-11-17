@@ -26,9 +26,12 @@ import com.google.api.client.googleapis.services.json.AbstractGoogleJsonClient;
 import com.google.api.client.googleapis.util.Utils;
 import com.google.api.client.http.HttpBackOffIOExceptionHandler;
 import com.google.api.client.http.HttpBackOffUnsuccessfulResponseHandler;
+import com.google.api.client.http.HttpIOExceptionHandler;
 import com.google.api.client.http.HttpRequest;
 import com.google.api.client.http.HttpRequestInitializer;
+import com.google.api.client.http.HttpResponse;
 import com.google.api.client.http.HttpTransport;
+import com.google.api.client.http.HttpUnsuccessfulResponseHandler;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.util.BackOff;
 import com.google.api.client.util.ExponentialBackOff;
@@ -258,20 +261,45 @@ public final class JsonClientBuilder {
 
   private static class Initializer implements HttpRequestInitializer {
 
-    private static final BackOff DEFAULT_BACK_OFF = new ExponentialBackOff();
-
     void initialize(AbstractGoogleJsonClient.Builder builder) {}
 
     final void initialize(AbstractGoogleJsonClient.Builder builder, String applicationName) {
       initialize(builder.setApplicationName(applicationName));
     }
 
-    @Override public void initialize(HttpRequest request) throws IOException {
+    @Override public void initialize(final HttpRequest request) throws IOException {
+      final BackOff backOff = new ExponentialBackOff();
       request
           .setIOExceptionHandler(
-              new HttpBackOffIOExceptionHandler(DEFAULT_BACK_OFF))
+              new HttpIOExceptionHandler() {
+
+                private final HttpIOExceptionHandler
+                    delegate = request.getIOExceptionHandler(),
+                    exponentialBackoff = new HttpBackOffIOExceptionHandler(backOff);
+
+                @Override public boolean handleIOException(HttpRequest request,
+                    boolean supportsRetry) throws IOException {
+                  return null != delegate
+                      && delegate.handleIOException(request, supportsRetry)
+                      && exponentialBackoff.handleIOException(request, supportsRetry);
+                }
+              })
           .setUnsuccessfulResponseHandler(
-              new HttpBackOffUnsuccessfulResponseHandler(DEFAULT_BACK_OFF));
+              new HttpUnsuccessfulResponseHandler() {
+
+                private final HttpUnsuccessfulResponseHandler
+                    delegate = request.getUnsuccessfulResponseHandler(),
+                    exponentialBackoff = new HttpBackOffUnsuccessfulResponseHandler(backOff);
+
+                @Override public boolean handleResponse(HttpRequest request, HttpResponse response,
+                    boolean supportsRetry) throws IOException {
+                  int statusCode = response.getStatusCode();
+                  return null != delegate
+                      && delegate.handleResponse(request, response, supportsRetry)
+                      || 500 <= statusCode && statusCode < 600
+                      && exponentialBackoff.handleResponse(request, response, supportsRetry);
+                }
+              });
     }
   }
 
