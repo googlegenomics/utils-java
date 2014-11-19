@@ -78,23 +78,6 @@ public class GenomicsFactory {
     private Optional<String> rootUrl = Optional.absent();
     private Optional<String> servicePath = Optional.absent();
     private Collection<String> scopes = GenomicsScopes.all();
-    private HttpUnsuccessfulResponseHandler unsuccessfulResponseHandler =
-        new HttpUnsuccessfulResponseHandler() {
-
-          private final HttpUnsuccessfulResponseHandler delegate =
-              new HttpBackOffUnsuccessfulResponseHandler(new ExponentialBackOff());
-
-          @Override public boolean handleResponse(HttpRequest request,
-              HttpResponse response, boolean supportsRetry) throws IOException {
-            int statusCode = response.getStatusCode();
-            return 500 <= statusCode
-                && statusCode < 600
-                && delegate.handleResponse(request, response, supportsRetry);
-          }
-        };
-    private HttpIOExceptionHandler ioExceptionHandler = new HttpBackOffIOExceptionHandler(
-        new ExponentialBackOff());
-
     private final File userDir;
     private String userName = System.getProperty("user.name");
     private Supplier<? extends VerificationCodeReceiver>
@@ -124,8 +107,6 @@ public class GenomicsFactory {
           servicePath,
           connectTimeout,
           verificationCodeReceiver,
-          unsuccessfulResponseHandler,
-          ioExceptionHandler,
           userDir);
     }
 
@@ -210,29 +191,6 @@ public class GenomicsFactory {
     }
 
     /**
-     * Set the unsuccessful response handler for this client.
-     *
-     * @param unsuccessfulResponseHandler the unsuccessful response handler
-     * @return this builder
-     */
-    public Builder setUnsuccessfulResponseHandler(
-        HttpUnsuccessfulResponseHandler unsuccessfulResponseHandler) {
-      this.unsuccessfulResponseHandler = unsuccessfulResponseHandler;
-      return this;
-    }
-
-    /**
-     * Set the IO exception handler for this client.
-     *
-     * @param ioExceptionHandler the IO exception handler
-     * @return this builder
-     */
-    public Builder setIOExceptionHandler(HttpIOExceptionHandler ioExceptionHandler) {
-      this.ioExceptionHandler = ioExceptionHandler;
-      return this;
-    }
-
-    /**
      * Set the user name. The default is {@code System.getProperty("user.name")}. Most code will
      * rarely have to call this method.
      *
@@ -282,8 +240,6 @@ public class GenomicsFactory {
   private final Optional<String> servicePath;
   private final Collection<String> scopes;
   private final File userDir;
-  private final HttpUnsuccessfulResponseHandler unsuccessfulResponseHandler;
-  private final HttpIOExceptionHandler ioExceptionHandler;
   private final String userName;
   private final Supplier<? extends VerificationCodeReceiver> verificationCodeReceiver;
 
@@ -303,8 +259,6 @@ public class GenomicsFactory {
       Optional<String> servicePath,
       int connectTimeout,
       Supplier<? extends VerificationCodeReceiver> verificationCodeReceiver,
-      HttpUnsuccessfulResponseHandler unsuccessfulResponseHandler,
-      HttpIOExceptionHandler ioExceptionHandler,
       File userDir) {
     this.applicationName = applicationName;
     this.dataStoreFactory = dataStoreFactory;
@@ -317,8 +271,6 @@ public class GenomicsFactory {
     this.servicePath = servicePath;
     this.connectTimeout = connectTimeout;
     this.verificationCodeReceiver = verificationCodeReceiver;
-    this.unsuccessfulResponseHandler = unsuccessfulResponseHandler;
-    this.ioExceptionHandler = ioExceptionHandler;
     this.userDir = userDir;
   }
 
@@ -335,6 +287,12 @@ public class GenomicsFactory {
                 if (null != delegate) {
                   delegate.initialize(request);
                 }
+
+                final HttpBackOffUnsuccessfulResponseHandler unsuccessfulResponseHandler
+                    = new HttpBackOffUnsuccessfulResponseHandler(new ExponentialBackOff());
+                final HttpIOExceptionHandler ioExceptionHandler
+                    = new HttpBackOffIOExceptionHandler(new ExponentialBackOff());
+
                 request
                     .setConnectTimeout(connectTimeout)
                     .setReadTimeout(readTimeout)
@@ -348,10 +306,9 @@ public class GenomicsFactory {
                               HttpResponse response, boolean supportsRetry) throws IOException {
                             unsuccessfulResponsesCount.incrementAndGet();
 
-                            return null != delegate
-                                && delegate.handleResponse(request, response, supportsRetry)
-                                || null != unsuccessfulResponseHandler
-                                && unsuccessfulResponseHandler.handleResponse(
+                            return (null != delegate
+                                && delegate.handleResponse(request, response, supportsRetry))
+                                || unsuccessfulResponseHandler.handleResponse(
                                     request, response, supportsRetry);
                           }
                         })
@@ -365,10 +322,9 @@ public class GenomicsFactory {
                               boolean supportsRetry) throws IOException {
                             ioExceptionsCount.incrementAndGet();
 
-                            return null != delegate
-                                && delegate.handleIOException(request, supportsRetry)
-                                || null != ioExceptionHandler
-                                && ioExceptionHandler.handleIOException(request, supportsRetry);
+                            return (null != delegate
+                                && delegate.handleIOException(request, supportsRetry))
+                                || ioExceptionHandler.handleIOException(request, supportsRetry);
                           }
                         });
               }

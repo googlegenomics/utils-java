@@ -16,16 +16,10 @@
 package com.google.cloud.genomics.utils;
 
 import com.google.api.client.googleapis.json.GoogleJsonResponseException;
-import com.google.api.client.http.HttpIOExceptionHandler;
-import com.google.api.client.http.HttpRequest;
-import com.google.api.client.http.HttpResponse;
-import com.google.api.client.http.HttpUnsuccessfulResponseHandler;
 import com.google.api.services.genomics.Genomics;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-
-import java.io.IOException;
 
 import static org.junit.Assert.assertEquals;
 
@@ -34,24 +28,7 @@ public class GenomicsFactoryTest {
 
   @Test
   public void testBasic() throws Exception {
-    GenomicsFactory genomicsFactory = GenomicsFactory.builder("test_client")
-        .setUnsuccessfulResponseHandler(new HttpUnsuccessfulResponseHandler() {
-          @Override
-          public boolean handleResponse(HttpRequest request, HttpResponse response,
-              boolean supportsRetry) throws IOException {
-            // Don't retry
-            return false;
-          }
-        })
-        .setIOExceptionHandler(new HttpIOExceptionHandler() {
-          @Override
-          public boolean handleIOException(HttpRequest request, boolean supportsRetry)
-              throws IOException {
-            // Don't retry
-            return false;
-          }
-        })
-        .build();
+    GenomicsFactory genomicsFactory = GenomicsFactory.builder("test_client").build();
 
     Genomics genomics = genomicsFactory.fromApiKey("xyz");
     assertEquals(0, genomicsFactory.initializedRequestsCount());
