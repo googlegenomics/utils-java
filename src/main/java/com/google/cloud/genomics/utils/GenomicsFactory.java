@@ -43,6 +43,7 @@ import com.google.common.base.Optional;
 import com.google.common.base.Supplier;
 import com.google.common.base.Suppliers;
 
+import javax.annotation.Nullable;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
@@ -50,8 +51,6 @@ import java.io.Reader;
 import java.security.GeneralSecurityException;
 import java.util.Collection;
 import java.util.concurrent.atomic.AtomicInteger;
-
-import javax.annotation.Nullable;
 
 /**
  * Code required to manufacture instances of a {@link Genomics} stub. Right now, there are 3
@@ -289,6 +288,8 @@ public class GenomicsFactory {
   private final Supplier<? extends VerificationCodeReceiver> verificationCodeReceiver;
 
   private final AtomicInteger initializedRequestsCount = new AtomicInteger();
+  private final AtomicInteger unsuccessfulResponsesCount = new AtomicInteger();
+  private final AtomicInteger ioExceptionsCount = new AtomicInteger();
 
   private GenomicsFactory(
       String applicationName,
@@ -345,6 +346,8 @@ public class GenomicsFactory {
 
                           @Override public boolean handleResponse(HttpRequest request,
                               HttpResponse response, boolean supportsRetry) throws IOException {
+                            unsuccessfulResponsesCount.incrementAndGet();
+
                             return null != delegate
                                 && delegate.handleResponse(request, response, supportsRetry)
                                 || null != unsuccessfulResponseHandler
@@ -360,6 +363,8 @@ public class GenomicsFactory {
 
                           @Override public boolean handleIOException(HttpRequest request,
                               boolean supportsRetry) throws IOException {
+                            ioExceptionsCount.incrementAndGet();
+
                             return null != delegate
                                 && delegate.handleIOException(request, supportsRetry)
                                 || null != ioExceptionHandler
@@ -386,6 +391,14 @@ public class GenomicsFactory {
 
   public final int initializedRequestsCount() {
     return initializedRequestsCount.get();
+  }
+
+  public final int unsuccessfulResponsesCount() {
+    return unsuccessfulResponsesCount.get();
+  }
+
+  public final int ioExceptionsCount() {
+    return ioExceptionsCount.get();
   }
 
   /**
