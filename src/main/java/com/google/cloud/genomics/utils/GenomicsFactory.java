@@ -39,15 +39,19 @@ import com.google.api.client.util.store.DataStoreFactory;
 import com.google.api.client.util.store.FileDataStoreFactory;
 import com.google.api.services.genomics.Genomics;
 import com.google.api.services.genomics.GenomicsScopes;
+import com.google.common.base.Charsets;
 import com.google.common.base.Optional;
 import com.google.common.base.Supplier;
 import com.google.common.base.Suppliers;
+import com.google.common.io.Files;
 
 import javax.annotation.Nullable;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
+import java.io.Serializable;
+import java.io.StringReader;
 import java.security.GeneralSecurityException;
 import java.util.Collection;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -371,7 +375,7 @@ public class GenomicsFactory {
   }
 
   /**
-   * Create a {@link Genomics} stub from a {@link Credential}.
+   * This method will soon be private. Use {@link OfflineAuth} instead.
    *
    * @param credential A Credential that has already been authorized.
    * @return The new {@code Genomics} stub
@@ -393,10 +397,7 @@ public class GenomicsFactory {
   }
 
   /**
-   * Create an authorized credential using a {@code client_secrets.json} {@link File}.
-   * Use this method when you need to store the resulting accessToken for later use.
-   * Otherwise, you should create a {@link Genomics} object directly using
-   * {@code fromClientSecretsFile}.
+   * This method will soon be private. Use {@code getOfflineAuth} instead.
    *
    * @param clientSecretsJson {@code client_secrets.json} file.
    * @return An authorized {@link Credential}
@@ -467,6 +468,71 @@ public class GenomicsFactory {
               + "need to first clear the stored credentials by removing the file at "
               + userDir.getPath() + "/StoredCredential",
           e);
+    }
+  }
+
+  /**
+   * Creates offline-friendly auth object using from an apiKey and/or a clientSecretsJson path.
+   * At least one of apiKey and clientSecretsJson must be non-null.
+   *
+   * Use this method when you need to store the resulting OfflineAuth for later use.
+   * Otherwise, you should create a {@link Genomics} object directly using
+   * {@code fromClientSecretsFile}.
+   *
+   * @param apiKey Optional. The API key of the Google Cloud project to charge requests to.
+   * @param clientSecretsFilename Optional. {@code client_secrets.json} file name.
+   * @return An OfflineAuth object that can be passed to {@code fromOfflineAuth}
+   * @throws IOException
+   */
+  public OfflineAuth getOfflineAuth(String apiKey, String clientSecretsFilename)
+      throws IOException {
+    if (apiKey == null && clientSecretsFilename == null) {
+      throw new IllegalArgumentException(
+          "An API key or client secrets filename must be specified.");
+    }
+
+    OfflineAuth offlineAuth = new OfflineAuth();
+    offlineAuth.applicationName = applicationName;
+    offlineAuth.apiKey = apiKey;
+
+    if (clientSecretsFilename != null) {
+      File clientSecretsFile = new File(clientSecretsFilename);
+      Credential credential = makeCredential(clientSecretsFile);
+      offlineAuth.accessToken = credential.getAccessToken();
+      offlineAuth.refreshToken = credential.getRefreshToken();
+      offlineAuth.clientSecretsString = Files.toString(clientSecretsFile, Charsets.UTF_8);
+    }
+
+    return offlineAuth;
+  }
+
+  public static class OfflineAuth implements Serializable {
+    public String applicationName;
+    public String accessToken;
+    public String refreshToken;
+    public String clientSecretsString;
+    public String apiKey;
+
+    /**
+     * Create a {@link Genomics} stub.
+     *
+     * @return The new {@code Genomics} stub
+     */
+    public Genomics getGenomics() throws IOException, GeneralSecurityException {
+      GenomicsFactory factory = GenomicsFactory.builder(applicationName).build();
+      if (clientSecretsString == null) {
+        return factory.fromApiKey(apiKey);
+      }
+
+      return factory.create(new GoogleCredential.Builder()
+          .setTransport(factory.httpTransport)
+          .setJsonFactory(factory.jsonFactory)
+          .setClientSecrets(GoogleClientSecrets.load(factory.jsonFactory,
+              new StringReader(clientSecretsString)))
+          .build()
+          .setAccessToken(accessToken)
+          .setRefreshToken(refreshToken),
+          new CommonGoogleClientRequestInitializer(apiKey));
     }
   }
 }
