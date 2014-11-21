@@ -229,6 +229,8 @@ public class GenomicsFactory {
     return new Builder(applicationName);
   }
 
+  private static final int NUM_RETRIES = 30;
+
   private final String applicationName;
 
   private final int connectTimeout;
@@ -296,6 +298,7 @@ public class GenomicsFactory {
                 request
                     .setConnectTimeout(connectTimeout)
                     .setReadTimeout(readTimeout)
+                    .setNumberOfRetries(NUM_RETRIES)
                     .setUnsuccessfulResponseHandler(
                         new HttpUnsuccessfulResponseHandler() {
 
