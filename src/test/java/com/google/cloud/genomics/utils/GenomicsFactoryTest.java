@@ -52,4 +52,26 @@ public class GenomicsFactoryTest {
     assertEquals(2, genomicsFactory.unsuccessfulResponsesCount());
     assertEquals(0, genomicsFactory.ioExceptionsCount());
   }
+
+  @Test
+  public void testOfflineAuth() throws Exception {
+    GenomicsFactory genomicsFactory = GenomicsFactory.builder("test_client").build();
+    GenomicsFactory.OfflineAuth auth = genomicsFactory.getOfflineAuth("xyz", null);
+
+    assertEquals(0, auth.getFactory().initializedRequestsCount());
+
+    try {
+      auth.getGenomics().jobs().get("123").execute();
+    } catch (GoogleJsonResponseException e) {
+      // Expected
+    }
+    assertEquals(1, auth.getFactory().initializedRequestsCount());
+
+    try {
+      auth.getGenomics().jobs().get("123").execute();
+    } catch (GoogleJsonResponseException e) {
+      // Expected
+    }
+    assertEquals(2, auth.getFactory().initializedRequestsCount());
+  }
 }
