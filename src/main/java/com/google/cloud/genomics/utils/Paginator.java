@@ -59,17 +59,19 @@ import java.util.Iterator;
  * An abstraction that understands the {@code pageToken} / {@code nextPageToken} protocol for paging
  * results back to the user.
  *
- * <p>The {@link #search(Object, GenomicsRequestInitializer)} method can obtain an {@link Iterable}
- * to the objects returned from a search request. Although it is possible to invoke this method
- * directly, the {@code Iterable} that is returned may throw {@link SearchException} during
- * iteration. Client code is responsible for catching this exception where the {@code Iterable} is
- * consumed, unwrapping the underlying {@link IOException}, and handling or rethrowing it.
+ * <p>The {@link #search(Object, GenomicsRequestInitializer, RetryPolicy)} method can obtain an
+ * {@link Iterable} to the objects returned from a search request. Although it is possible to
+ * invoke this method directly, the {@code Iterable} that is returned may throw
+ * {@link SearchException} during iteration. Client code is responsible for catching this exception
+ * where the {@code Iterable} is consumed, unwrapping the underlying {@link IOException}, and
+ * handling or rethrowing it.
  * </p>
  *
  * <p>A safer alternative for consuming the results of a search is
- * {@link #search(Object, GenomicsRequestInitializer, Callback)}. This method requires the client
- * code to pass in a {@link Callback} object that consumes the search results and will unwrap and
- * rethrow {@link IOException}s that occur during iteration for you.
+ * {@link #search(Object, GenomicsRequestInitializer, Callback, RetryPolicy)}.
+ * This method requires the client code to pass in a {@link Callback} object that consumes the
+ * search results and will unwrap and rethrow {@link IOException}s that occur during iteration
+ * for you.
  * </p>
  *
  * <p>Example usage: Fetching all {@link ReadGroupSet}s in a {@link Dataset}:</p>
@@ -134,10 +136,11 @@ public abstract class Paginator<A, B, C extends GenomicsRequest<D>, D, E> {
   }
 
   /**
-   * A callback object for {@link #search(Object, GenomicsRequestInitializer, Callback)} that can
+   * A callback object for
+   * {@link #search(Object, GenomicsRequestInitializer, Callback, RetryPolicy)} that can
    * consume all or part of the results from a search request and accumulate a value, which becomes
-   * the value returned from the {@link #search(Object, GenomicsRequestInitializer, Callback)}
-   * method.
+   * the value returned from the
+   * {@link #search(Object, GenomicsRequestInitializer, Callback, RetryPolicy)} method.
    *
    * @param <E> The type of objects returned from a search
    * @param <F> The type of object to accumulate when consuming search results.
