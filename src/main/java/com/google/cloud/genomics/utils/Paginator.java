@@ -340,13 +340,13 @@ public abstract class Paginator<A, B, C extends GenomicsRequest<D>, D, E> {
 
     public Iterable<Dataset> search(
         GenomicsRequestInitializer<? super Genomics.Datasets.List> initializer) {
-      return search(null, initializer);
+      return search(null, initializer, RetryPolicy.defaultPolicy());
     }
 
     public <F> F search(
         GenomicsRequestInitializer<? super Genomics.Datasets.List> initializer,
         Callback<Dataset, ? extends F> callback) throws IOException {
-      return search(null, initializer, callback);
+      return search(null, initializer, callback, RetryPolicy.defaultPolicy());
     }
 
     public Iterable<Dataset> search(String fields) {
@@ -773,12 +773,12 @@ public abstract class Paginator<A, B, C extends GenomicsRequest<D>, D, E> {
     }
   }
 
-  private static final GenomicsRequestInitializer<GenomicsRequest<?>> DEFAULT_INITIALIZER =
+  public static final GenomicsRequestInitializer<GenomicsRequest<?>> DEFAULT_INITIALIZER =
       new GenomicsRequestInitializer<GenomicsRequest<?>>() {
         @Override public void initialize(GenomicsRequest<?> search) {}
       };
 
-  private static GenomicsRequestInitializer<GenomicsRequest<?>> setFieldsInitializer(
+  public static GenomicsRequestInitializer<GenomicsRequest<?>> setFieldsInitializer(
       final String fields) {
     return new GenomicsRequestInitializer<GenomicsRequest<?>>() {
           @Override public void initialize(GenomicsRequest<?> search) {
@@ -810,25 +810,28 @@ public abstract class Paginator<A, B, C extends GenomicsRequest<D>, D, E> {
    * @return the stream of search results.
    */
   public final Iterable<E> search(final B request) {
-    return search(request, DEFAULT_INITIALIZER);
+    return search(request, DEFAULT_INITIALIZER, RetryPolicy.defaultPolicy());
   }
 
   public final <F> F search(B request, Callback<E, ? extends F> callback) throws IOException {
-    return search(request, DEFAULT_INITIALIZER, callback);
+    return search(request, DEFAULT_INITIALIZER, callback, RetryPolicy.defaultPolicy());
   }
 
   /**
    * Search for objects. Warning: the returned {@link Iterable} may throw {@link SearchException}
    * during iteration; users are encouraged to call
-   * {@link #search(Object, GenomicsRequestInitializer, Callback)} instead.
+   * {@link #search(Object, GenomicsRequestInitializer, Callback, RetryPolicy)} instead.
    *
    * @param request The search request.
    * @param initializer The {@link GenomicsRequestInitializer} to initialize requests with.
+   * @param retryPolicy A retry policy specifying behavior when a request fails
+   *     (usually due to SocketTimeoutExceptions)
    * @return A lazy stream of search results.
    */
   public final Iterable<E> search(
       final B request,
-      final GenomicsRequestInitializer<? super C> initializer) {
+      final GenomicsRequestInitializer<? super C> initializer,
+      final RetryPolicy retryPolicy) {
     final A api = getApi(genomics);
     return FluentIterable
         .from(
@@ -844,7 +847,7 @@ public abstract class Paginator<A, B, C extends GenomicsRequest<D>, D, E> {
                                     @Override public Pair apply(C search) {
                                       try {
                                         initializer.initialize(search);
-                                        D response = search.execute();
+                                        D response = retryPolicy.execute(search);
                                         Optional<String> pageToken =
                                             Optional.fromNullable(getNextPageToken(response));
                                         return new Pair(
@@ -888,15 +891,18 @@ public abstract class Paginator<A, B, C extends GenomicsRequest<D>, D, E> {
    * @param request The search request.
    * @param initializer The {@link GenomicsRequestInitializer} with which to initialize requests.
    * @param callback The {@link Callback} used to consume search results.
+   * @param retryPolicy A retry policy specifying behavior when a request fails
+   *     (usually due to SocketTimeoutExceptions)
    * @return whatever value {@link Callback#consumeResponses} returned.
    * @throws IOException if an IOException occurred while consuming search results.
    */
   public final <F> F search(
       B request,
       GenomicsRequestInitializer<? super C> initializer,
-      Callback<E, ? extends F> callback) throws IOException {
+      Callback<E, ? extends F> callback,
+      RetryPolicy retryPolicy) throws IOException {
     try {
-      return callback.consumeResponses(search(request, initializer));
+      return callback.consumeResponses(search(request, initializer, retryPolicy));
     } catch (SearchException e) {
       throw e.getCause();
     }
@@ -913,11 +919,11 @@ public abstract class Paginator<A, B, C extends GenomicsRequest<D>, D, E> {
    * @return the stream of search results.
    */
   public final Iterable<E> search(final B request, final String fields) {
-    return search(request, setFieldsInitializer(fields));
+    return search(request, setFieldsInitializer(fields), RetryPolicy.defaultPolicy());
   }
 
   public final <F> F search(B request, final String fields, Callback<E, ? extends F> callback)
       throws IOException {
-    return search(request, setFieldsInitializer(fields), callback);
+    return search(request, setFieldsInitializer(fields), callback, RetryPolicy.defaultPolicy());
   }
 }
