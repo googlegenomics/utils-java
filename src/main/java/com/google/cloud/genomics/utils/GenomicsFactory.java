@@ -513,22 +513,17 @@ public class GenomicsFactory {
     public String clientSecretsString;
     public String apiKey;
 
-    private GenomicsFactory factory;
-
-    public GenomicsFactory getFactory() throws GeneralSecurityException, IOException {
-      if (factory == null) {
-        factory = GenomicsFactory.builder(applicationName).build();
-      }
-      return factory;
+    public GenomicsFactory getDefaultFactory() throws GeneralSecurityException, IOException {
+      return GenomicsFactory.builder(applicationName).build();
     }
 
     /**
      * Create a {@link Genomics} stub.
      *
      * @return The new {@code Genomics} stub
+     * @param factory The factory used to generate the Genomics object
      */
-    public Genomics getGenomics() throws IOException, GeneralSecurityException {
-      GenomicsFactory factory = getFactory();
+    public Genomics getGenomics(GenomicsFactory factory) throws IOException {
       if (clientSecretsString == null) {
         return factory.fromApiKey(apiKey);
       }

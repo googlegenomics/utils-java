@@ -21,6 +21,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectOutputStream;
+
 import static org.junit.Assert.assertEquals;
 
 @RunWith(JUnit4.class)
@@ -58,20 +61,32 @@ public class GenomicsFactoryTest {
     GenomicsFactory genomicsFactory = GenomicsFactory.builder("test_client").build();
     GenomicsFactory.OfflineAuth auth = genomicsFactory.getOfflineAuth("xyz", null);
 
-    assertEquals(0, auth.getFactory().initializedRequestsCount());
+    GenomicsFactory authFactory = auth.getDefaultFactory();
+    assertEquals(0, authFactory.initializedRequestsCount());
 
     try {
-      auth.getGenomics().jobs().get("123").execute();
+      auth.getGenomics(authFactory).jobs().get("123").execute();
     } catch (GoogleJsonResponseException e) {
       // Expected
     }
-    assertEquals(1, auth.getFactory().initializedRequestsCount());
+    assertEquals(1, authFactory.initializedRequestsCount());
 
     try {
-      auth.getGenomics().jobs().get("123").execute();
+      auth.getGenomics(authFactory).jobs().get("123").execute();
     } catch (GoogleJsonResponseException e) {
       // Expected
     }
-    assertEquals(2, auth.getFactory().initializedRequestsCount());
+    assertEquals(2, authFactory.initializedRequestsCount());
+  }
+
+  @Test
+  public void testOfflineAuth_isSerializable() throws Exception {
+    GenomicsFactory genomicsFactory = GenomicsFactory.builder("test_client").build();
+    GenomicsFactory.OfflineAuth auth = genomicsFactory.getOfflineAuth("xyz", null);
+
+    // This mimics the serialization flow used by pipelines
+    auth.getGenomics(auth.getDefaultFactory());
+    ObjectOutputStream oos = new ObjectOutputStream(new ByteArrayOutputStream());
+    oos.writeObject(auth);
   }
 }
