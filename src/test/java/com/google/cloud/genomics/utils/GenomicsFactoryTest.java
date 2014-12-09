@@ -17,6 +17,10 @@ package com.google.cloud.genomics.utils;
 
 import com.google.api.client.googleapis.json.GoogleJsonResponseException;
 import com.google.api.services.genomics.Genomics;
+import com.google.api.services.genomics.GenomicsScopes;
+import com.google.api.services.storage.Storage;
+import com.google.api.services.storage.StorageScopes;
+import com.google.common.collect.Lists;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -88,5 +92,31 @@ public class GenomicsFactoryTest {
     auth.getGenomics(auth.getDefaultFactory());
     ObjectOutputStream oos = new ObjectOutputStream(new ByteArrayOutputStream());
     oos.writeObject(auth);
+  }
+
+  @Test
+  public void testCustomBuilder() throws Exception {
+    GenomicsFactory factory = GenomicsFactory.builder("test_client")
+        .setScopes(Lists.newArrayList(StorageScopes.DEVSTORAGE_READ_ONLY, GenomicsScopes.GENOMICS))
+        .build();
+
+    Storage storage = factory.fromApiKey(new Storage.Builder(
+        factory.getHttpTransport(), factory.getJsonFactory(), null), "xyz").build();
+    assertEquals(0, factory.initializedRequestsCount());
+
+    try {
+      storage.buckets().get("123").execute();
+    } catch (GoogleJsonResponseException e) {
+      // Expected
+    }
+    assertEquals(1, factory.initializedRequestsCount());
+
+    Genomics genomics = factory.fromApiKey("abc");
+    try {
+      genomics.jobs().get("123").execute();
+    } catch (GoogleJsonResponseException e) {
+      // Expected
+    }
+    assertEquals(2, factory.initializedRequestsCount());
   }
 }

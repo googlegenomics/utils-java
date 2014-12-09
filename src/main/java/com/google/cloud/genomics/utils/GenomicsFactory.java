@@ -24,6 +24,7 @@ import com.google.api.client.googleapis.auth.oauth2.GoogleClientSecrets;
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.services.CommonGoogleClientRequestInitializer;
 import com.google.api.client.googleapis.services.GoogleClientRequestInitializer;
+import com.google.api.client.googleapis.services.json.AbstractGoogleJsonClient;
 import com.google.api.client.googleapis.util.Utils;
 import com.google.api.client.http.HttpBackOffIOExceptionHandler;
 import com.google.api.client.http.HttpBackOffUnsuccessfulResponseHandler;
@@ -160,7 +161,7 @@ public class GenomicsFactory {
 
     /**
      * The URL of the endpoint to send requests to. The default is
-     * {@code https://www.googleapis.com/genomics/v1beta}.
+     * {@code https://www.googleapis.com}.
      *
      * @param rootUrl The URL of the endpoint to send requests to
      * @return this builder
@@ -280,62 +281,11 @@ public class GenomicsFactory {
     this.userDir = userDir;
   }
 
-  private Genomics create(
+  private <T extends AbstractGoogleJsonClient.Builder> T prepareBuilder(T builder,
       final HttpRequestInitializer delegate,
       GoogleClientRequestInitializer googleClientRequestInitializer) {
-    final Genomics.Builder builder = new Genomics
-        .Builder(
-            httpTransport,
-            jsonFactory,
-            new HttpRequestInitializer() {
-              @Override public void initialize(final HttpRequest request) throws IOException {
-                initializedRequestsCount.incrementAndGet();
-                if (null != delegate) {
-                  delegate.initialize(request);
-                }
-
-                final HttpBackOffUnsuccessfulResponseHandler unsuccessfulResponseHandler
-                    = new HttpBackOffUnsuccessfulResponseHandler(new ExponentialBackOff());
-                final HttpIOExceptionHandler ioExceptionHandler
-                    = new HttpBackOffIOExceptionHandler(new ExponentialBackOff());
-
-                request
-                    .setConnectTimeout(connectTimeout)
-                    .setReadTimeout(readTimeout)
-                    .setNumberOfRetries(NUM_RETRIES)
-                    .setUnsuccessfulResponseHandler(
-                        new HttpUnsuccessfulResponseHandler() {
-
-                          @Nullable private final HttpUnsuccessfulResponseHandler
-                              delegate = request.getUnsuccessfulResponseHandler();
-
-                          @Override public boolean handleResponse(HttpRequest request,
-                              HttpResponse response, boolean supportsRetry) throws IOException {
-                            unsuccessfulResponsesCount.incrementAndGet();
-
-                            return (null != delegate
-                                && delegate.handleResponse(request, response, supportsRetry))
-                                || unsuccessfulResponseHandler.handleResponse(
-                                    request, response, supportsRetry);
-                          }
-                        })
-                    .setIOExceptionHandler(
-                        new HttpIOExceptionHandler() {
-
-                          @Nullable private final HttpIOExceptionHandler
-                              delegate = request.getIOExceptionHandler();
-
-                          @Override public boolean handleIOException(HttpRequest request,
-                              boolean supportsRetry) throws IOException {
-                            ioExceptionsCount.incrementAndGet();
-
-                            return (null != delegate
-                                && delegate.handleIOException(request, supportsRetry))
-                                || ioExceptionHandler.handleIOException(request, supportsRetry);
-                          }
-                        });
-              }
-            })
+    builder
+        .setHttpRequestInitializer(getHttpRequestInitializer(delegate))
         .setApplicationName(applicationName)
         .setGoogleClientRequestInitializer(googleClientRequestInitializer);
 
@@ -345,7 +295,71 @@ public class GenomicsFactory {
     if (servicePath.isPresent()) {
       builder.setServicePath(servicePath.get());
     }
-    return builder.build();
+    return builder;
+  }
+
+  private Genomics.Builder getGenomicsBuilder() {
+    return new Genomics.Builder(httpTransport, jsonFactory, null);
+  }
+
+  private HttpRequestInitializer getHttpRequestInitializer(final HttpRequestInitializer delegate) {
+    return new HttpRequestInitializer() {
+      @Override public void initialize(final HttpRequest request) throws IOException {
+        initializedRequestsCount.incrementAndGet();
+        if (null != delegate) {
+          delegate.initialize(request);
+        }
+
+        final HttpBackOffUnsuccessfulResponseHandler unsuccessfulResponseHandler
+            = new HttpBackOffUnsuccessfulResponseHandler(new ExponentialBackOff());
+        final HttpIOExceptionHandler ioExceptionHandler
+            = new HttpBackOffIOExceptionHandler(new ExponentialBackOff());
+
+        request
+            .setConnectTimeout(connectTimeout)
+            .setReadTimeout(readTimeout)
+            .setNumberOfRetries(NUM_RETRIES)
+            .setUnsuccessfulResponseHandler(
+                new HttpUnsuccessfulResponseHandler() {
+
+                  @Nullable private final HttpUnsuccessfulResponseHandler
+                      delegate = request.getUnsuccessfulResponseHandler();
+
+                  @Override public boolean handleResponse(HttpRequest request,
+                      HttpResponse response, boolean supportsRetry) throws IOException {
+                    unsuccessfulResponsesCount.incrementAndGet();
+
+                    return (null != delegate
+                        && delegate.handleResponse(request, response, supportsRetry))
+                        || unsuccessfulResponseHandler.handleResponse(
+                            request, response, supportsRetry);
+                  }
+                })
+            .setIOExceptionHandler(
+                new HttpIOExceptionHandler() {
+
+                  @Nullable private final HttpIOExceptionHandler
+                      delegate = request.getIOExceptionHandler();
+
+                  @Override public boolean handleIOException(HttpRequest request,
+                      boolean supportsRetry) throws IOException {
+                    ioExceptionsCount.incrementAndGet();
+
+                    return (null != delegate
+                        && delegate.handleIOException(request, supportsRetry))
+                        || ioExceptionHandler.handleIOException(request, supportsRetry);
+                  }
+                });
+      }
+    };
+  }
+
+  public HttpTransport getHttpTransport() {
+    return httpTransport;
+  }
+
+  public JsonFactory getJsonFactory() {
+    return jsonFactory;
   }
 
   public DataStoreFactory getDataStoreFactory() {
@@ -371,18 +385,18 @@ public class GenomicsFactory {
    * @return The new {@code Genomics} stub
    */
   public Genomics fromApiKey(String apiKey) {
-    return create(null, new CommonGoogleClientRequestInitializer(apiKey));
+    return fromApiKey(getGenomicsBuilder(), apiKey).build();
   }
 
   /**
-   * This method will soon be private. Use {@link OfflineAuth} instead.
+   * Prepare an AbstractGoogleJsonClient.Builder using an API key.
    *
-   * @param credential A Credential that has already been authorized.
-   * @return The new {@code Genomics} stub
-   * @throws IOException
+   * @param builder The builder to be prepared.
+   * @param apiKey The API key of the Google Cloud project to charge requests to.
+   * @return The passed in builder, for easy chaining.
    */
-  public Genomics fromCredential(Credential credential) throws IOException {
-    return create(credential, null);
+  public <T extends AbstractGoogleJsonClient.Builder> T fromApiKey(T builder, String apiKey) {
+    return prepareBuilder(builder, null, new CommonGoogleClientRequestInitializer(apiKey));
   }
 
   /**
@@ -393,17 +407,60 @@ public class GenomicsFactory {
    * @throws IOException
    */
   public Genomics fromClientSecretsFile(File clientSecretsJson) throws IOException {
-    return fromCredential(makeCredential(clientSecretsJson));
+    return fromClientSecretsFile(getGenomicsBuilder(), clientSecretsJson).build();
   }
 
   /**
-   * This method will soon be private. Use {@code getOfflineAuth} instead.
+   * Prepare an AbstractGoogleJsonClient.Builder using a {@code client_secrets.json} {@link File}.
    *
+   * @param builder The builder to be prepared.
    * @param clientSecretsJson {@code client_secrets.json} file.
-   * @return An authorized {@link Credential}
+   * @return The passed in builder, for easy chaining.
    * @throws IOException
    */
-  public Credential makeCredential(File clientSecretsJson) throws IOException {
+  public <T extends AbstractGoogleJsonClient.Builder> T fromClientSecretsFile(T builder,
+      File clientSecretsJson) throws IOException {
+    return prepareBuilder(builder, makeCredential(clientSecretsJson), null);
+  }
+
+  /**
+   * Create a new genomics stub from the given service account ID and private key {@link File}.
+   *
+   * @param serviceAccountId The service account ID (typically an email address)
+   * @param p12File The file on disk containing the private key
+   * @return The new {@code Genomics} stub
+   * @throws GeneralSecurityException
+   * @throws IOException
+   */
+  public Genomics fromServiceAccount(String serviceAccountId, File p12File)
+      throws GeneralSecurityException, IOException {
+    return fromServiceAccount(getGenomicsBuilder(), serviceAccountId, p12File).build();
+  }
+
+  /**
+   * Prepare an AbstractGoogleJsonClient.Builder with the given service account ID
+   * and private key {@link File}.
+   *
+   * @param builder The builder to be prepared.
+   * @param serviceAccountId The service account ID (typically an email address)
+   * @param p12File The file on disk containing the private key
+   * @return The passed in builder, for easy chaining.
+   * @throws GeneralSecurityException
+   * @throws IOException
+   */
+  public <T extends AbstractGoogleJsonClient.Builder> T fromServiceAccount(T builder,
+      String serviceAccountId, File p12File) throws GeneralSecurityException, IOException {
+    return prepareBuilder(builder, refreshToken(
+        new GoogleCredential.Builder()
+            .setTransport(httpTransport)
+            .setJsonFactory(jsonFactory)
+            .setServiceAccountId(serviceAccountId)
+            .setServiceAccountScopes(scopes)
+            .setServiceAccountPrivateKeyFromP12File(p12File)
+            .build()), null);
+  }
+
+  private Credential makeCredential(File clientSecretsJson) throws IOException {
     Reader in = null;
     boolean returnNormally = true;
     try {
@@ -434,28 +491,6 @@ public class GenomicsFactory {
         }
       }
     }
-  }
-
-  /**
-   * Create a new genomics stub from the given service account ID and private key {@link File}.
-   *
-   * @param serviceAccountId The service account ID (typically an email address)
-   * @param p12File The file on disk containing the private key
-   * @return The new {@code Genomics} stub
-   * @throws GeneralSecurityException
-   * @throws IOException
-   */
-  public Genomics fromServiceAccount(String serviceAccountId, File p12File)
-      throws GeneralSecurityException, IOException {
-    return fromCredential(
-        refreshToken(
-            new GoogleCredential.Builder()
-                .setTransport(httpTransport)
-                .setJsonFactory(jsonFactory)
-                .setServiceAccountId(serviceAccountId)
-                .setServiceAccountScopes(scopes)
-                .setServiceAccountPrivateKeyFromP12File(p12File)
-                .build()));
   }
 
   private Credential refreshToken(Credential credential) throws IOException {
@@ -524,19 +559,30 @@ public class GenomicsFactory {
      * @param factory The factory used to generate the Genomics object
      */
     public Genomics getGenomics(GenomicsFactory factory) throws IOException {
+      return setupAuthentication(factory, factory.getGenomicsBuilder()).build();
+    }
+
+    /**
+     * Setup authentication on an AbstractGoogleJsonClient.Builder using the saved credentials.
+     *
+     * @return The passed in builder, for easy chaining.
+     * @param factory The factory used to setup the authentication.
+     * @param builder The builder to setup authentication on
+     */
+    public <T extends AbstractGoogleJsonClient.Builder> T setupAuthentication(
+        GenomicsFactory factory, T builder) throws IOException {
       if (clientSecretsString == null) {
-        return factory.fromApiKey(apiKey);
+        return factory.fromApiKey(builder, apiKey);
       }
 
-      return factory.create(new GoogleCredential.Builder()
+      return factory.prepareBuilder(builder, new GoogleCredential.Builder()
           .setTransport(factory.httpTransport)
           .setJsonFactory(factory.jsonFactory)
           .setClientSecrets(GoogleClientSecrets.load(factory.jsonFactory,
               new StringReader(clientSecretsString)))
           .build()
           .setAccessToken(accessToken)
-          .setRefreshToken(refreshToken),
-          new CommonGoogleClientRequestInitializer(apiKey));
+          .setRefreshToken(refreshToken), new CommonGoogleClientRequestInitializer(apiKey));
     }
   }
 }

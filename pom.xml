@@ -95,6 +95,13 @@
         <version>1.10.8</version>
         <scope>test</scope>
     </dependency>
+    <!-- Used to test the custom builder logic -->
+    <dependency>
+      <groupId>com.google.apis</groupId>
+      <artifactId>google-api-services-storage</artifactId>
+      <version>v1-rev22-1.19.0</version>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
   <profiles>
