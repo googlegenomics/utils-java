@@ -16,6 +16,7 @@
 package com.google.cloud.genomics.utils;
 
 import com.google.api.client.googleapis.json.GoogleJsonResponseException;
+import com.google.api.client.util.store.FileDataStoreFactory;
 import com.google.api.services.genomics.Genomics;
 import com.google.api.services.genomics.GenomicsScopes;
 import com.google.api.services.storage.Storage;
@@ -26,9 +27,12 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.ObjectOutputStream;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 @RunWith(JUnit4.class)
 public class GenomicsFactoryTest {
@@ -118,5 +122,29 @@ public class GenomicsFactoryTest {
       // Expected
     }
     assertEquals(2, factory.initializedRequestsCount());
+  }
+
+  @Test
+  public void testDataStoreFactoryExceptionRetries() throws Exception {
+
+    GenomicsFactory.Builder builder = new GenomicsFactory.Builder("test") {
+      int calls = 0;
+
+      @Override
+      FileDataStoreFactory makeFileDataStoreFactory() throws IOException {
+        // Throw an exception during the first two calls
+        // And succeed the third time
+        calls++;
+        if (calls < 3) {
+          throw new IOException();
+        } else {
+          return super.makeFileDataStoreFactory();
+        }
+      }
+    };
+
+    assertNotNull(builder.dataStoreFactory);
+    assertEquals("test", builder.applicationName);
+    assertTrue(builder.userDir.getAbsolutePath().contains(".store/test"));
   }
 }

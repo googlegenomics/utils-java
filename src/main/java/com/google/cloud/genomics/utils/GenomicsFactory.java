@@ -40,6 +40,7 @@ import com.google.api.client.util.store.DataStoreFactory;
 import com.google.api.client.util.store.FileDataStoreFactory;
 import com.google.api.services.genomics.Genomics;
 import com.google.api.services.genomics.GenomicsScopes;
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Charsets;
 import com.google.common.base.Optional;
 import com.google.common.base.Supplier;
@@ -72,26 +73,46 @@ public class GenomicsFactory {
   /**
    * A builder class for {@link GenomicsFactory} objects.
    */
-  public final static class Builder {
+  public static class Builder {
+    private static final int DATA_STORE_FACTORY_RETRIES = 3;
 
-    private final String applicationName;
+    @VisibleForTesting final String applicationName;
+    @VisibleForTesting final File userDir;
+    @VisibleForTesting DataStoreFactory dataStoreFactory;
     private int connectTimeout = 20000;
-    private final DataStoreFactory dataStoreFactory;
     private HttpTransport httpTransport = Utils.getDefaultTransport();
     private JsonFactory jsonFactory = Utils.getDefaultJsonFactory();
     private int readTimeout = 20000;
     private Optional<String> rootUrl = Optional.absent();
     private Optional<String> servicePath = Optional.absent();
     private Collection<String> scopes = GenomicsScopes.all();
-    private final File userDir;
     private String userName = System.getProperty("user.name");
     private Supplier<? extends VerificationCodeReceiver>
         verificationCodeReceiver = Suppliers.ofInstance(new LocalServerReceiver());
 
-    private Builder(String applicationName) throws IOException {
-      this.dataStoreFactory = new FileDataStoreFactory(this.userDir = new File(
+    Builder(String applicationName) throws IOException {
+      this.applicationName = applicationName;
+      this.userDir = new File(
           System.getProperty("user.home"),
-          String.format(".store/%s", (this.applicationName = applicationName).replace("/", "_"))));
+          String.format(".store/%s", applicationName.replace("/", "_")));
+
+      int retries = 0;
+      while (dataStoreFactory == null) {
+        try {
+          dataStoreFactory = makeFileDataStoreFactory();
+        } catch (IOException e) {
+          // We'll retry the creation up to three times to handle a race condition
+          // when multiple workers are on the same machine
+          retries++;
+          if (retries > DATA_STORE_FACTORY_RETRIES) {
+            throw e;
+          }
+        }
+      }
+    }
+
+    @VisibleForTesting FileDataStoreFactory makeFileDataStoreFactory() throws IOException {
+      return new FileDataStoreFactory(userDir);
     }
 
     /**
@@ -116,10 +137,7 @@ public class GenomicsFactory {
     }
 
     /**
-     * Set the connect timeout
-     *
-     * @param connectTimeout The connect timeout in milliseconds
-     * @return this builder
+     * @deprecated
      */
     public Builder setConnectTimeout(int connectTimeout) {
       this.connectTimeout = connectTimeout;
@@ -149,10 +167,7 @@ public class GenomicsFactory {
     }
 
     /**
-     * Set the read timeout
-     *
-     * @param readTimeout The read timeout in milliseconds
-     * @return this builder
+     * @deprecated
      */
     public Builder setReadTimeout(int readTimeout) {
       this.readTimeout = readTimeout;
