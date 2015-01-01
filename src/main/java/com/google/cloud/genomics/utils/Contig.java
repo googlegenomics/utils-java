@@ -37,14 +37,17 @@ import static java.util.Objects.hash;
 import static java.util.Objects.requireNonNull;
 
 public class Contig implements Serializable {
+
+  private static final long serialVersionUID = -1730387112193404207L;
+
   public static final long DEFAULT_NUMBER_OF_BASES_PER_SHARD = 100000;
 
   // If not running all contigs, we default to BRCA1
   public static final String BRCA1 = "17:41196311:41277499";
 
-  public String referenceName;
-  public long start;
-  public long end;
+  public final String referenceName;
+  public final long start;
+  public final long end;
 
   public Contig(String referenceName, long start, long end) {
     this.referenceName = requireNonNull(referenceName);
