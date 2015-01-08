@@ -164,6 +164,6 @@
     <mockito.version>1.10.8</mockito.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.build.targetEncoding>UTF-8</project.build.targetEncoding>
-    <java.version>1.6</java.version>
+    <java.version>1.7</java.version>
   </properties>
 </project>
