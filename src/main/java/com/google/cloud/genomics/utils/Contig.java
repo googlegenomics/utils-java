@@ -42,6 +42,8 @@ public class Contig implements Serializable {
 
   public static final long DEFAULT_NUMBER_OF_BASES_PER_SHARD = 100000;
 
+  public enum SexChromosomeFilter { INCLUDE_XY, EXCLUDE_XY }
+  
   // If not running all contigs, we default to BRCA1
   public static final String BRCA1 = "17:41196311:41277499";
 
@@ -118,15 +120,26 @@ public class Contig implements Serializable {
         });
   }
 
+  /**
+   * Retrieve the list of all the reference names and their start/end positions for the variant set.
+   * 
+   * @param genomics - The {@link Genomics} stub.
+   * @param variantSetId - The id of the variant set to query.
+   * @param sexChromosomeFilter - An enum value indicating how sex chromosomes should be
+   *        handled in the result.
+   * @return The list of all references in the variant set.
+   * @throws IOException
+   */
   public static List<Contig> getContigsInVariantSet(Genomics genomics, String variantSetId,
-      boolean excludeXY) throws IOException {
+      SexChromosomeFilter sexChromosomeFilter) throws IOException {
     List<Contig> contigs = Lists.newArrayList();
 
     VariantSet variantSet = genomics.variantsets().get(variantSetId).execute();
     for (ReferenceBound bound : variantSet.getReferenceBounds()) {
       String contig = bound.getReferenceName().toLowerCase();
-      if (excludeXY && (contig.contains("x") || contig.contains("y"))) {
-        // X and Y skew analysis results
+      if (sexChromosomeFilter == SexChromosomeFilter.EXCLUDE_XY
+          && (contig.contains("x") || contig.contains("y"))) {
+        // X and Y can skew some analysis results
         continue;
       }
 

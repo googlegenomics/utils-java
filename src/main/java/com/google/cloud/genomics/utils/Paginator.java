@@ -46,8 +46,10 @@ import com.google.api.services.genomics.model.Variant;
 import com.google.api.services.genomics.model.VariantSet;
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
+import com.google.common.base.Predicate;
 import com.google.common.collect.AbstractSequentialIterator;
 import com.google.common.collect.FluentIterable;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 
 import java.io.IOException;
@@ -94,6 +96,14 @@ import java.util.Iterator;
  * @param <E> The type of object being streamed back to the user.
  */
 public abstract class Paginator<A, B, C extends GenomicsRequest<D>, D, E> {
+  
+  /**
+   * For Paginators iterating over a range of data, this enum specifies whether the records returned
+   * should overlap the start of the shard (the default) or start within the shard.
+   * 
+   * Ranges are half-open 0-based, so [start,end)
+   */
+  public enum ShardBoundary { OVERLAPS, STARTS_IN }
 
   private abstract static class AbstractDatasets<B> extends Paginator<
       Genomics.Datasets,
@@ -688,22 +698,36 @@ public abstract class Paginator<A, B, C extends GenomicsRequest<D>, D, E> {
       SearchVariantsResponse,
       Variant> {
 
+    private final ShardBoundary shardBoundary;
+    private Predicate<Variant> shardPredicate = null;
+    
     /**
      * Static factory method.
      *
      * @param genomics The {@link Genomics} stub.
      * @return the new paginator.
      */
-    public static Variants create(Genomics genomics) {
-      return new Variants(genomics);
+    public static Variants create(Genomics genomics, ShardBoundary shardBoundary) {
+      return new Variants(genomics, shardBoundary);
     }
 
-    private Variants(Genomics genomics) {
+    private Variants(Genomics genomics, ShardBoundary shardBoundary) {
       super(genomics);
+      this.shardBoundary = shardBoundary;
     }
 
     @Override Genomics.Variants.Search createSearch(Genomics.Variants api,
         final SearchVariantsRequest request, Optional<String> pageToken) throws IOException {
+      
+      if(shardBoundary == ShardBoundary.STARTS_IN) {
+        shardPredicate = new Predicate<Variant>() {
+          @Override
+          public boolean apply(Variant variant) {
+            return variant.getStart() >= request.getStart();
+          }
+        };
+      }
+      
       return api.search(pageToken
           .transform(
               new Function<String, SearchVariantsRequest>() {
@@ -723,6 +747,9 @@ public abstract class Paginator<A, B, C extends GenomicsRequest<D>, D, E> {
     }
 
     @Override Iterable<Variant> getResponses(SearchVariantsResponse response) {
+      if(shardPredicate != null) {
+        return Iterables.filter(response.getVariants(), shardPredicate);
+      }
       return response.getVariants();
     }
   }
