@@ -45,7 +45,8 @@ dependencies {
 This section contains details on getting a new release into Maven central and can be safely ignored by most people. If you need a new release of this code, go ahead and just [file an issue](https://github.com/googlegenomics/utils-java/issues/new).
 
 ###Prereqs
-* [File a ticket](http://central.sonatype.org/pages/ossrh-guide.html#initial-setup) to get access to the Sonatype com.google.cloud.genomics group 
+* [Create a Sonatype Jira Account](http://central.sonatype.org/pages/ossrh-guide.html#initial-setup)
+* [File a ticket](https://issues.sonatype.org/browse/OSSRH-11629) to get access to the Sonatype com.google.cloud.genomics group 
 * [Setup gpg](http://central.sonatype.org/pages/working-with-pgp-signatures.html) (Don't forget to publish a public key)
 * [Setup GitHub SSH keys](https://help.github.com/articles/generating-ssh-keys) (make sure `ssh -T git@github.com` works)
 * Create a `~/.m2/settings.xml` file which has the following:
