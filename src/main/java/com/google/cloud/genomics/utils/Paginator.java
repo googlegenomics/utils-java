@@ -46,8 +46,10 @@ import com.google.api.services.genomics.model.Variant;
 import com.google.api.services.genomics.model.VariantSet;
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
+import com.google.common.base.Predicate;
 import com.google.common.collect.AbstractSequentialIterator;
 import com.google.common.collect.FluentIterable;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 
 import java.io.IOException;
@@ -94,6 +96,8 @@ import java.util.Iterator;
  * @param <E> The type of object being streamed back to the user.
  */
 public abstract class Paginator<A, B, C extends GenomicsRequest<D>, D, E> {
+  
+  public enum ShardBoundary { OVERLAPS, STRICT }
 
   private abstract static class AbstractDatasets<B> extends Paginator<
       Genomics.Datasets,
@@ -373,23 +377,47 @@ public abstract class Paginator<A, B, C extends GenomicsRequest<D>, D, E> {
       Genomics.Reads.Search,
       SearchReadsResponse,
       Read> {
+    
+    private final ShardBoundary shardBoundary;
+    private Predicate<Read> shardPredicate = null;
 
     /**
      * Static factory method.
      *
+     * The reads search API by default returns all reads that overlap the specified range.
+     * Ranges are half-open 0-based, so [start,end)
+     *
+     * Cluster compute jobs attempting to shard the data will see any records that span a shard
+     * boundary in both shards. In some cases this might be okay, in others it is not.
+     * 
      * @param genomics The {@link Genomics} stub.
+     * @param shardBoundary Use ShardBoundary.OVERLAPS for the default behavior or use
+     *        ShardBoundary.STRICT to ensure that a record does not appear in more than one shard.
      * @return the new paginator.
      */
-    public static Reads create(Genomics genomics) {
-      return new Reads(genomics);
+    public static Reads create(Genomics genomics, ShardBoundary shardBoundary) {
+      return new Reads(genomics, shardBoundary);
     }
 
-    private Reads(Genomics genomics) {
+    private Reads(Genomics genomics, ShardBoundary shardBoundary) {
       super(genomics);
+      this.shardBoundary = shardBoundary;
     }
 
     @Override Genomics.Reads.Search createSearch(Genomics.Reads api, final SearchReadsRequest request,
         Optional<String> pageToken) throws IOException {
+
+      if(shardBoundary == ShardBoundary.STRICT) {
+        // TODO: When this is supported server-side, instead verify that request.getIntersectionType
+        // will yield a strict shard.
+        shardPredicate = new Predicate<Read>() {
+          @Override
+          public boolean apply(Read read) {
+            return read.getAlignment().getPosition().getPosition() >= request.getStart();
+          }
+        };
+      }
+
       return api.search(pageToken
           .transform(
               new Function<String, SearchReadsRequest>() {
@@ -409,6 +437,9 @@ public abstract class Paginator<A, B, C extends GenomicsRequest<D>, D, E> {
     }
 
     @Override Iterable<Read> getResponses(SearchReadsResponse response) {
+      if(shardPredicate != null) {
+        return Iterables.filter(response.getAlignments(), shardPredicate);
+      }
       return response.getAlignments();
     }
   }
@@ -688,22 +719,46 @@ public abstract class Paginator<A, B, C extends GenomicsRequest<D>, D, E> {
       SearchVariantsResponse,
       Variant> {
 
+    private final ShardBoundary shardBoundary;
+    private Predicate<Variant> shardPredicate = null;
+    
     /**
      * Static factory method.
      *
+     * The variants search API by default returns all variants that overlap the specified range.
+     * Ranges are half-open 0-based, so [start,end)
+     *
+     * Cluster compute jobs attempting to shard the data will see any records that span a shard
+     * boundary in both shards. In some cases this might be okay, in others it is not.
+     * 
      * @param genomics The {@link Genomics} stub.
-     * @return the new paginator.
+     * @param shardBoundary Use ShardBoundary.OVERLAPS for the default behavior or use
+     *        ShardBoundary.STRICT to ensure that a record does not appear in more than one shard.
+     * @return
      */
-    public static Variants create(Genomics genomics) {
-      return new Variants(genomics);
+    public static Variants create(Genomics genomics, ShardBoundary shardBoundary) {
+      return new Variants(genomics, shardBoundary);
     }
 
-    private Variants(Genomics genomics) {
+    private Variants(Genomics genomics, ShardBoundary shardBoundary) {
       super(genomics);
+      this.shardBoundary = shardBoundary;
     }
 
     @Override Genomics.Variants.Search createSearch(Genomics.Variants api,
         final SearchVariantsRequest request, Optional<String> pageToken) throws IOException {
+      
+      if(shardBoundary == ShardBoundary.STRICT) {
+        // TODO: When this is supported server-side, instead verify that request.getIntersectionType
+        // will yield a strict shard.
+        shardPredicate = new Predicate<Variant>() {
+          @Override
+          public boolean apply(Variant variant) {
+            return variant.getStart() >= request.getStart();
+          }
+        };
+      }
+      
       return api.search(pageToken
           .transform(
               new Function<String, SearchVariantsRequest>() {
@@ -723,6 +778,9 @@ public abstract class Paginator<A, B, C extends GenomicsRequest<D>, D, E> {
     }
 
     @Override Iterable<Variant> getResponses(SearchVariantsResponse response) {
+      if(shardPredicate != null) {
+        return Iterables.filter(response.getVariants(), shardPredicate);
+      }
       return response.getVariants();
     }
   }

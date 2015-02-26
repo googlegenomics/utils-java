@@ -16,10 +16,21 @@
 package com.google.cloud.genomics.utils;
 
 import com.google.api.services.genomics.Genomics;
+import com.google.api.services.genomics.model.LinearAlignment;
+import com.google.api.services.genomics.model.Position;
+import com.google.api.services.genomics.model.Read;
 import com.google.api.services.genomics.model.ReadGroupSet;
 import com.google.api.services.genomics.model.SearchReadGroupSetsRequest;
 import com.google.api.services.genomics.model.SearchReadGroupSetsResponse;
+import com.google.api.services.genomics.model.SearchReadsRequest;
+import com.google.api.services.genomics.model.SearchReadsResponse;
+import com.google.api.services.genomics.model.SearchVariantsRequest;
+import com.google.api.services.genomics.model.SearchVariantsResponse;
+import com.google.api.services.genomics.model.Variant;
+import com.google.cloud.genomics.utils.Paginator.ShardBoundary;
 import com.google.common.collect.Lists;
+
+import org.hamcrest.CoreMatchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -28,9 +39,11 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
+import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 @RunWith(JUnit4.class)
@@ -39,11 +52,17 @@ public class PaginatorTest {
   @Mock Genomics genomics;
   @Mock Genomics.Readgroupsets readGroupSets;
   @Mock Genomics.Readgroupsets.Search readGroupSetSearch;
+  @Mock Genomics.Variants variants;
+  @Mock Genomics.Variants.Search variantsSearch;
+  @Mock Genomics.Reads reads;
+  @Mock Genomics.Reads.Search readsSearch;
 
   @Before
   public void initMocks() {
     MockitoAnnotations.initMocks(this);
     Mockito.when(genomics.readgroupsets()).thenReturn(readGroupSets);
+    Mockito.when(genomics.variants()).thenReturn(variants);
+    Mockito.when(genomics.reads()).thenReturn(reads);
   }
 
   @Test
@@ -113,4 +132,83 @@ public class PaginatorTest {
     Mockito.verify(readGroupSetSearch, Mockito.atLeastOnce()).setFields("readGroupSets(id,name)");
   }
 
+  @Test
+  public void testVariantPagination() throws Exception {
+
+    SearchVariantsRequest request = new SearchVariantsRequest().setStart(1000L).setEnd(2000L);
+    Mockito.when(variants.search(request)).thenReturn(variantsSearch);
+
+    Variant overlapStartWithinExtent = new Variant().setStart(900L).setEnd(1005L);
+    Variant overlapStartExtent = new Variant().setStart(999L).setEnd(5000L);
+    Variant atStartWithinExtent = new Variant().setStart(1000L).setEnd(1002L);
+    Variant atStartOverlapExtent = new Variant().setStart(1000L).setEnd(5000L);
+    Variant beyondStartWithinExtent = new Variant().setStart(1500L).setEnd(1502L);
+    Variant beyondOverlapExtent = new Variant().setStart(1500L).setEnd(5000L);
+    Variant[] input = new Variant[] { overlapStartWithinExtent, overlapStartExtent, atStartWithinExtent,
+            atStartOverlapExtent, beyondStartWithinExtent, beyondOverlapExtent };
+
+    Mockito.when(variantsSearch.execute()).thenReturn(
+        new SearchVariantsResponse().setVariants(Arrays.asList(input)));
+
+    Paginator.Variants filteredPaginator = Paginator.Variants.create(genomics, ShardBoundary.STRICT);
+    List<Variant> filteredVariants = Lists.newArrayList();
+    for (Variant variant : filteredPaginator.search(request)) {
+      filteredVariants.add(variant);
+    }
+    assertEquals(4, filteredVariants.size());
+    assertThat(filteredVariants, CoreMatchers.hasItems(atStartWithinExtent,
+        atStartOverlapExtent, beyondStartWithinExtent, beyondOverlapExtent));
+
+    Paginator.Variants overlappingPaginator = Paginator.Variants.create(genomics, ShardBoundary.OVERLAPS);
+    List<Variant> overlappingVariants = Lists.newArrayList();
+    for (Variant variant : overlappingPaginator.search(request)) {
+      overlappingVariants.add(variant);
+    }
+    assertEquals(6, overlappingVariants.size());
+    assertThat(overlappingVariants, CoreMatchers.hasItems(input));
+  }
+  
+  
+  Read readHelper(int start, int end) {
+    Position position = new Position().setPosition((long) start);
+    LinearAlignment alignment = new LinearAlignment().setPosition(position);
+    return new Read().setAlignment(alignment).setFragmentLength(end-start);
+  }
+  
+  @Test
+  public void testReadPagination() throws Exception {
+
+    SearchReadsRequest request = new SearchReadsRequest().setStart(1000L).setEnd(2000L);
+    Mockito.when(reads.search(request)).thenReturn(readsSearch);
+
+    Read overlapStartWithinExtent = readHelper(900,1005);
+    Read overlapStartExtent = readHelper(999, 5000);
+    Read atStartWithinExtent = readHelper(1000, 1002);
+    Read atStartOverlapExtent = readHelper(1000, 5000);
+    Read beyondStartWithinExtent = readHelper(1500, 1502);
+    Read beyondOverlapExtent = readHelper(1500, 5000);
+    Read[] input = new Read[] { overlapStartWithinExtent, overlapStartExtent, atStartWithinExtent,
+            atStartOverlapExtent, beyondStartWithinExtent, beyondOverlapExtent };
+
+    Mockito.when(readsSearch.execute()).thenReturn(
+        new SearchReadsResponse().setAlignments(Arrays.asList(input)));
+
+    Paginator.Reads filteredPaginator = Paginator.Reads.create(genomics, ShardBoundary.STRICT);
+    List<Read> filteredReads = Lists.newArrayList();
+    for (Read read : filteredPaginator.search(request)) {
+      filteredReads.add(read);
+    }
+    assertEquals(4, filteredReads.size());
+    assertThat(filteredReads, CoreMatchers.hasItems(atStartWithinExtent,
+        atStartOverlapExtent, beyondStartWithinExtent, beyondOverlapExtent));
+
+    Paginator.Reads overlappingPaginator = Paginator.Reads.create(genomics, ShardBoundary.OVERLAPS);
+    List<Read> overlappingReads = Lists.newArrayList();
+    for (Read read : overlappingPaginator.search(request)) {
+      overlappingReads.add(read);
+    }
+    assertEquals(6, overlappingReads.size());
+    assertThat(overlappingReads, CoreMatchers.hasItems(input));
+  }
+  
 }
