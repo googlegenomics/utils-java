@@ -15,6 +15,8 @@ package com.google.cloud.genomics.utils;
 
 import com.google.api.services.genomics.Genomics;
 import com.google.api.services.genomics.GenomicsRequest;
+import com.google.api.services.genomics.model.Annotation;
+import com.google.api.services.genomics.model.AnnotationSet;
 import com.google.api.services.genomics.model.CallSet;
 import com.google.api.services.genomics.model.CoverageBucket;
 import com.google.api.services.genomics.model.Dataset;
@@ -26,6 +28,10 @@ import com.google.api.services.genomics.model.Read;
 import com.google.api.services.genomics.model.ReadGroupSet;
 import com.google.api.services.genomics.model.Reference;
 import com.google.api.services.genomics.model.ReferenceSet;
+import com.google.api.services.genomics.model.SearchAnnotationSetsRequest;
+import com.google.api.services.genomics.model.SearchAnnotationSetsResponse;
+import com.google.api.services.genomics.model.SearchAnnotationsRequest;
+import com.google.api.services.genomics.model.SearchAnnotationsResponse;
 import com.google.api.services.genomics.model.SearchCallSetsRequest;
 import com.google.api.services.genomics.model.SearchCallSetsResponse;
 import com.google.api.services.genomics.model.SearchJobsRequest;
@@ -445,6 +451,128 @@ public abstract class Paginator<A, B, C extends GenomicsRequest<D>, D, E> {
   }
 
   /**
+   * A {@link Paginator} for the {@code searchAnnotations()} API.
+   */
+  public static class Annotations extends Paginator<
+      Genomics.Annotations,
+      SearchAnnotationsRequest,
+      Genomics.Annotations.Search,
+      SearchAnnotationsResponse,
+      Annotation> {
+
+    private final ShardBoundary shardBoundary;
+    private Predicate<Annotation> shardPredicate = null;
+
+    /**
+     * Static factory method.
+     *
+     * The annotations search API by default returns all annotations that overlap the specified
+     * range. Ranges are half-open 0-based, so [start,end)
+     *
+     * Cluster compute jobs attempting to shard the data will see any records that span a shard
+     * boundary in both shards. In some cases this might be okay, in others it is not.
+     *
+     * @param genomics The {@link Genomics} stub.
+     * @param shardBoundary Use ShardBoundary.OVERLAPS for the default behavior or use
+     *        ShardBoundary.STRICT to ensure that a record does not appear in more than one shard.
+     * @return the new paginator.
+     */
+    public static Annotations create(Genomics genomics, ShardBoundary shardBoundary) {
+      return new Annotations(genomics, shardBoundary);
+    }
+
+    private Annotations(Genomics genomics, ShardBoundary shardBoundary) {
+      super(genomics);
+      this.shardBoundary = shardBoundary;
+    }
+
+    @Override Genomics.Annotations.Search createSearch(Genomics.Annotations api,
+        final SearchAnnotationsRequest request, Optional<String> pageToken) throws IOException {
+
+      if(shardBoundary == ShardBoundary.STRICT) {
+        // TODO: When this is supported server-side, instead verify that request.getIntersectionType
+        // will yield a strict shard.
+        shardPredicate = new Predicate<Annotation>() {
+          @Override
+          public boolean apply(Annotation anno) {
+            return anno.getPosition().getStart() >= request.getRange().getStart();
+          }
+        };
+      }
+      return api.search(pageToken
+          .transform(
+              new Function<String, SearchAnnotationsRequest>() {
+                @Override public SearchAnnotationsRequest apply(String pageToken) {
+                  return request.setPageToken(pageToken);
+                }
+              })
+          .or(request));
+    }
+
+    @Override Genomics.Annotations getApi(Genomics genomics) {
+      return genomics.annotations();
+    }
+
+    @Override String getNextPageToken(SearchAnnotationsResponse response) {
+      return response.getNextPageToken();
+    }
+
+    @Override Iterable<Annotation> getResponses(SearchAnnotationsResponse response) {
+      if(shardPredicate != null) {
+        return Iterables.filter(response.getAnnotations(), shardPredicate);
+      }
+      return response.getAnnotations();
+    }
+  }
+
+  /**
+   * A {@link Paginator} for the {@code searchAnnotationSets()} API.
+   */
+  public static class AnnotationSets extends Paginator<
+      Genomics.AnnotationSets,
+      SearchAnnotationSetsRequest,
+      Genomics.AnnotationSets.Search,
+      SearchAnnotationSetsResponse,
+      AnnotationSet> {
+
+    /**
+     * @param genomics The {@link Genomics} stub.
+     * @return the new paginator.
+     */
+    public static AnnotationSets create(Genomics genomics) {
+      return new AnnotationSets(genomics);
+    }
+
+    private AnnotationSets(Genomics genomics) {
+      super(genomics);
+    }
+
+    @Override Genomics.AnnotationSets.Search createSearch(Genomics.AnnotationSets api,
+        final SearchAnnotationSetsRequest request, Optional<String> pageToken) throws IOException {
+      return api.search(pageToken
+          .transform(
+              new Function<String, SearchAnnotationSetsRequest>() {
+                @Override public SearchAnnotationSetsRequest apply(String pageToken) {
+                  return request.setPageToken(pageToken);
+                }
+              })
+          .or(request));
+    }
+
+    @Override Genomics.AnnotationSets getApi(Genomics genomics) {
+      return genomics.annotationSets();
+    }
+
+    @Override String getNextPageToken(SearchAnnotationSetsResponse response) {
+      return response.getNextPageToken();
+    }
+
+    @Override Iterable<AnnotationSet> getResponses(SearchAnnotationSetsResponse response) {
+      return response.getAnnotationSets();
+    }
+  }
+
+  /**
    * A {@link Paginator} for the {@code searchReadGroupSets()} API.
    */
   public static class ReadGroupSets extends Paginator<Genomics.Readgroupsets,
@@ -734,7 +862,7 @@ public abstract class Paginator<A, B, C extends GenomicsRequest<D>, D, E> {
      * @param genomics The {@link Genomics} stub.
      * @param shardBoundary Use ShardBoundary.OVERLAPS for the default behavior or use
      *        ShardBoundary.STRICT to ensure that a record does not appear in more than one shard.
-     * @return
+     * @return the new paginator
      */
     public static Variants create(Genomics genomics, ShardBoundary shardBoundary) {
       return new Variants(genomics, shardBoundary);
