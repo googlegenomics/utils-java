@@ -42,9 +42,7 @@ import org.mockito.MockitoAnnotations;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 @RunWith(JUnit4.class)
 public class PaginatorTest {
@@ -168,6 +166,18 @@ public class PaginatorTest {
     assertThat(overlappingVariants, CoreMatchers.hasItems(input));
   }
   
+  @Test
+  public void testVariantPaginationEmptyShard() throws Exception {
+
+    SearchVariantsRequest request = new SearchVariantsRequest().setStart(1000L).setEnd(2000L);
+    Mockito.when(variants.search(request)).thenReturn(variantsSearch);
+
+    Mockito.when(variantsSearch.execute()).thenReturn(
+        new SearchVariantsResponse());
+
+    Paginator.Variants filteredPaginator = Paginator.Variants.create(genomics, ShardBoundary.STRICT);
+    assertNotNull(filteredPaginator.search(request));
+  }
   
   Read readHelper(int start, int end) {
     Position position = new Position().setPosition((long) start);

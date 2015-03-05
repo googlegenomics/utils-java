@@ -443,10 +443,11 @@ public abstract class Paginator<A, B, C extends GenomicsRequest<D>, D, E> {
     }
 
     @Override Iterable<Read> getResponses(SearchReadsResponse response) {
-      if(shardPredicate != null) {
-        return Iterables.filter(response.getAlignments(), shardPredicate);
+      Iterable<Read> responses = response.getAlignments();
+      if(shardPredicate != null && responses != null) {
+        return Iterables.filter(responses, shardPredicate);
       }
-      return response.getAlignments();
+      return responses;
     }
   }
 
@@ -518,10 +519,11 @@ public abstract class Paginator<A, B, C extends GenomicsRequest<D>, D, E> {
     }
 
     @Override Iterable<Annotation> getResponses(SearchAnnotationsResponse response) {
-      if(shardPredicate != null) {
-        return Iterables.filter(response.getAnnotations(), shardPredicate);
+      Iterable<Annotation> responses = response.getAnnotations();
+      if(shardPredicate != null && responses != null) {
+        return Iterables.filter(responses, shardPredicate);
       }
-      return response.getAnnotations();
+      return responses;
     }
   }
 
@@ -906,10 +908,11 @@ public abstract class Paginator<A, B, C extends GenomicsRequest<D>, D, E> {
     }
 
     @Override Iterable<Variant> getResponses(SearchVariantsResponse response) {
-      if(shardPredicate != null) {
-        return Iterables.filter(response.getVariants(), shardPredicate);
+      Iterable<Variant> responses = response.getVariants();
+      if(shardPredicate != null && responses != null) {
+        return Iterables.filter(responses, shardPredicate);
       }
-      return response.getVariants();
+      return responses;
     }
   }
 
