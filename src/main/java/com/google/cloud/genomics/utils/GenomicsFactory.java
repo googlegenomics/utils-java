@@ -48,6 +48,7 @@ import com.google.common.base.Suppliers;
 import com.google.common.io.Files;
 
 import javax.annotation.Nullable;
+
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
@@ -70,6 +71,10 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class GenomicsFactory {
 
+  private static final int DEFAULT_CONNECT_TIMEOUT = 20000;
+  private static final int DEFAULT_READ_TIMEOUT = 20000;
+  private static final int DEFAULT_NUMBER_OF_RETRIES = 5;
+  
   /**
    * A builder class for {@link GenomicsFactory} objects.
    */
@@ -79,10 +84,11 @@ public class GenomicsFactory {
     @VisibleForTesting final String applicationName;
     @VisibleForTesting final File userDir;
     @VisibleForTesting DataStoreFactory dataStoreFactory;
-    private int connectTimeout = 20000;
     private HttpTransport httpTransport = Utils.getDefaultTransport();
+    private int connectTimeout = DEFAULT_CONNECT_TIMEOUT;
+    private int readTimeout = DEFAULT_READ_TIMEOUT;
+    private int numRetries = DEFAULT_NUMBER_OF_RETRIES;
     private JsonFactory jsonFactory = Utils.getDefaultJsonFactory();
-    private int readTimeout = 20000;
     private Optional<String> rootUrl = Optional.absent();
     private Optional<String> servicePath = Optional.absent();
     private Collection<String> scopes = GenomicsScopes.all();
@@ -125,23 +131,16 @@ public class GenomicsFactory {
           applicationName,
           dataStoreFactory,
           httpTransport,
+          connectTimeout,
+          readTimeout,
+          numRetries,
           jsonFactory,
           scopes,
           userName,
-          readTimeout,
           rootUrl,
           servicePath,
-          connectTimeout,
           verificationCodeReceiver,
           userDir);
-    }
-
-    /**
-     * @deprecated
-     */
-    public Builder setConnectTimeout(int connectTimeout) {
-      this.connectTimeout = connectTimeout;
-      return this;
     }
 
     /**
@@ -156,13 +155,10 @@ public class GenomicsFactory {
     }
 
     /**
-     * Sets the {@link JsonFactory} to use. Most code will never need to call this method.
-     *
-     * @param jsonFactory the {@code JsonFactory} to use
-     * @return this builder
+     * @deprecated
      */
-    public Builder setJsonFactory(JsonFactory jsonFactory) {
-      this.jsonFactory = jsonFactory;
+    public Builder setConnectTimeout(int connectTimeout) {
+      this.connectTimeout = connectTimeout;
       return this;
     }
 
@@ -171,6 +167,28 @@ public class GenomicsFactory {
      */
     public Builder setReadTimeout(int readTimeout) {
       this.readTimeout = readTimeout;
+      return this;
+    }
+
+    /**
+     * The number of times to retry a failed request to the Genomics API.
+     *  
+     * @param numRetries
+     * @return
+     */
+    public Builder setNumberOfRetries(int numRetries) {
+      this.numRetries = numRetries;
+      return this;
+    }
+
+    /**
+     * Sets the {@link JsonFactory} to use. Most code will never need to call this method.
+     *
+     * @param jsonFactory the {@code JsonFactory} to use
+     * @return this builder
+     */
+    public Builder setJsonFactory(JsonFactory jsonFactory) {
+      this.jsonFactory = jsonFactory;
       return this;
     }
 
@@ -249,15 +267,14 @@ public class GenomicsFactory {
     return new Builder(applicationName);
   }
 
-  private static final int NUM_RETRIES = 30;
-
   private final String applicationName;
 
-  private final int connectTimeout;
   private final DataStoreFactory dataStoreFactory;
   private final HttpTransport httpTransport;
-  private final JsonFactory jsonFactory;
+  private final int connectTimeout;
   private final int readTimeout;
+  private final int numRetries;
+  private final JsonFactory jsonFactory;
   private final Optional<String> rootUrl;
   private final Optional<String> servicePath;
   private final Collection<String> scopes;
@@ -273,25 +290,27 @@ public class GenomicsFactory {
       String applicationName,
       DataStoreFactory dataStoreFactory,
       HttpTransport httpTransport,
+      int connectTimeout, 
+      int readTimeout,
+      int numRetries,
       JsonFactory jsonFactory,
       Collection<String> scopes,
       String userName,
-      int readTimeout,
       Optional<String> rootUrl,
       Optional<String> servicePath,
-      int connectTimeout,
       Supplier<? extends VerificationCodeReceiver> verificationCodeReceiver,
       File userDir) {
     this.applicationName = applicationName;
     this.dataStoreFactory = dataStoreFactory;
     this.httpTransport = httpTransport;
+    this.connectTimeout = connectTimeout; 
+    this.readTimeout = readTimeout;
+    this.numRetries = numRetries;
     this.jsonFactory = jsonFactory;
     this.scopes = scopes;
     this.userName = userName;
-    this.readTimeout = readTimeout;
     this.rootUrl = rootUrl;
     this.servicePath = servicePath;
-    this.connectTimeout = connectTimeout;
     this.verificationCodeReceiver = verificationCodeReceiver;
     this.userDir = userDir;
   }
@@ -333,7 +352,7 @@ public class GenomicsFactory {
         request
             .setConnectTimeout(connectTimeout)
             .setReadTimeout(readTimeout)
-            .setNumberOfRetries(NUM_RETRIES)
+            .setNumberOfRetries(numRetries)
             .setUnsuccessfulResponseHandler(
                 new HttpUnsuccessfulResponseHandler() {
 
@@ -343,7 +362,7 @@ public class GenomicsFactory {
                   @Override public boolean handleResponse(HttpRequest request,
                       HttpResponse response, boolean supportsRetry) throws IOException {
                     unsuccessfulResponsesCount.incrementAndGet();
-
+                    
                     return (null != delegate
                         && delegate.handleResponse(request, response, supportsRetry))
                         || unsuccessfulResponseHandler.handleResponse(
@@ -359,7 +378,7 @@ public class GenomicsFactory {
                   @Override public boolean handleIOException(HttpRequest request,
                       boolean supportsRetry) throws IOException {
                     ioExceptionsCount.incrementAndGet();
-
+                    
                     return (null != delegate
                         && delegate.handleIOException(request, supportsRetry))
                         || ioExceptionHandler.handleIOException(request, supportsRetry);

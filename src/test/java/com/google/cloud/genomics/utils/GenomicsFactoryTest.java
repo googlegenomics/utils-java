@@ -15,24 +15,35 @@
  */
 package com.google.cloud.genomics.utils;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
+
 import com.google.api.client.googleapis.json.GoogleJsonResponseException;
+import com.google.api.client.http.HttpRequest;
+import com.google.api.client.http.HttpResponseException;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.http.LowLevelHttpRequest;
+import com.google.api.client.http.LowLevelHttpResponse;
+import com.google.api.client.testing.http.HttpTesting;
+import com.google.api.client.testing.http.MockHttpTransport;
+import com.google.api.client.testing.http.MockLowLevelHttpRequest;
+import com.google.api.client.testing.http.MockLowLevelHttpResponse;
 import com.google.api.client.util.store.FileDataStoreFactory;
 import com.google.api.services.genomics.Genomics;
 import com.google.api.services.genomics.GenomicsScopes;
 import com.google.api.services.storage.Storage;
 import com.google.api.services.storage.StorageScopes;
 import com.google.common.collect.Lists;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
-
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 @RunWith(JUnit4.class)
 public class GenomicsFactoryTest {
@@ -147,4 +158,131 @@ public class GenomicsFactoryTest {
     assertEquals("test", builder.applicationName);
     assertTrue(builder.userDir.getAbsolutePath().contains(".store/test"));
   }
+
+  @Test
+  public void testDefaultTimeoutConfiguration() throws Exception {
+    GenomicsFactory genomicsFactory = GenomicsFactory.builder("test_client").build();
+
+    Genomics genomics = genomicsFactory.fromApiKey("xyz");
+    HttpRequest request =
+        genomics.getRequestFactory().buildGetRequest(HttpTesting.SIMPLE_GENERIC_URL);
+    assertEquals(20000, request.getConnectTimeout());
+    assertEquals(20000, request.getReadTimeout());
+    assertEquals(5, request.getNumberOfRetries());
+  }
+
+  @Test
+  public void testTimeoutConfiguration() throws Exception {
+    GenomicsFactory genomicsFactory =
+        GenomicsFactory.builder("test_client").setConnectTimeout(42).setReadTimeout(7)
+            .setNumberOfRetries(9).build();
+
+    Genomics genomics = genomicsFactory.fromApiKey("xyz");
+    HttpRequest request =
+        genomics.getRequestFactory().buildGetRequest(HttpTesting.SIMPLE_GENERIC_URL);
+    assertEquals(42, request.getConnectTimeout());
+    assertEquals(7, request.getReadTimeout());
+    assertEquals(9, request.getNumberOfRetries());
+  }
+
+  @Test
+  public void testBackendErrorRetries() throws Exception {
+
+    HttpTransport transport = new MockHttpTransport() {
+      @Override
+      public LowLevelHttpRequest buildRequest(String method, String url) throws IOException {
+        return new MockLowLevelHttpRequest() {
+          @Override
+          public LowLevelHttpResponse execute() throws IOException {
+            MockLowLevelHttpResponse response = new MockLowLevelHttpResponse();
+            response.setStatusCode(500);
+            return response;
+          }
+        };
+      }
+    };
+
+    GenomicsFactory genomicsFactory =
+        GenomicsFactory.builder("test_client").setHttpTransport(transport).build();
+    Genomics genomics = genomicsFactory.fromApiKey("xyz");
+
+    HttpRequest request =
+        genomics.getRequestFactory().buildGetRequest(HttpTesting.SIMPLE_GENERIC_URL);
+    try {
+      request.execute();
+      fail("this request should not have succeeded");
+    } catch (HttpResponseException e) {
+    }
+
+    assertEquals(1, genomicsFactory.initializedRequestsCount());
+    assertEquals(6, genomicsFactory.unsuccessfulResponsesCount());
+    assertEquals(0, genomicsFactory.ioExceptionsCount());
+  }
+
+  @Test
+  public void testIOExceptionRetries() throws Exception {
+
+    HttpTransport transport = new MockHttpTransport() {
+      @Override
+      public LowLevelHttpRequest buildRequest(String method, String url) throws IOException {
+        return new MockLowLevelHttpRequest() {
+          @Override
+          public LowLevelHttpResponse execute() throws IOException {
+            throw new IOException();
+          }
+        };
+      }
+    };
+
+    GenomicsFactory genomicsFactory =
+        GenomicsFactory.builder("test_client").setHttpTransport(transport).build();
+    Genomics genomics = genomicsFactory.fromApiKey("xyz");
+
+    HttpRequest request =
+        genomics.getRequestFactory().buildGetRequest(HttpTesting.SIMPLE_GENERIC_URL);
+    try {
+      request.execute();
+      fail("this request should not have succeeded");
+    } catch (IOException e) {
+    }
+
+    assertEquals(1, genomicsFactory.initializedRequestsCount());
+    assertEquals(0, genomicsFactory.unsuccessfulResponsesCount());
+    assertEquals(6, genomicsFactory.ioExceptionsCount());
+  }
+
+  @Test
+  public void testUserErrorRetries() throws Exception {
+
+    HttpTransport transport = new MockHttpTransport() {
+      @Override
+      public LowLevelHttpRequest buildRequest(String method, String url) throws IOException {
+        return new MockLowLevelHttpRequest() {
+          @Override
+          public LowLevelHttpResponse execute() throws IOException {
+            MockLowLevelHttpResponse response = new MockLowLevelHttpResponse();
+            response.setStatusCode(404);
+            return response;
+          }
+        };
+      }
+    };
+
+    GenomicsFactory genomicsFactory =
+        GenomicsFactory.builder("test_client").setHttpTransport(transport).build();
+    Genomics genomics = genomicsFactory.fromApiKey("xyz");
+
+    HttpRequest request =
+        genomics.getRequestFactory().buildGetRequest(HttpTesting.SIMPLE_GENERIC_URL);
+    try {
+      request.execute();
+      fail("this request should not have succeeded");
+    } catch (HttpResponseException e) {
+    }
+
+    assertEquals(1, genomicsFactory.initializedRequestsCount());
+    assertEquals(1, genomicsFactory.unsuccessfulResponsesCount());
+    assertEquals(0, genomicsFactory.ioExceptionsCount());
+  }
+  
 }
