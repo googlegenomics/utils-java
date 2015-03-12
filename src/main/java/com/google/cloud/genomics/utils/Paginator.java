@@ -105,46 +105,6 @@ public abstract class Paginator<A, B, C extends GenomicsRequest<D>, D, E> {
   
   public enum ShardBoundary { OVERLAPS, STRICT }
 
-  private abstract static class AbstractDatasets<B> extends Paginator<
-      Genomics.Datasets,
-      B,
-      Genomics.Datasets.List,
-      ListDatasetsResponse,
-      Dataset> {
-
-    AbstractDatasets(Genomics genomics) {
-      super(genomics);
-    }
-
-    @Override final Genomics.Datasets.List createSearch(Genomics.Datasets api, B request,
-        Optional<String> pageToken) throws IOException {
-      final Genomics.Datasets.List list = api.list();
-      setRequest(list, request);
-      return pageToken
-          .transform(
-              new Function<String, Genomics.Datasets.List>() {
-                @Override public Genomics.Datasets.List apply(String pageToken) {
-                  return list.setPageToken(pageToken);
-                }
-              })
-          .or(list);
-    }
-
-    @Override final Genomics.Datasets getApi(Genomics genomics) {
-      return genomics.datasets();
-    }
-
-    @Override final String getNextPageToken(ListDatasetsResponse response) {
-      return response.getNextPageToken();
-    }
-
-    @Override final Iterable<Dataset> getResponses(ListDatasetsResponse response) {
-      return response.getDatasets();
-    }
-
-    abstract void setRequest(Genomics.Datasets.List list, B request);
-  }
-
   /**
    * A callback object for
    * {@link #search(Object, GenomicsRequestInitializer, Callback, RetryPolicy)} that can
@@ -219,7 +179,12 @@ public abstract class Paginator<A, B, C extends GenomicsRequest<D>, D, E> {
   /**
    * A {@link Paginator} for the {@code searchDatasets()} API.
    */
-  public static class Datasets extends AbstractDatasets<Long> {
+  public static class Datasets extends Paginator<
+      Genomics.Datasets,
+      Long,
+      Genomics.Datasets.List,
+      ListDatasetsResponse,
+      Dataset> {
 
     /**
      * Static factory method.
@@ -235,8 +200,29 @@ public abstract class Paginator<A, B, C extends GenomicsRequest<D>, D, E> {
       super(genomics);
     }
 
-    @Override void setRequest(Genomics.Datasets.List list, Long projectId) {
-      list.setProjectNumber(projectId);
+    @Override Genomics.Datasets.List createSearch(Genomics.Datasets api, Long request,
+        Optional<String> pageToken) throws IOException {
+      final Genomics.Datasets.List list = api.list().setProjectNumber(request);
+      return pageToken
+          .transform(
+              new Function<String, Genomics.Datasets.List>() {
+                @Override public Genomics.Datasets.List apply(String pageToken) {
+                  return list.setPageToken(pageToken);
+                }
+              })
+          .or(list);
+    }
+
+    @Override Genomics.Datasets getApi(Genomics genomics) {
+      return genomics.datasets();
+    }
+
+    @Override String getNextPageToken(ListDatasetsResponse response) {
+      return response.getNextPageToken();
+    }
+
+    @Override Iterable<Dataset> getResponses(ListDatasetsResponse response) {
+      return response.getDatasets();
     }
   }
 
@@ -321,57 +307,6 @@ public abstract class Paginator<A, B, C extends GenomicsRequest<D>, D, E> {
       this.request = request;
       this.response = response;
     }
-  }
-
-  /**
-   * A {@link Paginator} for the {@code searchDatasets()} API that returns doesn't require a project
-   * ID and returns only public datasets.
-   */
-  public static class PublicDatasets extends AbstractDatasets<Void> {
-
-    /**
-     * Static factory method.
-     *
-     * @param genomics The {@link Genomics} stub.
-     * @return the new paginator.
-     */
-    public static PublicDatasets create(Genomics genomics) {
-      return new PublicDatasets(genomics);
-    }
-
-    private PublicDatasets(Genomics genomics) {
-      super(genomics);
-    }
-
-    public Iterable<Dataset> search() {
-      return search((Void) null);
-    }
-
-    public <F> F search(Callback<Dataset, ? extends F> callback) throws IOException {
-      return search((Void) null, callback);
-    }
-
-    public Iterable<Dataset> search(
-        GenomicsRequestInitializer<? super Genomics.Datasets.List> initializer) {
-      return search(null, initializer, RetryPolicy.defaultPolicy());
-    }
-
-    public <F> F search(
-        GenomicsRequestInitializer<? super Genomics.Datasets.List> initializer,
-        Callback<Dataset, ? extends F> callback) throws IOException {
-      return search(null, initializer, callback, RetryPolicy.defaultPolicy());
-    }
-
-    public Iterable<Dataset> search(String fields) {
-      return search(null, fields);
-    }
-
-    public <F> F search(String fields, Callback<Dataset, ? extends F> callback)
-        throws IOException {
-      return search(null, fields, callback);
-    }
-
-    @Override void setRequest(Genomics.Datasets.List list, Void ignored) {}
   }
 
   /**
