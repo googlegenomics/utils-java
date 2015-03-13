@@ -40,7 +40,7 @@ public class Contig implements Serializable {
 
   private static final long serialVersionUID = -1730387112193404207L;
 
-  public static final long DEFAULT_NUMBER_OF_BASES_PER_SHARD = 100000;
+  public static final long DEFAULT_NUMBER_OF_BASES_PER_SHARD = 1000000;
 
   public enum SexChromosomeFilter { INCLUDE_XY, EXCLUDE_XY }
   
