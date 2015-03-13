@@ -52,9 +52,11 @@ import com.google.api.services.genomics.model.Variant;
 import com.google.api.services.genomics.model.VariantSet;
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
+import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;
 import com.google.common.collect.AbstractSequentialIterator;
 import com.google.common.collect.FluentIterable;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 
@@ -319,6 +321,11 @@ public abstract class Paginator<A, B, C extends GenomicsRequest<D>, D, E> {
       SearchReadsResponse,
       Read> {
     
+    private static ImmutableMap<String,String> REQUIRED_STRICT_SHARD_FIELDS =
+        ImmutableMap.<String, String>builder()
+        .put("alignment", ".*\\p{Punct}alignment\\p{Punct}.*") 
+        .put("position", ".*\\p{Punct}position\\p{Punct}.*")
+        .build();
     private final ShardBoundary shardBoundary;
     private Predicate<Read> shardPredicate = null;
 
@@ -369,6 +376,26 @@ public abstract class Paginator<A, B, C extends GenomicsRequest<D>, D, E> {
           .or(request));
     }
 
+    @Override
+    public GenomicsRequestInitializer<GenomicsRequest<?>> setFieldsInitializer(final String fields) {
+      return new GenomicsRequestInitializer<GenomicsRequest<?>>() {
+        @Override
+        public void initialize(GenomicsRequest<?> search) {
+          if (null != fields) {
+            for (String requiredField : REQUIRED_STRICT_SHARD_FIELDS.keySet()) {
+              Preconditions
+                  .checkArgument(
+                      shardBoundary != ShardBoundary.STRICT
+                          || fields.matches(REQUIRED_STRICT_SHARD_FIELDS.get(requiredField)),
+                      "Required field missing: '%s' Add this field to the list of Read fields to be returned in the partial response.",
+                      requiredField);
+            }
+            search.setFields(fields);
+          }
+        }
+      };
+    }
+    
     @Override Genomics.Reads getApi(Genomics genomics) {
       return genomics.reads();
     }
@@ -396,6 +423,11 @@ public abstract class Paginator<A, B, C extends GenomicsRequest<D>, D, E> {
       SearchAnnotationsResponse,
       Annotation> {
 
+    private static ImmutableMap<String,String> REQUIRED_STRICT_SHARD_FIELDS =
+        ImmutableMap.<String, String>builder()
+        .put("position", ".*\\p{Punct}position\\p{Punct}.*")
+        .put("start", ".*\\p{Punct}start\\p{Punct}.*") 
+        .build();
     private final ShardBoundary shardBoundary;
     private Predicate<Annotation> shardPredicate = null;
 
@@ -443,6 +475,26 @@ public abstract class Paginator<A, B, C extends GenomicsRequest<D>, D, E> {
                 }
               })
           .or(request));
+    }
+
+    @Override
+    public GenomicsRequestInitializer<GenomicsRequest<?>> setFieldsInitializer(final String fields) {
+      return new GenomicsRequestInitializer<GenomicsRequest<?>>() {
+        @Override
+        public void initialize(GenomicsRequest<?> search) {
+          if (null != fields) {
+            for(String requiredField : REQUIRED_STRICT_SHARD_FIELDS.keySet()) {
+            Preconditions
+                .checkArgument(
+                    shardBoundary != ShardBoundary.STRICT
+                        || fields.matches(REQUIRED_STRICT_SHARD_FIELDS.get(requiredField)),
+                    "Required field missing: '%s' Add this field to the list of Annotation fields to be returned in the partial response.",
+                    requiredField);
+            }
+            search.setFields(fields);
+          }
+        }
+      };
     }
 
     @Override Genomics.Annotations getApi(Genomics genomics) {
@@ -784,6 +836,9 @@ public abstract class Paginator<A, B, C extends GenomicsRequest<D>, D, E> {
       SearchVariantsResponse,
       Variant> {
 
+    private static final String REQUIRED_STRICT_SHARD_FIELD = "start";
+    private static final String REQUIRED_STRICT_SHARD_PATTERN = 
+        ".*\\p{Punct}" + REQUIRED_STRICT_SHARD_FIELD +"\\p{Punct}.*";
     private final ShardBoundary shardBoundary;
     private Predicate<Variant> shardPredicate = null;
     
@@ -834,6 +889,24 @@ public abstract class Paginator<A, B, C extends GenomicsRequest<D>, D, E> {
           .or(request));
     }
 
+    @Override
+    public GenomicsRequestInitializer<GenomicsRequest<?>> setFieldsInitializer(final String fields) {
+      return new GenomicsRequestInitializer<GenomicsRequest<?>>() {
+        @Override
+        public void initialize(GenomicsRequest<?> search) {
+          if (null != fields) {
+            Preconditions
+                .checkArgument(
+                    shardBoundary != ShardBoundary.STRICT
+                        || fields.matches(REQUIRED_STRICT_SHARD_PATTERN),
+                    "Required field missing: '%s' Add this field to the list of Variant fields to be returned in the partial response.",
+                    REQUIRED_STRICT_SHARD_FIELD);
+            search.setFields(fields);
+          }
+        }
+      };
+    }
+    
     @Override Genomics.Variants getApi(Genomics genomics) {
       return genomics.variants();
     }
@@ -905,7 +978,7 @@ public abstract class Paginator<A, B, C extends GenomicsRequest<D>, D, E> {
         @Override public void initialize(GenomicsRequest<?> search) {}
       };
 
-  public static GenomicsRequestInitializer<GenomicsRequest<?>> setFieldsInitializer(
+  public GenomicsRequestInitializer<GenomicsRequest<?>> setFieldsInitializer(
       final String fields) {
     return new GenomicsRequestInitializer<GenomicsRequest<?>>() {
           @Override public void initialize(GenomicsRequest<?> search) {
@@ -915,7 +988,7 @@ public abstract class Paginator<A, B, C extends GenomicsRequest<D>, D, E> {
           }
         };
   }
-
+  
   private final Genomics genomics;
 
   public Paginator(Genomics genomics) {
