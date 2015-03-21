@@ -13,6 +13,12 @@
  */
 package com.google.cloud.genomics.utils;
 
+import java.io.IOException;
+import java.io.Serializable;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.Map;
+
 import com.google.api.services.genomics.Genomics;
 import com.google.api.services.genomics.GenomicsRequest;
 import com.google.api.services.genomics.model.Annotation;
@@ -51,6 +57,7 @@ import com.google.api.services.genomics.model.SearchVariantsResponse;
 import com.google.api.services.genomics.model.Variant;
 import com.google.api.services.genomics.model.VariantSet;
 import com.google.common.base.Function;
+import com.google.common.base.Joiner;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;
@@ -59,11 +66,7 @@ import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
-
-import java.io.IOException;
-import java.io.Serializable;
-import java.util.Collections;
-import java.util.Iterator;
+import com.google.common.collect.Maps;
 
 /**
  * An abstraction that understands the {@code pageToken} / {@code nextPageToken} protocol for paging
@@ -321,8 +324,10 @@ public abstract class Paginator<A, B, C extends GenomicsRequest<D>, D, E> {
       SearchReadsResponse,
       Read> {
     
+    // TODO: When this is supported server-side, these additional fields are no longer required
     private static ImmutableMap<String,String> REQUIRED_STRICT_SHARD_FIELDS =
         ImmutableMap.<String, String>builder()
+        .putAll(REQUIRED_FIELDS)
         .put("alignment", ".*\\p{Punct}alignment\\p{Punct}.*") 
         .put("position", ".*\\p{Punct}position\\p{Punct}.*")
         .build();
@@ -378,22 +383,10 @@ public abstract class Paginator<A, B, C extends GenomicsRequest<D>, D, E> {
 
     @Override
     public GenomicsRequestInitializer<GenomicsRequest<?>> setFieldsInitializer(final String fields) {
-      return new GenomicsRequestInitializer<GenomicsRequest<?>>() {
-        @Override
-        public void initialize(GenomicsRequest<?> search) {
-          if (null != fields) {
-            for (String requiredField : REQUIRED_STRICT_SHARD_FIELDS.keySet()) {
-              Preconditions
-                  .checkArgument(
-                      shardBoundary != ShardBoundary.STRICT
-                          || fields.matches(REQUIRED_STRICT_SHARD_FIELDS.get(requiredField)),
-                      "Required field missing: '%s' Add this field to the list of Read fields to be returned in the partial response.",
-                      requiredField);
-            }
-            search.setFields(fields);
-          }
-        }
-      };
+      if(shardBoundary == ShardBoundary.STRICT) {
+        return new GenomicsSearchFieldRequestInitializer(fields, REQUIRED_STRICT_SHARD_FIELDS);        
+      }
+      return new GenomicsSearchFieldRequestInitializer(fields, REQUIRED_FIELDS);
     }
     
     @Override Genomics.Reads getApi(Genomics genomics) {
@@ -423,8 +416,10 @@ public abstract class Paginator<A, B, C extends GenomicsRequest<D>, D, E> {
       SearchAnnotationsResponse,
       Annotation> {
 
+    // TODO: When this is supported server-side, these additional fields are no longer required
     private static ImmutableMap<String,String> REQUIRED_STRICT_SHARD_FIELDS =
         ImmutableMap.<String, String>builder()
+        .putAll(REQUIRED_FIELDS)
         .put("position", ".*\\p{Punct}position\\p{Punct}.*")
         .put("start", ".*\\p{Punct}start\\p{Punct}.*") 
         .build();
@@ -479,22 +474,10 @@ public abstract class Paginator<A, B, C extends GenomicsRequest<D>, D, E> {
 
     @Override
     public GenomicsRequestInitializer<GenomicsRequest<?>> setFieldsInitializer(final String fields) {
-      return new GenomicsRequestInitializer<GenomicsRequest<?>>() {
-        @Override
-        public void initialize(GenomicsRequest<?> search) {
-          if (null != fields) {
-            for(String requiredField : REQUIRED_STRICT_SHARD_FIELDS.keySet()) {
-            Preconditions
-                .checkArgument(
-                    shardBoundary != ShardBoundary.STRICT
-                        || fields.matches(REQUIRED_STRICT_SHARD_FIELDS.get(requiredField)),
-                    "Required field missing: '%s' Add this field to the list of Annotation fields to be returned in the partial response.",
-                    requiredField);
-            }
-            search.setFields(fields);
-          }
-        }
-      };
+      if(shardBoundary == ShardBoundary.STRICT) {
+        return new GenomicsSearchFieldRequestInitializer(fields, REQUIRED_STRICT_SHARD_FIELDS);        
+      }
+      return new GenomicsSearchFieldRequestInitializer(fields, REQUIRED_FIELDS);
     }
 
     @Override Genomics.Annotations getApi(Genomics genomics) {
@@ -836,9 +819,12 @@ public abstract class Paginator<A, B, C extends GenomicsRequest<D>, D, E> {
       SearchVariantsResponse,
       Variant> {
 
-    private static final String REQUIRED_STRICT_SHARD_FIELD = "start";
-    private static final String REQUIRED_STRICT_SHARD_PATTERN = 
-        ".*\\p{Punct}" + REQUIRED_STRICT_SHARD_FIELD +"\\p{Punct}.*";
+    // TODO: When this is supported server-side, these additional fields are no longer required
+    private static ImmutableMap<String,String> REQUIRED_STRICT_SHARD_FIELDS =
+        ImmutableMap.<String, String>builder()
+        .putAll(REQUIRED_FIELDS)
+        .put("start", ".*\\p{Punct}start\\p{Punct}.*") 
+        .build();
     private final ShardBoundary shardBoundary;
     private Predicate<Variant> shardPredicate = null;
     
@@ -891,20 +877,10 @@ public abstract class Paginator<A, B, C extends GenomicsRequest<D>, D, E> {
 
     @Override
     public GenomicsRequestInitializer<GenomicsRequest<?>> setFieldsInitializer(final String fields) {
-      return new GenomicsRequestInitializer<GenomicsRequest<?>>() {
-        @Override
-        public void initialize(GenomicsRequest<?> search) {
-          if (null != fields) {
-            Preconditions
-                .checkArgument(
-                    shardBoundary != ShardBoundary.STRICT
-                        || fields.matches(REQUIRED_STRICT_SHARD_PATTERN),
-                    "Required field missing: '%s' Add this field to the list of Variant fields to be returned in the partial response.",
-                    REQUIRED_STRICT_SHARD_FIELD);
-            search.setFields(fields);
-          }
-        }
-      };
+      if(shardBoundary == ShardBoundary.STRICT) {
+        return new GenomicsSearchFieldRequestInitializer(fields, REQUIRED_STRICT_SHARD_FIELDS);        
+      }
+      return new GenomicsSearchFieldRequestInitializer(fields, REQUIRED_FIELDS);
     }
     
     @Override Genomics.Variants getApi(Genomics genomics) {
@@ -978,15 +954,44 @@ public abstract class Paginator<A, B, C extends GenomicsRequest<D>, D, E> {
         @Override public void initialize(GenomicsRequest<?> search) {}
       };
 
-  public GenomicsRequestInitializer<GenomicsRequest<?>> setFieldsInitializer(
-      final String fields) {
-    return new GenomicsRequestInitializer<GenomicsRequest<?>>() {
-          @Override public void initialize(GenomicsRequest<?> search) {
-            if (null != fields) {
-              search.setFields(fields);
-            }
-          }
-        };
+  protected static final ImmutableMap<String, String> REQUIRED_FIELDS = ImmutableMap
+      .<String, String>builder()
+      .put("nextPageToken", "(.+\\p{Punct})?nextPageToken(\\p{Punct}.+)?").
+      build();
+
+  public GenomicsRequestInitializer<GenomicsRequest<?>> setFieldsInitializer(final String fields) {
+    return new GenomicsSearchFieldRequestInitializer(fields, REQUIRED_FIELDS);
+  }
+
+  public static class GenomicsSearchFieldRequestInitializer implements
+      GenomicsRequestInitializer<GenomicsRequest<?>> {
+    private final String fields;
+    private final ImmutableMap<String, String> requiredFields;
+
+    public GenomicsSearchFieldRequestInitializer(String fields,
+        ImmutableMap<String, String> requiredFields) {
+      this.fields = fields;
+      this.requiredFields = requiredFields;
+    }
+
+    @Override
+    public void initialize(GenomicsRequest<?> search) {
+      if (null != fields) {
+        Map<String, String> missingFields =
+            Maps.filterValues(requiredFields, new Predicate<String>() {
+              @Override
+              public boolean apply(String input) {
+                return !fields.matches(input);
+              }
+            });
+        Preconditions
+            .checkArgument(
+                missingFields.isEmpty(),
+                "Required field(s) missing: '%s' Add this field to the list of fields to be returned in the partial response.",
+                Joiner.on(",").join(missingFields.keySet()));
+        search.setFields(fields);
+      }
+    }
   }
   
   private final Genomics genomics;
