@@ -71,3 +71,19 @@ mvn release:perform
 2. Find the repository at https://oss.sonatype.org/#stagingRepositories and close it.
 3. If closing succeeds, then release it. See the [detailed instructions](http://central.sonatype.org/pages/releasing-the-deployment.html#close-and-drop-or-release-your-staging-repository) for more info.
 4. As long as there aren't any errors - that's it! The new version will be synced to Maven central.
+
+##gRPC
+This project now includes code for calling the Genomics API using <a href="http://www.grpc.io">gRPC</a>.
+Calling the API with gRPC should greatly improve performance but is still experimental (alpha). To use
+gRPC, you'll need a version of ALPN that matches your JRE version. See the
+<a href="http://www.eclipse.org/jetty/documentation/9.2.10.v20150310/alpn-chapter.html">ALPN documentation</a>
+for a table of which ALPN JAR to use. The latest version (as of June 2015) is provided in the lib/
+subdirectory, and is known to work with JRE 1.8.0_40. To run with ALPN:
+
+```
+java -Xbootclasspath/p:lib/alpn-boot-8.1.3.v20150130.jar
+```
+
+See com/google/cloud/genomics/grpc/Example.java for some example code that uses gRPC. At the moment your
+project must be whitelisted to use gRPC. Please <a href="mailto:google-genomics-contact@googlegroups.com">contact us</a>
+if you are interested in testing gRPC.
