@@ -1,5 +1,7 @@
 language: java
 
+install: /bin/true  # Don't run "gradle assemble" (which is the default)
+
 script: mvn test javadoc:javadoc
 
 after_success:
