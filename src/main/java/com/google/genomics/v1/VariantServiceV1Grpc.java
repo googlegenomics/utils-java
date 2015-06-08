@@ -19,104 +19,104 @@ public class VariantServiceV1Grpc {
       com.google.longrunning.Operation> METHOD_IMPORT_VARIANTS =
       io.grpc.stub.Method.create(
           io.grpc.MethodType.UNARY, "ImportVariants",
-          io.grpc.proto.ProtoUtils.marshaller(com.google.genomics.v1.ImportVariantsRequest.PARSER),
-          io.grpc.proto.ProtoUtils.marshaller(com.google.longrunning.Operation.PARSER));
+          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.ImportVariantsRequest.PARSER),
+          io.grpc.protobuf.ProtoUtils.marshaller(com.google.longrunning.Operation.PARSER));
   private static final io.grpc.stub.Method<com.google.genomics.v1.ExportVariantSetRequest,
       com.google.longrunning.Operation> METHOD_EXPORT_VARIANT_SET =
       io.grpc.stub.Method.create(
           io.grpc.MethodType.UNARY, "ExportVariantSet",
-          io.grpc.proto.ProtoUtils.marshaller(com.google.genomics.v1.ExportVariantSetRequest.PARSER),
-          io.grpc.proto.ProtoUtils.marshaller(com.google.longrunning.Operation.PARSER));
+          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.ExportVariantSetRequest.PARSER),
+          io.grpc.protobuf.ProtoUtils.marshaller(com.google.longrunning.Operation.PARSER));
   private static final io.grpc.stub.Method<com.google.genomics.v1.GetVariantSetRequest,
       com.google.genomics.v1.VariantSet> METHOD_GET_VARIANT_SET =
       io.grpc.stub.Method.create(
           io.grpc.MethodType.UNARY, "GetVariantSet",
-          io.grpc.proto.ProtoUtils.marshaller(com.google.genomics.v1.GetVariantSetRequest.PARSER),
-          io.grpc.proto.ProtoUtils.marshaller(com.google.genomics.v1.VariantSet.PARSER));
+          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.GetVariantSetRequest.PARSER),
+          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.VariantSet.PARSER));
   private static final io.grpc.stub.Method<com.google.genomics.v1.SearchVariantSetsRequest,
       com.google.genomics.v1.SearchVariantSetsResponse> METHOD_SEARCH_VARIANT_SETS =
       io.grpc.stub.Method.create(
           io.grpc.MethodType.UNARY, "SearchVariantSets",
-          io.grpc.proto.ProtoUtils.marshaller(com.google.genomics.v1.SearchVariantSetsRequest.PARSER),
-          io.grpc.proto.ProtoUtils.marshaller(com.google.genomics.v1.SearchVariantSetsResponse.PARSER));
+          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.SearchVariantSetsRequest.PARSER),
+          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.SearchVariantSetsResponse.PARSER));
   private static final io.grpc.stub.Method<com.google.genomics.v1.DeleteVariantSetRequest,
       com.google.protobuf.Empty> METHOD_DELETE_VARIANT_SET =
       io.grpc.stub.Method.create(
           io.grpc.MethodType.UNARY, "DeleteVariantSet",
-          io.grpc.proto.ProtoUtils.marshaller(com.google.genomics.v1.DeleteVariantSetRequest.PARSER),
-          io.grpc.proto.ProtoUtils.marshaller(com.google.protobuf.Empty.PARSER));
+          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.DeleteVariantSetRequest.PARSER),
+          io.grpc.protobuf.ProtoUtils.marshaller(com.google.protobuf.Empty.PARSER));
   private static final io.grpc.stub.Method<com.google.genomics.v1.UpdateVariantSetRequest,
       com.google.genomics.v1.VariantSet> METHOD_UPDATE_VARIANT_SET =
       io.grpc.stub.Method.create(
           io.grpc.MethodType.UNARY, "UpdateVariantSet",
-          io.grpc.proto.ProtoUtils.marshaller(com.google.genomics.v1.UpdateVariantSetRequest.PARSER),
-          io.grpc.proto.ProtoUtils.marshaller(com.google.genomics.v1.VariantSet.PARSER));
+          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.UpdateVariantSetRequest.PARSER),
+          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.VariantSet.PARSER));
   private static final io.grpc.stub.Method<com.google.genomics.v1.SearchVariantsRequest,
       com.google.genomics.v1.SearchVariantsResponse> METHOD_SEARCH_VARIANTS =
       io.grpc.stub.Method.create(
           io.grpc.MethodType.UNARY, "SearchVariants",
-          io.grpc.proto.ProtoUtils.marshaller(com.google.genomics.v1.SearchVariantsRequest.PARSER),
-          io.grpc.proto.ProtoUtils.marshaller(com.google.genomics.v1.SearchVariantsResponse.PARSER));
+          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.SearchVariantsRequest.PARSER),
+          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.SearchVariantsResponse.PARSER));
   private static final io.grpc.stub.Method<com.google.genomics.v1.CreateVariantRequest,
       com.google.genomics.v1.Variant> METHOD_CREATE_VARIANT =
       io.grpc.stub.Method.create(
           io.grpc.MethodType.UNARY, "CreateVariant",
-          io.grpc.proto.ProtoUtils.marshaller(com.google.genomics.v1.CreateVariantRequest.PARSER),
-          io.grpc.proto.ProtoUtils.marshaller(com.google.genomics.v1.Variant.PARSER));
+          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.CreateVariantRequest.PARSER),
+          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.Variant.PARSER));
   private static final io.grpc.stub.Method<com.google.genomics.v1.UpdateVariantRequest,
       com.google.genomics.v1.Variant> METHOD_UPDATE_VARIANT =
       io.grpc.stub.Method.create(
           io.grpc.MethodType.UNARY, "UpdateVariant",
-          io.grpc.proto.ProtoUtils.marshaller(com.google.genomics.v1.UpdateVariantRequest.PARSER),
-          io.grpc.proto.ProtoUtils.marshaller(com.google.genomics.v1.Variant.PARSER));
+          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.UpdateVariantRequest.PARSER),
+          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.Variant.PARSER));
   private static final io.grpc.stub.Method<com.google.genomics.v1.DeleteVariantRequest,
       com.google.protobuf.Empty> METHOD_DELETE_VARIANT =
       io.grpc.stub.Method.create(
           io.grpc.MethodType.UNARY, "DeleteVariant",
-          io.grpc.proto.ProtoUtils.marshaller(com.google.genomics.v1.DeleteVariantRequest.PARSER),
-          io.grpc.proto.ProtoUtils.marshaller(com.google.protobuf.Empty.PARSER));
+          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.DeleteVariantRequest.PARSER),
+          io.grpc.protobuf.ProtoUtils.marshaller(com.google.protobuf.Empty.PARSER));
   private static final io.grpc.stub.Method<com.google.genomics.v1.GetVariantRequest,
       com.google.genomics.v1.Variant> METHOD_GET_VARIANT =
       io.grpc.stub.Method.create(
           io.grpc.MethodType.UNARY, "GetVariant",
-          io.grpc.proto.ProtoUtils.marshaller(com.google.genomics.v1.GetVariantRequest.PARSER),
-          io.grpc.proto.ProtoUtils.marshaller(com.google.genomics.v1.Variant.PARSER));
+          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.GetVariantRequest.PARSER),
+          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.Variant.PARSER));
   private static final io.grpc.stub.Method<com.google.genomics.v1.MergeVariantsRequest,
       com.google.protobuf.Empty> METHOD_MERGE_VARIANTS =
       io.grpc.stub.Method.create(
           io.grpc.MethodType.UNARY, "MergeVariants",
-          io.grpc.proto.ProtoUtils.marshaller(com.google.genomics.v1.MergeVariantsRequest.PARSER),
-          io.grpc.proto.ProtoUtils.marshaller(com.google.protobuf.Empty.PARSER));
+          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.MergeVariantsRequest.PARSER),
+          io.grpc.protobuf.ProtoUtils.marshaller(com.google.protobuf.Empty.PARSER));
   private static final io.grpc.stub.Method<com.google.genomics.v1.SearchCallSetsRequest,
       com.google.genomics.v1.SearchCallSetsResponse> METHOD_SEARCH_CALL_SETS =
       io.grpc.stub.Method.create(
           io.grpc.MethodType.UNARY, "SearchCallSets",
-          io.grpc.proto.ProtoUtils.marshaller(com.google.genomics.v1.SearchCallSetsRequest.PARSER),
-          io.grpc.proto.ProtoUtils.marshaller(com.google.genomics.v1.SearchCallSetsResponse.PARSER));
+          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.SearchCallSetsRequest.PARSER),
+          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.SearchCallSetsResponse.PARSER));
   private static final io.grpc.stub.Method<com.google.genomics.v1.CreateCallSetRequest,
       com.google.genomics.v1.CallSet> METHOD_CREATE_CALL_SET =
       io.grpc.stub.Method.create(
           io.grpc.MethodType.UNARY, "CreateCallSet",
-          io.grpc.proto.ProtoUtils.marshaller(com.google.genomics.v1.CreateCallSetRequest.PARSER),
-          io.grpc.proto.ProtoUtils.marshaller(com.google.genomics.v1.CallSet.PARSER));
+          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.CreateCallSetRequest.PARSER),
+          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.CallSet.PARSER));
   private static final io.grpc.stub.Method<com.google.genomics.v1.UpdateCallSetRequest,
       com.google.genomics.v1.CallSet> METHOD_UPDATE_CALL_SET =
       io.grpc.stub.Method.create(
           io.grpc.MethodType.UNARY, "UpdateCallSet",
-          io.grpc.proto.ProtoUtils.marshaller(com.google.genomics.v1.UpdateCallSetRequest.PARSER),
-          io.grpc.proto.ProtoUtils.marshaller(com.google.genomics.v1.CallSet.PARSER));
+          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.UpdateCallSetRequest.PARSER),
+          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.CallSet.PARSER));
   private static final io.grpc.stub.Method<com.google.genomics.v1.DeleteCallSetRequest,
       com.google.protobuf.Empty> METHOD_DELETE_CALL_SET =
       io.grpc.stub.Method.create(
           io.grpc.MethodType.UNARY, "DeleteCallSet",
-          io.grpc.proto.ProtoUtils.marshaller(com.google.genomics.v1.DeleteCallSetRequest.PARSER),
-          io.grpc.proto.ProtoUtils.marshaller(com.google.protobuf.Empty.PARSER));
+          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.DeleteCallSetRequest.PARSER),
+          io.grpc.protobuf.ProtoUtils.marshaller(com.google.protobuf.Empty.PARSER));
   private static final io.grpc.stub.Method<com.google.genomics.v1.GetCallSetRequest,
       com.google.genomics.v1.CallSet> METHOD_GET_CALL_SET =
       io.grpc.stub.Method.create(
           io.grpc.MethodType.UNARY, "GetCallSet",
-          io.grpc.proto.ProtoUtils.marshaller(com.google.genomics.v1.GetCallSetRequest.PARSER),
-          io.grpc.proto.ProtoUtils.marshaller(com.google.genomics.v1.CallSet.PARSER));
+          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.GetCallSetRequest.PARSER),
+          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.CallSet.PARSER));
 
   public static VariantServiceV1Stub newStub(io.grpc.Channel channel) {
     return new VariantServiceV1Stub(channel, CONFIG);

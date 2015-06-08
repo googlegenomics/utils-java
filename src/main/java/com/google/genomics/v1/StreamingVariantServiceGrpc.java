@@ -19,8 +19,8 @@ public class StreamingVariantServiceGrpc {
       com.google.genomics.v1.StreamVariantsResponse> METHOD_STREAM_VARIANTS =
       io.grpc.stub.Method.create(
           io.grpc.MethodType.SERVER_STREAMING, "StreamVariants",
-          io.grpc.proto.ProtoUtils.marshaller(com.google.genomics.v1.StreamVariantsRequest.PARSER),
-          io.grpc.proto.ProtoUtils.marshaller(com.google.genomics.v1.StreamVariantsResponse.PARSER));
+          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.StreamVariantsRequest.PARSER),
+          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.StreamVariantsResponse.PARSER));
 
   public static StreamingVariantServiceStub newStub(io.grpc.Channel channel) {
     return new StreamingVariantServiceStub(channel, CONFIG);

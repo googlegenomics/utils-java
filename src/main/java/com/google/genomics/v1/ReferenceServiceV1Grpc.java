@@ -19,32 +19,32 @@ public class ReferenceServiceV1Grpc {
       com.google.genomics.v1.SearchReferenceSetsResponse> METHOD_SEARCH_REFERENCE_SETS =
       io.grpc.stub.Method.create(
           io.grpc.MethodType.UNARY, "SearchReferenceSets",
-          io.grpc.proto.ProtoUtils.marshaller(com.google.genomics.v1.SearchReferenceSetsRequest.PARSER),
-          io.grpc.proto.ProtoUtils.marshaller(com.google.genomics.v1.SearchReferenceSetsResponse.PARSER));
+          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.SearchReferenceSetsRequest.PARSER),
+          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.SearchReferenceSetsResponse.PARSER));
   private static final io.grpc.stub.Method<com.google.genomics.v1.GetReferenceSetRequest,
       com.google.genomics.v1.ReferenceSet> METHOD_GET_REFERENCE_SET =
       io.grpc.stub.Method.create(
           io.grpc.MethodType.UNARY, "GetReferenceSet",
-          io.grpc.proto.ProtoUtils.marshaller(com.google.genomics.v1.GetReferenceSetRequest.PARSER),
-          io.grpc.proto.ProtoUtils.marshaller(com.google.genomics.v1.ReferenceSet.PARSER));
+          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.GetReferenceSetRequest.PARSER),
+          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.ReferenceSet.PARSER));
   private static final io.grpc.stub.Method<com.google.genomics.v1.SearchReferencesRequest,
       com.google.genomics.v1.SearchReferencesResponse> METHOD_SEARCH_REFERENCES =
       io.grpc.stub.Method.create(
           io.grpc.MethodType.UNARY, "SearchReferences",
-          io.grpc.proto.ProtoUtils.marshaller(com.google.genomics.v1.SearchReferencesRequest.PARSER),
-          io.grpc.proto.ProtoUtils.marshaller(com.google.genomics.v1.SearchReferencesResponse.PARSER));
+          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.SearchReferencesRequest.PARSER),
+          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.SearchReferencesResponse.PARSER));
   private static final io.grpc.stub.Method<com.google.genomics.v1.GetReferenceRequest,
       com.google.genomics.v1.Reference> METHOD_GET_REFERENCE =
       io.grpc.stub.Method.create(
           io.grpc.MethodType.UNARY, "GetReference",
-          io.grpc.proto.ProtoUtils.marshaller(com.google.genomics.v1.GetReferenceRequest.PARSER),
-          io.grpc.proto.ProtoUtils.marshaller(com.google.genomics.v1.Reference.PARSER));
+          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.GetReferenceRequest.PARSER),
+          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.Reference.PARSER));
   private static final io.grpc.stub.Method<com.google.genomics.v1.ListBasesRequest,
       com.google.genomics.v1.ListBasesResponse> METHOD_LIST_BASES =
       io.grpc.stub.Method.create(
           io.grpc.MethodType.UNARY, "ListBases",
-          io.grpc.proto.ProtoUtils.marshaller(com.google.genomics.v1.ListBasesRequest.PARSER),
-          io.grpc.proto.ProtoUtils.marshaller(com.google.genomics.v1.ListBasesResponse.PARSER));
+          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.ListBasesRequest.PARSER),
+          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.ListBasesResponse.PARSER));
 
   public static ReferenceServiceV1Stub newStub(io.grpc.Channel channel) {
     return new ReferenceServiceV1Stub(channel, CONFIG);

@@ -84,6 +84,18 @@ subdirectory, and is known to work with JRE 1.8.0_40. To run with ALPN:
 java -Xbootclasspath/p:lib/alpn-boot-8.1.3.v20150130.jar
 ```
 
-See com/google/cloud/genomics/grpc/Example.java for some example code that uses gRPC. At the moment your
-project must be whitelisted to use gRPC. Please <a href="mailto:google-genomics-contact@googlegroups.com">contact us</a>
-if you are interested in testing gRPC.
+See com/google/cloud/genomics/grpc/Example.java for some example code that uses gRPC. The protocol buffer
+schema for the API can be found in src/main/proto/google/genomics/v1.
+
+At the moment your project must be whitelisted to use gRPC. Please
+<a href="mailto:google-genomics-contact@googlegroups.com">contact us</a> if you are interested in testing gRPC.
+
+###Generating gRPC code
+Users should typically **not** need to generate gRPC code themselves, as pre-generated code can be found
+in src/main/java/com/google/genomics/v1. For developers, code can be generated with Gradle by running
+
+```
+gradle :generateProto
+```
+
+which will create code in target/generated-sources/main.

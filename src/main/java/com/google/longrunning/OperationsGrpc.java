@@ -19,26 +19,26 @@ public class OperationsGrpc {
       com.google.longrunning.Operation> METHOD_GET_OPERATION =
       io.grpc.stub.Method.create(
           io.grpc.MethodType.UNARY, "GetOperation",
-          io.grpc.proto.ProtoUtils.marshaller(com.google.longrunning.GetOperationRequest.PARSER),
-          io.grpc.proto.ProtoUtils.marshaller(com.google.longrunning.Operation.PARSER));
+          io.grpc.protobuf.ProtoUtils.marshaller(com.google.longrunning.GetOperationRequest.PARSER),
+          io.grpc.protobuf.ProtoUtils.marshaller(com.google.longrunning.Operation.PARSER));
   private static final io.grpc.stub.Method<com.google.longrunning.ListOperationsRequest,
       com.google.longrunning.ListOperationsResponse> METHOD_LIST_OPERATIONS =
       io.grpc.stub.Method.create(
           io.grpc.MethodType.UNARY, "ListOperations",
-          io.grpc.proto.ProtoUtils.marshaller(com.google.longrunning.ListOperationsRequest.PARSER),
-          io.grpc.proto.ProtoUtils.marshaller(com.google.longrunning.ListOperationsResponse.PARSER));
+          io.grpc.protobuf.ProtoUtils.marshaller(com.google.longrunning.ListOperationsRequest.PARSER),
+          io.grpc.protobuf.ProtoUtils.marshaller(com.google.longrunning.ListOperationsResponse.PARSER));
   private static final io.grpc.stub.Method<com.google.longrunning.CancelOperationRequest,
       com.google.protobuf.Empty> METHOD_CANCEL_OPERATION =
       io.grpc.stub.Method.create(
           io.grpc.MethodType.UNARY, "CancelOperation",
-          io.grpc.proto.ProtoUtils.marshaller(com.google.longrunning.CancelOperationRequest.PARSER),
-          io.grpc.proto.ProtoUtils.marshaller(com.google.protobuf.Empty.PARSER));
+          io.grpc.protobuf.ProtoUtils.marshaller(com.google.longrunning.CancelOperationRequest.PARSER),
+          io.grpc.protobuf.ProtoUtils.marshaller(com.google.protobuf.Empty.PARSER));
   private static final io.grpc.stub.Method<com.google.longrunning.DeleteOperationRequest,
       com.google.protobuf.Empty> METHOD_DELETE_OPERATION =
       io.grpc.stub.Method.create(
           io.grpc.MethodType.UNARY, "DeleteOperation",
-          io.grpc.proto.ProtoUtils.marshaller(com.google.longrunning.DeleteOperationRequest.PARSER),
-          io.grpc.proto.ProtoUtils.marshaller(com.google.protobuf.Empty.PARSER));
+          io.grpc.protobuf.ProtoUtils.marshaller(com.google.longrunning.DeleteOperationRequest.PARSER),
+          io.grpc.protobuf.ProtoUtils.marshaller(com.google.protobuf.Empty.PARSER));
 
   public static OperationsStub newStub(io.grpc.Channel channel) {
     return new OperationsStub(channel, CONFIG);
