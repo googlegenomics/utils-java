@@ -19,8 +19,8 @@ public class StreamingReadServiceGrpc {
       com.google.genomics.v1.StreamReadsResponse> METHOD_STREAM_READS =
       io.grpc.stub.Method.create(
           io.grpc.MethodType.SERVER_STREAMING, "StreamReads",
-          io.grpc.proto.ProtoUtils.marshaller(com.google.genomics.v1.StreamReadsRequest.PARSER),
-          io.grpc.proto.ProtoUtils.marshaller(com.google.genomics.v1.StreamReadsResponse.PARSER));
+          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.StreamReadsRequest.PARSER),
+          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.StreamReadsResponse.PARSER));
 
   public static StreamingReadServiceStub newStub(io.grpc.Channel channel) {
     return new StreamingReadServiceStub(channel, CONFIG);

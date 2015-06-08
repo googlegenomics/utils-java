@@ -19,38 +19,38 @@ public class DatasetServiceV1Grpc {
       com.google.genomics.v1.ListDatasetsResponse> METHOD_LIST_DATASETS =
       io.grpc.stub.Method.create(
           io.grpc.MethodType.UNARY, "ListDatasets",
-          io.grpc.proto.ProtoUtils.marshaller(com.google.genomics.v1.ListDatasetsRequest.PARSER),
-          io.grpc.proto.ProtoUtils.marshaller(com.google.genomics.v1.ListDatasetsResponse.PARSER));
+          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.ListDatasetsRequest.PARSER),
+          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.ListDatasetsResponse.PARSER));
   private static final io.grpc.stub.Method<com.google.genomics.v1.CreateDatasetRequest,
       com.google.genomics.v1.Dataset> METHOD_CREATE_DATASET =
       io.grpc.stub.Method.create(
           io.grpc.MethodType.UNARY, "CreateDataset",
-          io.grpc.proto.ProtoUtils.marshaller(com.google.genomics.v1.CreateDatasetRequest.PARSER),
-          io.grpc.proto.ProtoUtils.marshaller(com.google.genomics.v1.Dataset.PARSER));
+          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.CreateDatasetRequest.PARSER),
+          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.Dataset.PARSER));
   private static final io.grpc.stub.Method<com.google.genomics.v1.GetDatasetRequest,
       com.google.genomics.v1.Dataset> METHOD_GET_DATASET =
       io.grpc.stub.Method.create(
           io.grpc.MethodType.UNARY, "GetDataset",
-          io.grpc.proto.ProtoUtils.marshaller(com.google.genomics.v1.GetDatasetRequest.PARSER),
-          io.grpc.proto.ProtoUtils.marshaller(com.google.genomics.v1.Dataset.PARSER));
+          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.GetDatasetRequest.PARSER),
+          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.Dataset.PARSER));
   private static final io.grpc.stub.Method<com.google.genomics.v1.UpdateDatasetRequest,
       com.google.genomics.v1.Dataset> METHOD_UPDATE_DATASET =
       io.grpc.stub.Method.create(
           io.grpc.MethodType.UNARY, "UpdateDataset",
-          io.grpc.proto.ProtoUtils.marshaller(com.google.genomics.v1.UpdateDatasetRequest.PARSER),
-          io.grpc.proto.ProtoUtils.marshaller(com.google.genomics.v1.Dataset.PARSER));
+          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.UpdateDatasetRequest.PARSER),
+          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.Dataset.PARSER));
   private static final io.grpc.stub.Method<com.google.genomics.v1.DeleteDatasetRequest,
       com.google.protobuf.Empty> METHOD_DELETE_DATASET =
       io.grpc.stub.Method.create(
           io.grpc.MethodType.UNARY, "DeleteDataset",
-          io.grpc.proto.ProtoUtils.marshaller(com.google.genomics.v1.DeleteDatasetRequest.PARSER),
-          io.grpc.proto.ProtoUtils.marshaller(com.google.protobuf.Empty.PARSER));
+          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.DeleteDatasetRequest.PARSER),
+          io.grpc.protobuf.ProtoUtils.marshaller(com.google.protobuf.Empty.PARSER));
   private static final io.grpc.stub.Method<com.google.genomics.v1.UndeleteDatasetRequest,
       com.google.genomics.v1.Dataset> METHOD_UNDELETE_DATASET =
       io.grpc.stub.Method.create(
           io.grpc.MethodType.UNARY, "UndeleteDataset",
-          io.grpc.proto.ProtoUtils.marshaller(com.google.genomics.v1.UndeleteDatasetRequest.PARSER),
-          io.grpc.proto.ProtoUtils.marshaller(com.google.genomics.v1.Dataset.PARSER));
+          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.UndeleteDatasetRequest.PARSER),
+          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.Dataset.PARSER));
 
   public static DatasetServiceV1Stub newStub(io.grpc.Channel channel) {
     return new DatasetServiceV1Stub(channel, CONFIG);

@@ -102,67 +102,18 @@
         <version>1.10.8</version>
         <scope>test</scope>
     </dependency>
+    <dependency>
+	    <groupId>io.grpc</groupId>
+	    <artifactId>grpc-all</artifactId>
+	    <version>0.7.0</version>
+    </dependency>
+
     <!-- Used to test the custom builder logic -->
     <dependency>
       <groupId>com.google.apis</groupId>
       <artifactId>google-api-services-storage</artifactId>
       <version>v1-rev22-1.19.0</version>
       <scope>test</scope>
-    </dependency>
-    <dependency>
-	    <groupId>com.google.auth</groupId>
-	    <artifactId>google-auth-library-oauth2-http</artifactId>
-	    <version>0.1.0</version>
-    </dependency>
-    <dependency>
-	    <groupId>com.google.protobuf</groupId>
-	    <artifactId>protobuf-java</artifactId>
-	    <version>3.0.0-alpha-2</version>
-    </dependency>
-    <dependency>
-	    <groupId>com.twitter</groupId>
-	    <artifactId>hpack</artifactId>
-	    <version>0.11.0</version>
-    </dependency>
-    <dependency>
-	    <groupId>io.netty</groupId>
-	    <artifactId>netty-buffer</artifactId>
-	    <version>4.1.0.Beta5-SNAPSHOT-local</version>
-    </dependency>
-    <dependency>
-	    <groupId>io.netty</groupId>
-	    <artifactId>netty-codec</artifactId>
-	    <version>4.1.0.Beta5-SNAPSHOT-local</version>
-    </dependency>
-    <dependency>
-	    <groupId>io.netty</groupId>
-	    <artifactId>netty-codec-http</artifactId>
-	    <version>4.1.0.Beta5-SNAPSHOT-local</version>
-    </dependency>
-    <dependency>
-	    <groupId>io.netty</groupId>
-	    <artifactId>netty-codec-http2</artifactId>
-	    <version>4.1.0.Beta5-SNAPSHOT-local</version>
-    </dependency>
-    <dependency>
-	    <groupId>io.netty</groupId>
-	    <artifactId>netty-common</artifactId>
-	    <version>4.1.0.Beta5-SNAPSHOT-local</version>
-    </dependency>
-    <dependency>
-	    <groupId>io.netty</groupId>
-	    <artifactId>netty-handler</artifactId>
-	    <version>4.1.0.Beta5-SNAPSHOT-local</version>
-    </dependency>
-    <dependency>
-	    <groupId>io.netty</groupId>
-	    <artifactId>netty-resolver</artifactId>
-	    <version>4.1.0.Beta5-SNAPSHOT-local</version>
-    </dependency>
-    <dependency>
-	    <groupId>io.netty</groupId>
-	    <artifactId>netty-transport</artifactId>
-	    <version>4.1.0.Beta5-SNAPSHOT-local</version>
     </dependency>
   </dependencies>
 

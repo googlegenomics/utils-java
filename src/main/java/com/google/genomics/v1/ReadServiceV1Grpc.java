@@ -19,50 +19,50 @@ public class ReadServiceV1Grpc {
       com.google.longrunning.Operation> METHOD_IMPORT_READ_GROUP_SETS =
       io.grpc.stub.Method.create(
           io.grpc.MethodType.UNARY, "ImportReadGroupSets",
-          io.grpc.proto.ProtoUtils.marshaller(com.google.genomics.v1.ImportReadGroupSetsRequest.PARSER),
-          io.grpc.proto.ProtoUtils.marshaller(com.google.longrunning.Operation.PARSER));
+          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.ImportReadGroupSetsRequest.PARSER),
+          io.grpc.protobuf.ProtoUtils.marshaller(com.google.longrunning.Operation.PARSER));
   private static final io.grpc.stub.Method<com.google.genomics.v1.ExportReadGroupSetRequest,
       com.google.longrunning.Operation> METHOD_EXPORT_READ_GROUP_SET =
       io.grpc.stub.Method.create(
           io.grpc.MethodType.UNARY, "ExportReadGroupSet",
-          io.grpc.proto.ProtoUtils.marshaller(com.google.genomics.v1.ExportReadGroupSetRequest.PARSER),
-          io.grpc.proto.ProtoUtils.marshaller(com.google.longrunning.Operation.PARSER));
+          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.ExportReadGroupSetRequest.PARSER),
+          io.grpc.protobuf.ProtoUtils.marshaller(com.google.longrunning.Operation.PARSER));
   private static final io.grpc.stub.Method<com.google.genomics.v1.SearchReadGroupSetsRequest,
       com.google.genomics.v1.SearchReadGroupSetsResponse> METHOD_SEARCH_READ_GROUP_SETS =
       io.grpc.stub.Method.create(
           io.grpc.MethodType.UNARY, "SearchReadGroupSets",
-          io.grpc.proto.ProtoUtils.marshaller(com.google.genomics.v1.SearchReadGroupSetsRequest.PARSER),
-          io.grpc.proto.ProtoUtils.marshaller(com.google.genomics.v1.SearchReadGroupSetsResponse.PARSER));
+          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.SearchReadGroupSetsRequest.PARSER),
+          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.SearchReadGroupSetsResponse.PARSER));
   private static final io.grpc.stub.Method<com.google.genomics.v1.UpdateReadGroupSetRequest,
       com.google.genomics.v1.ReadGroupSet> METHOD_UPDATE_READ_GROUP_SET =
       io.grpc.stub.Method.create(
           io.grpc.MethodType.UNARY, "UpdateReadGroupSet",
-          io.grpc.proto.ProtoUtils.marshaller(com.google.genomics.v1.UpdateReadGroupSetRequest.PARSER),
-          io.grpc.proto.ProtoUtils.marshaller(com.google.genomics.v1.ReadGroupSet.PARSER));
+          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.UpdateReadGroupSetRequest.PARSER),
+          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.ReadGroupSet.PARSER));
   private static final io.grpc.stub.Method<com.google.genomics.v1.DeleteReadGroupSetRequest,
       com.google.protobuf.Empty> METHOD_DELETE_READ_GROUP_SET =
       io.grpc.stub.Method.create(
           io.grpc.MethodType.UNARY, "DeleteReadGroupSet",
-          io.grpc.proto.ProtoUtils.marshaller(com.google.genomics.v1.DeleteReadGroupSetRequest.PARSER),
-          io.grpc.proto.ProtoUtils.marshaller(com.google.protobuf.Empty.PARSER));
+          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.DeleteReadGroupSetRequest.PARSER),
+          io.grpc.protobuf.ProtoUtils.marshaller(com.google.protobuf.Empty.PARSER));
   private static final io.grpc.stub.Method<com.google.genomics.v1.GetReadGroupSetRequest,
       com.google.genomics.v1.ReadGroupSet> METHOD_GET_READ_GROUP_SET =
       io.grpc.stub.Method.create(
           io.grpc.MethodType.UNARY, "GetReadGroupSet",
-          io.grpc.proto.ProtoUtils.marshaller(com.google.genomics.v1.GetReadGroupSetRequest.PARSER),
-          io.grpc.proto.ProtoUtils.marshaller(com.google.genomics.v1.ReadGroupSet.PARSER));
+          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.GetReadGroupSetRequest.PARSER),
+          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.ReadGroupSet.PARSER));
   private static final io.grpc.stub.Method<com.google.genomics.v1.ListCoverageBucketsRequest,
       com.google.genomics.v1.ListCoverageBucketsResponse> METHOD_LIST_COVERAGE_BUCKETS =
       io.grpc.stub.Method.create(
           io.grpc.MethodType.UNARY, "ListCoverageBuckets",
-          io.grpc.proto.ProtoUtils.marshaller(com.google.genomics.v1.ListCoverageBucketsRequest.PARSER),
-          io.grpc.proto.ProtoUtils.marshaller(com.google.genomics.v1.ListCoverageBucketsResponse.PARSER));
+          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.ListCoverageBucketsRequest.PARSER),
+          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.ListCoverageBucketsResponse.PARSER));
   private static final io.grpc.stub.Method<com.google.genomics.v1.SearchReadsRequest,
       com.google.genomics.v1.SearchReadsResponse> METHOD_SEARCH_READS =
       io.grpc.stub.Method.create(
           io.grpc.MethodType.UNARY, "SearchReads",
-          io.grpc.proto.ProtoUtils.marshaller(com.google.genomics.v1.SearchReadsRequest.PARSER),
-          io.grpc.proto.ProtoUtils.marshaller(com.google.genomics.v1.SearchReadsResponse.PARSER));
+          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.SearchReadsRequest.PARSER),
+          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.SearchReadsResponse.PARSER));
 
   public static ReadServiceV1Stub newStub(io.grpc.Channel channel) {
     return new ReadServiceV1Stub(channel, CONFIG);
