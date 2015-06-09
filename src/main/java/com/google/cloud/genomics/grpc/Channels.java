@@ -45,7 +45,7 @@ public class Channels {
     Channel channel = NettyChannelBuilder.forAddress("genomics.googleapis.com", 443)
         .negotiationType(NegotiationType.TLS)
         .streamWindowSize(1000000)
-         .sslContext(GrpcSslContexts.forClient().ciphers(performantCiphers).build())
+        .sslContext(GrpcSslContexts.forClient().ciphers(performantCiphers).build())
         .build();
     creds = creds.createScoped(
         Arrays.asList("https://www.googleapis.com/auth/genomics"));

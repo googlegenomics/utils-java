@@ -1,6 +1,5 @@
 package com.google.cloud.genomics.grpc;
 
-import com.google.auth.oauth2.GoogleCredentials;
 import com.google.genomics.v1.ReferenceServiceV1Grpc;
 import com.google.genomics.v1.ReferenceServiceV1Grpc.ReferenceServiceV1BlockingStub;
 import com.google.genomics.v1.ReferenceSet;
@@ -12,14 +11,7 @@ import com.google.genomics.v1.StreamingVariantServiceGrpc;
 import com.google.genomics.v1.StreamingVariantServiceGrpc.StreamingVariantServiceBlockingStub;
 
 import io.grpc.Channel;
-import io.grpc.ClientInterceptors;
-import io.grpc.auth.ClientAuthInterceptor;
-import io.grpc.transport.netty.NegotiationType;
-import io.grpc.transport.netty.NettyChannelBuilder;
-import java.io.FileInputStream;
-import java.util.Arrays;
 import java.util.Iterator;
-import java.util.concurrent.Executors;
 
 public class Example {
   public static void main(String[] args) throws Exception {
