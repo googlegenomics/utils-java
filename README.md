@@ -65,9 +65,13 @@ This section contains details on getting a new release into Maven central and ca
 ###Making a new release
 1. Use Maven to tag the code, up the pom version and release into the Sonatype staging area.
 ```
-mvn release:prepare
-mvn release:perform
+mvn release:prepare && mvn release:perform
 ```
+> ...  
+> **What is the release version for "Google Genomics Utils"?:** \<the next version, e.g. 'v1beta2-0.26'\>  
+> **What is SCM release tag or label for "Google Genomics Utils"?:** \<ENTER\>  
+> **What is the new development version for "Google Genomics Utils"?** \<the next, next version with a -SNAPSHOT suffix, e.g. v1beta2-0.27-SNAPSHOT\>  
+
 2. Find the repository at https://oss.sonatype.org/#stagingRepositories and close it.
 3. If closing succeeds, then release it. See the [detailed instructions](http://central.sonatype.org/pages/releasing-the-deployment.html#close-and-drop-or-release-your-staging-repository) for more info.
 4. As long as there aren't any errors - that's it! The new version will be synced to Maven central.
