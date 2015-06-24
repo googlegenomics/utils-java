@@ -42,11 +42,17 @@ dependencies {
   * [Paginator.java](src/main/java/com/google/cloud/genomics/utils/Paginator.java) Lazily paginates through readsets, reads, variants, callsets, etc...
 * [com.google.cloud.genomics.grpc](https://github.com/googlegenomics/utils-java/tree/master/src/main/java/com/google/cloud/genomics/grpc)
   * [Channels.java](https://github.com/googlegenomics/utils-java/blob/master/src/main/java/com/google/cloud/genomics/grpc/Channels.java) Makes it easier to creating gRPC channels to the Google Genomics API.
-  * [Example.java](https://github.com/googlegenomics/utils-java/blob/master/src/main/java/com/google/cloud/genomics/grpc/Example.java) Demonstrates usage of gRPC via a minimal example.  To run the example:
-  ```
-  MAVEN_OPTS="-Xbootclasspath/p:./lib/alpn-boot-8.1.3.v20150130.jar" \
-  mvn exec:java -Dexec.mainClass=com.google.cloud.genomics.grpc.Example
-  ```
+  * [Example.java](https://github.com/googlegenomics/utils-java/blob/master/src/main/java/com/google/cloud/genomics/grpc/Example.java) Demonstrates usage of gRPC via a minimal example.
+    * To run the example with Java 7:
+    ```
+    MAVEN_OPTS="-Xbootclasspath/p:./lib/alpn-boot-7.1.3.v20150130.jar" \
+    mvn exec:java -Dexec.mainClass=com.google.cloud.genomics.grpc.Example
+    ```
+    * To run the example with Java 8:
+    ```
+    MAVEN_OPTS="-Xbootclasspath/p:./lib/alpn-boot-8.1.3.v20150130.jar" \
+    mvn exec:java -Dexec.mainClass=com.google.cloud.genomics.grpc.Example
+    ```
 * auto-generated code (do not edit)
   * [proto](https://github.com/googlegenomics/utils-java/tree/master/src/main/proto)
   * [com.google.api](https://github.com/googlegenomics/utils-java/tree/master/src/main/java/com/google/api)
