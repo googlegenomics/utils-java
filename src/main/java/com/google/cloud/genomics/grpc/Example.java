@@ -17,22 +17,24 @@ public class Example {
   public static void main(String[] args) throws Exception {
     Channel channel = Channels.fromDefaultCreds();
 
-    // Regular RPC
+    // Regular RPC example: list all reference set assembly ids.
     ReferenceServiceV1BlockingStub refStub =
         ReferenceServiceV1Grpc.newBlockingStub(channel);
     SearchReferenceSetsRequest request =
         SearchReferenceSetsRequest.newBuilder().build();
     SearchReferenceSetsResponse response = refStub.searchReferenceSets(request);
     for (ReferenceSet rs : response.getReferenceSetsList()) {
-      System.out.println(rs.getId());
+      System.out.println(rs.getAssemblyId());
     }
 
-    // Streaming RPC
+    // Streaming RPC example: request the variants with in BRCA1 for the Platinum Genomes variant set.
     StreamingVariantServiceBlockingStub varStub =
         StreamingVariantServiceGrpc.newBlockingStub(channel);
     StreamVariantsRequest varRequest = StreamVariantsRequest.newBuilder()
-        .setVariantSetId("10473108253681171589")
-        .setReferenceName("17")
+        .setVariantSetId("3049512673186936334")
+        .setReferenceName("chr17")
+        .setStart(41196311)
+        .setEnd(41277499)
         .build();
     Iterator<StreamVariantsResponse> iter = varStub.streamVariants(varRequest);
     while (iter.hasNext()) {
@@ -42,5 +44,6 @@ public class Example {
       System.out.println();
     }
     System.out.println("Done");
+    System.exit(0);
   }
 }
