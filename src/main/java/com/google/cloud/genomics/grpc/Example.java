@@ -27,7 +27,7 @@ public class Example {
       System.out.println(rs.getAssemblyId());
     }
 
-    // Streaming RPC example: request the variants with in BRCA1 for the Platinum Genomes variant set.
+    // Streaming RPC example: request the variants within BRCA1 for the Platinum Genomes variant set.
     StreamingVariantServiceBlockingStub varStub =
         StreamingVariantServiceGrpc.newBlockingStub(channel);
     StreamVariantsRequest varRequest = StreamVariantsRequest.newBuilder()
