@@ -541,36 +541,93 @@ public class GenomicsFactory {
   }
 
   /**
-   * Creates offline-friendly auth object using from an apiKey and/or a clientSecretsJson path.
-   * At least one of apiKey and clientSecretsJson must be non-null.
+   * Creates offline-friendly auth object using an apiKey.
    *
    * Use this method when you need to store the resulting OfflineAuth for later use.
    * Otherwise, you should create a {@link Genomics} object directly using
    * {@code fromClientSecretsFile}.
    *
-   * @param apiKey Optional. The API key of the Google Cloud project to charge requests to.
-   * @param clientSecretsFilename Optional. {@code client_secrets.json} file name.
+   * @param apiKey The API key of the Google Cloud project to charge requests to.
    * @return An OfflineAuth object that can be passed to {@code fromOfflineAuth}
    * @throws IOException
    */
-  public OfflineAuth getOfflineAuth(String apiKey, String clientSecretsFilename)
+  public OfflineAuth getOfflineAuthFromApiKey(String apiKey)
       throws IOException {
-    if (apiKey == null && clientSecretsFilename == null) {
+    if (apiKey == null) {
       throw new IllegalArgumentException(
-          "An API key or client secrets filename must be specified.");
+          "An API key must be specified.");
     }
 
     OfflineAuth offlineAuth = new OfflineAuth();
     offlineAuth.applicationName = applicationName;
     offlineAuth.apiKey = apiKey;
 
-    if (clientSecretsFilename != null) {
-      File clientSecretsFile = new File(clientSecretsFilename);
-      Credential credential = makeCredential(clientSecretsFile);
-      offlineAuth.accessToken = credential.getAccessToken();
-      offlineAuth.refreshToken = credential.getRefreshToken();
-      offlineAuth.clientSecretsString = Files.toString(clientSecretsFile, Charsets.UTF_8);
+    return offlineAuth;
+  }
+
+  /**
+   * Creates offline-friendly auth object using a clientSecretsJson file path.
+   *
+   * Use this method when you need to store the resulting OfflineAuth for later use.
+   * Otherwise, you should create a {@link Genomics} object directly using
+   * {@code fromClientSecretsFile}.
+   *
+   * @param clientSecretsFilepath {@code client_secrets.json} file path.
+   * @return An OfflineAuth object that can be passed to {@code fromOfflineAuth}
+   * @throws IOException
+   */
+  public OfflineAuth getOfflineAuthFromClientSecretsFile(String clientSecretsFilepath)
+      throws IOException {
+    if (clientSecretsFilepath == null) {
+      throw new IllegalArgumentException(
+          "A client secrets file path must be specified.");
     }
+
+    clientSecretsFilepath.replaceFirst("^~", System.getProperty("user.home"));
+    File clientSecretsFile = new File(clientSecretsFilepath);
+    Credential credential = makeCredential(clientSecretsFile);
+    return createOfflineAuth(credential, clientSecretsFilepath);
+  }
+
+  /**
+   * Creates offline-friendly auth object using a credential object.
+   *
+   * Use this method when your application has already performed the oauth
+   * flow (e.g., Google Cloud Dataflow) and you need to store the resulting
+   * OfflineAuth for later use.  
+   * 
+   * Otherwise, you should create a {@link Genomics} object directly using
+   * {@code fromClientSecretsFile}.
+   *
+   * @param credential
+   * @param clientSecretsFilepath {@code client_secrets.json} file path.
+   * @return An OfflineAuth object that can be passed to {@code fromOfflineAuth}
+   * @throws IOException
+   */
+  public OfflineAuth getOfflineAuthFromCredential(Credential credential, String clientSecretsFilepath)
+      throws IOException {
+    if (credential == null) {
+      throw new IllegalArgumentException(
+          "A credential object must be specified.");
+    }
+    if (clientSecretsFilepath == null) {
+        throw new IllegalArgumentException(
+            "A client secrets file path must be specified.");
+    }
+    return createOfflineAuth(credential, clientSecretsFilepath);
+  }
+  
+  private OfflineAuth createOfflineAuth(Credential credential, String clientSecretsFilepath)
+      throws IOException {
+
+    OfflineAuth offlineAuth = new OfflineAuth();
+    offlineAuth.applicationName = applicationName;
+    
+    offlineAuth.accessToken = credential.getAccessToken();
+    offlineAuth.refreshToken = credential.getRefreshToken();
+    clientSecretsFilepath.replaceFirst("^~", System.getProperty("user.home"));
+    File clientSecretsFile = new File(clientSecretsFilepath);
+    offlineAuth.clientSecretsString = Files.toString(clientSecretsFile, Charsets.UTF_8);
 
     return offlineAuth;
   }
@@ -581,7 +638,7 @@ public class GenomicsFactory {
     public String refreshToken;
     public String clientSecretsString;
     public String apiKey;
-
+ 
     public GenomicsFactory getDefaultFactory() throws GeneralSecurityException, IOException {
       return GenomicsFactory.builder(applicationName).build();
     }
