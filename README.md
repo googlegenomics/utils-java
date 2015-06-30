@@ -80,6 +80,7 @@ which will create code in target/generated-sources/main.
     MAVEN_OPTS="-Xbootclasspath/p:./lib/alpn-boot-8.1.3.v20150130.jar" \
     mvn exec:java -Dexec.mainClass=com.google.cloud.genomics.grpc.Example
     ```
+    * If you see error `Caused by: io.grpc.StatusRuntimeException: NOT_FOUND: Method not found.` your project has not been whitelisted.  See the above [grpc](#grpc) section for more detail.
 * [proto](src/main/proto)
   * [Protocol Buffer](http://www.grpc.io/docs/#working-with-protocol-buffers
 ) files defing the gRPC interface to the Genomics API.
