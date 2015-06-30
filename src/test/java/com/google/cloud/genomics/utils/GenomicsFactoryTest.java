@@ -78,7 +78,7 @@ public class GenomicsFactoryTest {
   @Test
   public void testOfflineAuth() throws Exception {
     GenomicsFactory genomicsFactory = GenomicsFactory.builder("test_client").build();
-    GenomicsFactory.OfflineAuth auth = genomicsFactory.getOfflineAuth("xyz", null);
+    GenomicsFactory.OfflineAuth auth = genomicsFactory.getOfflineAuthFromApiKey("xyz");
 
     GenomicsFactory authFactory = auth.getDefaultFactory();
     assertEquals(0, authFactory.initializedRequestsCount());
@@ -101,7 +101,7 @@ public class GenomicsFactoryTest {
   @Test
   public void testOfflineAuth_isSerializable() throws Exception {
     GenomicsFactory genomicsFactory = GenomicsFactory.builder("test_client").build();
-    GenomicsFactory.OfflineAuth auth = genomicsFactory.getOfflineAuth("xyz", null);
+    GenomicsFactory.OfflineAuth auth = genomicsFactory.getOfflineAuthFromApiKey("xyz");
 
     // This mimics the serialization flow used by pipelines
     auth.getGenomics(auth.getDefaultFactory());
