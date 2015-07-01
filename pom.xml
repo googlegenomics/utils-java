@@ -66,6 +66,17 @@
 
   <dependencies>
     <dependency>
+      <groupId>com.github.samtools</groupId>
+      <artifactId>htsjdk</artifactId>
+      <version>1.128</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.testng</groupId>
+          <artifactId>testng</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
       <version>18.0</version>
