@@ -1,6 +1,6 @@
 package com.google.logsummarizer.core;
 
-import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -9,9 +9,9 @@ import java.util.Map;
  */
 public interface OperationInterval {
   /** When we started on this operation */
-  public LocalDateTime getStart();
+  public Date getStart();
   /** When we were done with this operation */
-  public LocalDateTime getEnd();
+  public Date getEnd();
   /** What to call this interval on the GUI */
   public String getLabel();
   /** For the statistics, we aggregate together all the intervals that belong to the same group.

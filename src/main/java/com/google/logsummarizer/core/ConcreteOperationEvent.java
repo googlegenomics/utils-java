@@ -1,26 +1,23 @@
 package com.google.logsummarizer.core;
 
-import java.time.LocalDateTime;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- *
- */
 public class ConcreteOperationEvent implements OperationEvent {
-  public final LocalDateTime when;
+  public final Date when;
   public final String what;
   public final HashMap<String,Object> attributes;
 
-  public ConcreteOperationEvent(LocalDateTime when, String what) {
+  public ConcreteOperationEvent(Date when, String what) {
     this.when = when;
     this.what = what;
     attributes = new HashMap<String, Object>();
   }
 
   /** When we started on this operation */
-  public LocalDateTime getTime() {
+  public Date getTime() {
     return when;
   }
   /** What to call this interval on the GUI */

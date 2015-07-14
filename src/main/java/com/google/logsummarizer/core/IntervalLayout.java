@@ -1,7 +1,7 @@
 package com.google.logsummarizer.core;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -14,7 +14,7 @@ public class IntervalLayout {
 
   public static List<Integer> computeYCoordinate(List<OperationInterval> intervals) {
     ArrayList<Integer> answer = new ArrayList(intervals.size());
-    ArrayList<LocalDateTime> ends = new ArrayList<LocalDateTime>(0);
+    ArrayList<Date> ends = new ArrayList<Date>(0);
     for (OperationInterval i : intervals) {
       int ok = firstFree(ends, i.getStart());
       if (ok<0) {
@@ -28,10 +28,10 @@ public class IntervalLayout {
     return answer;
   }
 
-  private static int firstFree(ArrayList<LocalDateTime> ends, LocalDateTime now) {
+  private static int firstFree(ArrayList<Date> ends, Date now) {
     int index=0;
-    for (LocalDateTime l : ends) {
-      if (l.isBefore(now)) return index;
+    for (Date l : ends) {
+      if (l.compareTo(now)<0) return index;
       index++;
     }
     return -1;

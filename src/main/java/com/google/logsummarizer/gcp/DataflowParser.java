@@ -8,9 +8,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -55,6 +54,7 @@ public class DataflowParser {
           continue;
         }
         String id = p[bunnyIndex + 2];
+        Date when = lineParsed.tryParseTimestamp();
         if (command.equals("START")) {
           StringBuilder label = new StringBuilder();
           for (int i = bunnyIndex + 3; i < p.length; i++) {
@@ -74,7 +74,7 @@ public class DataflowParser {
           interval.label = label.toString();
           interval.group = interval.label;
           String timestamp = lineParsed.timestamp;
-          interval.begin = LocalDateTime.ofInstant(timestampFormat.parse(timestamp).toInstant(), ZoneOffset.UTC);
+          interval.begin = when;
         }
         if (command.equals("END")) {
           // coded like this because we may see END before START
@@ -85,7 +85,7 @@ public class DataflowParser {
             intervals.put(id, interval);
           }
           String timestamp = lineParsed.timestamp;
-          interval.end = LocalDateTime.ofInstant(timestampFormat.parse(timestamp).toInstant(), ZoneOffset.UTC);
+          interval.end = when;
           interval.attributes.put("machine", lineParsed.machine);
           interval.attributes.put("log", lineParsed.log);
         }
@@ -101,8 +101,7 @@ public class DataflowParser {
             intervals.put(id, interval);
           }
           String timestamp = lineParsed.timestamp;
-          LocalDateTime when = LocalDateTime.ofInstant(timestampFormat.parse(timestamp).toInstant(), ZoneOffset.UTC);
-          LocalDateTime start = interval.getLatestInnerPoint();
+          Date start = interval.getLatestInnerPoint();
           if (null==start) {
             // stepend happens at the same second as start and comes first in the log.
             start = when;

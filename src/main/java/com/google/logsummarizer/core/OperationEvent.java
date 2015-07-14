@@ -1,14 +1,14 @@
 package com.google.logsummarizer.core;
 
-import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.Map;
 
 /**
- * An interval representing some operation that took some amount of time.
+ * An event representing some particular point during an operation's execution
  */
 public interface OperationEvent {
   /** When */
-  public LocalDateTime getTime();
+  public Date getTime();
   /** What */
   public String getLabel();
   /** Optionally, we can have key/value attributes associated with this operation.

@@ -1,17 +1,14 @@
 package com.google.logsummarizer.core;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- *
- */
 public class ConcreteOperationInterval implements OperationInterval {
-  public LocalDateTime begin, end;
+  public Date begin, end;
   public String label;
   public String group;
   public HashMap<String,Object> attributes;
@@ -24,18 +21,21 @@ public class ConcreteOperationInterval implements OperationInterval {
   }
 
   /** When we started on this operation */
-  public LocalDateTime getStart() {
+  public Date getStart() {
     return begin;
   }
   /** When we were done with this operation */
-  public LocalDateTime getEnd() {
+  public Date getEnd() {
     return end;
   }
   /** What to call this interval on the GUI */
   public String getLabel() {
     return label;
   }
-  public String getGroup()  { return group; }
+  public String getGroup()  {
+    if (null==group) return label;
+    return group;
+  }
 
   public Map<String,Object> getAttributes() {
     return Collections.unmodifiableMap(attributes);
@@ -51,7 +51,7 @@ public class ConcreteOperationInterval implements OperationInterval {
   }
 
   // helper
-  public LocalDateTime getLatestInnerPoint() {
+  public Date getLatestInnerPoint() {
     if (sub.isEmpty()) return begin;
     return sub.get(sub.size()-1).end;
   }

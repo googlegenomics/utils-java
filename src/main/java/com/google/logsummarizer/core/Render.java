@@ -2,8 +2,7 @@ package com.google.logsummarizer.core;
 
 import java.awt.*;
 import java.io.PrintStream;
-import java.time.Duration;
-import java.time.ZoneOffset;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -11,7 +10,7 @@ import java.util.Map;
 import java.util.Stack;
 
 /**
- *
+ * List of OperationInterval -> a pretty picture
  */
 public class Render {
 
@@ -28,7 +27,7 @@ public class Render {
 
   public Render(List<OperationInterval> intervals) {
     this.intervals = intervals;
-    this.intervals.sort(new Comparator<OperationInterval>() {
+    Collections.sort(this.intervals, new Comparator<OperationInterval>() {
       public int compare(OperationInterval o1, OperationInterval o2) {
         return o1.getStart().compareTo(o2.getStart());
       }
@@ -59,7 +58,7 @@ public class Render {
     out.println("<?xml version=\"1.0\"?><!DOCTYPE svg PUBLIC \"-//W3C//DTD SVG 1.1//EN\" \"http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd\">");
     out.println("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"100%\" height=\"100%\" style=\"overflow-x:scroll; overflow-y:scroll;\">");
     if (intervals.size()>0) {
-      long lmargin = intervals.get(0).getStart().toEpochSecond(ZoneOffset.UTC);
+      long lmargin = intervals.get(0).getStart().getTime()/1000;
       for (int i = 0; i < intervals.size(); i++) {
         OperationInterval iv = intervals.get(i);
         Color bg;
@@ -73,10 +72,10 @@ public class Render {
           bg = getColor(1+groupColor.get(colorKey));
         }
 
-        long x = iv.getStart().toEpochSecond(ZoneOffset.UTC)-lmargin;
+        long x = iv.getStart().getTime()/1000-lmargin;
         long y = ys.get(i) * barVSpacing;
         // if something starts and ends at the same time, we still give it a width of 1.
-        long w = Duration.between(iv.getStart(), iv.getEnd()).getSeconds()+1;
+        long w = (iv.getEnd().getTime() - iv.getStart().getTime())/1000+1;
         out.println("<rect x=\"" + x + "\" y=\"" + y + "\" width=\"" + w + "\" height=\"" + barHeight + "\""
             + " style=\"fill:rgb("+bg.getRed()+","+bg.getGreen()+","+bg.getBlue()+");stroke-width:2;stroke:rgb(0,0,0)\"><title>"
             + iv.getLabel()
@@ -104,9 +103,9 @@ public class Render {
         while (!sub.isEmpty()) {
           OperationInterval op = sub.pop();
           for (OperationInterval sop : op.getSubOperations()) sub.push(sop);
-          long x2 = op.getStart().toEpochSecond(ZoneOffset.UTC)-lmargin;
+          long x2 = op.getStart().getTime()/1000-lmargin;
           // if something starts and ends at the same time, we still give it a width of 1.
-          long w2 = Duration.between(op.getStart(), op.getEnd()).getSeconds()+1;
+          long w2 = (op.getEnd().getTime() - op.getStart().getTime())/1000+1;
           // clip to parent boundaries
           long right = x2+w2;
           if (x2<x) x2=x;

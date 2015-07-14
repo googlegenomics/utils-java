@@ -6,8 +6,6 @@ import com.google.logsummarizer.core.OperationInterval;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -52,7 +50,7 @@ public class Log4jParser {
         }
         String timestamp = p[0];
 
-        LocalDateTime when = LocalDateTime.ofInstant(timestampFormat.parse(today+"-"+timestamp).toInstant(), ZoneOffset.systemDefault());
+        Date when = timestampFormat.parse(today+"-"+timestamp);
         String id = p[bunnyIndex + 2];
         if (command.equals("START")) {
           StringBuilder label = new StringBuilder();
@@ -95,7 +93,7 @@ public class Log4jParser {
             interval = new ConcreteOperationInterval();
             intervals.put(id, interval);
           }
-          LocalDateTime start = interval.getLatestInnerPoint();
+          Date start = interval.getLatestInnerPoint();
           if (null==start) {
             // stepend happens at the same second as start and comes first in the log.
             start = when;
