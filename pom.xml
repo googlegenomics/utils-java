@@ -8,7 +8,7 @@
   <groupId>com.google.cloud.genomics</groupId>
   <artifactId>google-genomics-utils</artifactId>
   <packaging>jar</packaging>
-  <version>v1beta2-0.31</version>
+  <version>v1beta2-0.32-SNAPSHOT</version>
 
   <organization>
     <name>Google</name>
@@ -43,7 +43,7 @@
     <connection>scm:git:git@github.com:googlegenomics/utils-java.git</connection>
     <developerConnection>scm:git:git@github.com:googlegenomics/utils-java.git</developerConnection>
     <url>git@github.com:googlegenomics/utils-java.git</url>
-    <tag>google-genomics-utils-v1beta2-0.31</tag>
+    <tag>HEAD</tag>
   </scm>
 
   <distributionManagement>
