@@ -47,7 +47,7 @@ subdirectory, and is known to work with JRE 1.8.0_40. To run with ALPN:
 java -Xbootclasspath/p:lib/alpn-boot-8.1.3.v20150130.jar
 ```
 
-See [Example.java](src/main/java/com/google/cloud/genomics/grpc/Example.java) for some example code that uses gRPC. The protocol buffer schema for the API can be found in [src/main/proto/google/genomics/v1](src/main/proto/google/genomics/v1).
+See [Example.java](src/main/java/com/google/cloud/genomics/utils/grpc/Example.java) for some example code that uses gRPC. The protocol buffer schema for the API can be found in [src/main/proto/google/genomics/v1](src/main/proto/google/genomics/v1).
 
 At the moment your project must be whitelisted to use gRPC. Please
 <a href="mailto:google-genomics-contact@googlegroups.com">contact us</a> if you are interested in testing gRPC.
@@ -69,16 +69,16 @@ which will create code in target/generated-sources/main.
   * [Paginator.java](src/main/java/com/google/cloud/genomics/utils/Paginator.java) Lazily paginates through readsets, reads, variants, callsets, etc...
 * [com.google.cloud.genomics.grpc](src/main/java/com/google/cloud/genomics/grpc)
   * [Channels.java](src/main/java/com/google/cloud/genomics/grpc/Channels.java) Makes it easier to creating gRPC channels to the Google Genomics API.
-  * [Example.java](src/main/java/com/google/cloud/genomics/grpc/Example.java) Demonstrates usage of gRPC via a minimal example.
+  * [Example.java](src/main/java/com/google/cloud/genomics/utils/grpc/Example.java) Demonstrates usage of gRPC via a minimal example.
     * To run the example with Java 7:
     ```
     MAVEN_OPTS="-Xbootclasspath/p:./lib/alpn-boot-7.1.3.v20150130.jar" \
-    mvn exec:java -Dexec.mainClass=com.google.cloud.genomics.grpc.Example
+    mvn exec:java -Dexec.mainClass=com.google.cloud.genomics.utils.grpc.Example
     ```
     * To run the example with Java 8:
     ```
     MAVEN_OPTS="-Xbootclasspath/p:./lib/alpn-boot-8.1.3.v20150130.jar" \
-    mvn exec:java -Dexec.mainClass=com.google.cloud.genomics.grpc.Example
+    mvn exec:java -Dexec.mainClass=com.google.cloud.genomics.utils.grpc.Example
     ```
     * If you see error `Caused by: io.grpc.StatusRuntimeException: NOT_FOUND: Method not found.` your project has not been whitelisted.  See the above [grpc](#grpc) section for more detail.
 * [proto](src/main/proto)
