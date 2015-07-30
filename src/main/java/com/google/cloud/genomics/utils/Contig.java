@@ -24,6 +24,8 @@ import com.google.common.base.Function;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
+import com.google.genomics.v1.StreamReadsRequest;
+import com.google.genomics.v1.StreamVariantsRequest;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -36,6 +38,14 @@ import static com.google.common.collect.Lists.newArrayList;
 import static java.util.Objects.hash;
 import static java.util.Objects.requireNonNull;
 
+/**
+ * This class encapsulates logic regarding genomic regions.
+ *
+ * It includes utility methods for sharding those regions appropriately
+ * for use in parallel processing pipelines and for creating request
+ * objects from those shards.
+ *
+ */
 public class Contig implements Serializable {
 
   private static final long serialVersionUID = -1730387112193404207L;
@@ -75,29 +85,21 @@ public class Contig implements Serializable {
     return referenceName + ':' + start + ':' + end;
   }
 
-  public List<Contig> getShards(long numberOfBasesPerShard) {
-    double shardCount = Math.ceil(end - start) / (double) numberOfBasesPerShard;
-    List<Contig> shards = Lists.newArrayList();
-    for (int i = 0; i < shardCount; i++) {
-      long shardStart = start + (i * numberOfBasesPerShard);
-      long shardEnd = Math.min(end, shardStart + numberOfBasesPerShard);
-
-      shards.add(new Contig(referenceName, shardStart, shardEnd));
-    }
-    Collections.shuffle(shards); // Shuffle shards for better backend performance
-    return shards;
-  }
-
-  public List<Contig> getShards() {
-    return getShards(DEFAULT_NUMBER_OF_BASES_PER_SHARD);
-  }
-
   public SearchVariantsRequest getVariantsRequest(String variantSetId) {
     return new SearchVariantsRequest()
         .setVariantSetIds(Collections.singletonList(variantSetId))
         .setReferenceName(referenceName)
         .setStart(start)
         .setEnd(end);
+  }
+
+  public StreamVariantsRequest getStreamVariantsRequest(String variantSetId) {
+    return StreamVariantsRequest.newBuilder()
+        .setVariantSetId(variantSetId)
+        .setReferenceName(referenceName)
+        .setStart(start)
+        .setEnd(end)
+        .build();
   }
 
   public SearchReadsRequest getReadsRequest(String readGroupSetId) {
@@ -108,7 +110,41 @@ public class Contig implements Serializable {
         .setEnd(end);
   }
 
-  public static Iterable<Contig> parseContigsFromCommandLine(String contigsArgument) {
+  public StreamReadsRequest getStreamReadsRequest(String readGroupSetId) {
+    return StreamReadsRequest.newBuilder()
+        .setReadGroupSetId(readGroupSetId)
+        .setReferenceName(referenceName)
+        .setStart(start)
+        .setEnd(end)
+        .build();
+  }
+
+  private List<Contig> getShards() {
+    return getShards(DEFAULT_NUMBER_OF_BASES_PER_SHARD);
+  }
+
+  // This is private because the static methods to determine shards should be used
+  // to ensure that they are shuffled all together before being returned to clients.
+  private List<Contig> getShards(long numberOfBasesPerShard) {
+    double shardCount = Math.ceil(end - start) / (double) numberOfBasesPerShard;
+    List<Contig> shards = Lists.newArrayList();
+    for (int i = 0; i < shardCount; i++) {
+      long shardStart = start + (i * numberOfBasesPerShard);
+      long shardEnd = Math.min(end, shardStart + numberOfBasesPerShard);
+
+      shards.add(new Contig(referenceName, shardStart, shardEnd));
+    }
+    return shards;
+  }
+
+  /**
+   * Parse the list of Contigs expressed in the command line argument.
+   * 
+   * @param contigsArgument - the command line parameter expressing the specified genomic regions
+   *                            format is chromosome:start:end[,chromosome:start:end]
+   * @return a list of contigs
+   */
+  public static Iterable<Contig> parseContigsFromCommandLine(final String contigsArgument) {
     return Iterables.transform(Splitter.on(",").split(contigsArgument),
         new Function<String, Contig>() {
           @Override
@@ -148,5 +184,78 @@ public class Contig implements Serializable {
 
     return contigs;
   }
+  
+  /**
+   * Get a list of Contigs representing sharded windows of all genomic regions within the variant set.
+   * 
+   * These are useful for pipelines that operate in parallel against data within a specific variant set.
+   * 
+   * @param genomics - the genomics client
+   * @param variantSetId - the id of the variant set for which to create shards
+   * @param sexChromosomeFilter - whether or not to include the sex chromosomes in the list of shards
+   * @return a shuffled list of shards
+   * @throws IOException
+   */
+  public static List<Contig> getAllShardsInVariantSet(final Genomics genomics, final String variantSetId,
+      final SexChromosomeFilter sexChromosomeFilter) throws IOException {
+    return getAllShardsInVariantSet(genomics, variantSetId, sexChromosomeFilter, DEFAULT_NUMBER_OF_BASES_PER_SHARD); 
+  }
+  
+  /**
+   * Get a list of Contigs representing sharded windows of all genomic regions within the variant set.
+   * 
+   * These are useful for pipelines that operate in parallel against data within a specific variant set.
+   * 
+   * @param genomics - the genomics client
+   * @param variantSetId - the id of the variant set for which to create shards
+   * @param sexChromosomeFilter - whether or not to include the sex chromosomes in the list of shards
+   * @param numberOfBasesPerShard - the maximum size of the shard window in terms of number of bases
+   * @return a shuffled list of shards
+   * @throws IOException
+   */
+  public static List<Contig> getAllShardsInVariantSet(final Genomics genomics, final String variantSetId,
+      final SexChromosomeFilter sexChromosomeFilter, final long numberOfBasesPerShard) throws IOException {
+    List<Contig> contigs = getContigsInVariantSet(genomics, variantSetId, sexChromosomeFilter);
+    return getAllShardsForContigs(contigs, numberOfBasesPerShard);
+  }
+  
+  /**
+   * Get a list of Contigs representing sharded windows of the specified genomic regions expressed in the command line argument.
+   * 
+   * These are useful for pipelines that operate in parallel against data within a specific variant set or read group set.
+   * 
+   * @param contigsArgument - the command line parameter expressing the specified genomic regions
+   *                            format is chromosome:start:end[,chromosome:start:end]
+   * @return a shuffled list of shards
+   */
+  public static List<Contig> getSpecifiedShards(final String contigsArgument) {
+    return getSpecifiedShards(contigsArgument, DEFAULT_NUMBER_OF_BASES_PER_SHARD);
+  }
+
+  /**
+   * Get a list of Contigs representing sharded windows of the specified genomic regions expressed in the command line argument.
+   * 
+   * These are useful for pipelines that operate in parallel against data within a specific variant set or read group set.
+   * 
+   * @param contigsArgument - the command line parameter expressing the specified genomic regions
+   *                            format is chromosome:start:end[,chromosome:start:end]
+   * @param numberOfBasesPerShard - the maximum size of the shard window in terms of number of bases
+   * @return a shuffled list of shards
+   */
+  public static List<Contig> getSpecifiedShards(final String contigsArgument, final long numberOfBasesPerShard) {
+    Iterable<Contig> contigs = parseContigsFromCommandLine(contigsArgument);
+    return getAllShardsForContigs(contigs, numberOfBasesPerShard);
+  }
+
+  private static List<Contig> getAllShardsForContigs(Iterable<Contig> contigs, long numberOfBasesPerShard) {
+    List<Contig> shardedContigs = Lists.newArrayList();
+    for (Contig contig : contigs) {
+      shardedContigs.addAll(contig.getShards(numberOfBasesPerShard));
+    }
+    // IMPORTANT: Shuffle shards for better backend performance.
+    Collections.shuffle(shardedContigs);
+    return shardedContigs;
+  }
+  
 }
 
