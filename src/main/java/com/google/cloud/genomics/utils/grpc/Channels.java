@@ -1,4 +1,4 @@
-package com.google.cloud.genomics.grpc;
+package com.google.cloud.genomics.utils.grpc;
 
 import com.google.auth.oauth2.GoogleCredentials;
 import io.grpc.Channel;
