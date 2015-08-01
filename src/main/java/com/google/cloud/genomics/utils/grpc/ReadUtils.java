@@ -239,7 +239,7 @@ public class ReadUtils extends com.google.cloud.genomics.utils.ReadUtils {
 
   public static final SAMRecord makeSAMRecord(Read read, SAMFileHeader header) {
     SAMRecord record = new SAMRecord(header);
-    if (read.getFragmentName() != null && !read.getFragmentName().isEmpty()) {
+    if (read.getFragmentName() != null) {
       record.setReadName(read.getFragmentName());
     }
     if (read.getReadGroupId() != null && !read.getReadGroupId().isEmpty()) {
