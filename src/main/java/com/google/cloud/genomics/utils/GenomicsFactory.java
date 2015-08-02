@@ -174,7 +174,7 @@ public class GenomicsFactory {
      * The number of times to retry a failed request to the Genomics API.
      *  
      * @param numRetries
-     * @return
+     * @return this
      */
     public Builder setNumberOfRetries(int numRetries) {
       this.numRetries = numRetries;
