@@ -21,6 +21,12 @@ public class GenomicsUtils {
   
   /**
    * Gets ReadGroupSetIds from a given datasetId using the Genomics API.
+   *
+   * @param datasetId The id of the dataset to query.
+   * @param auth The OfflineAuth for the API request.
+   * @return The list of readGroupSetIds in the dataset.
+   * @throws IOException If dataset does not contain any readGroupSets.
+   * @throws GeneralSecurityException
    */
   public static List<String> getReadGroupSetIds(String datasetId, GenomicsFactory.OfflineAuth auth)
       throws IOException, GeneralSecurityException {
@@ -40,6 +46,12 @@ public class GenomicsUtils {
   
   /**
    * Gets VariantSetIds from a given datasetId using the Genomics API.
+   *
+   * @param datasetId The id of the dataset to query.
+   * @param auth The OfflineAuth for the API request.
+   * @return The list of variantSetIds in the dataset.
+   * @throws IOException If dataset does not contain any variantSets.
+   * @throws GeneralSecurityException
    */
   public static List<String> getVariantSetIds(String datasetId, GenomicsFactory.OfflineAuth auth)
       throws IOException, GeneralSecurityException {
@@ -59,6 +71,13 @@ public class GenomicsUtils {
   
   /**
    * Gets CallSets Names for a given variantSetId using the Genomics API.
+   * 
+   * @param variantSetId The id of the variantSet to query.
+   * @param auth The OfflineAuth for the API request.
+   * @return The list of callSet names in the variantSet.
+   * @throws IOException If variantSet does not contain any CallSets.
+   * @throws GeneralSecurityException
+
    */
   public static List<String> getCallSetsNames(String variantSetId, GenomicsFactory.OfflineAuth auth)
       throws IOException, GeneralSecurityException {
@@ -78,6 +97,12 @@ public class GenomicsUtils {
 
   /**
    * Gets the ReferenceBounds for a given variantSetId using the Genomics API.
+   *
+   * @param variantSetId The id of the variantSet to query.
+   * @param auth The OfflineAuth for the API request.
+   * @return The list of reference bounds in the variantSet.
+   * @throws IOException
+   * @throws GeneralSecurityException
    */
   public static List<ReferenceBound> getReferenceBounds(String variantSetId, GenomicsFactory.OfflineAuth auth)
       throws IOException, GeneralSecurityException {
