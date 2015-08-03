@@ -94,9 +94,9 @@ import com.google.common.collect.Maps;
  *String datasetId = ...;
  *Paginator.Readsets searchReadsets = Paginator.Readsets.create(stub);
  *for (Readset readset =
- *    searchReadsets.search(new SearchReadsetsRequest().setDatasetId(datasetId))) {
+ *    searchReadsets.search(new SearchReadsetsRequest().setDatasetId(datasetId))) &#123;
  *  // do something with readset
- *}
+ *&#125;
  *}
  *</pre>
  *

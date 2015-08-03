@@ -15,37 +15,31 @@
  */
 package com.google.cloud.genomics.utils;
 
-import com.google.api.services.genomics.Genomics;
-import com.google.api.services.genomics.model.ReferenceBound;
-import com.google.api.services.genomics.model.SearchReadsRequest;
-import com.google.api.services.genomics.model.SearchVariantsRequest;
-import com.google.api.services.genomics.model.VariantSet;
-import com.google.common.base.Function;
-import com.google.common.base.Splitter;
-import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
-
-import java.io.IOException;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import static com.google.common.base.Objects.equal;
 import static com.google.common.collect.Lists.newArrayList;
 import static java.util.Objects.hash;
 import static java.util.Objects.requireNonNull;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import com.google.api.services.genomics.model.SearchReadsRequest;
+import com.google.api.services.genomics.model.SearchVariantsRequest;
+import com.google.common.base.Function;
+import com.google.common.base.Splitter;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
+import com.google.genomics.v1.StreamReadsRequest;
+import com.google.genomics.v1.StreamVariantsRequest;
+
+/**
+ * A Contig is a contiguous region of the genome.
+ */
 public class Contig implements Serializable {
 
   private static final long serialVersionUID = -1730387112193404207L;
-
-  public static final long DEFAULT_NUMBER_OF_BASES_PER_SHARD = 1000000;
-
-  public enum SexChromosomeFilter { INCLUDE_XY, EXCLUDE_XY }
-  
-  // If not running all contigs, we default to BRCA1
-  public static final String BRCA1 = "17:41196311:41277499";
 
   public final String referenceName;
   public final long start;
@@ -75,39 +69,16 @@ public class Contig implements Serializable {
     return referenceName + ':' + start + ':' + end;
   }
 
-  public List<Contig> getShards(long numberOfBasesPerShard) {
-    double shardCount = Math.ceil(end - start) / (double) numberOfBasesPerShard;
-    List<Contig> shards = Lists.newArrayList();
-    for (int i = 0; i < shardCount; i++) {
-      long shardStart = start + (i * numberOfBasesPerShard);
-      long shardEnd = Math.min(end, shardStart + numberOfBasesPerShard);
 
-      shards.add(new Contig(referenceName, shardStart, shardEnd));
-    }
-    Collections.shuffle(shards); // Shuffle shards for better backend performance
-    return shards;
-  }
-
-  public List<Contig> getShards() {
-    return getShards(DEFAULT_NUMBER_OF_BASES_PER_SHARD);
-  }
-
-  public SearchVariantsRequest getVariantsRequest(String variantSetId) {
-    return new SearchVariantsRequest()
-        .setVariantSetIds(Collections.singletonList(variantSetId))
-        .setReferenceName(referenceName)
-        .setStart(start)
-        .setEnd(end);
-  }
-
-  public SearchReadsRequest getReadsRequest(String readGroupSetId) {
-    return new SearchReadsRequest()
-        .setReadGroupSetIds(Collections.singletonList(readGroupSetId))
-        .setReferenceName(referenceName)
-        .setStart(start)
-        .setEnd(end);
-  }
-
+  /**
+   * Parse the list of Contigs expressed in the string argument.
+   * 
+   * The common use case is to parse the value of a command line parameter.
+   * 
+   * @param contigsArgument - a string expressing the specified contiguous region(s) of the genome.
+   *                          The format is chromosome:start:end[,chromosome:start:end]
+   * @return a list of Contig objects
+   */
   public static Iterable<Contig> parseContigsFromCommandLine(String contigsArgument) {
     return Iterables.transform(Splitter.on(",").split(contigsArgument),
         new Function<String, Contig>() {
@@ -119,34 +90,57 @@ public class Contig implements Serializable {
           }
         });
   }
+  
+  // The following methods have package scope and are helpers for ShardUtils. For sharded Contigs,
+  // the ShardUtils methods should be used to ensure that shards are shuffled all together before
+  // being returned to clients.
+  List<Contig> getShards(long numberOfBasesPerShard) {
+    double shardCount = Math.ceil(end - start) / (double) numberOfBasesPerShard;
+    List<Contig> shards = Lists.newArrayList();
+    for (int i = 0; i < shardCount; i++) {
+      long shardStart = start + (i * numberOfBasesPerShard);
+      long shardEnd = Math.min(end, shardStart + numberOfBasesPerShard);
 
-  /**
-   * Retrieve the list of all the reference names and their start/end positions for the variant set.
-   * 
-   * @param genomics - The {@link Genomics} stub.
-   * @param variantSetId - The id of the variant set to query.
-   * @param sexChromosomeFilter - An enum value indicating how sex chromosomes should be
-   *        handled in the result.
-   * @return The list of all references in the variant set.
-   * @throws IOException
-   */
-  public static List<Contig> getContigsInVariantSet(Genomics genomics, String variantSetId,
-      SexChromosomeFilter sexChromosomeFilter) throws IOException {
-    List<Contig> contigs = Lists.newArrayList();
-
-    VariantSet variantSet = genomics.variantsets().get(variantSetId).execute();
-    for (ReferenceBound bound : variantSet.getReferenceBounds()) {
-      String contig = bound.getReferenceName().toLowerCase();
-      if (sexChromosomeFilter == SexChromosomeFilter.EXCLUDE_XY
-          && (contig.contains("x") || contig.contains("y"))) {
-        // X and Y can skew some analysis results
-        continue;
-      }
-
-      contigs.add(new Contig(bound.getReferenceName(), 0, bound.getUpperBound()));
+      shards.add(new Contig(referenceName, shardStart, shardEnd));
     }
-
-    return contigs;
+    return shards;
   }
+  
+  @Deprecated // Remove this when fully migrated to gRPC.
+  SearchVariantsRequest getSearchVariantsRequest(String variantSetId) {
+    return new SearchVariantsRequest()
+        .setVariantSetIds(Collections.singletonList(variantSetId))
+        .setReferenceName(referenceName)
+        .setStart(start)
+        .setEnd(end);
+  }
+
+  StreamVariantsRequest getStreamVariantsRequest(String variantSetId) {
+    return StreamVariantsRequest.newBuilder()
+        .setVariantSetId(variantSetId)
+        .setReferenceName(referenceName)
+        .setStart(start)
+        .setEnd(end)
+        .build();
+  }
+
+  @Deprecated // Remove this when fully migrated to gRPC.
+  SearchReadsRequest getSearchReadsRequest(String readGroupSetId) {
+    return new SearchReadsRequest()
+        .setReadGroupSetIds(Collections.singletonList(readGroupSetId))
+        .setReferenceName(referenceName)
+        .setStart(start)
+        .setEnd(end);
+  }
+
+  StreamReadsRequest getStreamReadsRequest(String readGroupSetId) {
+    return StreamReadsRequest.newBuilder()
+        .setReadGroupSetId(readGroupSetId)
+        .setReferenceName(referenceName)
+        .setStart(start)
+        .setEnd(end)
+        .build();
+  }
+
 }
 
