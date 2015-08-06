@@ -123,6 +123,7 @@ public class IntegrationTestHelper {
   
   // TODO: Remove this whole method when gRPC is no longer behind a whitelist.  We really want to keep 
   // integration tests to just API_KEY to keep them simple and only functional against public data.
+  // https://github.com/googlegenomics/utils-java/issues/51
   public GenomicsFactory.OfflineAuth getAuthWithUserCredentials() throws GeneralSecurityException, IOException {
     // This code is intentionally all in one method to make it easier to remove.
     final String ENV_VAR = "GOOGLE_CLIENT_SECRETS_FILEPATH";

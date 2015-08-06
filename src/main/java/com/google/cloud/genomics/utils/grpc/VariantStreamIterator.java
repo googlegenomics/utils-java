@@ -30,10 +30,9 @@ public class VariantStreamIterator extends ForwardingIterator<StreamVariantsResp
   public VariantStreamIterator(StreamVariantsRequest request, GenomicsFactory.OfflineAuth auth) throws IOException, GeneralSecurityException {
     // TODO: Facilitate shard boundary predicate here by checking for minimum set of fields in
     // partial request.
-
-    // TODO: When gRPC is no longer behind a whitelist, support api keys too. 
+    
     StreamingVariantServiceGrpc.StreamingVariantServiceBlockingStub variantStub =
-        StreamingVariantServiceGrpc.newBlockingStub(Channels.fromCreds(auth.getUserCredentials()));
+        StreamingVariantServiceGrpc.newBlockingStub(Channels.fromOfflineAuth(auth));
     
     delegate = variantStub.streamVariants(request);
   }

@@ -678,16 +678,37 @@ public class GenomicsFactory {
           .setRefreshToken(refreshToken), new CommonGoogleClientRequestInitializer(apiKey));
     }
   
+    /**
+     * Convert the information in an OfflineAuth instance to a UserCredentials object.
+     * 
+     * Specifically, gRPC uses the new Google OAuth library.  See https://github.com/google/google-auth-library-java
+     * 
+     * @return The UserCredentials object.
+     * @throws IOException
+     * @throws GeneralSecurityException
+     */
     public UserCredentials getUserCredentials() throws IOException, GeneralSecurityException {
-      Preconditions.checkNotNull(clientSecretsString,
-          "Authorization needed.  (An API key is not sufficient for this usage.)");
-      Preconditions.checkNotNull(refreshToken,
+      Preconditions.checkState(hasUserCredentials(),
           "Authorization needed.  (An API key is not sufficient for this usage.)");
       GoogleClientSecrets secrets = GoogleClientSecrets.load(getDefaultFactory().jsonFactory,
           new StringReader(clientSecretsString));
       UserCredentials creds = new UserCredentials(secrets.getDetails().getClientId(),
           secrets.getDetails().getClientSecret(), refreshToken);
       return creds;
+    }
+    
+    /**
+     * @return Whether a UserCredentials object can be constructed from the information in this OfflineAuth.
+     */
+    public boolean hasUserCredentials() {
+      return null != clientSecretsString && null != refreshToken;
+    }
+    
+    /**
+     * @return Whether an api key is in this OfflineAuth.
+     */
+    public boolean hasApiKey() {
+      return null != apiKey;
     }
   }
 }

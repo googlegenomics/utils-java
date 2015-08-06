@@ -31,9 +31,8 @@ public class ReadStreamIterator extends ForwardingIterator<StreamReadsResponse> 
     // TODO: Facilitate shard boundary predicate here by checking for minimum set of fields in
     // partial request.
 
-    // TODO: When gRPC is no longer behind a whitelist, support api keys too. 
     StreamingReadServiceGrpc.StreamingReadServiceBlockingStub readStub =
-        StreamingReadServiceGrpc.newBlockingStub(Channels.fromCreds(auth.getUserCredentials()));
+        StreamingReadServiceGrpc.newBlockingStub(Channels.fromOfflineAuth(auth));
     
     delegate = readStub.streamReads(request);
   }
