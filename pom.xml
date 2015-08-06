@@ -62,6 +62,12 @@
       <id>localrepo</id>
       <url>file://${basedir}/repo</url>
     </repository>
+    <repository>
+      <id>ossrh-snapshots</id>
+      <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+      <releases><enabled>false</enabled></releases>
+      <snapshots><enabled>true</enabled></snapshots>
+    </repository>
   </repositories>
 
   <dependencies>
@@ -116,7 +122,7 @@
     <dependency>
 	    <groupId>io.grpc</groupId>
 	    <artifactId>grpc-all</artifactId>
-	    <version>0.7.1</version>
+	    <version>0.7.3-SNAPSHOT</version>
     </dependency>
 
     <!-- Used to test the custom builder logic -->
