@@ -35,25 +35,25 @@ public class GenomicsUtilsITCase {
   
   @Test
   public void testGetReadGroupSetIds() throws IOException, GeneralSecurityException {
-    assertThat(GenomicsUtils.getReadGroupSetIds(helper.PLATINUM_GENOMES_DATASET, helper.auth),
+    assertThat(GenomicsUtils.getReadGroupSetIds(helper.PLATINUM_GENOMES_DATASET, helper.getAuth()),
         CoreMatchers.allOf(CoreMatchers.hasItems(helper.PLATINUM_GENOMES_READGROUPSETS))); 
   }
 
   @Test
   public void testGetVariantSetIds() throws IOException, GeneralSecurityException {
-    assertThat(GenomicsUtils.getVariantSetIds(helper.PLATINUM_GENOMES_DATASET, helper.auth),
+    assertThat(GenomicsUtils.getVariantSetIds(helper.PLATINUM_GENOMES_DATASET, helper.getAuth()),
         CoreMatchers.allOf(CoreMatchers.hasItems(helper.PLATINUM_GENOMES_VARIANTSET))); 
   }
 
   @Test
   public void testGetCallSetsNames() throws IOException, GeneralSecurityException {
-    assertThat(GenomicsUtils.getCallSetsNames(helper.PLATINUM_GENOMES_VARIANTSET, helper.auth),
+    assertThat(GenomicsUtils.getCallSetsNames(helper.PLATINUM_GENOMES_VARIANTSET, helper.getAuth()),
         CoreMatchers.allOf(CoreMatchers.hasItems(helper.PLATINUM_GENOMES_CALLSET_NAMES))); 
   }
 
   @Test
   public void testGetReferenceBounds() throws IOException, GeneralSecurityException {
-    assertThat(GenomicsUtils.getReferenceBounds(helper.PLATINUM_GENOMES_VARIANTSET, helper.auth),
+    assertThat(GenomicsUtils.getReferenceBounds(helper.PLATINUM_GENOMES_VARIANTSET, helper.getAuth()),
         CoreMatchers.allOf(CoreMatchers.hasItems(helper.PLATINUM_GENOMES_VARIANTSET_BOUNDS))); 
   }
 

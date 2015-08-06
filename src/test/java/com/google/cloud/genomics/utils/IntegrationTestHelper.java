@@ -15,12 +15,13 @@
  */
 package com.google.cloud.genomics.utils;
 
+import static org.junit.Assert.assertNotNull;
+
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 
-import org.junit.Assert;
-
 import com.google.api.services.genomics.model.ReferenceBound;
+import com.google.cloud.genomics.utils.GenomicsFactory.Builder;
 import com.google.cloud.genomics.utils.GenomicsFactory.OfflineAuth;
 
 /**
@@ -69,6 +70,7 @@ public class IntegrationTestHelper {
     "CMvnhpKTFhCrvIOEw4Ol__sB",
   };
   public static final String PLATINUM_GENOMES_BRCA1_REFERENCES = "chr17:41196311:41277499";
+  public static final String PLATINUM_GENOMES_KLOTHO_REFERENCES = "chr13:33628137:33628138";
   public static final ReferenceBound[] PLATINUM_GENOMES_VARIANTSET_BOUNDS = {
     new ReferenceBound().setReferenceName("chr1").setUpperBound(250226910L),
     new ReferenceBound().setReferenceName("chr10").setUpperBound(136466007L),
@@ -97,12 +99,37 @@ public class IntegrationTestHelper {
     new ReferenceBound().setReferenceName("chrY").setUpperBound(60032946L)
   };
 
-  // Test configuration constants
-  public final String API_KEY = System.getenv("GOOGLE_API_KEY");
-  public final OfflineAuth auth;
+  private final String API_KEY = System.getenv("GOOGLE_API_KEY");
+  private final OfflineAuth auth;
   
   public IntegrationTestHelper() throws IOException, GeneralSecurityException {
-    Assert.assertNotNull("You must set the GOOGLE_API_KEY environment variable for this test.", API_KEY);
+    assertNotNull("You must set the GOOGLE_API_KEY environment variable for this test.", API_KEY);
      auth = GenomicsFactory.builder("integration test").build().getOfflineAuthFromApiKey(API_KEY);
+  }
+
+  /**
+   * @return the API_KEY
+   */
+  public String getAPI_KEY() {
+    return API_KEY;
+  }
+
+  /**
+   * @return the auth
+   */
+  public OfflineAuth getAuth() {
+    return auth;
+  }
+  
+  // TODO: Remove this whole method when gRPC is no longer behind a whitelist.  We really want to keep 
+  // integration tests to just API_KEY to keep them simple and only functional against public data.
+  public GenomicsFactory.OfflineAuth getAuthWithUserCredentials() throws GeneralSecurityException, IOException {
+    // This code is intentionally all in one method to make it easier to remove.
+    final String ENV_VAR = "GOOGLE_CLIENT_SECRETS_FILEPATH";
+    final String CLIENT_SECRECTS_FILEPATH = System.getenv(ENV_VAR);
+    assertNotNull("You must set the " + ENV_VAR + " environment variable for this test.", CLIENT_SECRECTS_FILEPATH);
+    
+    Builder builder = GenomicsFactory.builder(IntegrationTestHelper.class.getName());
+    return builder.build().getOfflineAuthFromClientSecretsFile(CLIENT_SECRECTS_FILEPATH);
   }
 }

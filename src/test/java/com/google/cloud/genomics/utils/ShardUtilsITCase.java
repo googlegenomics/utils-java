@@ -99,12 +99,12 @@ public class ShardUtilsITCase {
     // These shards are "too big" to use in practice but for this test it keeps the
     // expected result from getting crazy long.
     assertThat(ShardUtils.getVariantRequests(helper.PLATINUM_GENOMES_VARIANTSET,
-        SexChromosomeFilter.EXCLUDE_XY, 150000000L, helper.auth),
+        SexChromosomeFilter.EXCLUDE_XY, 150000000L, helper.getAuth()),
         CoreMatchers.allOf(CoreMatchers.hasItems(EXPECTED_RESULT)));
     
     // Include sex chromosomes this time.
     assertThat(ShardUtils.getVariantRequests(helper.PLATINUM_GENOMES_VARIANTSET,
-        SexChromosomeFilter.INCLUDE_XY, 150000000L, helper.auth),
+        SexChromosomeFilter.INCLUDE_XY, 150000000L, helper.getAuth()),
         CoreMatchers.allOf(CoreMatchers.hasItems(EXPECTED_RESULT),
             CoreMatchers.hasItems(EXPECTED_RESULT_XY)));
   }
