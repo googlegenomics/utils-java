@@ -15,6 +15,18 @@
  */
 package com.google.cloud.genomics.utils;
 
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.Reader;
+import java.io.Serializable;
+import java.io.StringReader;
+import java.security.GeneralSecurityException;
+import java.util.Collection;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import javax.annotation.Nullable;
+
 import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.extensions.java6.auth.oauth2.AuthorizationCodeInstalledApp;
 import com.google.api.client.extensions.java6.auth.oauth2.VerificationCodeReceiver;
@@ -40,24 +52,14 @@ import com.google.api.client.util.store.DataStoreFactory;
 import com.google.api.client.util.store.FileDataStoreFactory;
 import com.google.api.services.genomics.Genomics;
 import com.google.api.services.genomics.GenomicsScopes;
+import com.google.auth.oauth2.UserCredentials;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Charsets;
 import com.google.common.base.Optional;
+import com.google.common.base.Preconditions;
 import com.google.common.base.Supplier;
 import com.google.common.base.Suppliers;
 import com.google.common.io.Files;
-
-import javax.annotation.Nullable;
-
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.Reader;
-import java.io.Serializable;
-import java.io.StringReader;
-import java.security.GeneralSecurityException;
-import java.util.Collection;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Code required to manufacture instances of a {@link Genomics} stub. Right now, there are 3
@@ -674,6 +676,18 @@ public class GenomicsFactory {
           .build()
           .setAccessToken(accessToken)
           .setRefreshToken(refreshToken), new CommonGoogleClientRequestInitializer(apiKey));
+    }
+  
+    public UserCredentials getUserCredentials() throws IOException, GeneralSecurityException {
+      Preconditions.checkNotNull(clientSecretsString,
+          "Authorization needed.  (An API key is not sufficient for this usage.)");
+      Preconditions.checkNotNull(refreshToken,
+          "Authorization needed.  (An API key is not sufficient for this usage.)");
+      GoogleClientSecrets secrets = GoogleClientSecrets.load(getDefaultFactory().jsonFactory,
+          new StringReader(clientSecretsString));
+      UserCredentials creds = new UserCredentials(secrets.getDetails().getClientId(),
+          secrets.getDetails().getClientSecret(), refreshToken);
+      return creds;
     }
   }
 }
