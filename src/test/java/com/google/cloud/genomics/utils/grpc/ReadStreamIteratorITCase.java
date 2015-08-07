@@ -27,10 +27,19 @@ public class ReadStreamIteratorITCase {
   
   @Test
   public void testBasic() throws IOException, GeneralSecurityException {
-    ImmutableList<StreamReadsRequest> requests = ShardUtils.getReadRequests(Collections.singletonList(helper.PLATINUM_GENOMES_READGROUPSETS[0]),
+    ImmutableList<StreamReadsRequest> requests =
+        ShardUtils.getReadRequests(Collections.singletonList(helper.PLATINUM_GENOMES_READGROUPSETS[0]),
         helper.PLATINUM_GENOMES_KLOTHO_REFERENCES, 100L);
     assertEquals(1, requests.size());
-    Iterator<StreamReadsResponse> iter = new ReadStreamIterator(requests.get(0), helper.getAuthWithUserCredentials());
+    
+    // TODO: switch this to helper.getAuth() to use api key once gRPC is no longer behind a whitelist.
+    // At that time, application default credentials would also work.  Right now application default credentials
+    // will not work locally since they come from a gcloud project not in the whitelist.  Application default
+    // credentials do work fine on Google Compute Engine if running in a project in the whitelist.
+    // https://github.com/googlegenomics/utils-java/issues/51
+    Iterator<StreamReadsResponse> iter = new ReadStreamIterator(requests.get(0),
+        helper.getAuthWithUserCredentials());
+    
     assertTrue(iter.hasNext());
     StreamReadsResponse readResponse = iter.next();
     assertEquals(55, readResponse.getAlignmentsList().size());

@@ -26,10 +26,19 @@ public class VariantStreamIteratorITCase {
   
   @Test
   public void testBasic() throws IOException, GeneralSecurityException {
-    ImmutableList<StreamVariantsRequest> requests = ShardUtils.getVariantRequests(helper.PLATINUM_GENOMES_VARIANTSET,
+    ImmutableList<StreamVariantsRequest> requests =
+        ShardUtils.getVariantRequests(helper.PLATINUM_GENOMES_VARIANTSET,
         helper.PLATINUM_GENOMES_KLOTHO_REFERENCES, 100L);
     assertEquals(1, requests.size());
-    Iterator<StreamVariantsResponse> iter = new VariantStreamIterator(requests.get(0), helper.getAuthWithUserCredentials());
+
+    // TODO: switch this to helper.getAuth() to use api key once gRPC is no longer behind a whitelist.
+    // At that time, application default credentials would also work.  Right now application default credentials
+    // will not work locally since they come from a gcloud project not in the whitelist.  Application default
+    // credentials do work fine on Google Compute Engine if running in a project in the whitelist.
+    // https://github.com/googlegenomics/utils-java/issues/51
+    Iterator<StreamVariantsResponse> iter = new VariantStreamIterator(requests.get(0),
+        helper.getAuthWithUserCredentials());
+
     assertTrue(iter.hasNext());
     StreamVariantsResponse variantResponse = iter.next();
     assertEquals(4, variantResponse.getVariantsList().size());

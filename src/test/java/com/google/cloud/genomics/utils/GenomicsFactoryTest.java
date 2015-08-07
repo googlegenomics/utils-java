@@ -192,7 +192,7 @@ public class GenomicsFactoryTest {
     try {
       auth.getUserCredentials();
       fail("getUserCredentials did not throw expected exception");
-    } catch(NullPointerException e) {
+    } catch(IllegalStateException e) {
       // The exception message shoud say something about the API key at a minimum.
       assertTrue(e.getMessage().contains("API key"));
     }
