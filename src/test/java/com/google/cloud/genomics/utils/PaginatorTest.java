@@ -27,7 +27,7 @@ import com.google.api.services.genomics.model.SearchReadsResponse;
 import com.google.api.services.genomics.model.SearchVariantsRequest;
 import com.google.api.services.genomics.model.SearchVariantsResponse;
 import com.google.api.services.genomics.model.Variant;
-import com.google.cloud.genomics.utils.Paginator.ShardBoundary;
+import com.google.cloud.genomics.utils.ShardBoundary.Requirement;
 import com.google.common.collect.Lists;
 
 import org.hamcrest.CoreMatchers;
@@ -164,7 +164,7 @@ public class PaginatorTest {
     Mockito.when(variantsSearch.execute()).thenReturn(
         new SearchVariantsResponse().setVariants(Arrays.asList(input)));
 
-    Paginator.Variants filteredPaginator = Paginator.Variants.create(genomics, ShardBoundary.STRICT);
+    Paginator.Variants filteredPaginator = Paginator.Variants.create(genomics, ShardBoundary.Requirement.STRICT);
     List<Variant> filteredVariants = Lists.newArrayList();
     for (Variant variant : filteredPaginator.search(request)) {
       filteredVariants.add(variant);
@@ -184,7 +184,7 @@ public class PaginatorTest {
       fail("should have thrown an IllegalArgumentxception");
     } catch (IllegalArgumentException e) {} 
 
-    Paginator.Variants overlappingPaginator = Paginator.Variants.create(genomics, ShardBoundary.OVERLAPS);
+    Paginator.Variants overlappingPaginator = Paginator.Variants.create(genomics, ShardBoundary.Requirement.OVERLAPS);
     List<Variant> overlappingVariants = Lists.newArrayList();
     for (Variant variant : overlappingPaginator.search(request)) {
       overlappingVariants.add(variant);
@@ -209,7 +209,7 @@ public class PaginatorTest {
     Mockito.when(variantsSearch.execute()).thenReturn(
         new SearchVariantsResponse());
 
-    Paginator.Variants filteredPaginator = Paginator.Variants.create(genomics, ShardBoundary.STRICT);
+    Paginator.Variants filteredPaginator = Paginator.Variants.create(genomics, ShardBoundary.Requirement.STRICT);
     assertNotNull(filteredPaginator.search(request));
   }
     
@@ -237,7 +237,7 @@ public class PaginatorTest {
     Mockito.when(readsSearch.execute()).thenReturn(
         new SearchReadsResponse().setAlignments(Arrays.asList(input)));
 
-    Paginator.Reads filteredPaginator = Paginator.Reads.create(genomics, ShardBoundary.STRICT);
+    Paginator.Reads filteredPaginator = Paginator.Reads.create(genomics, ShardBoundary.Requirement.STRICT);
     List<Read> filteredReads = Lists.newArrayList();
     for (Read read : filteredPaginator.search(request)) {
       filteredReads.add(read);
@@ -246,7 +246,7 @@ public class PaginatorTest {
     assertThat(filteredReads, CoreMatchers.hasItems(atStartWithinExtent,
         atStartOverlapExtent, beyondStartWithinExtent, beyondOverlapExtent));
 
-    Paginator.Reads overlappingPaginator = Paginator.Reads.create(genomics, ShardBoundary.OVERLAPS);
+    Paginator.Reads overlappingPaginator = Paginator.Reads.create(genomics, ShardBoundary.Requirement.OVERLAPS);
     List<Read> overlappingReads = Lists.newArrayList();
     for (Read read : overlappingPaginator.search(request)) {
       overlappingReads.add(read);
@@ -260,7 +260,7 @@ public class PaginatorTest {
     SearchReadsRequest request = new SearchReadsRequest().setStart(1000L).setEnd(2000L);
     Mockito.when(reads.search(request)).thenReturn(readsSearch);
 
-    Paginator.Reads filteredPaginator = Paginator.Reads.create(genomics, ShardBoundary.STRICT);
+    Paginator.Reads filteredPaginator = Paginator.Reads.create(genomics, ShardBoundary.Requirement.STRICT);
     thrown.expect(IllegalArgumentException.class);
     filteredPaginator.search(request, "nextPageToken,reads(id,alignment(cigar))").iterator().next();
   }
@@ -270,7 +270,7 @@ public class PaginatorTest {
     SearchReadsRequest request = new SearchReadsRequest().setStart(1000L).setEnd(2000L);
     Mockito.when(reads.search(request)).thenReturn(readsSearch);
 
-    Paginator.Reads filteredPaginator = Paginator.Reads.create(genomics, ShardBoundary.STRICT);
+    Paginator.Reads filteredPaginator = Paginator.Reads.create(genomics, ShardBoundary.Requirement.STRICT);
     thrown.expect(IllegalArgumentException.class);
     filteredPaginator.search(request, "reads(id,alignment(cigar,position))").iterator().next();
   }
@@ -280,7 +280,7 @@ public class PaginatorTest {
     SearchReadsRequest request = new SearchReadsRequest().setStart(1000L).setEnd(2000L);
     Mockito.when(reads.search(request)).thenReturn(readsSearch);
 
-    Paginator.Reads overlappingPaginator = Paginator.Reads.create(genomics, ShardBoundary.OVERLAPS);
+    Paginator.Reads overlappingPaginator = Paginator.Reads.create(genomics, ShardBoundary.Requirement.OVERLAPS);
     thrown.expect(IllegalArgumentException.class);
     overlappingPaginator.search(request, "reads(id,alignment(cigar,position))").iterator().next();
   }

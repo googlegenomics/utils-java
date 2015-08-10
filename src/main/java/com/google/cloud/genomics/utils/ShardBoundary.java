@@ -1,0 +1,70 @@
+/*
+ * Copyright (C) 2015 Google Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
+ * in compliance with the License. You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed under the License
+ * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+ * or implied. See the License for the specific language governing permissions and limitations under
+ * the License.
+ */
+package com.google.cloud.genomics.utils;
+
+import com.google.common.base.Predicate;
+import com.google.genomics.v1.Read;
+import com.google.genomics.v1.Variant;
+
+/**
+ * By default cluster compute jobs working with sharded data from the Genomics API will
+ * see any records that span a shard boundary in both shards. In some cases this is
+ * desired; in others it is not.  It just depends upon the particular analysis.
+ */
+public class ShardBoundary {
+
+  /**
+   * Enum for shard boundary requirement.
+   */
+  public enum Requirement {
+   /**
+   * Use OVERLAPS if data overlapping the start of the shard should be returned.
+   */
+  OVERLAPS,
+  /**
+   * Use STRICT if data overlapping the start of the shard should be excluded.
+   */
+  STRICT }
+ 
+  /**
+   * Predicate expressing the logic for which variants should and should not be included in the shard.
+   * 
+   * @param start The start position of the shard.
+   * @return Whether the variant would be included in a strict shard boundary.
+   */
+  public static Predicate<Variant> getStrictVariantPredicate(final long start) {
+    return new Predicate<Variant>() {
+      @Override
+      public boolean apply(Variant variant) {
+        return variant.getStart() >= start;
+      }
+    };
+  }
+
+  /**
+   * Predicate expressing the logic for which reads should and should not be included in the shard.
+   * 
+   * @param start The start position of the shard.
+   * @return Whether the read would be included in a strict shard boundary.
+   */
+  public static Predicate<Read> getStrictReadPredicate(final long start) {
+    return new Predicate<Read>() {
+      @Override
+      public boolean apply(Read read) {
+        return read.getAlignment().getPosition().getPosition() >= start;
+      }
+    };
+  }
+
+}

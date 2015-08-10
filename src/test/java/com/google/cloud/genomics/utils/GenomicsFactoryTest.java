@@ -186,103 +186,16 @@ public class GenomicsFactoryTest {
   }
 
   @Test
-  public void testBackendErrorRetries() throws Exception {
-
-    HttpTransport transport = new MockHttpTransport() {
-      @Override
-      public LowLevelHttpRequest buildRequest(String method, String url) throws IOException {
-        return new MockLowLevelHttpRequest() {
-          @Override
-          public LowLevelHttpResponse execute() throws IOException {
-            MockLowLevelHttpResponse response = new MockLowLevelHttpResponse();
-            response.setStatusCode(500);
-            return response;
-          }
-        };
-      }
-    };
-
-    GenomicsFactory genomicsFactory =
-        GenomicsFactory.builder("test_client").setHttpTransport(transport).build();
-    Genomics genomics = genomicsFactory.fromApiKey("xyz");
-
-    HttpRequest request =
-        genomics.getRequestFactory().buildGetRequest(HttpTesting.SIMPLE_GENERIC_URL);
+  public void testOfflineAuthGetUserCredential() throws Exception {
+    GenomicsFactory genomicsFactory = GenomicsFactory.builder("test_client").build();
+    GenomicsFactory.OfflineAuth auth = genomicsFactory.getOfflineAuthFromApiKey("xyz");
     try {
-      request.execute();
-      fail("this request should not have succeeded");
-    } catch (HttpResponseException e) {
+      auth.getUserCredentials();
+      fail("getUserCredentials did not throw expected exception");
+    } catch(IllegalStateException e) {
+      // The exception message shoud say something about the API key at a minimum.
+      assertTrue(e.getMessage().contains("API key"));
     }
-
-    assertEquals(1, genomicsFactory.initializedRequestsCount());
-    assertEquals(6, genomicsFactory.unsuccessfulResponsesCount());
-    assertEquals(0, genomicsFactory.ioExceptionsCount());
-  }
-
-  @Test
-  public void testIOExceptionRetries() throws Exception {
-
-    HttpTransport transport = new MockHttpTransport() {
-      @Override
-      public LowLevelHttpRequest buildRequest(String method, String url) throws IOException {
-        return new MockLowLevelHttpRequest() {
-          @Override
-          public LowLevelHttpResponse execute() throws IOException {
-            throw new IOException();
-          }
-        };
-      }
-    };
-
-    GenomicsFactory genomicsFactory =
-        GenomicsFactory.builder("test_client").setHttpTransport(transport).build();
-    Genomics genomics = genomicsFactory.fromApiKey("xyz");
-
-    HttpRequest request =
-        genomics.getRequestFactory().buildGetRequest(HttpTesting.SIMPLE_GENERIC_URL);
-    try {
-      request.execute();
-      fail("this request should not have succeeded");
-    } catch (IOException e) {
-    }
-
-    assertEquals(1, genomicsFactory.initializedRequestsCount());
-    assertEquals(0, genomicsFactory.unsuccessfulResponsesCount());
-    assertEquals(6, genomicsFactory.ioExceptionsCount());
-  }
-
-  @Test
-  public void testUserErrorRetries() throws Exception {
-
-    HttpTransport transport = new MockHttpTransport() {
-      @Override
-      public LowLevelHttpRequest buildRequest(String method, String url) throws IOException {
-        return new MockLowLevelHttpRequest() {
-          @Override
-          public LowLevelHttpResponse execute() throws IOException {
-            MockLowLevelHttpResponse response = new MockLowLevelHttpResponse();
-            response.setStatusCode(404);
-            return response;
-          }
-        };
-      }
-    };
-
-    GenomicsFactory genomicsFactory =
-        GenomicsFactory.builder("test_client").setHttpTransport(transport).build();
-    Genomics genomics = genomicsFactory.fromApiKey("xyz");
-
-    HttpRequest request =
-        genomics.getRequestFactory().buildGetRequest(HttpTesting.SIMPLE_GENERIC_URL);
-    try {
-      request.execute();
-      fail("this request should not have succeeded");
-    } catch (HttpResponseException e) {
-    }
-
-    assertEquals(1, genomicsFactory.initializedRequestsCount());
-    assertEquals(1, genomicsFactory.unsuccessfulResponsesCount());
-    assertEquals(0, genomicsFactory.ioExceptionsCount());
   }
   
 }

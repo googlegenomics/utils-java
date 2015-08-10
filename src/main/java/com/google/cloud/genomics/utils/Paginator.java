@@ -94,9 +94,9 @@ import com.google.common.collect.Maps;
  *String datasetId = ...;
  *Paginator.Readsets searchReadsets = Paginator.Readsets.create(stub);
  *for (Readset readset =
- *    searchReadsets.search(new SearchReadsetsRequest().setDatasetId(datasetId))) {
+ *    searchReadsets.search(new SearchReadsetsRequest().setDatasetId(datasetId))) &#123;
  *  // do something with readset
- *}
+ *&#125;
  *}
  *</pre>
  *
@@ -108,8 +108,6 @@ import com.google.common.collect.Maps;
  */
 public abstract class Paginator<A, B, C extends GenomicsRequest<D>, D, E> {
   
-  public enum ShardBoundary { OVERLAPS, STRICT }
-
   /**
    * A callback object for
    * {@link #search(Object, GenomicsRequestInitializer, Callback, RetryPolicy)} that can
@@ -331,7 +329,7 @@ public abstract class Paginator<A, B, C extends GenomicsRequest<D>, D, E> {
         .put("alignment", ".*\\p{Punct}alignment\\p{Punct}.*") 
         .put("position", ".*\\p{Punct}position\\p{Punct}.*")
         .build();
-    private final ShardBoundary shardBoundary;
+    private final ShardBoundary.Requirement shardBoundary;
     private Predicate<Read> shardPredicate = null;
 
     /**
@@ -348,11 +346,11 @@ public abstract class Paginator<A, B, C extends GenomicsRequest<D>, D, E> {
      *        ShardBoundary.STRICT to ensure that a record does not appear in more than one shard.
      * @return the new paginator.
      */
-    public static Reads create(Genomics genomics, ShardBoundary shardBoundary) {
+    public static Reads create(Genomics genomics, ShardBoundary.Requirement shardBoundary) {
       return new Reads(genomics, shardBoundary);
     }
 
-    private Reads(Genomics genomics, ShardBoundary shardBoundary) {
+    private Reads(Genomics genomics, ShardBoundary.Requirement shardBoundary) {
       super(genomics);
       this.shardBoundary = shardBoundary;
     }
@@ -360,7 +358,7 @@ public abstract class Paginator<A, B, C extends GenomicsRequest<D>, D, E> {
     @Override Genomics.Reads.Search createSearch(Genomics.Reads api, final SearchReadsRequest request,
         Optional<String> pageToken) throws IOException {
 
-      if(shardBoundary == ShardBoundary.STRICT) {
+      if(shardBoundary == ShardBoundary.Requirement.STRICT) {
         // TODO: When this is supported server-side, instead verify that request.getIntersectionType
         // will yield a strict shard.
         shardPredicate = new Predicate<Read>() {
@@ -383,7 +381,7 @@ public abstract class Paginator<A, B, C extends GenomicsRequest<D>, D, E> {
 
     @Override
     public GenomicsRequestInitializer<GenomicsRequest<?>> setFieldsInitializer(final String fields) {
-      if(shardBoundary == ShardBoundary.STRICT) {
+      if(shardBoundary == ShardBoundary.Requirement.STRICT) {
         return new GenomicsSearchFieldRequestInitializer(fields, REQUIRED_STRICT_SHARD_FIELDS);        
       }
       return new GenomicsSearchFieldRequestInitializer(fields, REQUIRED_FIELDS);
@@ -423,7 +421,7 @@ public abstract class Paginator<A, B, C extends GenomicsRequest<D>, D, E> {
         .put("position", ".*\\p{Punct}position\\p{Punct}.*")
         .put("start", ".*\\p{Punct}start\\p{Punct}.*") 
         .build();
-    private final ShardBoundary shardBoundary;
+    private final ShardBoundary.Requirement shardBoundary;
     private Predicate<Annotation> shardPredicate = null;
 
     /**
@@ -440,11 +438,11 @@ public abstract class Paginator<A, B, C extends GenomicsRequest<D>, D, E> {
      *        ShardBoundary.STRICT to ensure that a record does not appear in more than one shard.
      * @return the new paginator.
      */
-    public static Annotations create(Genomics genomics, ShardBoundary shardBoundary) {
+    public static Annotations create(Genomics genomics, ShardBoundary.Requirement shardBoundary) {
       return new Annotations(genomics, shardBoundary);
     }
 
-    private Annotations(Genomics genomics, ShardBoundary shardBoundary) {
+    private Annotations(Genomics genomics, ShardBoundary.Requirement shardBoundary) {
       super(genomics);
       this.shardBoundary = shardBoundary;
     }
@@ -452,7 +450,7 @@ public abstract class Paginator<A, B, C extends GenomicsRequest<D>, D, E> {
     @Override Genomics.Annotations.Search createSearch(Genomics.Annotations api,
         final SearchAnnotationsRequest request, Optional<String> pageToken) throws IOException {
 
-      if(shardBoundary == ShardBoundary.STRICT) {
+      if(shardBoundary == ShardBoundary.Requirement.STRICT) {
         // TODO: When this is supported server-side, instead verify that request.getIntersectionType
         // will yield a strict shard.
         shardPredicate = new Predicate<Annotation>() {
@@ -474,7 +472,7 @@ public abstract class Paginator<A, B, C extends GenomicsRequest<D>, D, E> {
 
     @Override
     public GenomicsRequestInitializer<GenomicsRequest<?>> setFieldsInitializer(final String fields) {
-      if(shardBoundary == ShardBoundary.STRICT) {
+      if(shardBoundary == ShardBoundary.Requirement.STRICT) {
         return new GenomicsSearchFieldRequestInitializer(fields, REQUIRED_STRICT_SHARD_FIELDS);        
       }
       return new GenomicsSearchFieldRequestInitializer(fields, REQUIRED_FIELDS);
@@ -825,7 +823,7 @@ public abstract class Paginator<A, B, C extends GenomicsRequest<D>, D, E> {
         .putAll(REQUIRED_FIELDS)
         .put("start", ".*\\p{Punct}start\\p{Punct}.*") 
         .build();
-    private final ShardBoundary shardBoundary;
+    private final ShardBoundary.Requirement shardBoundary;
     private Predicate<Variant> shardPredicate = null;
     
     /**
@@ -842,11 +840,11 @@ public abstract class Paginator<A, B, C extends GenomicsRequest<D>, D, E> {
      *        ShardBoundary.STRICT to ensure that a record does not appear in more than one shard.
      * @return the new paginator
      */
-    public static Variants create(Genomics genomics, ShardBoundary shardBoundary) {
+    public static Variants create(Genomics genomics, ShardBoundary.Requirement shardBoundary) {
       return new Variants(genomics, shardBoundary);
     }
 
-    private Variants(Genomics genomics, ShardBoundary shardBoundary) {
+    private Variants(Genomics genomics, ShardBoundary.Requirement shardBoundary) {
       super(genomics);
       this.shardBoundary = shardBoundary;
     }
@@ -854,7 +852,7 @@ public abstract class Paginator<A, B, C extends GenomicsRequest<D>, D, E> {
     @Override Genomics.Variants.Search createSearch(Genomics.Variants api,
         final SearchVariantsRequest request, Optional<String> pageToken) throws IOException {
       
-      if(shardBoundary == ShardBoundary.STRICT) {
+      if(shardBoundary == ShardBoundary.Requirement.STRICT) {
         // TODO: When this is supported server-side, instead verify that request.getIntersectionType
         // will yield a strict shard.
         shardPredicate = new Predicate<Variant>() {
@@ -877,7 +875,7 @@ public abstract class Paginator<A, B, C extends GenomicsRequest<D>, D, E> {
 
     @Override
     public GenomicsRequestInitializer<GenomicsRequest<?>> setFieldsInitializer(final String fields) {
-      if(shardBoundary == ShardBoundary.STRICT) {
+      if(shardBoundary == ShardBoundary.Requirement.STRICT) {
         return new GenomicsSearchFieldRequestInitializer(fields, REQUIRED_STRICT_SHARD_FIELDS);        
       }
       return new GenomicsSearchFieldRequestInitializer(fields, REQUIRED_FIELDS);

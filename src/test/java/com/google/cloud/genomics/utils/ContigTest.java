@@ -15,21 +15,22 @@
  */
 package com.google.cloud.genomics.utils;
 
-import com.google.api.services.genomics.model.SearchReadsRequest;
-import com.google.api.services.genomics.model.SearchVariantsRequest;
-import com.google.common.base.Joiner;
+import static com.google.common.collect.Lists.newArrayList;
+import static org.junit.Assert.assertEquals;
+
+import java.util.List;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-import java.util.List;
-
-import static com.google.common.collect.Lists.newArrayList;
-import static org.junit.Assert.assertEquals;
+import com.google.api.services.genomics.model.SearchReadsRequest;
+import com.google.api.services.genomics.model.SearchVariantsRequest;
+import com.google.common.base.Joiner;
 
 @RunWith(JUnit4.class)
 public class ContigTest {
-
+  
   @Test
   public void testGetShards() throws Exception {
     Contig contig = new Contig("1", 0, 9);
@@ -53,10 +54,10 @@ public class ContigTest {
     assertEquals(5, shard2.start);
     assertEquals(9, shard2.end);
   }
-
+  
   @Test
   public void testGetVariantsRequest() throws Exception {
-    SearchVariantsRequest request = new Contig("1", 0, 9).getVariantsRequest("vs");
+    SearchVariantsRequest request = new Contig("1", 0, 9).getSearchVariantsRequest("vs");
     assertEquals("vs", request.getVariantSetIds().get(0));
     assertEquals("1", request.getReferenceName());
     assertEquals(0, request.getStart().longValue());
@@ -65,7 +66,7 @@ public class ContigTest {
 
   @Test
   public void testGetReadsRequest() throws Exception {
-    SearchReadsRequest request = new Contig("1", 0, 9).getReadsRequest("rs");
+    SearchReadsRequest request = new Contig("1", 0, 9).getSearchReadsRequest("rs");
     assertEquals("rs", request.getReadGroupSetIds().get(0));
     assertEquals("1", request.getReferenceName());
     assertEquals(0, request.getStart().longValue());
