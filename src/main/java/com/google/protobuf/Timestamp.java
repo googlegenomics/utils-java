@@ -68,8 +68,7 @@ public  final class Timestamp extends
   }
   private Timestamp(
       com.google.protobuf.CodedInputStream input,
-      com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-      throws com.google.protobuf.InvalidProtocolBufferException {
+      com.google.protobuf.ExtensionRegistryLite extensionRegistry) {
     this();
     int mutable_bitField0_ = 0;
     try {
@@ -99,10 +98,11 @@ public  final class Timestamp extends
         }
       }
     } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-      throw e.setUnfinishedMessage(this);
+      throw new RuntimeException(e.setUnfinishedMessage(this));
     } catch (java.io.IOException e) {
-      throw new com.google.protobuf.InvalidProtocolBufferException(
-          e.getMessage()).setUnfinishedMessage(this);
+      throw new RuntimeException(
+          new com.google.protobuf.InvalidProtocolBufferException(
+              e.getMessage()).setUnfinishedMessage(this));
     } finally {
       makeExtensionsImmutable();
     }
@@ -117,21 +117,6 @@ public  final class Timestamp extends
     return com.google.protobuf.TimestampProto.internal_static_google_protobuf_Timestamp_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
             com.google.protobuf.Timestamp.class, com.google.protobuf.Timestamp.Builder.class);
-  }
-
-  public static final com.google.protobuf.Parser<Timestamp> PARSER =
-      new com.google.protobuf.AbstractParser<Timestamp>() {
-    public Timestamp parsePartialFrom(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return new Timestamp(input, extensionRegistry);
-    }
-  };
-
-  @java.lang.Override
-  public com.google.protobuf.Parser<Timestamp> getParserForType() {
-    return PARSER;
   }
 
   public static final int SECONDS_FIELD_NUMBER = 1;
@@ -177,7 +162,6 @@ public  final class Timestamp extends
 
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    getSerializedSize();
     if (seconds_ != 0L) {
       output.writeInt64(1, seconds_);
     }
@@ -293,12 +277,17 @@ public  final class Timestamp extends
     return PARSER.parseFrom(input, extensionRegistry);
   }
 
-  public static Builder newBuilder() { return new Builder(); }
   public Builder newBuilderForType() { return newBuilder(); }
-  public static Builder newBuilder(com.google.protobuf.Timestamp prototype) {
-    return newBuilder().mergeFrom(prototype);
+  public static Builder newBuilder() {
+    return DEFAULT_INSTANCE.toBuilder();
   }
-  public Builder toBuilder() { return newBuilder(this); }
+  public static Builder newBuilder(com.google.protobuf.Timestamp prototype) {
+    return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+  }
+  public Builder toBuilder() {
+    return this == DEFAULT_INSTANCE
+        ? new Builder() : new Builder().mergeFrom(this);
+  }
 
   @java.lang.Override
   protected Builder newBuilderForType(
@@ -563,16 +552,45 @@ public  final class Timestamp extends
   }
 
   // @@protoc_insertion_point(class_scope:google.protobuf.Timestamp)
-  private static final com.google.protobuf.Timestamp defaultInstance;static {
-    defaultInstance = new com.google.protobuf.Timestamp();
+  private static final com.google.protobuf.Timestamp DEFAULT_INSTANCE;
+  static {
+    DEFAULT_INSTANCE = new com.google.protobuf.Timestamp();
   }
 
   public static com.google.protobuf.Timestamp getDefaultInstance() {
-    return defaultInstance;
+    return DEFAULT_INSTANCE;
+  }
+
+  public static final com.google.protobuf.Parser<Timestamp> PARSER =
+      new com.google.protobuf.AbstractParser<Timestamp>() {
+    public Timestamp parsePartialFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      try {
+        return new Timestamp(input, extensionRegistry);
+      } catch (RuntimeException e) {
+        if (e.getCause() instanceof
+            com.google.protobuf.InvalidProtocolBufferException) {
+          throw (com.google.protobuf.InvalidProtocolBufferException)
+              e.getCause();
+        }
+        throw e;
+      }
+    }
+  };
+
+  public static com.google.protobuf.Parser<Timestamp> parser() {
+    return PARSER;
+  }
+
+  @java.lang.Override
+  public com.google.protobuf.Parser<Timestamp> getParserForType() {
+    return PARSER;
   }
 
   public com.google.protobuf.Timestamp getDefaultInstanceForType() {
-    return defaultInstance;
+    return DEFAULT_INSTANCE;
   }
 
 }

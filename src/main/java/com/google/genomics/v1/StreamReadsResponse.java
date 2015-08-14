@@ -25,8 +25,7 @@ public  final class StreamReadsResponse extends
   }
   private StreamReadsResponse(
       com.google.protobuf.CodedInputStream input,
-      com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-      throws com.google.protobuf.InvalidProtocolBufferException {
+      com.google.protobuf.ExtensionRegistryLite extensionRegistry) {
     this();
     int mutable_bitField0_ = 0;
     try {
@@ -54,10 +53,11 @@ public  final class StreamReadsResponse extends
         }
       }
     } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-      throw e.setUnfinishedMessage(this);
+      throw new RuntimeException(e.setUnfinishedMessage(this));
     } catch (java.io.IOException e) {
-      throw new com.google.protobuf.InvalidProtocolBufferException(
-          e.getMessage()).setUnfinishedMessage(this);
+      throw new RuntimeException(
+          new com.google.protobuf.InvalidProtocolBufferException(
+              e.getMessage()).setUnfinishedMessage(this));
     } finally {
       if (((mutable_bitField0_ & 0x00000001) == 0x00000001)) {
         alignments_ = java.util.Collections.unmodifiableList(alignments_);
@@ -75,21 +75,6 @@ public  final class StreamReadsResponse extends
     return com.google.genomics.v1.ReadsProto.internal_static_google_genomics_v1_StreamReadsResponse_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
             com.google.genomics.v1.StreamReadsResponse.class, com.google.genomics.v1.StreamReadsResponse.Builder.class);
-  }
-
-  public static final com.google.protobuf.Parser<StreamReadsResponse> PARSER =
-      new com.google.protobuf.AbstractParser<StreamReadsResponse>() {
-    public StreamReadsResponse parsePartialFrom(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return new StreamReadsResponse(input, extensionRegistry);
-    }
-  };
-
-  @java.lang.Override
-  public com.google.protobuf.Parser<StreamReadsResponse> getParserForType() {
-    return PARSER;
   }
 
   public static final int ALIGNMENTS_FIELD_NUMBER = 1;
@@ -139,7 +124,6 @@ public  final class StreamReadsResponse extends
 
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    getSerializedSize();
     for (int i = 0; i < alignments_.size(); i++) {
       output.writeMessage(1, alignments_.get(i));
     }
@@ -213,12 +197,17 @@ public  final class StreamReadsResponse extends
     return PARSER.parseFrom(input, extensionRegistry);
   }
 
-  public static Builder newBuilder() { return new Builder(); }
   public Builder newBuilderForType() { return newBuilder(); }
-  public static Builder newBuilder(com.google.genomics.v1.StreamReadsResponse prototype) {
-    return newBuilder().mergeFrom(prototype);
+  public static Builder newBuilder() {
+    return DEFAULT_INSTANCE.toBuilder();
   }
-  public Builder toBuilder() { return newBuilder(this); }
+  public static Builder newBuilder(com.google.genomics.v1.StreamReadsResponse prototype) {
+    return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+  }
+  public Builder toBuilder() {
+    return this == DEFAULT_INSTANCE
+        ? new Builder() : new Builder().mergeFrom(this);
+  }
 
   @java.lang.Override
   protected Builder newBuilderForType(
@@ -622,16 +611,45 @@ public  final class StreamReadsResponse extends
   }
 
   // @@protoc_insertion_point(class_scope:google.genomics.v1.StreamReadsResponse)
-  private static final com.google.genomics.v1.StreamReadsResponse defaultInstance;static {
-    defaultInstance = new com.google.genomics.v1.StreamReadsResponse();
+  private static final com.google.genomics.v1.StreamReadsResponse DEFAULT_INSTANCE;
+  static {
+    DEFAULT_INSTANCE = new com.google.genomics.v1.StreamReadsResponse();
   }
 
   public static com.google.genomics.v1.StreamReadsResponse getDefaultInstance() {
-    return defaultInstance;
+    return DEFAULT_INSTANCE;
+  }
+
+  public static final com.google.protobuf.Parser<StreamReadsResponse> PARSER =
+      new com.google.protobuf.AbstractParser<StreamReadsResponse>() {
+    public StreamReadsResponse parsePartialFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      try {
+        return new StreamReadsResponse(input, extensionRegistry);
+      } catch (RuntimeException e) {
+        if (e.getCause() instanceof
+            com.google.protobuf.InvalidProtocolBufferException) {
+          throw (com.google.protobuf.InvalidProtocolBufferException)
+              e.getCause();
+        }
+        throw e;
+      }
+    }
+  };
+
+  public static com.google.protobuf.Parser<StreamReadsResponse> parser() {
+    return PARSER;
+  }
+
+  @java.lang.Override
+  public com.google.protobuf.Parser<StreamReadsResponse> getParserForType() {
+    return PARSER;
   }
 
   public com.google.genomics.v1.StreamReadsResponse getDefaultInstanceForType() {
-    return defaultInstance;
+    return DEFAULT_INSTANCE;
   }
 
 }

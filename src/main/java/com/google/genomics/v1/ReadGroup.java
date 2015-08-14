@@ -36,8 +36,7 @@ public  final class ReadGroup extends
   }
   private ReadGroup(
       com.google.protobuf.CodedInputStream input,
-      com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-      throws com.google.protobuf.InvalidProtocolBufferException {
+      com.google.protobuf.ExtensionRegistryLite extensionRegistry) {
     this();
     int mutable_bitField0_ = 0;
     try {
@@ -119,22 +118,23 @@ public  final class ReadGroup extends
           case 98: {
             if (!((mutable_bitField0_ & 0x00000200) == 0x00000200)) {
               info_ = com.google.protobuf.MapField.newMapField(
-                  infoDefaultEntry);
+                  InfoDefaultEntryHolder.defaultEntry);
               mutable_bitField0_ |= 0x00000200;
             }
             com.google.protobuf.MapEntry<java.lang.String, com.google.protobuf.ListValue>
             info = input.readMessage(
-                infoDefaultEntry.getParserForType(), extensionRegistry);
+                InfoDefaultEntryHolder.defaultEntry.getParserForType(), extensionRegistry);
             info_.getMutableMap().put(info.getKey(), info.getValue());
             break;
           }
         }
       }
     } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-      throw e.setUnfinishedMessage(this);
+      throw new RuntimeException(e.setUnfinishedMessage(this));
     } catch (java.io.IOException e) {
-      throw new com.google.protobuf.InvalidProtocolBufferException(
-          e.getMessage()).setUnfinishedMessage(this);
+      throw new RuntimeException(
+          new com.google.protobuf.InvalidProtocolBufferException(
+              e.getMessage()).setUnfinishedMessage(this));
     } finally {
       if (((mutable_bitField0_ & 0x00000080) == 0x00000080)) {
         programs_ = java.util.Collections.unmodifiableList(programs_);
@@ -152,7 +152,7 @@ public  final class ReadGroup extends
       int number) {
     switch (number) {
       case 12:
-        return info_;
+        return internalGetInfo();
       default:
         throw new RuntimeException(
             "Invalid map field number: " + number);
@@ -163,21 +163,6 @@ public  final class ReadGroup extends
     return com.google.genomics.v1.ReadGroupProto.internal_static_google_genomics_v1_ReadGroup_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
             com.google.genomics.v1.ReadGroup.class, com.google.genomics.v1.ReadGroup.Builder.class);
-  }
-
-  public static final com.google.protobuf.Parser<ReadGroup> PARSER =
-      new com.google.protobuf.AbstractParser<ReadGroup>() {
-    public ReadGroup parsePartialFrom(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return new ReadGroup(input, extensionRegistry);
-    }
-  };
-
-  @java.lang.Override
-  public com.google.protobuf.Parser<ReadGroup> getParserForType() {
-    return PARSER;
   }
 
   public interface ExperimentOrBuilder extends
@@ -291,8 +276,7 @@ public  final class ReadGroup extends
     }
     private Experiment(
         com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry) {
       this();
       int mutable_bitField0_ = 0;
       try {
@@ -336,10 +320,11 @@ public  final class ReadGroup extends
           }
         }
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-        throw e.setUnfinishedMessage(this);
+        throw new RuntimeException(e.setUnfinishedMessage(this));
       } catch (java.io.IOException e) {
-        throw new com.google.protobuf.InvalidProtocolBufferException(
-            e.getMessage()).setUnfinishedMessage(this);
+        throw new RuntimeException(
+            new com.google.protobuf.InvalidProtocolBufferException(
+                e.getMessage()).setUnfinishedMessage(this));
       } finally {
         makeExtensionsImmutable();
       }
@@ -356,23 +341,8 @@ public  final class ReadGroup extends
               com.google.genomics.v1.ReadGroup.Experiment.class, com.google.genomics.v1.ReadGroup.Experiment.Builder.class);
     }
 
-    public static final com.google.protobuf.Parser<Experiment> PARSER =
-        new com.google.protobuf.AbstractParser<Experiment>() {
-      public Experiment parsePartialFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        return new Experiment(input, extensionRegistry);
-      }
-    };
-
-    @java.lang.Override
-    public com.google.protobuf.Parser<Experiment> getParserForType() {
-      return PARSER;
-    }
-
     public static final int LIBRARY_ID_FIELD_NUMBER = 1;
-    private java.lang.Object libraryId_;
+    private volatile java.lang.Object libraryId_;
     /**
      * <code>optional string library_id = 1;</code>
      *
@@ -420,7 +390,7 @@ public  final class ReadGroup extends
     }
 
     public static final int PLATFORM_UNIT_FIELD_NUMBER = 2;
-    private java.lang.Object platformUnit_;
+    private volatile java.lang.Object platformUnit_;
     /**
      * <code>optional string platform_unit = 2;</code>
      *
@@ -468,7 +438,7 @@ public  final class ReadGroup extends
     }
 
     public static final int SEQUENCING_CENTER_FIELD_NUMBER = 3;
-    private java.lang.Object sequencingCenter_;
+    private volatile java.lang.Object sequencingCenter_;
     /**
      * <code>optional string sequencing_center = 3;</code>
      *
@@ -512,7 +482,7 @@ public  final class ReadGroup extends
     }
 
     public static final int INSTRUMENT_MODEL_FIELD_NUMBER = 4;
-    private java.lang.Object instrumentModel_;
+    private volatile java.lang.Object instrumentModel_;
     /**
      * <code>optional string instrument_model = 4;</code>
      *
@@ -569,7 +539,6 @@ public  final class ReadGroup extends
 
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
-      getSerializedSize();
       if (!getLibraryIdBytes().isEmpty()) {
         output.writeBytes(1, getLibraryIdBytes());
       }
@@ -664,12 +633,17 @@ public  final class ReadGroup extends
       return PARSER.parseFrom(input, extensionRegistry);
     }
 
-    public static Builder newBuilder() { return new Builder(); }
     public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder(com.google.genomics.v1.ReadGroup.Experiment prototype) {
-      return newBuilder().mergeFrom(prototype);
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
     }
-    public Builder toBuilder() { return newBuilder(this); }
+    public static Builder newBuilder(com.google.genomics.v1.ReadGroup.Experiment prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
 
     @java.lang.Override
     protected Builder newBuilderForType(
@@ -1202,16 +1176,45 @@ public  final class ReadGroup extends
     }
 
     // @@protoc_insertion_point(class_scope:google.genomics.v1.ReadGroup.Experiment)
-    private static final com.google.genomics.v1.ReadGroup.Experiment defaultInstance;static {
-      defaultInstance = new com.google.genomics.v1.ReadGroup.Experiment();
+    private static final com.google.genomics.v1.ReadGroup.Experiment DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new com.google.genomics.v1.ReadGroup.Experiment();
     }
 
     public static com.google.genomics.v1.ReadGroup.Experiment getDefaultInstance() {
-      return defaultInstance;
+      return DEFAULT_INSTANCE;
+    }
+
+    public static final com.google.protobuf.Parser<Experiment> PARSER =
+        new com.google.protobuf.AbstractParser<Experiment>() {
+      public Experiment parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        try {
+          return new Experiment(input, extensionRegistry);
+        } catch (RuntimeException e) {
+          if (e.getCause() instanceof
+              com.google.protobuf.InvalidProtocolBufferException) {
+            throw (com.google.protobuf.InvalidProtocolBufferException)
+                e.getCause();
+          }
+          throw e;
+        }
+      }
+    };
+
+    public static com.google.protobuf.Parser<Experiment> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<Experiment> getParserForType() {
+      return PARSER;
     }
 
     public com.google.genomics.v1.ReadGroup.Experiment getDefaultInstanceForType() {
-      return defaultInstance;
+      return DEFAULT_INSTANCE;
     }
 
   }
@@ -1338,8 +1341,7 @@ public  final class ReadGroup extends
     }
     private Program(
         com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry) {
       this();
       int mutable_bitField0_ = 0;
       try {
@@ -1389,10 +1391,11 @@ public  final class ReadGroup extends
           }
         }
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-        throw e.setUnfinishedMessage(this);
+        throw new RuntimeException(e.setUnfinishedMessage(this));
       } catch (java.io.IOException e) {
-        throw new com.google.protobuf.InvalidProtocolBufferException(
-            e.getMessage()).setUnfinishedMessage(this);
+        throw new RuntimeException(
+            new com.google.protobuf.InvalidProtocolBufferException(
+                e.getMessage()).setUnfinishedMessage(this));
       } finally {
         makeExtensionsImmutable();
       }
@@ -1409,23 +1412,8 @@ public  final class ReadGroup extends
               com.google.genomics.v1.ReadGroup.Program.class, com.google.genomics.v1.ReadGroup.Program.Builder.class);
     }
 
-    public static final com.google.protobuf.Parser<Program> PARSER =
-        new com.google.protobuf.AbstractParser<Program>() {
-      public Program parsePartialFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        return new Program(input, extensionRegistry);
-      }
-    };
-
-    @java.lang.Override
-    public com.google.protobuf.Parser<Program> getParserForType() {
-      return PARSER;
-    }
-
     public static final int COMMAND_LINE_FIELD_NUMBER = 1;
-    private java.lang.Object commandLine_;
+    private volatile java.lang.Object commandLine_;
     /**
      * <code>optional string command_line = 1;</code>
      *
@@ -1469,7 +1457,7 @@ public  final class ReadGroup extends
     }
 
     public static final int ID_FIELD_NUMBER = 2;
-    private java.lang.Object id_;
+    private volatile java.lang.Object id_;
     /**
      * <code>optional string id = 2;</code>
      *
@@ -1515,7 +1503,7 @@ public  final class ReadGroup extends
     }
 
     public static final int NAME_FIELD_NUMBER = 3;
-    private java.lang.Object name_;
+    private volatile java.lang.Object name_;
     /**
      * <code>optional string name = 3;</code>
      *
@@ -1559,7 +1547,7 @@ public  final class ReadGroup extends
     }
 
     public static final int PREV_PROGRAM_ID_FIELD_NUMBER = 4;
-    private java.lang.Object prevProgramId_;
+    private volatile java.lang.Object prevProgramId_;
     /**
      * <code>optional string prev_program_id = 4;</code>
      *
@@ -1603,7 +1591,7 @@ public  final class ReadGroup extends
     }
 
     public static final int VERSION_FIELD_NUMBER = 5;
-    private java.lang.Object version_;
+    private volatile java.lang.Object version_;
     /**
      * <code>optional string version = 5;</code>
      *
@@ -1658,7 +1646,6 @@ public  final class ReadGroup extends
 
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
-      getSerializedSize();
       if (!getCommandLineBytes().isEmpty()) {
         output.writeBytes(1, getCommandLineBytes());
       }
@@ -1760,12 +1747,17 @@ public  final class ReadGroup extends
       return PARSER.parseFrom(input, extensionRegistry);
     }
 
-    public static Builder newBuilder() { return new Builder(); }
     public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder(com.google.genomics.v1.ReadGroup.Program prototype) {
-      return newBuilder().mergeFrom(prototype);
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
     }
-    public Builder toBuilder() { return newBuilder(this); }
+    public static Builder newBuilder(com.google.genomics.v1.ReadGroup.Program prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
 
     @java.lang.Override
     protected Builder newBuilderForType(
@@ -2375,23 +2367,52 @@ public  final class ReadGroup extends
     }
 
     // @@protoc_insertion_point(class_scope:google.genomics.v1.ReadGroup.Program)
-    private static final com.google.genomics.v1.ReadGroup.Program defaultInstance;static {
-      defaultInstance = new com.google.genomics.v1.ReadGroup.Program();
+    private static final com.google.genomics.v1.ReadGroup.Program DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new com.google.genomics.v1.ReadGroup.Program();
     }
 
     public static com.google.genomics.v1.ReadGroup.Program getDefaultInstance() {
-      return defaultInstance;
+      return DEFAULT_INSTANCE;
+    }
+
+    public static final com.google.protobuf.Parser<Program> PARSER =
+        new com.google.protobuf.AbstractParser<Program>() {
+      public Program parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        try {
+          return new Program(input, extensionRegistry);
+        } catch (RuntimeException e) {
+          if (e.getCause() instanceof
+              com.google.protobuf.InvalidProtocolBufferException) {
+            throw (com.google.protobuf.InvalidProtocolBufferException)
+                e.getCause();
+          }
+          throw e;
+        }
+      }
+    };
+
+    public static com.google.protobuf.Parser<Program> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<Program> getParserForType() {
+      return PARSER;
     }
 
     public com.google.genomics.v1.ReadGroup.Program getDefaultInstanceForType() {
-      return defaultInstance;
+      return DEFAULT_INSTANCE;
     }
 
   }
 
   private int bitField0_;
   public static final int ID_FIELD_NUMBER = 1;
-  private java.lang.Object id_;
+  private volatile java.lang.Object id_;
   /**
    * <code>optional string id = 1;</code>
    *
@@ -2439,7 +2460,7 @@ public  final class ReadGroup extends
   }
 
   public static final int DATASET_ID_FIELD_NUMBER = 2;
-  private java.lang.Object datasetId_;
+  private volatile java.lang.Object datasetId_;
   /**
    * <code>optional string dataset_id = 2;</code>
    *
@@ -2483,7 +2504,7 @@ public  final class ReadGroup extends
   }
 
   public static final int NAME_FIELD_NUMBER = 3;
-  private java.lang.Object name_;
+  private volatile java.lang.Object name_;
   /**
    * <code>optional string name = 3;</code>
    *
@@ -2527,7 +2548,7 @@ public  final class ReadGroup extends
   }
 
   public static final int DESCRIPTION_FIELD_NUMBER = 4;
-  private java.lang.Object description_;
+  private volatile java.lang.Object description_;
   /**
    * <code>optional string description = 4;</code>
    *
@@ -2571,7 +2592,7 @@ public  final class ReadGroup extends
   }
 
   public static final int SAMPLE_ID_FIELD_NUMBER = 5;
-  private java.lang.Object sampleId_;
+  private volatile java.lang.Object sampleId_;
   /**
    * <code>optional string sample_id = 5;</code>
    *
@@ -2736,7 +2757,7 @@ public  final class ReadGroup extends
   }
 
   public static final int REFERENCE_SET_ID_FIELD_NUMBER = 11;
-  private java.lang.Object referenceSetId_;
+  private volatile java.lang.Object referenceSetId_;
   /**
    * <code>optional string reference_set_id = 11;</code>
    *
@@ -2782,20 +2803,27 @@ public  final class ReadGroup extends
   }
 
   public static final int INFO_FIELD_NUMBER = 12;
-  private static final com.google.protobuf.MapEntry<
-      java.lang.String, com.google.protobuf.ListValue> infoDefaultEntry =
-          com.google.protobuf.MapEntry
-          .<java.lang.String, com.google.protobuf.ListValue>newDefaultInstance(
-              com.google.genomics.v1.ReadGroupProto.internal_static_google_genomics_v1_ReadGroup_InfoEntry_descriptor, 
-              com.google.protobuf.WireFormat.FieldType.STRING,
-              "",
-              com.google.protobuf.WireFormat.FieldType.MESSAGE,
-              com.google.protobuf.ListValue.getDefaultInstance());
+  private static final class InfoDefaultEntryHolder {
+    static final com.google.protobuf.MapEntry<
+        java.lang.String, com.google.protobuf.ListValue> defaultEntry =
+            com.google.protobuf.MapEntry
+            .<java.lang.String, com.google.protobuf.ListValue>newDefaultInstance(
+                com.google.genomics.v1.ReadGroupProto.internal_static_google_genomics_v1_ReadGroup_InfoEntry_descriptor, 
+                com.google.protobuf.WireFormat.FieldType.STRING,
+                "",
+                com.google.protobuf.WireFormat.FieldType.MESSAGE,
+                com.google.protobuf.ListValue.getDefaultInstance());
+  }
   private com.google.protobuf.MapField<
-      java.lang.String, com.google.protobuf.ListValue> info_ =
-          com.google.protobuf.MapField.emptyMapField(
-              infoDefaultEntry);
-
+      java.lang.String, com.google.protobuf.ListValue> info_;
+  private com.google.protobuf.MapField<java.lang.String, com.google.protobuf.ListValue>
+  internalGetInfo() {
+    if (info_ == null) {
+      return com.google.protobuf.MapField.emptyMapField(
+          InfoDefaultEntryHolder.defaultEntry);
+   }
+    return info_;
+  }
   /**
    * <code>map&lt;string, .google.protobuf.ListValue&gt; info = 12;</code>
    *
@@ -2806,7 +2834,7 @@ public  final class ReadGroup extends
    */
 
   public java.util.Map<java.lang.String, com.google.protobuf.ListValue> getInfo() {
-    return info_.getMap();
+    return internalGetInfo().getMap();
   }
 
   private byte memoizedIsInitialized = -1;
@@ -2821,7 +2849,6 @@ public  final class ReadGroup extends
 
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    getSerializedSize();
     if (!getIdBytes().isEmpty()) {
       output.writeBytes(1, getIdBytes());
     }
@@ -2850,9 +2877,9 @@ public  final class ReadGroup extends
       output.writeBytes(11, getReferenceSetIdBytes());
     }
     for (java.util.Map.Entry<java.lang.String, com.google.protobuf.ListValue> entry
-         : info_.getMap().entrySet()) {
+         : internalGetInfo().getMap().entrySet()) {
       com.google.protobuf.MapEntry<java.lang.String, com.google.protobuf.ListValue>
-      info = infoDefaultEntry.newBuilderForType()
+      info = InfoDefaultEntryHolder.defaultEntry.newBuilderForType()
           .setKey(entry.getKey())
           .setValue(entry.getValue())
           .build();
@@ -2903,9 +2930,9 @@ public  final class ReadGroup extends
         .computeBytesSize(11, getReferenceSetIdBytes());
     }
     for (java.util.Map.Entry<java.lang.String, com.google.protobuf.ListValue> entry
-         : info_.getMap().entrySet()) {
+         : internalGetInfo().getMap().entrySet()) {
       com.google.protobuf.MapEntry<java.lang.String, com.google.protobuf.ListValue>
-      info = infoDefaultEntry.newBuilderForType()
+      info = InfoDefaultEntryHolder.defaultEntry.newBuilderForType()
           .setKey(entry.getKey())
           .setValue(entry.getValue())
           .build();
@@ -2970,12 +2997,17 @@ public  final class ReadGroup extends
     return PARSER.parseFrom(input, extensionRegistry);
   }
 
-  public static Builder newBuilder() { return new Builder(); }
   public Builder newBuilderForType() { return newBuilder(); }
-  public static Builder newBuilder(com.google.genomics.v1.ReadGroup prototype) {
-    return newBuilder().mergeFrom(prototype);
+  public static Builder newBuilder() {
+    return DEFAULT_INSTANCE.toBuilder();
   }
-  public Builder toBuilder() { return newBuilder(this); }
+  public static Builder newBuilder(com.google.genomics.v1.ReadGroup prototype) {
+    return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+  }
+  public Builder toBuilder() {
+    return this == DEFAULT_INSTANCE
+        ? new Builder() : new Builder().mergeFrom(this);
+  }
 
   @java.lang.Override
   protected Builder newBuilderForType(
@@ -3004,7 +3036,18 @@ public  final class ReadGroup extends
         int number) {
       switch (number) {
         case 12:
-          return info_;
+          return internalGetInfo();
+        default:
+          throw new RuntimeException(
+              "Invalid map field number: " + number);
+      }
+    }
+    @SuppressWarnings({"rawtypes"})
+    protected com.google.protobuf.MapField internalGetMutableMapField(
+        int number) {
+      switch (number) {
+        case 12:
+          return internalGetMutableInfo();
         default:
           throw new RuntimeException(
               "Invalid map field number: " + number);
@@ -3060,7 +3103,7 @@ public  final class ReadGroup extends
       }
       referenceSetId_ = "";
 
-      info_.clear();
+      internalGetMutableInfo().clear();
       return this;
     }
 
@@ -3106,7 +3149,8 @@ public  final class ReadGroup extends
         result.programs_ = programsBuilder_.build();
       }
       result.referenceSetId_ = referenceSetId_;
-      result.info_ = info_.copy();
+      result.info_ = internalGetInfo();
+      result.info_.makeImmutable();
       result.bitField0_ = to_bitField0_;
       onBuilt();
       return result;
@@ -3179,7 +3223,8 @@ public  final class ReadGroup extends
         referenceSetId_ = other.referenceSetId_;
         onChanged();
       }
-      info_.mergeFrom(other.info_);
+      internalGetMutableInfo().mergeFrom(
+          other.internalGetInfo());
       onChanged();
       return this;
     }
@@ -4333,10 +4378,27 @@ public  final class ReadGroup extends
     }
 
     private com.google.protobuf.MapField<
-        java.lang.String, com.google.protobuf.ListValue> info_ =
-            com.google.protobuf.MapField.newMapField(
-                infoDefaultEntry);
-
+        java.lang.String, com.google.protobuf.ListValue> info_;
+    private com.google.protobuf.MapField<java.lang.String, com.google.protobuf.ListValue>
+    internalGetInfo() {
+      if (info_ == null) {
+        return com.google.protobuf.MapField.emptyMapField(
+            InfoDefaultEntryHolder.defaultEntry);
+     }
+      return info_;
+    }
+    private com.google.protobuf.MapField<java.lang.String, com.google.protobuf.ListValue>
+    internalGetMutableInfo() {
+      onChanged();;
+      if (info_ == null) {
+        info_ = com.google.protobuf.MapField.newMapField(
+            InfoDefaultEntryHolder.defaultEntry);
+      }
+      if (!info_.isMutable()) {
+        info_ = info_.copy();
+      }
+      return info_;
+    }
     /**
      * <code>map&lt;string, .google.protobuf.ListValue&gt; info = 12;</code>
      *
@@ -4346,7 +4408,7 @@ public  final class ReadGroup extends
      * </pre>
      */
     public java.util.Map<java.lang.String, com.google.protobuf.ListValue> getInfo() {
-      return info_.getMap();
+      return internalGetInfo().getMap();
     }
     /**
      * <code>map&lt;string, .google.protobuf.ListValue&gt; info = 12;</code>
@@ -4358,8 +4420,7 @@ public  final class ReadGroup extends
      */
     public java.util.Map<java.lang.String, com.google.protobuf.ListValue>
     getMutableInfo() {
-      onChanged();
-      return info_.getMutableMap();
+      return internalGetMutableInfo().getMutableMap();
     }
     public final Builder setUnknownFields(
         final com.google.protobuf.UnknownFieldSet unknownFields) {
@@ -4376,16 +4437,45 @@ public  final class ReadGroup extends
   }
 
   // @@protoc_insertion_point(class_scope:google.genomics.v1.ReadGroup)
-  private static final com.google.genomics.v1.ReadGroup defaultInstance;static {
-    defaultInstance = new com.google.genomics.v1.ReadGroup();
+  private static final com.google.genomics.v1.ReadGroup DEFAULT_INSTANCE;
+  static {
+    DEFAULT_INSTANCE = new com.google.genomics.v1.ReadGroup();
   }
 
   public static com.google.genomics.v1.ReadGroup getDefaultInstance() {
-    return defaultInstance;
+    return DEFAULT_INSTANCE;
+  }
+
+  public static final com.google.protobuf.Parser<ReadGroup> PARSER =
+      new com.google.protobuf.AbstractParser<ReadGroup>() {
+    public ReadGroup parsePartialFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      try {
+        return new ReadGroup(input, extensionRegistry);
+      } catch (RuntimeException e) {
+        if (e.getCause() instanceof
+            com.google.protobuf.InvalidProtocolBufferException) {
+          throw (com.google.protobuf.InvalidProtocolBufferException)
+              e.getCause();
+        }
+        throw e;
+      }
+    }
+  };
+
+  public static com.google.protobuf.Parser<ReadGroup> parser() {
+    return PARSER;
+  }
+
+  @java.lang.Override
+  public com.google.protobuf.Parser<ReadGroup> getParserForType() {
+    return PARSER;
   }
 
   public com.google.genomics.v1.ReadGroup getDefaultInstanceForType() {
-    return defaultInstance;
+    return DEFAULT_INSTANCE;
   }
 
 }

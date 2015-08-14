@@ -33,8 +33,7 @@ public  final class Struct extends
   }
   private Struct(
       com.google.protobuf.CodedInputStream input,
-      com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-      throws com.google.protobuf.InvalidProtocolBufferException {
+      com.google.protobuf.ExtensionRegistryLite extensionRegistry) {
     this();
     int mutable_bitField0_ = 0;
     try {
@@ -54,22 +53,23 @@ public  final class Struct extends
           case 10: {
             if (!((mutable_bitField0_ & 0x00000001) == 0x00000001)) {
               fields_ = com.google.protobuf.MapField.newMapField(
-                  fieldsDefaultEntry);
+                  FieldsDefaultEntryHolder.defaultEntry);
               mutable_bitField0_ |= 0x00000001;
             }
             com.google.protobuf.MapEntry<java.lang.String, com.google.protobuf.Value>
             fields = input.readMessage(
-                fieldsDefaultEntry.getParserForType(), extensionRegistry);
+                FieldsDefaultEntryHolder.defaultEntry.getParserForType(), extensionRegistry);
             fields_.getMutableMap().put(fields.getKey(), fields.getValue());
             break;
           }
         }
       }
     } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-      throw e.setUnfinishedMessage(this);
+      throw new RuntimeException(e.setUnfinishedMessage(this));
     } catch (java.io.IOException e) {
-      throw new com.google.protobuf.InvalidProtocolBufferException(
-          e.getMessage()).setUnfinishedMessage(this);
+      throw new RuntimeException(
+          new com.google.protobuf.InvalidProtocolBufferException(
+              e.getMessage()).setUnfinishedMessage(this));
     } finally {
       makeExtensionsImmutable();
     }
@@ -84,7 +84,7 @@ public  final class Struct extends
       int number) {
     switch (number) {
       case 1:
-        return fields_;
+        return internalGetFields();
       default:
         throw new RuntimeException(
             "Invalid map field number: " + number);
@@ -97,36 +97,28 @@ public  final class Struct extends
             com.google.protobuf.Struct.class, com.google.protobuf.Struct.Builder.class);
   }
 
-  public static final com.google.protobuf.Parser<Struct> PARSER =
-      new com.google.protobuf.AbstractParser<Struct>() {
-    public Struct parsePartialFrom(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return new Struct(input, extensionRegistry);
-    }
-  };
-
-  @java.lang.Override
-  public com.google.protobuf.Parser<Struct> getParserForType() {
-    return PARSER;
-  }
-
   public static final int FIELDS_FIELD_NUMBER = 1;
-  private static final com.google.protobuf.MapEntry<
-      java.lang.String, com.google.protobuf.Value> fieldsDefaultEntry =
-          com.google.protobuf.MapEntry
-          .<java.lang.String, com.google.protobuf.Value>newDefaultInstance(
-              com.google.protobuf.StructProto.internal_static_google_protobuf_Struct_FieldsEntry_descriptor, 
-              com.google.protobuf.WireFormat.FieldType.STRING,
-              "",
-              com.google.protobuf.WireFormat.FieldType.MESSAGE,
-              com.google.protobuf.Value.getDefaultInstance());
+  private static final class FieldsDefaultEntryHolder {
+    static final com.google.protobuf.MapEntry<
+        java.lang.String, com.google.protobuf.Value> defaultEntry =
+            com.google.protobuf.MapEntry
+            .<java.lang.String, com.google.protobuf.Value>newDefaultInstance(
+                com.google.protobuf.StructProto.internal_static_google_protobuf_Struct_FieldsEntry_descriptor, 
+                com.google.protobuf.WireFormat.FieldType.STRING,
+                "",
+                com.google.protobuf.WireFormat.FieldType.MESSAGE,
+                com.google.protobuf.Value.getDefaultInstance());
+  }
   private com.google.protobuf.MapField<
-      java.lang.String, com.google.protobuf.Value> fields_ =
-          com.google.protobuf.MapField.emptyMapField(
-              fieldsDefaultEntry);
-
+      java.lang.String, com.google.protobuf.Value> fields_;
+  private com.google.protobuf.MapField<java.lang.String, com.google.protobuf.Value>
+  internalGetFields() {
+    if (fields_ == null) {
+      return com.google.protobuf.MapField.emptyMapField(
+          FieldsDefaultEntryHolder.defaultEntry);
+   }
+    return fields_;
+  }
   /**
    * <code>map&lt;string, .google.protobuf.Value&gt; fields = 1;</code>
    *
@@ -136,7 +128,7 @@ public  final class Struct extends
    */
 
   public java.util.Map<java.lang.String, com.google.protobuf.Value> getFields() {
-    return fields_.getMap();
+    return internalGetFields().getMap();
   }
 
   private byte memoizedIsInitialized = -1;
@@ -151,11 +143,10 @@ public  final class Struct extends
 
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    getSerializedSize();
     for (java.util.Map.Entry<java.lang.String, com.google.protobuf.Value> entry
-         : fields_.getMap().entrySet()) {
+         : internalGetFields().getMap().entrySet()) {
       com.google.protobuf.MapEntry<java.lang.String, com.google.protobuf.Value>
-      fields = fieldsDefaultEntry.newBuilderForType()
+      fields = FieldsDefaultEntryHolder.defaultEntry.newBuilderForType()
           .setKey(entry.getKey())
           .setValue(entry.getValue())
           .build();
@@ -170,9 +161,9 @@ public  final class Struct extends
 
     size = 0;
     for (java.util.Map.Entry<java.lang.String, com.google.protobuf.Value> entry
-         : fields_.getMap().entrySet()) {
+         : internalGetFields().getMap().entrySet()) {
       com.google.protobuf.MapEntry<java.lang.String, com.google.protobuf.Value>
-      fields = fieldsDefaultEntry.newBuilderForType()
+      fields = FieldsDefaultEntryHolder.defaultEntry.newBuilderForType()
           .setKey(entry.getKey())
           .setValue(entry.getValue())
           .build();
@@ -195,7 +186,8 @@ public  final class Struct extends
     com.google.protobuf.Struct other = (com.google.protobuf.Struct) obj;
 
     boolean result = true;
-    result = result && fields_.equals(other.fields_);
+    result = result && internalGetFields().equals(
+        other.internalGetFields());
     return result;
   }
 
@@ -206,9 +198,9 @@ public  final class Struct extends
     }
     int hash = 41;
     hash = (19 * hash) + getDescriptorForType().hashCode();
-    if (!fields_.getMap().isEmpty()) {
+    if (!internalGetFields().getMap().isEmpty()) {
       hash = (37 * hash) + FIELDS_FIELD_NUMBER;
-      hash = (53 * hash) + fields_.hashCode();
+      hash = (53 * hash) + internalGetFields().hashCode();
     }
     hash = (29 * hash) + unknownFields.hashCode();
     memoizedHashCode = hash;
@@ -268,12 +260,17 @@ public  final class Struct extends
     return PARSER.parseFrom(input, extensionRegistry);
   }
 
-  public static Builder newBuilder() { return new Builder(); }
   public Builder newBuilderForType() { return newBuilder(); }
-  public static Builder newBuilder(com.google.protobuf.Struct prototype) {
-    return newBuilder().mergeFrom(prototype);
+  public static Builder newBuilder() {
+    return DEFAULT_INSTANCE.toBuilder();
   }
-  public Builder toBuilder() { return newBuilder(this); }
+  public static Builder newBuilder(com.google.protobuf.Struct prototype) {
+    return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+  }
+  public Builder toBuilder() {
+    return this == DEFAULT_INSTANCE
+        ? new Builder() : new Builder().mergeFrom(this);
+  }
 
   @java.lang.Override
   protected Builder newBuilderForType(
@@ -307,7 +304,18 @@ public  final class Struct extends
         int number) {
       switch (number) {
         case 1:
-          return fields_;
+          return internalGetFields();
+        default:
+          throw new RuntimeException(
+              "Invalid map field number: " + number);
+      }
+    }
+    @SuppressWarnings({"rawtypes"})
+    protected com.google.protobuf.MapField internalGetMutableMapField(
+        int number) {
+      switch (number) {
+        case 1:
+          return internalGetMutableFields();
         default:
           throw new RuntimeException(
               "Invalid map field number: " + number);
@@ -336,7 +344,7 @@ public  final class Struct extends
     }
     public Builder clear() {
       super.clear();
-      fields_.clear();
+      internalGetMutableFields().clear();
       return this;
     }
 
@@ -360,7 +368,8 @@ public  final class Struct extends
     public com.google.protobuf.Struct buildPartial() {
       com.google.protobuf.Struct result = new com.google.protobuf.Struct(this);
       int from_bitField0_ = bitField0_;
-      result.fields_ = fields_.copy();
+      result.fields_ = internalGetFields();
+      result.fields_.makeImmutable();
       onBuilt();
       return result;
     }
@@ -376,7 +385,8 @@ public  final class Struct extends
 
     public Builder mergeFrom(com.google.protobuf.Struct other) {
       if (other == com.google.protobuf.Struct.getDefaultInstance()) return this;
-      fields_.mergeFrom(other.fields_);
+      internalGetMutableFields().mergeFrom(
+          other.internalGetFields());
       onChanged();
       return this;
     }
@@ -405,10 +415,27 @@ public  final class Struct extends
     private int bitField0_;
 
     private com.google.protobuf.MapField<
-        java.lang.String, com.google.protobuf.Value> fields_ =
-            com.google.protobuf.MapField.newMapField(
-                fieldsDefaultEntry);
-
+        java.lang.String, com.google.protobuf.Value> fields_;
+    private com.google.protobuf.MapField<java.lang.String, com.google.protobuf.Value>
+    internalGetFields() {
+      if (fields_ == null) {
+        return com.google.protobuf.MapField.emptyMapField(
+            FieldsDefaultEntryHolder.defaultEntry);
+     }
+      return fields_;
+    }
+    private com.google.protobuf.MapField<java.lang.String, com.google.protobuf.Value>
+    internalGetMutableFields() {
+      onChanged();;
+      if (fields_ == null) {
+        fields_ = com.google.protobuf.MapField.newMapField(
+            FieldsDefaultEntryHolder.defaultEntry);
+      }
+      if (!fields_.isMutable()) {
+        fields_ = fields_.copy();
+      }
+      return fields_;
+    }
     /**
      * <code>map&lt;string, .google.protobuf.Value&gt; fields = 1;</code>
      *
@@ -417,7 +444,7 @@ public  final class Struct extends
      * </pre>
      */
     public java.util.Map<java.lang.String, com.google.protobuf.Value> getFields() {
-      return fields_.getMap();
+      return internalGetFields().getMap();
     }
     /**
      * <code>map&lt;string, .google.protobuf.Value&gt; fields = 1;</code>
@@ -428,8 +455,7 @@ public  final class Struct extends
      */
     public java.util.Map<java.lang.String, com.google.protobuf.Value>
     getMutableFields() {
-      onChanged();
-      return fields_.getMutableMap();
+      return internalGetMutableFields().getMutableMap();
     }
     public final Builder setUnknownFields(
         final com.google.protobuf.UnknownFieldSet unknownFields) {
@@ -446,16 +472,45 @@ public  final class Struct extends
   }
 
   // @@protoc_insertion_point(class_scope:google.protobuf.Struct)
-  private static final com.google.protobuf.Struct defaultInstance;static {
-    defaultInstance = new com.google.protobuf.Struct();
+  private static final com.google.protobuf.Struct DEFAULT_INSTANCE;
+  static {
+    DEFAULT_INSTANCE = new com.google.protobuf.Struct();
   }
 
   public static com.google.protobuf.Struct getDefaultInstance() {
-    return defaultInstance;
+    return DEFAULT_INSTANCE;
+  }
+
+  public static final com.google.protobuf.Parser<Struct> PARSER =
+      new com.google.protobuf.AbstractParser<Struct>() {
+    public Struct parsePartialFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      try {
+        return new Struct(input, extensionRegistry);
+      } catch (RuntimeException e) {
+        if (e.getCause() instanceof
+            com.google.protobuf.InvalidProtocolBufferException) {
+          throw (com.google.protobuf.InvalidProtocolBufferException)
+              e.getCause();
+        }
+        throw e;
+      }
+    }
+  };
+
+  public static com.google.protobuf.Parser<Struct> parser() {
+    return PARSER;
+  }
+
+  @java.lang.Override
+  public com.google.protobuf.Parser<Struct> getParserForType() {
+    return PARSER;
   }
 
   public com.google.protobuf.Struct getDefaultInstanceForType() {
-    return defaultInstance;
+    return DEFAULT_INSTANCE;
   }
 
 }

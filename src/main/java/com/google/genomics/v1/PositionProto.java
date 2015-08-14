@@ -8,7 +8,7 @@ public final class PositionProto {
   public static void registerAllExtensions(
       com.google.protobuf.ExtensionRegistry registry) {
   }
-  static final com.google.protobuf.Descriptors.Descriptor
+  static com.google.protobuf.Descriptors.Descriptor
     internal_static_google_genomics_v1_Position_descriptor;
   static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable

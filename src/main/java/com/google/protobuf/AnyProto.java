@@ -8,7 +8,7 @@ public final class AnyProto {
   public static void registerAllExtensions(
       com.google.protobuf.ExtensionRegistry registry) {
   }
-  static final com.google.protobuf.Descriptors.Descriptor
+  static com.google.protobuf.Descriptors.Descriptor
     internal_static_google_protobuf_Any_descriptor;
   static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable

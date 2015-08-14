@@ -29,8 +29,7 @@ public  final class DeleteVariantSetRequest extends
   }
   private DeleteVariantSetRequest(
       com.google.protobuf.CodedInputStream input,
-      com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-      throws com.google.protobuf.InvalidProtocolBufferException {
+      com.google.protobuf.ExtensionRegistryLite extensionRegistry) {
     this();
     int mutable_bitField0_ = 0;
     try {
@@ -56,10 +55,11 @@ public  final class DeleteVariantSetRequest extends
         }
       }
     } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-      throw e.setUnfinishedMessage(this);
+      throw new RuntimeException(e.setUnfinishedMessage(this));
     } catch (java.io.IOException e) {
-      throw new com.google.protobuf.InvalidProtocolBufferException(
-          e.getMessage()).setUnfinishedMessage(this);
+      throw new RuntimeException(
+          new com.google.protobuf.InvalidProtocolBufferException(
+              e.getMessage()).setUnfinishedMessage(this));
     } finally {
       makeExtensionsImmutable();
     }
@@ -76,23 +76,8 @@ public  final class DeleteVariantSetRequest extends
             com.google.genomics.v1.DeleteVariantSetRequest.class, com.google.genomics.v1.DeleteVariantSetRequest.Builder.class);
   }
 
-  public static final com.google.protobuf.Parser<DeleteVariantSetRequest> PARSER =
-      new com.google.protobuf.AbstractParser<DeleteVariantSetRequest>() {
-    public DeleteVariantSetRequest parsePartialFrom(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return new DeleteVariantSetRequest(input, extensionRegistry);
-    }
-  };
-
-  @java.lang.Override
-  public com.google.protobuf.Parser<DeleteVariantSetRequest> getParserForType() {
-    return PARSER;
-  }
-
   public static final int VARIANT_SET_ID_FIELD_NUMBER = 1;
-  private java.lang.Object variantSetId_;
+  private volatile java.lang.Object variantSetId_;
   /**
    * <code>optional string variant_set_id = 1;</code>
    *
@@ -147,7 +132,6 @@ public  final class DeleteVariantSetRequest extends
 
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    getSerializedSize();
     if (!getVariantSetIdBytes().isEmpty()) {
       output.writeBytes(1, getVariantSetIdBytes());
     }
@@ -221,12 +205,17 @@ public  final class DeleteVariantSetRequest extends
     return PARSER.parseFrom(input, extensionRegistry);
   }
 
-  public static Builder newBuilder() { return new Builder(); }
   public Builder newBuilderForType() { return newBuilder(); }
-  public static Builder newBuilder(com.google.genomics.v1.DeleteVariantSetRequest prototype) {
-    return newBuilder().mergeFrom(prototype);
+  public static Builder newBuilder() {
+    return DEFAULT_INSTANCE.toBuilder();
   }
-  public Builder toBuilder() { return newBuilder(this); }
+  public static Builder newBuilder(com.google.genomics.v1.DeleteVariantSetRequest prototype) {
+    return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+  }
+  public Builder toBuilder() {
+    return this == DEFAULT_INSTANCE
+        ? new Builder() : new Builder().mergeFrom(this);
+  }
 
   @java.lang.Override
   protected Builder newBuilderForType(
@@ -447,16 +436,45 @@ public  final class DeleteVariantSetRequest extends
   }
 
   // @@protoc_insertion_point(class_scope:google.genomics.v1.DeleteVariantSetRequest)
-  private static final com.google.genomics.v1.DeleteVariantSetRequest defaultInstance;static {
-    defaultInstance = new com.google.genomics.v1.DeleteVariantSetRequest();
+  private static final com.google.genomics.v1.DeleteVariantSetRequest DEFAULT_INSTANCE;
+  static {
+    DEFAULT_INSTANCE = new com.google.genomics.v1.DeleteVariantSetRequest();
   }
 
   public static com.google.genomics.v1.DeleteVariantSetRequest getDefaultInstance() {
-    return defaultInstance;
+    return DEFAULT_INSTANCE;
+  }
+
+  public static final com.google.protobuf.Parser<DeleteVariantSetRequest> PARSER =
+      new com.google.protobuf.AbstractParser<DeleteVariantSetRequest>() {
+    public DeleteVariantSetRequest parsePartialFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      try {
+        return new DeleteVariantSetRequest(input, extensionRegistry);
+      } catch (RuntimeException e) {
+        if (e.getCause() instanceof
+            com.google.protobuf.InvalidProtocolBufferException) {
+          throw (com.google.protobuf.InvalidProtocolBufferException)
+              e.getCause();
+        }
+        throw e;
+      }
+    }
+  };
+
+  public static com.google.protobuf.Parser<DeleteVariantSetRequest> parser() {
+    return PARSER;
+  }
+
+  @java.lang.Override
+  public com.google.protobuf.Parser<DeleteVariantSetRequest> getParserForType() {
+    return PARSER;
   }
 
   public com.google.genomics.v1.DeleteVariantSetRequest getDefaultInstanceForType() {
-    return defaultInstance;
+    return DEFAULT_INSTANCE;
   }
 
 }

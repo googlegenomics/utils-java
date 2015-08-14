@@ -7,10 +7,10 @@ import io.grpc.Channel;
 import io.grpc.ClientInterceptors;
 import io.grpc.Metadata;
 import io.grpc.auth.ClientAuthInterceptor;
+import io.grpc.netty.GrpcSslContexts;
+import io.grpc.netty.NegotiationType;
+import io.grpc.netty.NettyChannelBuilder;
 import io.grpc.stub.MetadataUtils;
-import io.grpc.transport.netty.GrpcSslContexts;
-import io.grpc.transport.netty.NegotiationType;
-import io.grpc.transport.netty.NettyChannelBuilder;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
@@ -98,7 +98,6 @@ public class Channels {
     
     Channel channel = NettyChannelBuilder.forAddress("genomics.googleapis.com", 443)
         .negotiationType(NegotiationType.TLS)
-        .streamWindowSize(1000000)
         .sslContext(GrpcSslContexts.forClient().ciphers(performantCiphers).build())
         .build();
     return channel;

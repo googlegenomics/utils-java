@@ -31,8 +31,7 @@ public  final class Value extends
   }
   private Value(
       com.google.protobuf.CodedInputStream input,
-      com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-      throws com.google.protobuf.InvalidProtocolBufferException {
+      com.google.protobuf.ExtensionRegistryLite extensionRegistry) {
     this();
     int mutable_bitField0_ = 0;
     try {
@@ -100,10 +99,11 @@ public  final class Value extends
         }
       }
     } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-      throw e.setUnfinishedMessage(this);
+      throw new RuntimeException(e.setUnfinishedMessage(this));
     } catch (java.io.IOException e) {
-      throw new com.google.protobuf.InvalidProtocolBufferException(
-          e.getMessage()).setUnfinishedMessage(this);
+      throw new RuntimeException(
+          new com.google.protobuf.InvalidProtocolBufferException(
+              e.getMessage()).setUnfinishedMessage(this));
     } finally {
       makeExtensionsImmutable();
     }
@@ -118,21 +118,6 @@ public  final class Value extends
     return com.google.protobuf.StructProto.internal_static_google_protobuf_Value_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
             com.google.protobuf.Value.class, com.google.protobuf.Value.Builder.class);
-  }
-
-  public static final com.google.protobuf.Parser<Value> PARSER =
-      new com.google.protobuf.AbstractParser<Value>() {
-    public Value parsePartialFrom(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return new Value(input, extensionRegistry);
-    }
-  };
-
-  @java.lang.Override
-  public com.google.protobuf.Parser<Value> getParserForType() {
-    return PARSER;
   }
 
   private int kindCase_ = 0;
@@ -352,7 +337,6 @@ public  final class Value extends
 
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    getSerializedSize();
     if (kindCase_ == 1) {
       output.writeEnum(1, ((java.lang.Integer) kind_));
     }
@@ -519,12 +503,17 @@ public  final class Value extends
     return PARSER.parseFrom(input, extensionRegistry);
   }
 
-  public static Builder newBuilder() { return new Builder(); }
   public Builder newBuilderForType() { return newBuilder(); }
-  public static Builder newBuilder(com.google.protobuf.Value prototype) {
-    return newBuilder().mergeFrom(prototype);
+  public static Builder newBuilder() {
+    return DEFAULT_INSTANCE.toBuilder();
   }
-  public Builder toBuilder() { return newBuilder(this); }
+  public static Builder newBuilder(com.google.protobuf.Value prototype) {
+    return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+  }
+  public Builder toBuilder() {
+    return this == DEFAULT_INSTANCE
+        ? new Builder() : new Builder().mergeFrom(this);
+  }
 
   @java.lang.Override
   protected Builder newBuilderForType(
@@ -1307,16 +1296,45 @@ public  final class Value extends
   }
 
   // @@protoc_insertion_point(class_scope:google.protobuf.Value)
-  private static final com.google.protobuf.Value defaultInstance;static {
-    defaultInstance = new com.google.protobuf.Value();
+  private static final com.google.protobuf.Value DEFAULT_INSTANCE;
+  static {
+    DEFAULT_INSTANCE = new com.google.protobuf.Value();
   }
 
   public static com.google.protobuf.Value getDefaultInstance() {
-    return defaultInstance;
+    return DEFAULT_INSTANCE;
+  }
+
+  public static final com.google.protobuf.Parser<Value> PARSER =
+      new com.google.protobuf.AbstractParser<Value>() {
+    public Value parsePartialFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      try {
+        return new Value(input, extensionRegistry);
+      } catch (RuntimeException e) {
+        if (e.getCause() instanceof
+            com.google.protobuf.InvalidProtocolBufferException) {
+          throw (com.google.protobuf.InvalidProtocolBufferException)
+              e.getCause();
+        }
+        throw e;
+      }
+    }
+  };
+
+  public static com.google.protobuf.Parser<Value> parser() {
+    return PARSER;
+  }
+
+  @java.lang.Override
+  public com.google.protobuf.Parser<Value> getParserForType() {
+    return PARSER;
   }
 
   public com.google.protobuf.Value getDefaultInstanceForType() {
-    return defaultInstance;
+    return DEFAULT_INSTANCE;
   }
 
 }

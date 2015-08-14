@@ -25,8 +25,7 @@ public  final class GetReferenceSetRequest extends
   }
   private GetReferenceSetRequest(
       com.google.protobuf.CodedInputStream input,
-      com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-      throws com.google.protobuf.InvalidProtocolBufferException {
+      com.google.protobuf.ExtensionRegistryLite extensionRegistry) {
     this();
     int mutable_bitField0_ = 0;
     try {
@@ -52,10 +51,11 @@ public  final class GetReferenceSetRequest extends
         }
       }
     } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-      throw e.setUnfinishedMessage(this);
+      throw new RuntimeException(e.setUnfinishedMessage(this));
     } catch (java.io.IOException e) {
-      throw new com.google.protobuf.InvalidProtocolBufferException(
-          e.getMessage()).setUnfinishedMessage(this);
+      throw new RuntimeException(
+          new com.google.protobuf.InvalidProtocolBufferException(
+              e.getMessage()).setUnfinishedMessage(this));
     } finally {
       makeExtensionsImmutable();
     }
@@ -72,23 +72,8 @@ public  final class GetReferenceSetRequest extends
             com.google.genomics.v1.GetReferenceSetRequest.class, com.google.genomics.v1.GetReferenceSetRequest.Builder.class);
   }
 
-  public static final com.google.protobuf.Parser<GetReferenceSetRequest> PARSER =
-      new com.google.protobuf.AbstractParser<GetReferenceSetRequest>() {
-    public GetReferenceSetRequest parsePartialFrom(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return new GetReferenceSetRequest(input, extensionRegistry);
-    }
-  };
-
-  @java.lang.Override
-  public com.google.protobuf.Parser<GetReferenceSetRequest> getParserForType() {
-    return PARSER;
-  }
-
   public static final int REFERENCE_SET_ID_FIELD_NUMBER = 1;
-  private java.lang.Object referenceSetId_;
+  private volatile java.lang.Object referenceSetId_;
   /**
    * <code>optional string reference_set_id = 1;</code>
    *
@@ -143,7 +128,6 @@ public  final class GetReferenceSetRequest extends
 
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    getSerializedSize();
     if (!getReferenceSetIdBytes().isEmpty()) {
       output.writeBytes(1, getReferenceSetIdBytes());
     }
@@ -217,12 +201,17 @@ public  final class GetReferenceSetRequest extends
     return PARSER.parseFrom(input, extensionRegistry);
   }
 
-  public static Builder newBuilder() { return new Builder(); }
   public Builder newBuilderForType() { return newBuilder(); }
-  public static Builder newBuilder(com.google.genomics.v1.GetReferenceSetRequest prototype) {
-    return newBuilder().mergeFrom(prototype);
+  public static Builder newBuilder() {
+    return DEFAULT_INSTANCE.toBuilder();
   }
-  public Builder toBuilder() { return newBuilder(this); }
+  public static Builder newBuilder(com.google.genomics.v1.GetReferenceSetRequest prototype) {
+    return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+  }
+  public Builder toBuilder() {
+    return this == DEFAULT_INSTANCE
+        ? new Builder() : new Builder().mergeFrom(this);
+  }
 
   @java.lang.Override
   protected Builder newBuilderForType(
@@ -439,16 +428,45 @@ public  final class GetReferenceSetRequest extends
   }
 
   // @@protoc_insertion_point(class_scope:google.genomics.v1.GetReferenceSetRequest)
-  private static final com.google.genomics.v1.GetReferenceSetRequest defaultInstance;static {
-    defaultInstance = new com.google.genomics.v1.GetReferenceSetRequest();
+  private static final com.google.genomics.v1.GetReferenceSetRequest DEFAULT_INSTANCE;
+  static {
+    DEFAULT_INSTANCE = new com.google.genomics.v1.GetReferenceSetRequest();
   }
 
   public static com.google.genomics.v1.GetReferenceSetRequest getDefaultInstance() {
-    return defaultInstance;
+    return DEFAULT_INSTANCE;
+  }
+
+  public static final com.google.protobuf.Parser<GetReferenceSetRequest> PARSER =
+      new com.google.protobuf.AbstractParser<GetReferenceSetRequest>() {
+    public GetReferenceSetRequest parsePartialFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      try {
+        return new GetReferenceSetRequest(input, extensionRegistry);
+      } catch (RuntimeException e) {
+        if (e.getCause() instanceof
+            com.google.protobuf.InvalidProtocolBufferException) {
+          throw (com.google.protobuf.InvalidProtocolBufferException)
+              e.getCause();
+        }
+        throw e;
+      }
+    }
+  };
+
+  public static com.google.protobuf.Parser<GetReferenceSetRequest> parser() {
+    return PARSER;
+  }
+
+  @java.lang.Override
+  public com.google.protobuf.Parser<GetReferenceSetRequest> getParserForType() {
+    return PARSER;
   }
 
   public com.google.genomics.v1.GetReferenceSetRequest getDefaultInstanceForType() {
-    return defaultInstance;
+    return DEFAULT_INSTANCE;
   }
 
 }

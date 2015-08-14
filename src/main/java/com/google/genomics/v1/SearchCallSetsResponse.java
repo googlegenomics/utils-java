@@ -30,8 +30,7 @@ public  final class SearchCallSetsResponse extends
   }
   private SearchCallSetsResponse(
       com.google.protobuf.CodedInputStream input,
-      com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-      throws com.google.protobuf.InvalidProtocolBufferException {
+      com.google.protobuf.ExtensionRegistryLite extensionRegistry) {
     this();
     int mutable_bitField0_ = 0;
     try {
@@ -65,10 +64,11 @@ public  final class SearchCallSetsResponse extends
         }
       }
     } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-      throw e.setUnfinishedMessage(this);
+      throw new RuntimeException(e.setUnfinishedMessage(this));
     } catch (java.io.IOException e) {
-      throw new com.google.protobuf.InvalidProtocolBufferException(
-          e.getMessage()).setUnfinishedMessage(this);
+      throw new RuntimeException(
+          new com.google.protobuf.InvalidProtocolBufferException(
+              e.getMessage()).setUnfinishedMessage(this));
     } finally {
       if (((mutable_bitField0_ & 0x00000001) == 0x00000001)) {
         callSets_ = java.util.Collections.unmodifiableList(callSets_);
@@ -86,21 +86,6 @@ public  final class SearchCallSetsResponse extends
     return com.google.genomics.v1.VariantsProto.internal_static_google_genomics_v1_SearchCallSetsResponse_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
             com.google.genomics.v1.SearchCallSetsResponse.class, com.google.genomics.v1.SearchCallSetsResponse.Builder.class);
-  }
-
-  public static final com.google.protobuf.Parser<SearchCallSetsResponse> PARSER =
-      new com.google.protobuf.AbstractParser<SearchCallSetsResponse>() {
-    public SearchCallSetsResponse parsePartialFrom(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return new SearchCallSetsResponse(input, extensionRegistry);
-    }
-  };
-
-  @java.lang.Override
-  public com.google.protobuf.Parser<SearchCallSetsResponse> getParserForType() {
-    return PARSER;
   }
 
   private int bitField0_;
@@ -160,7 +145,7 @@ public  final class SearchCallSetsResponse extends
   }
 
   public static final int NEXT_PAGE_TOKEN_FIELD_NUMBER = 2;
-  private java.lang.Object nextPageToken_;
+  private volatile java.lang.Object nextPageToken_;
   /**
    * <code>optional string next_page_token = 2;</code>
    *
@@ -219,7 +204,6 @@ public  final class SearchCallSetsResponse extends
 
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    getSerializedSize();
     for (int i = 0; i < callSets_.size(); i++) {
       output.writeMessage(1, callSets_.get(i));
     }
@@ -300,12 +284,17 @@ public  final class SearchCallSetsResponse extends
     return PARSER.parseFrom(input, extensionRegistry);
   }
 
-  public static Builder newBuilder() { return new Builder(); }
   public Builder newBuilderForType() { return newBuilder(); }
-  public static Builder newBuilder(com.google.genomics.v1.SearchCallSetsResponse prototype) {
-    return newBuilder().mergeFrom(prototype);
+  public static Builder newBuilder() {
+    return DEFAULT_INSTANCE.toBuilder();
   }
-  public Builder toBuilder() { return newBuilder(this); }
+  public static Builder newBuilder(com.google.genomics.v1.SearchCallSetsResponse prototype) {
+    return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+  }
+  public Builder toBuilder() {
+    return this == DEFAULT_INSTANCE
+        ? new Builder() : new Builder().mergeFrom(this);
+  }
 
   @java.lang.Override
   protected Builder newBuilderForType(
@@ -894,16 +883,45 @@ public  final class SearchCallSetsResponse extends
   }
 
   // @@protoc_insertion_point(class_scope:google.genomics.v1.SearchCallSetsResponse)
-  private static final com.google.genomics.v1.SearchCallSetsResponse defaultInstance;static {
-    defaultInstance = new com.google.genomics.v1.SearchCallSetsResponse();
+  private static final com.google.genomics.v1.SearchCallSetsResponse DEFAULT_INSTANCE;
+  static {
+    DEFAULT_INSTANCE = new com.google.genomics.v1.SearchCallSetsResponse();
   }
 
   public static com.google.genomics.v1.SearchCallSetsResponse getDefaultInstance() {
-    return defaultInstance;
+    return DEFAULT_INSTANCE;
+  }
+
+  public static final com.google.protobuf.Parser<SearchCallSetsResponse> PARSER =
+      new com.google.protobuf.AbstractParser<SearchCallSetsResponse>() {
+    public SearchCallSetsResponse parsePartialFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      try {
+        return new SearchCallSetsResponse(input, extensionRegistry);
+      } catch (RuntimeException e) {
+        if (e.getCause() instanceof
+            com.google.protobuf.InvalidProtocolBufferException) {
+          throw (com.google.protobuf.InvalidProtocolBufferException)
+              e.getCause();
+        }
+        throw e;
+      }
+    }
+  };
+
+  public static com.google.protobuf.Parser<SearchCallSetsResponse> parser() {
+    return PARSER;
+  }
+
+  @java.lang.Override
+  public com.google.protobuf.Parser<SearchCallSetsResponse> getParserForType() {
+    return PARSER;
   }
 
   public com.google.genomics.v1.SearchCallSetsResponse getDefaultInstanceForType() {
-    return defaultInstance;
+    return DEFAULT_INSTANCE;
   }
 
 }

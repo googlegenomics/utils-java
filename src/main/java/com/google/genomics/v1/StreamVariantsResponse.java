@@ -25,8 +25,7 @@ public  final class StreamVariantsResponse extends
   }
   private StreamVariantsResponse(
       com.google.protobuf.CodedInputStream input,
-      com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-      throws com.google.protobuf.InvalidProtocolBufferException {
+      com.google.protobuf.ExtensionRegistryLite extensionRegistry) {
     this();
     int mutable_bitField0_ = 0;
     try {
@@ -54,10 +53,11 @@ public  final class StreamVariantsResponse extends
         }
       }
     } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-      throw e.setUnfinishedMessage(this);
+      throw new RuntimeException(e.setUnfinishedMessage(this));
     } catch (java.io.IOException e) {
-      throw new com.google.protobuf.InvalidProtocolBufferException(
-          e.getMessage()).setUnfinishedMessage(this);
+      throw new RuntimeException(
+          new com.google.protobuf.InvalidProtocolBufferException(
+              e.getMessage()).setUnfinishedMessage(this));
     } finally {
       if (((mutable_bitField0_ & 0x00000001) == 0x00000001)) {
         variants_ = java.util.Collections.unmodifiableList(variants_);
@@ -75,21 +75,6 @@ public  final class StreamVariantsResponse extends
     return com.google.genomics.v1.VariantsProto.internal_static_google_genomics_v1_StreamVariantsResponse_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
             com.google.genomics.v1.StreamVariantsResponse.class, com.google.genomics.v1.StreamVariantsResponse.Builder.class);
-  }
-
-  public static final com.google.protobuf.Parser<StreamVariantsResponse> PARSER =
-      new com.google.protobuf.AbstractParser<StreamVariantsResponse>() {
-    public StreamVariantsResponse parsePartialFrom(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return new StreamVariantsResponse(input, extensionRegistry);
-    }
-  };
-
-  @java.lang.Override
-  public com.google.protobuf.Parser<StreamVariantsResponse> getParserForType() {
-    return PARSER;
   }
 
   public static final int VARIANTS_FIELD_NUMBER = 1;
@@ -139,7 +124,6 @@ public  final class StreamVariantsResponse extends
 
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    getSerializedSize();
     for (int i = 0; i < variants_.size(); i++) {
       output.writeMessage(1, variants_.get(i));
     }
@@ -213,12 +197,17 @@ public  final class StreamVariantsResponse extends
     return PARSER.parseFrom(input, extensionRegistry);
   }
 
-  public static Builder newBuilder() { return new Builder(); }
   public Builder newBuilderForType() { return newBuilder(); }
-  public static Builder newBuilder(com.google.genomics.v1.StreamVariantsResponse prototype) {
-    return newBuilder().mergeFrom(prototype);
+  public static Builder newBuilder() {
+    return DEFAULT_INSTANCE.toBuilder();
   }
-  public Builder toBuilder() { return newBuilder(this); }
+  public static Builder newBuilder(com.google.genomics.v1.StreamVariantsResponse prototype) {
+    return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+  }
+  public Builder toBuilder() {
+    return this == DEFAULT_INSTANCE
+        ? new Builder() : new Builder().mergeFrom(this);
+  }
 
   @java.lang.Override
   protected Builder newBuilderForType(
@@ -622,16 +611,45 @@ public  final class StreamVariantsResponse extends
   }
 
   // @@protoc_insertion_point(class_scope:google.genomics.v1.StreamVariantsResponse)
-  private static final com.google.genomics.v1.StreamVariantsResponse defaultInstance;static {
-    defaultInstance = new com.google.genomics.v1.StreamVariantsResponse();
+  private static final com.google.genomics.v1.StreamVariantsResponse DEFAULT_INSTANCE;
+  static {
+    DEFAULT_INSTANCE = new com.google.genomics.v1.StreamVariantsResponse();
   }
 
   public static com.google.genomics.v1.StreamVariantsResponse getDefaultInstance() {
-    return defaultInstance;
+    return DEFAULT_INSTANCE;
+  }
+
+  public static final com.google.protobuf.Parser<StreamVariantsResponse> PARSER =
+      new com.google.protobuf.AbstractParser<StreamVariantsResponse>() {
+    public StreamVariantsResponse parsePartialFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      try {
+        return new StreamVariantsResponse(input, extensionRegistry);
+      } catch (RuntimeException e) {
+        if (e.getCause() instanceof
+            com.google.protobuf.InvalidProtocolBufferException) {
+          throw (com.google.protobuf.InvalidProtocolBufferException)
+              e.getCause();
+        }
+        throw e;
+      }
+    }
+  };
+
+  public static com.google.protobuf.Parser<StreamVariantsResponse> parser() {
+    return PARSER;
+  }
+
+  @java.lang.Override
+  public com.google.protobuf.Parser<StreamVariantsResponse> getParserForType() {
+    return PARSER;
   }
 
   public com.google.genomics.v1.StreamVariantsResponse getDefaultInstanceForType() {
-    return defaultInstance;
+    return DEFAULT_INSTANCE;
   }
 
 }

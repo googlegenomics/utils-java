@@ -30,8 +30,7 @@ public  final class SourceContext extends
   }
   private SourceContext(
       com.google.protobuf.CodedInputStream input,
-      com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-      throws com.google.protobuf.InvalidProtocolBufferException {
+      com.google.protobuf.ExtensionRegistryLite extensionRegistry) {
     this();
     int mutable_bitField0_ = 0;
     try {
@@ -57,10 +56,11 @@ public  final class SourceContext extends
         }
       }
     } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-      throw e.setUnfinishedMessage(this);
+      throw new RuntimeException(e.setUnfinishedMessage(this));
     } catch (java.io.IOException e) {
-      throw new com.google.protobuf.InvalidProtocolBufferException(
-          e.getMessage()).setUnfinishedMessage(this);
+      throw new RuntimeException(
+          new com.google.protobuf.InvalidProtocolBufferException(
+              e.getMessage()).setUnfinishedMessage(this));
     } finally {
       makeExtensionsImmutable();
     }
@@ -77,23 +77,8 @@ public  final class SourceContext extends
             com.google.protobuf.SourceContext.class, com.google.protobuf.SourceContext.Builder.class);
   }
 
-  public static final com.google.protobuf.Parser<SourceContext> PARSER =
-      new com.google.protobuf.AbstractParser<SourceContext>() {
-    public SourceContext parsePartialFrom(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return new SourceContext(input, extensionRegistry);
-    }
-  };
-
-  @java.lang.Override
-  public com.google.protobuf.Parser<SourceContext> getParserForType() {
-    return PARSER;
-  }
-
   public static final int FILE_NAME_FIELD_NUMBER = 1;
-  private java.lang.Object fileName_;
+  private volatile java.lang.Object fileName_;
   /**
    * <code>optional string file_name = 1;</code>
    *
@@ -150,7 +135,6 @@ public  final class SourceContext extends
 
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    getSerializedSize();
     if (!getFileNameBytes().isEmpty()) {
       output.writeBytes(1, getFileNameBytes());
     }
@@ -224,12 +208,17 @@ public  final class SourceContext extends
     return PARSER.parseFrom(input, extensionRegistry);
   }
 
-  public static Builder newBuilder() { return new Builder(); }
   public Builder newBuilderForType() { return newBuilder(); }
-  public static Builder newBuilder(com.google.protobuf.SourceContext prototype) {
-    return newBuilder().mergeFrom(prototype);
+  public static Builder newBuilder() {
+    return DEFAULT_INSTANCE.toBuilder();
   }
-  public Builder toBuilder() { return newBuilder(this); }
+  public static Builder newBuilder(com.google.protobuf.SourceContext prototype) {
+    return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+  }
+  public Builder toBuilder() {
+    return this == DEFAULT_INSTANCE
+        ? new Builder() : new Builder().mergeFrom(this);
+  }
 
   @java.lang.Override
   protected Builder newBuilderForType(
@@ -456,16 +445,45 @@ public  final class SourceContext extends
   }
 
   // @@protoc_insertion_point(class_scope:google.protobuf.SourceContext)
-  private static final com.google.protobuf.SourceContext defaultInstance;static {
-    defaultInstance = new com.google.protobuf.SourceContext();
+  private static final com.google.protobuf.SourceContext DEFAULT_INSTANCE;
+  static {
+    DEFAULT_INSTANCE = new com.google.protobuf.SourceContext();
   }
 
   public static com.google.protobuf.SourceContext getDefaultInstance() {
-    return defaultInstance;
+    return DEFAULT_INSTANCE;
+  }
+
+  public static final com.google.protobuf.Parser<SourceContext> PARSER =
+      new com.google.protobuf.AbstractParser<SourceContext>() {
+    public SourceContext parsePartialFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      try {
+        return new SourceContext(input, extensionRegistry);
+      } catch (RuntimeException e) {
+        if (e.getCause() instanceof
+            com.google.protobuf.InvalidProtocolBufferException) {
+          throw (com.google.protobuf.InvalidProtocolBufferException)
+              e.getCause();
+        }
+        throw e;
+      }
+    }
+  };
+
+  public static com.google.protobuf.Parser<SourceContext> parser() {
+    return PARSER;
+  }
+
+  @java.lang.Override
+  public com.google.protobuf.Parser<SourceContext> getParserForType() {
+    return PARSER;
   }
 
   public com.google.protobuf.SourceContext getDefaultInstanceForType() {
-    return defaultInstance;
+    return DEFAULT_INSTANCE;
   }
 
 }

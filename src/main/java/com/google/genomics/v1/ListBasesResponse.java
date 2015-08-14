@@ -27,8 +27,7 @@ public  final class ListBasesResponse extends
   }
   private ListBasesResponse(
       com.google.protobuf.CodedInputStream input,
-      com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-      throws com.google.protobuf.InvalidProtocolBufferException {
+      com.google.protobuf.ExtensionRegistryLite extensionRegistry) {
     this();
     int mutable_bitField0_ = 0;
     try {
@@ -65,10 +64,11 @@ public  final class ListBasesResponse extends
         }
       }
     } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-      throw e.setUnfinishedMessage(this);
+      throw new RuntimeException(e.setUnfinishedMessage(this));
     } catch (java.io.IOException e) {
-      throw new com.google.protobuf.InvalidProtocolBufferException(
-          e.getMessage()).setUnfinishedMessage(this);
+      throw new RuntimeException(
+          new com.google.protobuf.InvalidProtocolBufferException(
+              e.getMessage()).setUnfinishedMessage(this));
     } finally {
       makeExtensionsImmutable();
     }
@@ -83,21 +83,6 @@ public  final class ListBasesResponse extends
     return com.google.genomics.v1.ReferencesProto.internal_static_google_genomics_v1_ListBasesResponse_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
             com.google.genomics.v1.ListBasesResponse.class, com.google.genomics.v1.ListBasesResponse.Builder.class);
-  }
-
-  public static final com.google.protobuf.Parser<ListBasesResponse> PARSER =
-      new com.google.protobuf.AbstractParser<ListBasesResponse>() {
-    public ListBasesResponse parsePartialFrom(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return new ListBasesResponse(input, extensionRegistry);
-    }
-  };
-
-  @java.lang.Override
-  public com.google.protobuf.Parser<ListBasesResponse> getParserForType() {
-    return PARSER;
   }
 
   public static final int OFFSET_FIELD_NUMBER = 1;
@@ -116,7 +101,7 @@ public  final class ListBasesResponse extends
   }
 
   public static final int SEQUENCE_FIELD_NUMBER = 2;
-  private java.lang.Object sequence_;
+  private volatile java.lang.Object sequence_;
   /**
    * <code>optional string sequence = 2;</code>
    *
@@ -160,7 +145,7 @@ public  final class ListBasesResponse extends
   }
 
   public static final int NEXT_PAGE_TOKEN_FIELD_NUMBER = 3;
-  private java.lang.Object nextPageToken_;
+  private volatile java.lang.Object nextPageToken_;
   /**
    * <code>optional string next_page_token = 3;</code>
    *
@@ -219,7 +204,6 @@ public  final class ListBasesResponse extends
 
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    getSerializedSize();
     if (offset_ != 0L) {
       output.writeInt64(1, offset_);
     }
@@ -307,12 +291,17 @@ public  final class ListBasesResponse extends
     return PARSER.parseFrom(input, extensionRegistry);
   }
 
-  public static Builder newBuilder() { return new Builder(); }
   public Builder newBuilderForType() { return newBuilder(); }
-  public static Builder newBuilder(com.google.genomics.v1.ListBasesResponse prototype) {
-    return newBuilder().mergeFrom(prototype);
+  public static Builder newBuilder() {
+    return DEFAULT_INSTANCE.toBuilder();
   }
-  public Builder toBuilder() { return newBuilder(this); }
+  public static Builder newBuilder(com.google.genomics.v1.ListBasesResponse prototype) {
+    return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+  }
+  public Builder toBuilder() {
+    return this == DEFAULT_INSTANCE
+        ? new Builder() : new Builder().mergeFrom(this);
+  }
 
   @java.lang.Override
   protected Builder newBuilderForType(
@@ -686,16 +675,45 @@ public  final class ListBasesResponse extends
   }
 
   // @@protoc_insertion_point(class_scope:google.genomics.v1.ListBasesResponse)
-  private static final com.google.genomics.v1.ListBasesResponse defaultInstance;static {
-    defaultInstance = new com.google.genomics.v1.ListBasesResponse();
+  private static final com.google.genomics.v1.ListBasesResponse DEFAULT_INSTANCE;
+  static {
+    DEFAULT_INSTANCE = new com.google.genomics.v1.ListBasesResponse();
   }
 
   public static com.google.genomics.v1.ListBasesResponse getDefaultInstance() {
-    return defaultInstance;
+    return DEFAULT_INSTANCE;
+  }
+
+  public static final com.google.protobuf.Parser<ListBasesResponse> PARSER =
+      new com.google.protobuf.AbstractParser<ListBasesResponse>() {
+    public ListBasesResponse parsePartialFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      try {
+        return new ListBasesResponse(input, extensionRegistry);
+      } catch (RuntimeException e) {
+        if (e.getCause() instanceof
+            com.google.protobuf.InvalidProtocolBufferException) {
+          throw (com.google.protobuf.InvalidProtocolBufferException)
+              e.getCause();
+        }
+        throw e;
+      }
+    }
+  };
+
+  public static com.google.protobuf.Parser<ListBasesResponse> parser() {
+    return PARSER;
+  }
+
+  @java.lang.Override
+  public com.google.protobuf.Parser<ListBasesResponse> getParserForType() {
+    return PARSER;
   }
 
   public com.google.genomics.v1.ListBasesResponse getDefaultInstanceForType() {
-    return defaultInstance;
+    return DEFAULT_INSTANCE;
   }
 
 }

@@ -178,8 +178,7 @@ public  final class HttpRule extends
   }
   private HttpRule(
       com.google.protobuf.CodedInputStream input,
-      com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-      throws com.google.protobuf.InvalidProtocolBufferException {
+      com.google.protobuf.ExtensionRegistryLite extensionRegistry) {
     this();
     int mutable_bitField0_ = 0;
     try {
@@ -256,10 +255,11 @@ public  final class HttpRule extends
         }
       }
     } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-      throw e.setUnfinishedMessage(this);
+      throw new RuntimeException(e.setUnfinishedMessage(this));
     } catch (java.io.IOException e) {
-      throw new com.google.protobuf.InvalidProtocolBufferException(
-          e.getMessage()).setUnfinishedMessage(this);
+      throw new RuntimeException(
+          new com.google.protobuf.InvalidProtocolBufferException(
+              e.getMessage()).setUnfinishedMessage(this));
     } finally {
       if (((mutable_bitField0_ & 0x00000080) == 0x00000080)) {
         additionalBindings_ = java.util.Collections.unmodifiableList(additionalBindings_);
@@ -277,21 +277,6 @@ public  final class HttpRule extends
     return com.google.api.HttpProto.internal_static_google_api_HttpRule_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
             com.google.api.HttpRule.class, com.google.api.HttpRule.Builder.class);
-  }
-
-  public static final com.google.protobuf.Parser<HttpRule> PARSER =
-      new com.google.protobuf.AbstractParser<HttpRule>() {
-    public HttpRule parsePartialFrom(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return new HttpRule(input, extensionRegistry);
-    }
-  };
-
-  @java.lang.Override
-  public com.google.protobuf.Parser<HttpRule> getParserForType() {
-    return PARSER;
   }
 
   private int bitField0_;
@@ -618,7 +603,7 @@ public  final class HttpRule extends
   }
 
   public static final int BODY_FIELD_NUMBER = 7;
-  private java.lang.Object body_;
+  private volatile java.lang.Object body_;
   /**
    * <code>optional string body = 7;</code>
    *
@@ -742,7 +727,6 @@ public  final class HttpRule extends
 
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    getSerializedSize();
     if (patternCase_ == 2) {
       output.writeBytes(2, getGetBytes());
     }
@@ -865,12 +849,17 @@ public  final class HttpRule extends
     return PARSER.parseFrom(input, extensionRegistry);
   }
 
-  public static Builder newBuilder() { return new Builder(); }
   public Builder newBuilderForType() { return newBuilder(); }
-  public static Builder newBuilder(com.google.api.HttpRule prototype) {
-    return newBuilder().mergeFrom(prototype);
+  public static Builder newBuilder() {
+    return DEFAULT_INSTANCE.toBuilder();
   }
-  public Builder toBuilder() { return newBuilder(this); }
+  public static Builder newBuilder(com.google.api.HttpRule prototype) {
+    return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+  }
+  public Builder toBuilder() {
+    return this == DEFAULT_INSTANCE
+        ? new Builder() : new Builder().mergeFrom(this);
+  }
 
   @java.lang.Override
   protected Builder newBuilderForType(
@@ -2389,16 +2378,45 @@ public  final class HttpRule extends
   }
 
   // @@protoc_insertion_point(class_scope:google.api.HttpRule)
-  private static final com.google.api.HttpRule defaultInstance;static {
-    defaultInstance = new com.google.api.HttpRule();
+  private static final com.google.api.HttpRule DEFAULT_INSTANCE;
+  static {
+    DEFAULT_INSTANCE = new com.google.api.HttpRule();
   }
 
   public static com.google.api.HttpRule getDefaultInstance() {
-    return defaultInstance;
+    return DEFAULT_INSTANCE;
+  }
+
+  public static final com.google.protobuf.Parser<HttpRule> PARSER =
+      new com.google.protobuf.AbstractParser<HttpRule>() {
+    public HttpRule parsePartialFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      try {
+        return new HttpRule(input, extensionRegistry);
+      } catch (RuntimeException e) {
+        if (e.getCause() instanceof
+            com.google.protobuf.InvalidProtocolBufferException) {
+          throw (com.google.protobuf.InvalidProtocolBufferException)
+              e.getCause();
+        }
+        throw e;
+      }
+    }
+  };
+
+  public static com.google.protobuf.Parser<HttpRule> parser() {
+    return PARSER;
+  }
+
+  @java.lang.Override
+  public com.google.protobuf.Parser<HttpRule> getParserForType() {
+    return PARSER;
   }
 
   public com.google.api.HttpRule getDefaultInstanceForType() {
-    return defaultInstance;
+    return DEFAULT_INSTANCE;
   }
 
 }

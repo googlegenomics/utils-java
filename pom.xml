@@ -57,11 +57,8 @@
     </repository>
   </distributionManagement>
 
+  <!-- This repository is for grpc-java snapshot builds. -->
   <repositories>
-    <repository>
-      <id>localrepo</id>
-      <url>file://${basedir}/repo</url>
-    </repository>
     <repository>
       <id>ossrh-snapshots</id>
       <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
@@ -69,6 +66,25 @@
       <snapshots><enabled>true</enabled></snapshots>
     </repository>
   </repositories>
+
+  <!-- This repository is for grpc-java protoc plugin. -->
+  <pluginRepositories>
+    <pluginRepository>
+      <releases>
+        <updatePolicy>never</updatePolicy>
+      </releases>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+      <id>central</id>
+      <name>Central Repository</name>
+      <url>https://repo.maven.apache.org/maven2</url>
+    </pluginRepository>
+    <pluginRepository>
+      <id>protoc-plugin</id>
+      <url>https://dl.bintray.com/sergei-ivanov/maven/</url>
+    </pluginRepository>
+  </pluginRepositories>
 
   <dependencies>
     <dependency>
@@ -120,10 +136,9 @@
         <scope>test</scope>
     </dependency>
     <dependency>
-	    <groupId>io.grpc</groupId>
-	    <artifactId>grpc-all</artifactId>
-	    <version>0.7.2</version>
-	    <!-- <version>0.7.3-SNAPSHOT</version> -->
+      <groupId>io.grpc</groupId>
+      <artifactId>grpc-all</artifactId>
+      <version>0.8.0</version>
     </dependency>
 
     <!-- Used to test the custom builder logic -->
@@ -178,7 +193,14 @@
   </profiles>
 
   <build>
-    <plugins>
+  <extensions>
+    <extension>
+      <groupId>kr.motd.maven</groupId>
+      <artifactId>os-maven-plugin</artifactId>
+      <version>1.2.3.Final</version>
+    </extension>
+  </extensions>
+  <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
@@ -221,6 +243,30 @@
         <artifactId>coveralls-maven-plugin</artifactId>
         <version>2.2.0</version>
       </plugin>
+    <plugin>
+      <groupId>com.google.protobuf.tools</groupId>
+      <artifactId>maven-protoc-plugin</artifactId>
+      <version>0.4.2</version>
+      <configuration>
+        <!--
+          The version of protoc must match protobuf-java. If you don't depend on
+          protobuf-java directly, you will be transitively depending on the
+          protobuf-java version that grpc depends on.
+        -->
+        <protocArtifact>com.google.protobuf:protoc:3.0.0-alpha-3.1:exe:${os.detected.classifier}</protocArtifact>
+        <pluginId>grpc-java</pluginId>
+        <pluginArtifact>io.grpc:protoc-gen-grpc-java:0.8.0:exe:${os.detected.classifier}</pluginArtifact>
+      </configuration>
+      <executions>
+        <execution>
+          <goals>
+<!-- Uncomment these goals to generate java source from protos. -->
+<!--            <goal>compile</goal>  -->
+<!--            <goal>compile-custom</goal> -->
+          </goals>
+        </execution>
+      </executions>
+    </plugin>
     </plugins>
   </build>
 

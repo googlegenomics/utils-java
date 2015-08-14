@@ -29,8 +29,7 @@ public  final class ListValue extends
   }
   private ListValue(
       com.google.protobuf.CodedInputStream input,
-      com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-      throws com.google.protobuf.InvalidProtocolBufferException {
+      com.google.protobuf.ExtensionRegistryLite extensionRegistry) {
     this();
     int mutable_bitField0_ = 0;
     try {
@@ -58,10 +57,11 @@ public  final class ListValue extends
         }
       }
     } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-      throw e.setUnfinishedMessage(this);
+      throw new RuntimeException(e.setUnfinishedMessage(this));
     } catch (java.io.IOException e) {
-      throw new com.google.protobuf.InvalidProtocolBufferException(
-          e.getMessage()).setUnfinishedMessage(this);
+      throw new RuntimeException(
+          new com.google.protobuf.InvalidProtocolBufferException(
+              e.getMessage()).setUnfinishedMessage(this));
     } finally {
       if (((mutable_bitField0_ & 0x00000001) == 0x00000001)) {
         values_ = java.util.Collections.unmodifiableList(values_);
@@ -79,21 +79,6 @@ public  final class ListValue extends
     return com.google.protobuf.StructProto.internal_static_google_protobuf_ListValue_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
             com.google.protobuf.ListValue.class, com.google.protobuf.ListValue.Builder.class);
-  }
-
-  public static final com.google.protobuf.Parser<ListValue> PARSER =
-      new com.google.protobuf.AbstractParser<ListValue>() {
-    public ListValue parsePartialFrom(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return new ListValue(input, extensionRegistry);
-    }
-  };
-
-  @java.lang.Override
-  public com.google.protobuf.Parser<ListValue> getParserForType() {
-    return PARSER;
   }
 
   public static final int VALUES_FIELD_NUMBER = 1;
@@ -163,7 +148,6 @@ public  final class ListValue extends
 
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    getSerializedSize();
     for (int i = 0; i < values_.size(); i++) {
       output.writeMessage(1, values_.get(i));
     }
@@ -269,12 +253,17 @@ public  final class ListValue extends
     return PARSER.parseFrom(input, extensionRegistry);
   }
 
-  public static Builder newBuilder() { return new Builder(); }
   public Builder newBuilderForType() { return newBuilder(); }
-  public static Builder newBuilder(com.google.protobuf.ListValue prototype) {
-    return newBuilder().mergeFrom(prototype);
+  public static Builder newBuilder() {
+    return DEFAULT_INSTANCE.toBuilder();
   }
-  public Builder toBuilder() { return newBuilder(this); }
+  public static Builder newBuilder(com.google.protobuf.ListValue prototype) {
+    return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+  }
+  public Builder toBuilder() {
+    return this == DEFAULT_INSTANCE
+        ? new Builder() : new Builder().mergeFrom(this);
+  }
 
   @java.lang.Override
   protected Builder newBuilderForType(
@@ -754,16 +743,45 @@ public  final class ListValue extends
   }
 
   // @@protoc_insertion_point(class_scope:google.protobuf.ListValue)
-  private static final com.google.protobuf.ListValue defaultInstance;static {
-    defaultInstance = new com.google.protobuf.ListValue();
+  private static final com.google.protobuf.ListValue DEFAULT_INSTANCE;
+  static {
+    DEFAULT_INSTANCE = new com.google.protobuf.ListValue();
   }
 
   public static com.google.protobuf.ListValue getDefaultInstance() {
-    return defaultInstance;
+    return DEFAULT_INSTANCE;
+  }
+
+  public static final com.google.protobuf.Parser<ListValue> PARSER =
+      new com.google.protobuf.AbstractParser<ListValue>() {
+    public ListValue parsePartialFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      try {
+        return new ListValue(input, extensionRegistry);
+      } catch (RuntimeException e) {
+        if (e.getCause() instanceof
+            com.google.protobuf.InvalidProtocolBufferException) {
+          throw (com.google.protobuf.InvalidProtocolBufferException)
+              e.getCause();
+        }
+        throw e;
+      }
+    }
+  };
+
+  public static com.google.protobuf.Parser<ListValue> parser() {
+    return PARSER;
+  }
+
+  @java.lang.Override
+  public com.google.protobuf.Parser<ListValue> getParserForType() {
+    return PARSER;
   }
 
   public com.google.protobuf.ListValue getDefaultInstanceForType() {
-    return defaultInstance;
+    return DEFAULT_INSTANCE;
   }
 
 }

@@ -54,21 +54,17 @@ At the moment your project must be whitelisted to use gRPC. Please
 
 ###Generating gRPC code
 Users should typically **not** need to generate gRPC code themselves, as pre-generated code can be found
-in [src/main/java/com/google/genomics/v1](src/main/java/com/google/genomics/v1). For developers, code can be generated with Gradle by running
-
-```
-gradle :generateProto
-```
-
-which will create code in target/generated-sources/main.
+in [src/main/java/com/google/genomics/v1](src/main/java/com/google/genomics/v1). For developers, code can be generated with
+ * Gradle by running `gradle :generateProto` which will create code in target/generated-sources/main.
+ * Maven by uncommenting the goals for `maven-protoc-plugin` in pom.xml.
 
 ##Code Layout
 
 * [com.google.cloud.genomics.utils](src/main/java/com/google/cloud/genomics/utils)
   * [GenomicsFactory.java](src/main/java/com/google/cloud/genomics/utils/GenomicsFactory.java) Makes it easier to construct an authenticated Genomics service.
   * [Paginator.java](src/main/java/com/google/cloud/genomics/utils/Paginator.java) Lazily paginates through readsets, reads, variants, callsets, etc...
-* [com.google.cloud.genomics.grpc](src/main/java/com/google/cloud/genomics/grpc)
-  * [Channels.java](src/main/java/com/google/cloud/genomics/grpc/Channels.java) Makes it easier to creating gRPC channels to the Google Genomics API.
+* [com.google.cloud.genomics.utils.grpc](src/main/java/com/google/cloud/genomics/utils/grpc)
+  * [Channels.java](src/main/java/com/google/cloud/genomics/utils/grpc/Channels.java) Makes it easier to creating gRPC channels to the Google Genomics API.
   * [Example.java](src/main/java/com/google/cloud/genomics/utils/grpc/Example.java) Demonstrates usage of gRPC via a minimal example.
     * To run the example with Java 7:
     ```

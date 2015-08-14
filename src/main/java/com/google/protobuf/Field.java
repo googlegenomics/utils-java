@@ -36,8 +36,7 @@ public  final class Field extends
   }
   private Field(
       com.google.protobuf.CodedInputStream input,
-      com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-      throws com.google.protobuf.InvalidProtocolBufferException {
+      com.google.protobuf.ExtensionRegistryLite extensionRegistry) {
     this();
     int mutable_bitField0_ = 0;
     try {
@@ -104,10 +103,11 @@ public  final class Field extends
         }
       }
     } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-      throw e.setUnfinishedMessage(this);
+      throw new RuntimeException(e.setUnfinishedMessage(this));
     } catch (java.io.IOException e) {
-      throw new com.google.protobuf.InvalidProtocolBufferException(
-          e.getMessage()).setUnfinishedMessage(this);
+      throw new RuntimeException(
+          new com.google.protobuf.InvalidProtocolBufferException(
+              e.getMessage()).setUnfinishedMessage(this));
     } finally {
       if (((mutable_bitField0_ & 0x00000080) == 0x00000080)) {
         options_ = java.util.Collections.unmodifiableList(options_);
@@ -125,21 +125,6 @@ public  final class Field extends
     return com.google.protobuf.TypeProto.internal_static_google_protobuf_Field_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
             com.google.protobuf.Field.class, com.google.protobuf.Field.Builder.class);
-  }
-
-  public static final com.google.protobuf.Parser<Field> PARSER =
-      new com.google.protobuf.AbstractParser<Field>() {
-    public Field parsePartialFrom(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return new Field(input, extensionRegistry);
-    }
-  };
-
-  @java.lang.Override
-  public com.google.protobuf.Parser<Field> getParserForType() {
-    return PARSER;
   }
 
   /**
@@ -736,7 +721,7 @@ public  final class Field extends
   }
 
   public static final int NAME_FIELD_NUMBER = 4;
-  private java.lang.Object name_;
+  private volatile java.lang.Object name_;
   /**
    * <code>optional string name = 4;</code>
    *
@@ -780,7 +765,7 @@ public  final class Field extends
   }
 
   public static final int TYPE_URL_FIELD_NUMBER = 6;
-  private java.lang.Object typeUrl_;
+  private volatile java.lang.Object typeUrl_;
   /**
    * <code>optional string type_url = 6;</code>
    *
@@ -918,7 +903,6 @@ public  final class Field extends
 
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    getSerializedSize();
     if (kind_ != com.google.protobuf.Field.Kind.TYPE_UNKNOWN.getNumber()) {
       output.writeEnum(1, kind_);
     }
@@ -1041,12 +1025,17 @@ public  final class Field extends
     return PARSER.parseFrom(input, extensionRegistry);
   }
 
-  public static Builder newBuilder() { return new Builder(); }
   public Builder newBuilderForType() { return newBuilder(); }
-  public static Builder newBuilder(com.google.protobuf.Field prototype) {
-    return newBuilder().mergeFrom(prototype);
+  public static Builder newBuilder() {
+    return DEFAULT_INSTANCE.toBuilder();
   }
-  public Builder toBuilder() { return newBuilder(this); }
+  public static Builder newBuilder(com.google.protobuf.Field prototype) {
+    return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+  }
+  public Builder toBuilder() {
+    return this == DEFAULT_INSTANCE
+        ? new Builder() : new Builder().mergeFrom(this);
+  }
 
   @java.lang.Override
   protected Builder newBuilderForType(
@@ -1999,16 +1988,45 @@ public  final class Field extends
   }
 
   // @@protoc_insertion_point(class_scope:google.protobuf.Field)
-  private static final com.google.protobuf.Field defaultInstance;static {
-    defaultInstance = new com.google.protobuf.Field();
+  private static final com.google.protobuf.Field DEFAULT_INSTANCE;
+  static {
+    DEFAULT_INSTANCE = new com.google.protobuf.Field();
   }
 
   public static com.google.protobuf.Field getDefaultInstance() {
-    return defaultInstance;
+    return DEFAULT_INSTANCE;
+  }
+
+  public static final com.google.protobuf.Parser<Field> PARSER =
+      new com.google.protobuf.AbstractParser<Field>() {
+    public Field parsePartialFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      try {
+        return new Field(input, extensionRegistry);
+      } catch (RuntimeException e) {
+        if (e.getCause() instanceof
+            com.google.protobuf.InvalidProtocolBufferException) {
+          throw (com.google.protobuf.InvalidProtocolBufferException)
+              e.getCause();
+        }
+        throw e;
+      }
+    }
+  };
+
+  public static com.google.protobuf.Parser<Field> parser() {
+    return PARSER;
+  }
+
+  @java.lang.Override
+  public com.google.protobuf.Parser<Field> getParserForType() {
+    return PARSER;
   }
 
   public com.google.protobuf.Field getDefaultInstanceForType() {
-    return defaultInstance;
+    return DEFAULT_INSTANCE;
   }
 
 }

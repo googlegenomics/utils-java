@@ -123,8 +123,7 @@ public  final class FieldMask extends
   }
   private FieldMask(
       com.google.protobuf.CodedInputStream input,
-      com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-      throws com.google.protobuf.InvalidProtocolBufferException {
+      com.google.protobuf.ExtensionRegistryLite extensionRegistry) {
     this();
     int mutable_bitField0_ = 0;
     try {
@@ -153,10 +152,11 @@ public  final class FieldMask extends
         }
       }
     } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-      throw e.setUnfinishedMessage(this);
+      throw new RuntimeException(e.setUnfinishedMessage(this));
     } catch (java.io.IOException e) {
-      throw new com.google.protobuf.InvalidProtocolBufferException(
-          e.getMessage()).setUnfinishedMessage(this);
+      throw new RuntimeException(
+          new com.google.protobuf.InvalidProtocolBufferException(
+              e.getMessage()).setUnfinishedMessage(this));
     } finally {
       if (((mutable_bitField0_ & 0x00000001) == 0x00000001)) {
         paths_ = paths_.getUnmodifiableView();
@@ -174,21 +174,6 @@ public  final class FieldMask extends
     return com.google.protobuf.FieldMaskProto.internal_static_google_protobuf_FieldMask_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
             com.google.protobuf.FieldMask.class, com.google.protobuf.FieldMask.Builder.class);
-  }
-
-  public static final com.google.protobuf.Parser<FieldMask> PARSER =
-      new com.google.protobuf.AbstractParser<FieldMask>() {
-    public FieldMask parsePartialFrom(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return new FieldMask(input, extensionRegistry);
-    }
-  };
-
-  @java.lang.Override
-  public com.google.protobuf.Parser<FieldMask> getParserForType() {
-    return PARSER;
   }
 
   public static final int PATHS_FIELD_NUMBER = 1;
@@ -248,7 +233,6 @@ public  final class FieldMask extends
 
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    getSerializedSize();
     for (int i = 0; i < paths_.size(); i++) {
       output.writeBytes(1, paths_.getByteString(i));
     }
@@ -327,12 +311,17 @@ public  final class FieldMask extends
     return PARSER.parseFrom(input, extensionRegistry);
   }
 
-  public static Builder newBuilder() { return new Builder(); }
   public Builder newBuilderForType() { return newBuilder(); }
-  public static Builder newBuilder(com.google.protobuf.FieldMask prototype) {
-    return newBuilder().mergeFrom(prototype);
+  public static Builder newBuilder() {
+    return DEFAULT_INSTANCE.toBuilder();
   }
-  public Builder toBuilder() { return newBuilder(this); }
+  public static Builder newBuilder(com.google.protobuf.FieldMask prototype) {
+    return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+  }
+  public Builder toBuilder() {
+    return this == DEFAULT_INSTANCE
+        ? new Builder() : new Builder().mergeFrom(this);
+  }
 
   @java.lang.Override
   protected Builder newBuilderForType(
@@ -698,16 +687,45 @@ public  final class FieldMask extends
   }
 
   // @@protoc_insertion_point(class_scope:google.protobuf.FieldMask)
-  private static final com.google.protobuf.FieldMask defaultInstance;static {
-    defaultInstance = new com.google.protobuf.FieldMask();
+  private static final com.google.protobuf.FieldMask DEFAULT_INSTANCE;
+  static {
+    DEFAULT_INSTANCE = new com.google.protobuf.FieldMask();
   }
 
   public static com.google.protobuf.FieldMask getDefaultInstance() {
-    return defaultInstance;
+    return DEFAULT_INSTANCE;
+  }
+
+  public static final com.google.protobuf.Parser<FieldMask> PARSER =
+      new com.google.protobuf.AbstractParser<FieldMask>() {
+    public FieldMask parsePartialFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      try {
+        return new FieldMask(input, extensionRegistry);
+      } catch (RuntimeException e) {
+        if (e.getCause() instanceof
+            com.google.protobuf.InvalidProtocolBufferException) {
+          throw (com.google.protobuf.InvalidProtocolBufferException)
+              e.getCause();
+        }
+        throw e;
+      }
+    }
+  };
+
+  public static com.google.protobuf.Parser<FieldMask> parser() {
+    return PARSER;
+  }
+
+  @java.lang.Override
+  public com.google.protobuf.Parser<FieldMask> getParserForType() {
+    return PARSER;
   }
 
   public com.google.protobuf.FieldMask getDefaultInstanceForType() {
-    return defaultInstance;
+    return DEFAULT_INSTANCE;
   }
 
 }

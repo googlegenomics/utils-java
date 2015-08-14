@@ -40,8 +40,7 @@ public  final class ReadGroupSet extends
   }
   private ReadGroupSet(
       com.google.protobuf.CodedInputStream input,
-      com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-      throws com.google.protobuf.InvalidProtocolBufferException {
+      com.google.protobuf.ExtensionRegistryLite extensionRegistry) {
     this();
     int mutable_bitField0_ = 0;
     try {
@@ -99,22 +98,23 @@ public  final class ReadGroupSet extends
           case 58: {
             if (!((mutable_bitField0_ & 0x00000040) == 0x00000040)) {
               info_ = com.google.protobuf.MapField.newMapField(
-                  infoDefaultEntry);
+                  InfoDefaultEntryHolder.defaultEntry);
               mutable_bitField0_ |= 0x00000040;
             }
             com.google.protobuf.MapEntry<java.lang.String, com.google.protobuf.ListValue>
             info = input.readMessage(
-                infoDefaultEntry.getParserForType(), extensionRegistry);
+                InfoDefaultEntryHolder.defaultEntry.getParserForType(), extensionRegistry);
             info_.getMutableMap().put(info.getKey(), info.getValue());
             break;
           }
         }
       }
     } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-      throw e.setUnfinishedMessage(this);
+      throw new RuntimeException(e.setUnfinishedMessage(this));
     } catch (java.io.IOException e) {
-      throw new com.google.protobuf.InvalidProtocolBufferException(
-          e.getMessage()).setUnfinishedMessage(this);
+      throw new RuntimeException(
+          new com.google.protobuf.InvalidProtocolBufferException(
+              e.getMessage()).setUnfinishedMessage(this));
     } finally {
       if (((mutable_bitField0_ & 0x00000020) == 0x00000020)) {
         readGroups_ = java.util.Collections.unmodifiableList(readGroups_);
@@ -132,7 +132,7 @@ public  final class ReadGroupSet extends
       int number) {
     switch (number) {
       case 7:
-        return info_;
+        return internalGetInfo();
       default:
         throw new RuntimeException(
             "Invalid map field number: " + number);
@@ -145,24 +145,9 @@ public  final class ReadGroupSet extends
             com.google.genomics.v1.ReadGroupSet.class, com.google.genomics.v1.ReadGroupSet.Builder.class);
   }
 
-  public static final com.google.protobuf.Parser<ReadGroupSet> PARSER =
-      new com.google.protobuf.AbstractParser<ReadGroupSet>() {
-    public ReadGroupSet parsePartialFrom(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return new ReadGroupSet(input, extensionRegistry);
-    }
-  };
-
-  @java.lang.Override
-  public com.google.protobuf.Parser<ReadGroupSet> getParserForType() {
-    return PARSER;
-  }
-
   private int bitField0_;
   public static final int ID_FIELD_NUMBER = 1;
-  private java.lang.Object id_;
+  private volatile java.lang.Object id_;
   /**
    * <code>optional string id = 1;</code>
    *
@@ -206,7 +191,7 @@ public  final class ReadGroupSet extends
   }
 
   public static final int DATASET_ID_FIELD_NUMBER = 2;
-  private java.lang.Object datasetId_;
+  private volatile java.lang.Object datasetId_;
   /**
    * <code>optional string dataset_id = 2;</code>
    *
@@ -250,7 +235,7 @@ public  final class ReadGroupSet extends
   }
 
   public static final int REFERENCE_SET_ID_FIELD_NUMBER = 3;
-  private java.lang.Object referenceSetId_;
+  private volatile java.lang.Object referenceSetId_;
   /**
    * <code>optional string reference_set_id = 3;</code>
    *
@@ -294,7 +279,7 @@ public  final class ReadGroupSet extends
   }
 
   public static final int NAME_FIELD_NUMBER = 4;
-  private java.lang.Object name_;
+  private volatile java.lang.Object name_;
   /**
    * <code>optional string name = 4;</code>
    *
@@ -340,7 +325,7 @@ public  final class ReadGroupSet extends
   }
 
   public static final int FILENAME_FIELD_NUMBER = 5;
-  private java.lang.Object filename_;
+  private volatile java.lang.Object filename_;
   /**
    * <code>optional string filename = 5;</code>
    *
@@ -444,20 +429,27 @@ public  final class ReadGroupSet extends
   }
 
   public static final int INFO_FIELD_NUMBER = 7;
-  private static final com.google.protobuf.MapEntry<
-      java.lang.String, com.google.protobuf.ListValue> infoDefaultEntry =
-          com.google.protobuf.MapEntry
-          .<java.lang.String, com.google.protobuf.ListValue>newDefaultInstance(
-              com.google.genomics.v1.ReadGroupSetProto.internal_static_google_genomics_v1_ReadGroupSet_InfoEntry_descriptor, 
-              com.google.protobuf.WireFormat.FieldType.STRING,
-              "",
-              com.google.protobuf.WireFormat.FieldType.MESSAGE,
-              com.google.protobuf.ListValue.getDefaultInstance());
+  private static final class InfoDefaultEntryHolder {
+    static final com.google.protobuf.MapEntry<
+        java.lang.String, com.google.protobuf.ListValue> defaultEntry =
+            com.google.protobuf.MapEntry
+            .<java.lang.String, com.google.protobuf.ListValue>newDefaultInstance(
+                com.google.genomics.v1.ReadGroupSetProto.internal_static_google_genomics_v1_ReadGroupSet_InfoEntry_descriptor, 
+                com.google.protobuf.WireFormat.FieldType.STRING,
+                "",
+                com.google.protobuf.WireFormat.FieldType.MESSAGE,
+                com.google.protobuf.ListValue.getDefaultInstance());
+  }
   private com.google.protobuf.MapField<
-      java.lang.String, com.google.protobuf.ListValue> info_ =
-          com.google.protobuf.MapField.emptyMapField(
-              infoDefaultEntry);
-
+      java.lang.String, com.google.protobuf.ListValue> info_;
+  private com.google.protobuf.MapField<java.lang.String, com.google.protobuf.ListValue>
+  internalGetInfo() {
+    if (info_ == null) {
+      return com.google.protobuf.MapField.emptyMapField(
+          InfoDefaultEntryHolder.defaultEntry);
+   }
+    return info_;
+  }
   /**
    * <code>map&lt;string, .google.protobuf.ListValue&gt; info = 7;</code>
    *
@@ -467,7 +459,7 @@ public  final class ReadGroupSet extends
    */
 
   public java.util.Map<java.lang.String, com.google.protobuf.ListValue> getInfo() {
-    return info_.getMap();
+    return internalGetInfo().getMap();
   }
 
   private byte memoizedIsInitialized = -1;
@@ -482,7 +474,6 @@ public  final class ReadGroupSet extends
 
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    getSerializedSize();
     if (!getIdBytes().isEmpty()) {
       output.writeBytes(1, getIdBytes());
     }
@@ -502,9 +493,9 @@ public  final class ReadGroupSet extends
       output.writeMessage(6, readGroups_.get(i));
     }
     for (java.util.Map.Entry<java.lang.String, com.google.protobuf.ListValue> entry
-         : info_.getMap().entrySet()) {
+         : internalGetInfo().getMap().entrySet()) {
       com.google.protobuf.MapEntry<java.lang.String, com.google.protobuf.ListValue>
-      info = infoDefaultEntry.newBuilderForType()
+      info = InfoDefaultEntryHolder.defaultEntry.newBuilderForType()
           .setKey(entry.getKey())
           .setValue(entry.getValue())
           .build();
@@ -543,9 +534,9 @@ public  final class ReadGroupSet extends
         .computeMessageSize(6, readGroups_.get(i));
     }
     for (java.util.Map.Entry<java.lang.String, com.google.protobuf.ListValue> entry
-         : info_.getMap().entrySet()) {
+         : internalGetInfo().getMap().entrySet()) {
       com.google.protobuf.MapEntry<java.lang.String, com.google.protobuf.ListValue>
-      info = infoDefaultEntry.newBuilderForType()
+      info = InfoDefaultEntryHolder.defaultEntry.newBuilderForType()
           .setKey(entry.getKey())
           .setValue(entry.getValue())
           .build();
@@ -610,12 +601,17 @@ public  final class ReadGroupSet extends
     return PARSER.parseFrom(input, extensionRegistry);
   }
 
-  public static Builder newBuilder() { return new Builder(); }
   public Builder newBuilderForType() { return newBuilder(); }
-  public static Builder newBuilder(com.google.genomics.v1.ReadGroupSet prototype) {
-    return newBuilder().mergeFrom(prototype);
+  public static Builder newBuilder() {
+    return DEFAULT_INSTANCE.toBuilder();
   }
-  public Builder toBuilder() { return newBuilder(this); }
+  public static Builder newBuilder(com.google.genomics.v1.ReadGroupSet prototype) {
+    return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+  }
+  public Builder toBuilder() {
+    return this == DEFAULT_INSTANCE
+        ? new Builder() : new Builder().mergeFrom(this);
+  }
 
   @java.lang.Override
   protected Builder newBuilderForType(
@@ -650,7 +646,18 @@ public  final class ReadGroupSet extends
         int number) {
       switch (number) {
         case 7:
-          return info_;
+          return internalGetInfo();
+        default:
+          throw new RuntimeException(
+              "Invalid map field number: " + number);
+      }
+    }
+    @SuppressWarnings({"rawtypes"})
+    protected com.google.protobuf.MapField internalGetMutableMapField(
+        int number) {
+      switch (number) {
+        case 7:
+          return internalGetMutableInfo();
         default:
           throw new RuntimeException(
               "Invalid map field number: " + number);
@@ -696,7 +703,7 @@ public  final class ReadGroupSet extends
       } else {
         readGroupsBuilder_.clear();
       }
-      info_.clear();
+      internalGetMutableInfo().clear();
       return this;
     }
 
@@ -735,7 +742,8 @@ public  final class ReadGroupSet extends
       } else {
         result.readGroups_ = readGroupsBuilder_.build();
       }
-      result.info_ = info_.copy();
+      result.info_ = internalGetInfo();
+      result.info_.makeImmutable();
       result.bitField0_ = to_bitField0_;
       onBuilt();
       return result;
@@ -798,7 +806,8 @@ public  final class ReadGroupSet extends
           }
         }
       }
-      info_.mergeFrom(other.info_);
+      internalGetMutableInfo().mergeFrom(
+          other.internalGetInfo());
       onChanged();
       return this;
     }
@@ -1612,10 +1621,27 @@ public  final class ReadGroupSet extends
     }
 
     private com.google.protobuf.MapField<
-        java.lang.String, com.google.protobuf.ListValue> info_ =
-            com.google.protobuf.MapField.newMapField(
-                infoDefaultEntry);
-
+        java.lang.String, com.google.protobuf.ListValue> info_;
+    private com.google.protobuf.MapField<java.lang.String, com.google.protobuf.ListValue>
+    internalGetInfo() {
+      if (info_ == null) {
+        return com.google.protobuf.MapField.emptyMapField(
+            InfoDefaultEntryHolder.defaultEntry);
+     }
+      return info_;
+    }
+    private com.google.protobuf.MapField<java.lang.String, com.google.protobuf.ListValue>
+    internalGetMutableInfo() {
+      onChanged();;
+      if (info_ == null) {
+        info_ = com.google.protobuf.MapField.newMapField(
+            InfoDefaultEntryHolder.defaultEntry);
+      }
+      if (!info_.isMutable()) {
+        info_ = info_.copy();
+      }
+      return info_;
+    }
     /**
      * <code>map&lt;string, .google.protobuf.ListValue&gt; info = 7;</code>
      *
@@ -1624,7 +1650,7 @@ public  final class ReadGroupSet extends
      * </pre>
      */
     public java.util.Map<java.lang.String, com.google.protobuf.ListValue> getInfo() {
-      return info_.getMap();
+      return internalGetInfo().getMap();
     }
     /**
      * <code>map&lt;string, .google.protobuf.ListValue&gt; info = 7;</code>
@@ -1635,8 +1661,7 @@ public  final class ReadGroupSet extends
      */
     public java.util.Map<java.lang.String, com.google.protobuf.ListValue>
     getMutableInfo() {
-      onChanged();
-      return info_.getMutableMap();
+      return internalGetMutableInfo().getMutableMap();
     }
     public final Builder setUnknownFields(
         final com.google.protobuf.UnknownFieldSet unknownFields) {
@@ -1653,16 +1678,45 @@ public  final class ReadGroupSet extends
   }
 
   // @@protoc_insertion_point(class_scope:google.genomics.v1.ReadGroupSet)
-  private static final com.google.genomics.v1.ReadGroupSet defaultInstance;static {
-    defaultInstance = new com.google.genomics.v1.ReadGroupSet();
+  private static final com.google.genomics.v1.ReadGroupSet DEFAULT_INSTANCE;
+  static {
+    DEFAULT_INSTANCE = new com.google.genomics.v1.ReadGroupSet();
   }
 
   public static com.google.genomics.v1.ReadGroupSet getDefaultInstance() {
-    return defaultInstance;
+    return DEFAULT_INSTANCE;
+  }
+
+  public static final com.google.protobuf.Parser<ReadGroupSet> PARSER =
+      new com.google.protobuf.AbstractParser<ReadGroupSet>() {
+    public ReadGroupSet parsePartialFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      try {
+        return new ReadGroupSet(input, extensionRegistry);
+      } catch (RuntimeException e) {
+        if (e.getCause() instanceof
+            com.google.protobuf.InvalidProtocolBufferException) {
+          throw (com.google.protobuf.InvalidProtocolBufferException)
+              e.getCause();
+        }
+        throw e;
+      }
+    }
+  };
+
+  public static com.google.protobuf.Parser<ReadGroupSet> parser() {
+    return PARSER;
+  }
+
+  @java.lang.Override
+  public com.google.protobuf.Parser<ReadGroupSet> getParserForType() {
+    return PARSER;
   }
 
   public com.google.genomics.v1.ReadGroupSet getDefaultInstanceForType() {
-    return defaultInstance;
+    return DEFAULT_INSTANCE;
   }
 
 }

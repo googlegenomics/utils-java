@@ -24,8 +24,7 @@ public  final class CreateVariantRequest extends
   }
   private CreateVariantRequest(
       com.google.protobuf.CodedInputStream input,
-      com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-      throws com.google.protobuf.InvalidProtocolBufferException {
+      com.google.protobuf.ExtensionRegistryLite extensionRegistry) {
     this();
     int mutable_bitField0_ = 0;
     try {
@@ -58,10 +57,11 @@ public  final class CreateVariantRequest extends
         }
       }
     } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-      throw e.setUnfinishedMessage(this);
+      throw new RuntimeException(e.setUnfinishedMessage(this));
     } catch (java.io.IOException e) {
-      throw new com.google.protobuf.InvalidProtocolBufferException(
-          e.getMessage()).setUnfinishedMessage(this);
+      throw new RuntimeException(
+          new com.google.protobuf.InvalidProtocolBufferException(
+              e.getMessage()).setUnfinishedMessage(this));
     } finally {
       makeExtensionsImmutable();
     }
@@ -76,21 +76,6 @@ public  final class CreateVariantRequest extends
     return com.google.genomics.v1.VariantsProto.internal_static_google_genomics_v1_CreateVariantRequest_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
             com.google.genomics.v1.CreateVariantRequest.class, com.google.genomics.v1.CreateVariantRequest.Builder.class);
-  }
-
-  public static final com.google.protobuf.Parser<CreateVariantRequest> PARSER =
-      new com.google.protobuf.AbstractParser<CreateVariantRequest>() {
-    public CreateVariantRequest parsePartialFrom(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return new CreateVariantRequest(input, extensionRegistry);
-    }
-  };
-
-  @java.lang.Override
-  public com.google.protobuf.Parser<CreateVariantRequest> getParserForType() {
-    return PARSER;
   }
 
   public static final int VARIANT_FIELD_NUMBER = 1;
@@ -138,7 +123,6 @@ public  final class CreateVariantRequest extends
 
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    getSerializedSize();
     if (variant_ != null) {
       output.writeMessage(1, getVariant());
     }
@@ -212,12 +196,17 @@ public  final class CreateVariantRequest extends
     return PARSER.parseFrom(input, extensionRegistry);
   }
 
-  public static Builder newBuilder() { return new Builder(); }
   public Builder newBuilderForType() { return newBuilder(); }
-  public static Builder newBuilder(com.google.genomics.v1.CreateVariantRequest prototype) {
-    return newBuilder().mergeFrom(prototype);
+  public static Builder newBuilder() {
+    return DEFAULT_INSTANCE.toBuilder();
   }
-  public Builder toBuilder() { return newBuilder(this); }
+  public static Builder newBuilder(com.google.genomics.v1.CreateVariantRequest prototype) {
+    return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+  }
+  public Builder toBuilder() {
+    return this == DEFAULT_INSTANCE
+        ? new Builder() : new Builder().mergeFrom(this);
+  }
 
   @java.lang.Override
   protected Builder newBuilderForType(
@@ -504,16 +493,45 @@ public  final class CreateVariantRequest extends
   }
 
   // @@protoc_insertion_point(class_scope:google.genomics.v1.CreateVariantRequest)
-  private static final com.google.genomics.v1.CreateVariantRequest defaultInstance;static {
-    defaultInstance = new com.google.genomics.v1.CreateVariantRequest();
+  private static final com.google.genomics.v1.CreateVariantRequest DEFAULT_INSTANCE;
+  static {
+    DEFAULT_INSTANCE = new com.google.genomics.v1.CreateVariantRequest();
   }
 
   public static com.google.genomics.v1.CreateVariantRequest getDefaultInstance() {
-    return defaultInstance;
+    return DEFAULT_INSTANCE;
+  }
+
+  public static final com.google.protobuf.Parser<CreateVariantRequest> PARSER =
+      new com.google.protobuf.AbstractParser<CreateVariantRequest>() {
+    public CreateVariantRequest parsePartialFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      try {
+        return new CreateVariantRequest(input, extensionRegistry);
+      } catch (RuntimeException e) {
+        if (e.getCause() instanceof
+            com.google.protobuf.InvalidProtocolBufferException) {
+          throw (com.google.protobuf.InvalidProtocolBufferException)
+              e.getCause();
+        }
+        throw e;
+      }
+    }
+  };
+
+  public static com.google.protobuf.Parser<CreateVariantRequest> parser() {
+    return PARSER;
+  }
+
+  @java.lang.Override
+  public com.google.protobuf.Parser<CreateVariantRequest> getParserForType() {
+    return PARSER;
   }
 
   public com.google.genomics.v1.CreateVariantRequest getDefaultInstanceForType() {
-    return defaultInstance;
+    return DEFAULT_INSTANCE;
   }
 
 }

@@ -32,8 +32,7 @@ public  final class ListOperationsRequest extends
   }
   private ListOperationsRequest(
       com.google.protobuf.CodedInputStream input,
-      com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-      throws com.google.protobuf.InvalidProtocolBufferException {
+      com.google.protobuf.ExtensionRegistryLite extensionRegistry) {
     this();
     int mutable_bitField0_ = 0;
     try {
@@ -76,10 +75,11 @@ public  final class ListOperationsRequest extends
         }
       }
     } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-      throw e.setUnfinishedMessage(this);
+      throw new RuntimeException(e.setUnfinishedMessage(this));
     } catch (java.io.IOException e) {
-      throw new com.google.protobuf.InvalidProtocolBufferException(
-          e.getMessage()).setUnfinishedMessage(this);
+      throw new RuntimeException(
+          new com.google.protobuf.InvalidProtocolBufferException(
+              e.getMessage()).setUnfinishedMessage(this));
     } finally {
       makeExtensionsImmutable();
     }
@@ -96,23 +96,8 @@ public  final class ListOperationsRequest extends
             com.google.longrunning.ListOperationsRequest.class, com.google.longrunning.ListOperationsRequest.Builder.class);
   }
 
-  public static final com.google.protobuf.Parser<ListOperationsRequest> PARSER =
-      new com.google.protobuf.AbstractParser<ListOperationsRequest>() {
-    public ListOperationsRequest parsePartialFrom(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return new ListOperationsRequest(input, extensionRegistry);
-    }
-  };
-
-  @java.lang.Override
-  public com.google.protobuf.Parser<ListOperationsRequest> getParserForType() {
-    return PARSER;
-  }
-
   public static final int NAME_FIELD_NUMBER = 4;
-  private java.lang.Object name_;
+  private volatile java.lang.Object name_;
   /**
    * <code>optional string name = 4;</code>
    *
@@ -156,7 +141,7 @@ public  final class ListOperationsRequest extends
   }
 
   public static final int FILTER_FIELD_NUMBER = 1;
-  private java.lang.Object filter_;
+  private volatile java.lang.Object filter_;
   /**
    * <code>optional string filter = 1;</code>
    *
@@ -213,7 +198,7 @@ public  final class ListOperationsRequest extends
   }
 
   public static final int PAGE_TOKEN_FIELD_NUMBER = 3;
-  private java.lang.Object pageToken_;
+  private volatile java.lang.Object pageToken_;
   /**
    * <code>optional string page_token = 3;</code>
    *
@@ -268,7 +253,6 @@ public  final class ListOperationsRequest extends
 
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    getSerializedSize();
     if (!getFilterBytes().isEmpty()) {
       output.writeBytes(1, getFilterBytes());
     }
@@ -363,12 +347,17 @@ public  final class ListOperationsRequest extends
     return PARSER.parseFrom(input, extensionRegistry);
   }
 
-  public static Builder newBuilder() { return new Builder(); }
   public Builder newBuilderForType() { return newBuilder(); }
-  public static Builder newBuilder(com.google.longrunning.ListOperationsRequest prototype) {
-    return newBuilder().mergeFrom(prototype);
+  public static Builder newBuilder() {
+    return DEFAULT_INSTANCE.toBuilder();
   }
-  public Builder toBuilder() { return newBuilder(this); }
+  public static Builder newBuilder(com.google.longrunning.ListOperationsRequest prototype) {
+    return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+  }
+  public Builder toBuilder() {
+    return this == DEFAULT_INSTANCE
+        ? new Builder() : new Builder().mergeFrom(this);
+  }
 
   @java.lang.Override
   protected Builder newBuilderForType(
@@ -827,16 +816,45 @@ public  final class ListOperationsRequest extends
   }
 
   // @@protoc_insertion_point(class_scope:google.longrunning.ListOperationsRequest)
-  private static final com.google.longrunning.ListOperationsRequest defaultInstance;static {
-    defaultInstance = new com.google.longrunning.ListOperationsRequest();
+  private static final com.google.longrunning.ListOperationsRequest DEFAULT_INSTANCE;
+  static {
+    DEFAULT_INSTANCE = new com.google.longrunning.ListOperationsRequest();
   }
 
   public static com.google.longrunning.ListOperationsRequest getDefaultInstance() {
-    return defaultInstance;
+    return DEFAULT_INSTANCE;
+  }
+
+  public static final com.google.protobuf.Parser<ListOperationsRequest> PARSER =
+      new com.google.protobuf.AbstractParser<ListOperationsRequest>() {
+    public ListOperationsRequest parsePartialFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      try {
+        return new ListOperationsRequest(input, extensionRegistry);
+      } catch (RuntimeException e) {
+        if (e.getCause() instanceof
+            com.google.protobuf.InvalidProtocolBufferException) {
+          throw (com.google.protobuf.InvalidProtocolBufferException)
+              e.getCause();
+        }
+        throw e;
+      }
+    }
+  };
+
+  public static com.google.protobuf.Parser<ListOperationsRequest> parser() {
+    return PARSER;
+  }
+
+  @java.lang.Override
+  public com.google.protobuf.Parser<ListOperationsRequest> getParserForType() {
+    return PARSER;
   }
 
   public com.google.longrunning.ListOperationsRequest getDefaultInstanceForType() {
-    return defaultInstance;
+    return DEFAULT_INSTANCE;
   }
 
 }
