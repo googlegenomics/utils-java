@@ -96,8 +96,7 @@ public  final class Read extends
   }
   private Read(
       com.google.protobuf.CodedInputStream input,
-      com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-      throws com.google.protobuf.InvalidProtocolBufferException {
+      com.google.protobuf.ExtensionRegistryLite extensionRegistry) {
     this();
     int mutable_bitField0_ = 0;
     try {
@@ -234,22 +233,23 @@ public  final class Read extends
           case 138: {
             if (!((mutable_bitField0_ & 0x00010000) == 0x00010000)) {
               info_ = com.google.protobuf.MapField.newMapField(
-                  infoDefaultEntry);
+                  InfoDefaultEntryHolder.defaultEntry);
               mutable_bitField0_ |= 0x00010000;
             }
             com.google.protobuf.MapEntry<java.lang.String, com.google.protobuf.ListValue>
             info = input.readMessage(
-                infoDefaultEntry.getParserForType(), extensionRegistry);
+                InfoDefaultEntryHolder.defaultEntry.getParserForType(), extensionRegistry);
             info_.getMutableMap().put(info.getKey(), info.getValue());
             break;
           }
         }
       }
     } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-      throw e.setUnfinishedMessage(this);
+      throw new RuntimeException(e.setUnfinishedMessage(this));
     } catch (java.io.IOException e) {
-      throw new com.google.protobuf.InvalidProtocolBufferException(
-          e.getMessage()).setUnfinishedMessage(this);
+      throw new RuntimeException(
+          new com.google.protobuf.InvalidProtocolBufferException(
+              e.getMessage()).setUnfinishedMessage(this));
     } finally {
       if (((mutable_bitField0_ & 0x00004000) == 0x00004000)) {
         alignedQuality_ = java.util.Collections.unmodifiableList(alignedQuality_);
@@ -267,7 +267,7 @@ public  final class Read extends
       int number) {
     switch (number) {
       case 17:
-        return info_;
+        return internalGetInfo();
       default:
         throw new RuntimeException(
             "Invalid map field number: " + number);
@@ -280,24 +280,9 @@ public  final class Read extends
             com.google.genomics.v1.Read.class, com.google.genomics.v1.Read.Builder.class);
   }
 
-  public static final com.google.protobuf.Parser<Read> PARSER =
-      new com.google.protobuf.AbstractParser<Read>() {
-    public Read parsePartialFrom(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return new Read(input, extensionRegistry);
-    }
-  };
-
-  @java.lang.Override
-  public com.google.protobuf.Parser<Read> getParserForType() {
-    return PARSER;
-  }
-
   private int bitField0_;
   public static final int ID_FIELD_NUMBER = 1;
-  private java.lang.Object id_;
+  private volatile java.lang.Object id_;
   /**
    * <code>optional string id = 1;</code>
    *
@@ -343,7 +328,7 @@ public  final class Read extends
   }
 
   public static final int READ_GROUP_ID_FIELD_NUMBER = 2;
-  private java.lang.Object readGroupId_;
+  private volatile java.lang.Object readGroupId_;
   /**
    * <code>optional string read_group_id = 2;</code>
    *
@@ -389,7 +374,7 @@ public  final class Read extends
   }
 
   public static final int READ_GROUP_SET_ID_FIELD_NUMBER = 3;
-  private java.lang.Object readGroupSetId_;
+  private volatile java.lang.Object readGroupSetId_;
   /**
    * <code>optional string read_group_set_id = 3;</code>
    *
@@ -435,7 +420,7 @@ public  final class Read extends
   }
 
   public static final int FRAGMENT_NAME_FIELD_NUMBER = 4;
-  private java.lang.Object fragmentName_;
+  private volatile java.lang.Object fragmentName_;
   /**
    * <code>optional string fragment_name = 4;</code>
    *
@@ -636,7 +621,7 @@ public  final class Read extends
   }
 
   public static final int ALIGNED_SEQUENCE_FIELD_NUMBER = 14;
-  private java.lang.Object alignedSequence_;
+  private volatile java.lang.Object alignedSequence_;
   /**
    * <code>optional string aligned_sequence = 14;</code>
    *
@@ -739,6 +724,7 @@ public  final class Read extends
   public int getAlignedQuality(int index) {
     return alignedQuality_.get(index);
   }
+  private int alignedQualityMemoizedSerializedSize = -1;
 
   public static final int NEXT_MATE_POSITION_FIELD_NUMBER = 16;
   private com.google.genomics.v1.Position nextMatePosition_;
@@ -780,20 +766,27 @@ public  final class Read extends
   }
 
   public static final int INFO_FIELD_NUMBER = 17;
-  private static final com.google.protobuf.MapEntry<
-      java.lang.String, com.google.protobuf.ListValue> infoDefaultEntry =
-          com.google.protobuf.MapEntry
-          .<java.lang.String, com.google.protobuf.ListValue>newDefaultInstance(
-              com.google.genomics.v1.ReadAlignmentProto.internal_static_google_genomics_v1_Read_InfoEntry_descriptor, 
-              com.google.protobuf.WireFormat.FieldType.STRING,
-              "",
-              com.google.protobuf.WireFormat.FieldType.MESSAGE,
-              com.google.protobuf.ListValue.getDefaultInstance());
+  private static final class InfoDefaultEntryHolder {
+    static final com.google.protobuf.MapEntry<
+        java.lang.String, com.google.protobuf.ListValue> defaultEntry =
+            com.google.protobuf.MapEntry
+            .<java.lang.String, com.google.protobuf.ListValue>newDefaultInstance(
+                com.google.genomics.v1.ReadAlignmentProto.internal_static_google_genomics_v1_Read_InfoEntry_descriptor, 
+                com.google.protobuf.WireFormat.FieldType.STRING,
+                "",
+                com.google.protobuf.WireFormat.FieldType.MESSAGE,
+                com.google.protobuf.ListValue.getDefaultInstance());
+  }
   private com.google.protobuf.MapField<
-      java.lang.String, com.google.protobuf.ListValue> info_ =
-          com.google.protobuf.MapField.emptyMapField(
-              infoDefaultEntry);
-
+      java.lang.String, com.google.protobuf.ListValue> info_;
+  private com.google.protobuf.MapField<java.lang.String, com.google.protobuf.ListValue>
+  internalGetInfo() {
+    if (info_ == null) {
+      return com.google.protobuf.MapField.emptyMapField(
+          InfoDefaultEntryHolder.defaultEntry);
+   }
+    return info_;
+  }
   /**
    * <code>map&lt;string, .google.protobuf.ListValue&gt; info = 17;</code>
    *
@@ -804,7 +797,7 @@ public  final class Read extends
    */
 
   public java.util.Map<java.lang.String, com.google.protobuf.ListValue> getInfo() {
-    return info_.getMap();
+    return internalGetInfo().getMap();
   }
 
   private byte memoizedIsInitialized = -1;
@@ -862,16 +855,20 @@ public  final class Read extends
     if (!getAlignedSequenceBytes().isEmpty()) {
       output.writeBytes(14, getAlignedSequenceBytes());
     }
+    if (getAlignedQualityList().size() > 0) {
+      output.writeRawVarint32(122);
+      output.writeRawVarint32(alignedQualityMemoizedSerializedSize);
+    }
     for (int i = 0; i < alignedQuality_.size(); i++) {
-      output.writeInt32(15, alignedQuality_.get(i));
+      output.writeInt32NoTag(alignedQuality_.get(i));
     }
     if (nextMatePosition_ != null) {
       output.writeMessage(16, getNextMatePosition());
     }
     for (java.util.Map.Entry<java.lang.String, com.google.protobuf.ListValue> entry
-         : info_.getMap().entrySet()) {
+         : internalGetInfo().getMap().entrySet()) {
       com.google.protobuf.MapEntry<java.lang.String, com.google.protobuf.ListValue>
-      info = infoDefaultEntry.newBuilderForType()
+      info = InfoDefaultEntryHolder.defaultEntry.newBuilderForType()
           .setKey(entry.getKey())
           .setValue(entry.getValue())
           .build();
@@ -948,16 +945,21 @@ public  final class Read extends
           .computeInt32SizeNoTag(alignedQuality_.get(i));
       }
       size += dataSize;
-      size += 1 * getAlignedQualityList().size();
+      if (!getAlignedQualityList().isEmpty()) {
+        size += 1;
+        size += com.google.protobuf.CodedOutputStream
+            .computeInt32SizeNoTag(dataSize);
+      }
+      alignedQualityMemoizedSerializedSize = dataSize;
     }
     if (nextMatePosition_ != null) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(16, getNextMatePosition());
     }
     for (java.util.Map.Entry<java.lang.String, com.google.protobuf.ListValue> entry
-         : info_.getMap().entrySet()) {
+         : internalGetInfo().getMap().entrySet()) {
       com.google.protobuf.MapEntry<java.lang.String, com.google.protobuf.ListValue>
-      info = infoDefaultEntry.newBuilderForType()
+      info = InfoDefaultEntryHolder.defaultEntry.newBuilderForType()
           .setKey(entry.getKey())
           .setValue(entry.getValue())
           .build();
@@ -1022,12 +1024,17 @@ public  final class Read extends
     return PARSER.parseFrom(input, extensionRegistry);
   }
 
-  public static Builder newBuilder() { return new Builder(); }
   public Builder newBuilderForType() { return newBuilder(); }
-  public static Builder newBuilder(com.google.genomics.v1.Read prototype) {
-    return newBuilder().mergeFrom(prototype);
+  public static Builder newBuilder() {
+    return DEFAULT_INSTANCE.toBuilder();
   }
-  public Builder toBuilder() { return newBuilder(this); }
+  public static Builder newBuilder(com.google.genomics.v1.Read prototype) {
+    return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+  }
+  public Builder toBuilder() {
+    return this == DEFAULT_INSTANCE
+        ? new Builder() : new Builder().mergeFrom(this);
+  }
 
   @java.lang.Override
   protected Builder newBuilderForType(
@@ -1110,7 +1117,18 @@ public  final class Read extends
         int number) {
       switch (number) {
         case 17:
-          return info_;
+          return internalGetInfo();
+        default:
+          throw new RuntimeException(
+              "Invalid map field number: " + number);
+      }
+    }
+    @SuppressWarnings({"rawtypes"})
+    protected com.google.protobuf.MapField internalGetMutableMapField(
+        int number) {
+      switch (number) {
+        case 17:
+          return internalGetMutableInfo();
         default:
           throw new RuntimeException(
               "Invalid map field number: " + number);
@@ -1179,7 +1197,7 @@ public  final class Read extends
         nextMatePosition_ = null;
         nextMatePositionBuilder_ = null;
       }
-      info_.clear();
+      internalGetMutableInfo().clear();
       return this;
     }
 
@@ -1232,7 +1250,8 @@ public  final class Read extends
       } else {
         result.nextMatePosition_ = nextMatePositionBuilder_.build();
       }
-      result.info_ = info_.copy();
+      result.info_ = internalGetInfo();
+      result.info_.makeImmutable();
       result.bitField0_ = to_bitField0_;
       onBuilt();
       return result;
@@ -1309,7 +1328,8 @@ public  final class Read extends
       if (other.hasNextMatePosition()) {
         mergeNextMatePosition(other.getNextMatePosition());
       }
-      info_.mergeFrom(other.info_);
+      internalGetMutableInfo().mergeFrom(
+          other.internalGetInfo());
       onChanged();
       return this;
     }
@@ -2650,10 +2670,27 @@ public  final class Read extends
     }
 
     private com.google.protobuf.MapField<
-        java.lang.String, com.google.protobuf.ListValue> info_ =
-            com.google.protobuf.MapField.newMapField(
-                infoDefaultEntry);
-
+        java.lang.String, com.google.protobuf.ListValue> info_;
+    private com.google.protobuf.MapField<java.lang.String, com.google.protobuf.ListValue>
+    internalGetInfo() {
+      if (info_ == null) {
+        return com.google.protobuf.MapField.emptyMapField(
+            InfoDefaultEntryHolder.defaultEntry);
+     }
+      return info_;
+    }
+    private com.google.protobuf.MapField<java.lang.String, com.google.protobuf.ListValue>
+    internalGetMutableInfo() {
+      onChanged();;
+      if (info_ == null) {
+        info_ = com.google.protobuf.MapField.newMapField(
+            InfoDefaultEntryHolder.defaultEntry);
+      }
+      if (!info_.isMutable()) {
+        info_ = info_.copy();
+      }
+      return info_;
+    }
     /**
      * <code>map&lt;string, .google.protobuf.ListValue&gt; info = 17;</code>
      *
@@ -2663,7 +2700,7 @@ public  final class Read extends
      * </pre>
      */
     public java.util.Map<java.lang.String, com.google.protobuf.ListValue> getInfo() {
-      return info_.getMap();
+      return internalGetInfo().getMap();
     }
     /**
      * <code>map&lt;string, .google.protobuf.ListValue&gt; info = 17;</code>
@@ -2675,8 +2712,7 @@ public  final class Read extends
      */
     public java.util.Map<java.lang.String, com.google.protobuf.ListValue>
     getMutableInfo() {
-      onChanged();
-      return info_.getMutableMap();
+      return internalGetMutableInfo().getMutableMap();
     }
     public final Builder setUnknownFields(
         final com.google.protobuf.UnknownFieldSet unknownFields) {
@@ -2693,16 +2729,45 @@ public  final class Read extends
   }
 
   // @@protoc_insertion_point(class_scope:google.genomics.v1.Read)
-  private static final com.google.genomics.v1.Read defaultInstance;static {
-    defaultInstance = new com.google.genomics.v1.Read();
+  private static final com.google.genomics.v1.Read DEFAULT_INSTANCE;
+  static {
+    DEFAULT_INSTANCE = new com.google.genomics.v1.Read();
   }
 
   public static com.google.genomics.v1.Read getDefaultInstance() {
-    return defaultInstance;
+    return DEFAULT_INSTANCE;
+  }
+
+  public static final com.google.protobuf.Parser<Read> PARSER =
+      new com.google.protobuf.AbstractParser<Read>() {
+    public Read parsePartialFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      try {
+        return new Read(input, extensionRegistry);
+      } catch (RuntimeException e) {
+        if (e.getCause() instanceof
+            com.google.protobuf.InvalidProtocolBufferException) {
+          throw (com.google.protobuf.InvalidProtocolBufferException)
+              e.getCause();
+        }
+        throw e;
+      }
+    }
+  };
+
+  public static com.google.protobuf.Parser<Read> parser() {
+    return PARSER;
+  }
+
+  @java.lang.Override
+  public com.google.protobuf.Parser<Read> getParserForType() {
+    return PARSER;
   }
 
   public com.google.genomics.v1.Read getDefaultInstanceForType() {
-    return defaultInstance;
+    return DEFAULT_INSTANCE;
   }
 
 }

@@ -29,8 +29,7 @@ public  final class SearchReferencesRequest extends
   }
   private SearchReferencesRequest(
       com.google.protobuf.CodedInputStream input,
-      com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-      throws com.google.protobuf.InvalidProtocolBufferException {
+      com.google.protobuf.ExtensionRegistryLite extensionRegistry) {
     this();
     int mutable_bitField0_ = 0;
     try {
@@ -85,10 +84,11 @@ public  final class SearchReferencesRequest extends
         }
       }
     } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-      throw e.setUnfinishedMessage(this);
+      throw new RuntimeException(e.setUnfinishedMessage(this));
     } catch (java.io.IOException e) {
-      throw new com.google.protobuf.InvalidProtocolBufferException(
-          e.getMessage()).setUnfinishedMessage(this);
+      throw new RuntimeException(
+          new com.google.protobuf.InvalidProtocolBufferException(
+              e.getMessage()).setUnfinishedMessage(this));
     } finally {
       if (((mutable_bitField0_ & 0x00000001) == 0x00000001)) {
         md5Checksums_ = md5Checksums_.getUnmodifiableView();
@@ -109,21 +109,6 @@ public  final class SearchReferencesRequest extends
     return com.google.genomics.v1.ReferencesProto.internal_static_google_genomics_v1_SearchReferencesRequest_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
             com.google.genomics.v1.SearchReferencesRequest.class, com.google.genomics.v1.SearchReferencesRequest.Builder.class);
-  }
-
-  public static final com.google.protobuf.Parser<SearchReferencesRequest> PARSER =
-      new com.google.protobuf.AbstractParser<SearchReferencesRequest>() {
-    public SearchReferencesRequest parsePartialFrom(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return new SearchReferencesRequest(input, extensionRegistry);
-    }
-  };
-
-  @java.lang.Override
-  public com.google.protobuf.Parser<SearchReferencesRequest> getParserForType() {
-    return PARSER;
   }
 
   private int bitField0_;
@@ -238,7 +223,7 @@ public  final class SearchReferencesRequest extends
   }
 
   public static final int REFERENCE_SET_ID_FIELD_NUMBER = 3;
-  private java.lang.Object referenceSetId_;
+  private volatile java.lang.Object referenceSetId_;
   /**
    * <code>optional string reference_set_id = 3;</code>
    *
@@ -282,7 +267,7 @@ public  final class SearchReferencesRequest extends
   }
 
   public static final int PAGE_TOKEN_FIELD_NUMBER = 4;
-  private java.lang.Object pageToken_;
+  private volatile java.lang.Object pageToken_;
   /**
    * <code>optional string page_token = 4;</code>
    *
@@ -354,7 +339,6 @@ public  final class SearchReferencesRequest extends
 
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    getSerializedSize();
     for (int i = 0; i < md5Checksums_.size(); i++) {
       output.writeBytes(1, md5Checksums_.getByteString(i));
     }
@@ -466,12 +450,17 @@ public  final class SearchReferencesRequest extends
     return PARSER.parseFrom(input, extensionRegistry);
   }
 
-  public static Builder newBuilder() { return new Builder(); }
   public Builder newBuilderForType() { return newBuilder(); }
-  public static Builder newBuilder(com.google.genomics.v1.SearchReferencesRequest prototype) {
-    return newBuilder().mergeFrom(prototype);
+  public static Builder newBuilder() {
+    return DEFAULT_INSTANCE.toBuilder();
   }
-  public Builder toBuilder() { return newBuilder(this); }
+  public static Builder newBuilder(com.google.genomics.v1.SearchReferencesRequest prototype) {
+    return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+  }
+  public Builder toBuilder() {
+    return this == DEFAULT_INSTANCE
+        ? new Builder() : new Builder().mergeFrom(this);
+  }
 
   @java.lang.Override
   protected Builder newBuilderForType(
@@ -1180,16 +1169,45 @@ public  final class SearchReferencesRequest extends
   }
 
   // @@protoc_insertion_point(class_scope:google.genomics.v1.SearchReferencesRequest)
-  private static final com.google.genomics.v1.SearchReferencesRequest defaultInstance;static {
-    defaultInstance = new com.google.genomics.v1.SearchReferencesRequest();
+  private static final com.google.genomics.v1.SearchReferencesRequest DEFAULT_INSTANCE;
+  static {
+    DEFAULT_INSTANCE = new com.google.genomics.v1.SearchReferencesRequest();
   }
 
   public static com.google.genomics.v1.SearchReferencesRequest getDefaultInstance() {
-    return defaultInstance;
+    return DEFAULT_INSTANCE;
+  }
+
+  public static final com.google.protobuf.Parser<SearchReferencesRequest> PARSER =
+      new com.google.protobuf.AbstractParser<SearchReferencesRequest>() {
+    public SearchReferencesRequest parsePartialFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      try {
+        return new SearchReferencesRequest(input, extensionRegistry);
+      } catch (RuntimeException e) {
+        if (e.getCause() instanceof
+            com.google.protobuf.InvalidProtocolBufferException) {
+          throw (com.google.protobuf.InvalidProtocolBufferException)
+              e.getCause();
+        }
+        throw e;
+      }
+    }
+  };
+
+  public static com.google.protobuf.Parser<SearchReferencesRequest> parser() {
+    return PARSER;
+  }
+
+  @java.lang.Override
+  public com.google.protobuf.Parser<SearchReferencesRequest> getParserForType() {
+    return PARSER;
   }
 
   public com.google.genomics.v1.SearchReferencesRequest getDefaultInstanceForType() {
-    return defaultInstance;
+    return DEFAULT_INSTANCE;
   }
 
 }

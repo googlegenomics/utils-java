@@ -25,8 +25,7 @@ public  final class UpdateDatasetRequest extends
   }
   private UpdateDatasetRequest(
       com.google.protobuf.CodedInputStream input,
-      com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-      throws com.google.protobuf.InvalidProtocolBufferException {
+      com.google.protobuf.ExtensionRegistryLite extensionRegistry) {
     this();
     int mutable_bitField0_ = 0;
     try {
@@ -65,10 +64,11 @@ public  final class UpdateDatasetRequest extends
         }
       }
     } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-      throw e.setUnfinishedMessage(this);
+      throw new RuntimeException(e.setUnfinishedMessage(this));
     } catch (java.io.IOException e) {
-      throw new com.google.protobuf.InvalidProtocolBufferException(
-          e.getMessage()).setUnfinishedMessage(this);
+      throw new RuntimeException(
+          new com.google.protobuf.InvalidProtocolBufferException(
+              e.getMessage()).setUnfinishedMessage(this));
     } finally {
       makeExtensionsImmutable();
     }
@@ -85,23 +85,8 @@ public  final class UpdateDatasetRequest extends
             com.google.genomics.v1.UpdateDatasetRequest.class, com.google.genomics.v1.UpdateDatasetRequest.Builder.class);
   }
 
-  public static final com.google.protobuf.Parser<UpdateDatasetRequest> PARSER =
-      new com.google.protobuf.AbstractParser<UpdateDatasetRequest>() {
-    public UpdateDatasetRequest parsePartialFrom(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return new UpdateDatasetRequest(input, extensionRegistry);
-    }
-  };
-
-  @java.lang.Override
-  public com.google.protobuf.Parser<UpdateDatasetRequest> getParserForType() {
-    return PARSER;
-  }
-
   public static final int DATASET_ID_FIELD_NUMBER = 1;
-  private java.lang.Object datasetId_;
+  private volatile java.lang.Object datasetId_;
   /**
    * <code>optional string dataset_id = 1;</code>
    *
@@ -189,7 +174,6 @@ public  final class UpdateDatasetRequest extends
 
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    getSerializedSize();
     if (!getDatasetIdBytes().isEmpty()) {
       output.writeBytes(1, getDatasetIdBytes());
     }
@@ -270,12 +254,17 @@ public  final class UpdateDatasetRequest extends
     return PARSER.parseFrom(input, extensionRegistry);
   }
 
-  public static Builder newBuilder() { return new Builder(); }
   public Builder newBuilderForType() { return newBuilder(); }
-  public static Builder newBuilder(com.google.genomics.v1.UpdateDatasetRequest prototype) {
-    return newBuilder().mergeFrom(prototype);
+  public static Builder newBuilder() {
+    return DEFAULT_INSTANCE.toBuilder();
   }
-  public Builder toBuilder() { return newBuilder(this); }
+  public static Builder newBuilder(com.google.genomics.v1.UpdateDatasetRequest prototype) {
+    return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+  }
+  public Builder toBuilder() {
+    return this == DEFAULT_INSTANCE
+        ? new Builder() : new Builder().mergeFrom(this);
+  }
 
   @java.lang.Override
   protected Builder newBuilderForType(
@@ -659,16 +648,45 @@ public  final class UpdateDatasetRequest extends
   }
 
   // @@protoc_insertion_point(class_scope:google.genomics.v1.UpdateDatasetRequest)
-  private static final com.google.genomics.v1.UpdateDatasetRequest defaultInstance;static {
-    defaultInstance = new com.google.genomics.v1.UpdateDatasetRequest();
+  private static final com.google.genomics.v1.UpdateDatasetRequest DEFAULT_INSTANCE;
+  static {
+    DEFAULT_INSTANCE = new com.google.genomics.v1.UpdateDatasetRequest();
   }
 
   public static com.google.genomics.v1.UpdateDatasetRequest getDefaultInstance() {
-    return defaultInstance;
+    return DEFAULT_INSTANCE;
+  }
+
+  public static final com.google.protobuf.Parser<UpdateDatasetRequest> PARSER =
+      new com.google.protobuf.AbstractParser<UpdateDatasetRequest>() {
+    public UpdateDatasetRequest parsePartialFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      try {
+        return new UpdateDatasetRequest(input, extensionRegistry);
+      } catch (RuntimeException e) {
+        if (e.getCause() instanceof
+            com.google.protobuf.InvalidProtocolBufferException) {
+          throw (com.google.protobuf.InvalidProtocolBufferException)
+              e.getCause();
+        }
+        throw e;
+      }
+    }
+  };
+
+  public static com.google.protobuf.Parser<UpdateDatasetRequest> parser() {
+    return PARSER;
+  }
+
+  @java.lang.Override
+  public com.google.protobuf.Parser<UpdateDatasetRequest> getParserForType() {
+    return PARSER;
   }
 
   public com.google.genomics.v1.UpdateDatasetRequest getDefaultInstanceForType() {
-    return defaultInstance;
+    return DEFAULT_INSTANCE;
   }
 
 }

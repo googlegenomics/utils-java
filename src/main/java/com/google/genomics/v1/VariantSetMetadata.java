@@ -37,8 +37,7 @@ public  final class VariantSetMetadata extends
   }
   private VariantSetMetadata(
       com.google.protobuf.CodedInputStream input,
-      com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-      throws com.google.protobuf.InvalidProtocolBufferException {
+      com.google.protobuf.ExtensionRegistryLite extensionRegistry) {
     this();
     int mutable_bitField0_ = 0;
     try {
@@ -70,12 +69,12 @@ public  final class VariantSetMetadata extends
           case 26: {
             if (!((mutable_bitField0_ & 0x00000040) == 0x00000040)) {
               info_ = com.google.protobuf.MapField.newMapField(
-                  infoDefaultEntry);
+                  InfoDefaultEntryHolder.defaultEntry);
               mutable_bitField0_ |= 0x00000040;
             }
             com.google.protobuf.MapEntry<java.lang.String, com.google.protobuf.ListValue>
             info = input.readMessage(
-                infoDefaultEntry.getParserForType(), extensionRegistry);
+                InfoDefaultEntryHolder.defaultEntry.getParserForType(), extensionRegistry);
             info_.getMutableMap().put(info.getKey(), info.getValue());
             break;
           }
@@ -105,10 +104,11 @@ public  final class VariantSetMetadata extends
         }
       }
     } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-      throw e.setUnfinishedMessage(this);
+      throw new RuntimeException(e.setUnfinishedMessage(this));
     } catch (java.io.IOException e) {
-      throw new com.google.protobuf.InvalidProtocolBufferException(
-          e.getMessage()).setUnfinishedMessage(this);
+      throw new RuntimeException(
+          new com.google.protobuf.InvalidProtocolBufferException(
+              e.getMessage()).setUnfinishedMessage(this));
     } finally {
       makeExtensionsImmutable();
     }
@@ -123,7 +123,7 @@ public  final class VariantSetMetadata extends
       int number) {
     switch (number) {
       case 3:
-        return info_;
+        return internalGetInfo();
       default:
         throw new RuntimeException(
             "Invalid map field number: " + number);
@@ -134,21 +134,6 @@ public  final class VariantSetMetadata extends
     return com.google.genomics.v1.VariantsProto.internal_static_google_genomics_v1_VariantSetMetadata_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
             com.google.genomics.v1.VariantSetMetadata.class, com.google.genomics.v1.VariantSetMetadata.Builder.class);
-  }
-
-  public static final com.google.protobuf.Parser<VariantSetMetadata> PARSER =
-      new com.google.protobuf.AbstractParser<VariantSetMetadata>() {
-    public VariantSetMetadata parsePartialFrom(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return new VariantSetMetadata(input, extensionRegistry);
-    }
-  };
-
-  @java.lang.Override
-  public com.google.protobuf.Parser<VariantSetMetadata> getParserForType() {
-    return PARSER;
   }
 
   /**
@@ -281,7 +266,7 @@ public  final class VariantSetMetadata extends
 
   private int bitField0_;
   public static final int KEY_FIELD_NUMBER = 1;
-  private java.lang.Object key_;
+  private volatile java.lang.Object key_;
   /**
    * <code>optional string key = 1;</code>
    *
@@ -325,7 +310,7 @@ public  final class VariantSetMetadata extends
   }
 
   public static final int VALUE_FIELD_NUMBER = 2;
-  private java.lang.Object value_;
+  private volatile java.lang.Object value_;
   /**
    * <code>optional string value = 2;</code>
    *
@@ -369,7 +354,7 @@ public  final class VariantSetMetadata extends
   }
 
   public static final int ID_FIELD_NUMBER = 4;
-  private java.lang.Object id_;
+  private volatile java.lang.Object id_;
   /**
    * <code>optional string id = 4;</code>
    *
@@ -457,7 +442,7 @@ public  final class VariantSetMetadata extends
   }
 
   public static final int DESCRIPTION_FIELD_NUMBER = 7;
-  private java.lang.Object description_;
+  private volatile java.lang.Object description_;
   /**
    * <code>optional string description = 7;</code>
    *
@@ -501,20 +486,27 @@ public  final class VariantSetMetadata extends
   }
 
   public static final int INFO_FIELD_NUMBER = 3;
-  private static final com.google.protobuf.MapEntry<
-      java.lang.String, com.google.protobuf.ListValue> infoDefaultEntry =
-          com.google.protobuf.MapEntry
-          .<java.lang.String, com.google.protobuf.ListValue>newDefaultInstance(
-              com.google.genomics.v1.VariantsProto.internal_static_google_genomics_v1_VariantSetMetadata_InfoEntry_descriptor, 
-              com.google.protobuf.WireFormat.FieldType.STRING,
-              "",
-              com.google.protobuf.WireFormat.FieldType.MESSAGE,
-              com.google.protobuf.ListValue.getDefaultInstance());
+  private static final class InfoDefaultEntryHolder {
+    static final com.google.protobuf.MapEntry<
+        java.lang.String, com.google.protobuf.ListValue> defaultEntry =
+            com.google.protobuf.MapEntry
+            .<java.lang.String, com.google.protobuf.ListValue>newDefaultInstance(
+                com.google.genomics.v1.VariantsProto.internal_static_google_genomics_v1_VariantSetMetadata_InfoEntry_descriptor, 
+                com.google.protobuf.WireFormat.FieldType.STRING,
+                "",
+                com.google.protobuf.WireFormat.FieldType.MESSAGE,
+                com.google.protobuf.ListValue.getDefaultInstance());
+  }
   private com.google.protobuf.MapField<
-      java.lang.String, com.google.protobuf.ListValue> info_ =
-          com.google.protobuf.MapField.emptyMapField(
-              infoDefaultEntry);
-
+      java.lang.String, com.google.protobuf.ListValue> info_;
+  private com.google.protobuf.MapField<java.lang.String, com.google.protobuf.ListValue>
+  internalGetInfo() {
+    if (info_ == null) {
+      return com.google.protobuf.MapField.emptyMapField(
+          InfoDefaultEntryHolder.defaultEntry);
+   }
+    return info_;
+  }
   /**
    * <code>map&lt;string, .google.protobuf.ListValue&gt; info = 3;</code>
    *
@@ -525,7 +517,7 @@ public  final class VariantSetMetadata extends
    */
 
   public java.util.Map<java.lang.String, com.google.protobuf.ListValue> getInfo() {
-    return info_.getMap();
+    return internalGetInfo().getMap();
   }
 
   private byte memoizedIsInitialized = -1;
@@ -540,7 +532,6 @@ public  final class VariantSetMetadata extends
 
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    getSerializedSize();
     if (!getKeyBytes().isEmpty()) {
       output.writeBytes(1, getKeyBytes());
     }
@@ -548,9 +539,9 @@ public  final class VariantSetMetadata extends
       output.writeBytes(2, getValueBytes());
     }
     for (java.util.Map.Entry<java.lang.String, com.google.protobuf.ListValue> entry
-         : info_.getMap().entrySet()) {
+         : internalGetInfo().getMap().entrySet()) {
       com.google.protobuf.MapEntry<java.lang.String, com.google.protobuf.ListValue>
-      info = infoDefaultEntry.newBuilderForType()
+      info = InfoDefaultEntryHolder.defaultEntry.newBuilderForType()
           .setKey(entry.getKey())
           .setValue(entry.getValue())
           .build();
@@ -585,9 +576,9 @@ public  final class VariantSetMetadata extends
         .computeBytesSize(2, getValueBytes());
     }
     for (java.util.Map.Entry<java.lang.String, com.google.protobuf.ListValue> entry
-         : info_.getMap().entrySet()) {
+         : internalGetInfo().getMap().entrySet()) {
       com.google.protobuf.MapEntry<java.lang.String, com.google.protobuf.ListValue>
-      info = infoDefaultEntry.newBuilderForType()
+      info = InfoDefaultEntryHolder.defaultEntry.newBuilderForType()
           .setKey(entry.getKey())
           .setValue(entry.getValue())
           .build();
@@ -668,12 +659,17 @@ public  final class VariantSetMetadata extends
     return PARSER.parseFrom(input, extensionRegistry);
   }
 
-  public static Builder newBuilder() { return new Builder(); }
   public Builder newBuilderForType() { return newBuilder(); }
-  public static Builder newBuilder(com.google.genomics.v1.VariantSetMetadata prototype) {
-    return newBuilder().mergeFrom(prototype);
+  public static Builder newBuilder() {
+    return DEFAULT_INSTANCE.toBuilder();
   }
-  public Builder toBuilder() { return newBuilder(this); }
+  public static Builder newBuilder(com.google.genomics.v1.VariantSetMetadata prototype) {
+    return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+  }
+  public Builder toBuilder() {
+    return this == DEFAULT_INSTANCE
+        ? new Builder() : new Builder().mergeFrom(this);
+  }
 
   @java.lang.Override
   protected Builder newBuilderForType(
@@ -705,7 +701,18 @@ public  final class VariantSetMetadata extends
         int number) {
       switch (number) {
         case 3:
-          return info_;
+          return internalGetInfo();
+        default:
+          throw new RuntimeException(
+              "Invalid map field number: " + number);
+      }
+    }
+    @SuppressWarnings({"rawtypes"})
+    protected com.google.protobuf.MapField internalGetMutableMapField(
+        int number) {
+      switch (number) {
+        case 3:
+          return internalGetMutableInfo();
         default:
           throw new RuntimeException(
               "Invalid map field number: " + number);
@@ -746,7 +753,7 @@ public  final class VariantSetMetadata extends
 
       description_ = "";
 
-      info_.clear();
+      internalGetMutableInfo().clear();
       return this;
     }
 
@@ -777,7 +784,8 @@ public  final class VariantSetMetadata extends
       result.type_ = type_;
       result.number_ = number_;
       result.description_ = description_;
-      result.info_ = info_.copy();
+      result.info_ = internalGetInfo();
+      result.info_.makeImmutable();
       result.bitField0_ = to_bitField0_;
       onBuilt();
       return result;
@@ -816,7 +824,8 @@ public  final class VariantSetMetadata extends
         description_ = other.description_;
         onChanged();
       }
-      info_.mergeFrom(other.info_);
+      internalGetMutableInfo().mergeFrom(
+          other.internalGetInfo());
       onChanged();
       return this;
     }
@@ -1325,10 +1334,27 @@ public  final class VariantSetMetadata extends
     }
 
     private com.google.protobuf.MapField<
-        java.lang.String, com.google.protobuf.ListValue> info_ =
-            com.google.protobuf.MapField.newMapField(
-                infoDefaultEntry);
-
+        java.lang.String, com.google.protobuf.ListValue> info_;
+    private com.google.protobuf.MapField<java.lang.String, com.google.protobuf.ListValue>
+    internalGetInfo() {
+      if (info_ == null) {
+        return com.google.protobuf.MapField.emptyMapField(
+            InfoDefaultEntryHolder.defaultEntry);
+     }
+      return info_;
+    }
+    private com.google.protobuf.MapField<java.lang.String, com.google.protobuf.ListValue>
+    internalGetMutableInfo() {
+      onChanged();;
+      if (info_ == null) {
+        info_ = com.google.protobuf.MapField.newMapField(
+            InfoDefaultEntryHolder.defaultEntry);
+      }
+      if (!info_.isMutable()) {
+        info_ = info_.copy();
+      }
+      return info_;
+    }
     /**
      * <code>map&lt;string, .google.protobuf.ListValue&gt; info = 3;</code>
      *
@@ -1338,7 +1364,7 @@ public  final class VariantSetMetadata extends
      * </pre>
      */
     public java.util.Map<java.lang.String, com.google.protobuf.ListValue> getInfo() {
-      return info_.getMap();
+      return internalGetInfo().getMap();
     }
     /**
      * <code>map&lt;string, .google.protobuf.ListValue&gt; info = 3;</code>
@@ -1350,8 +1376,7 @@ public  final class VariantSetMetadata extends
      */
     public java.util.Map<java.lang.String, com.google.protobuf.ListValue>
     getMutableInfo() {
-      onChanged();
-      return info_.getMutableMap();
+      return internalGetMutableInfo().getMutableMap();
     }
     public final Builder setUnknownFields(
         final com.google.protobuf.UnknownFieldSet unknownFields) {
@@ -1368,16 +1393,45 @@ public  final class VariantSetMetadata extends
   }
 
   // @@protoc_insertion_point(class_scope:google.genomics.v1.VariantSetMetadata)
-  private static final com.google.genomics.v1.VariantSetMetadata defaultInstance;static {
-    defaultInstance = new com.google.genomics.v1.VariantSetMetadata();
+  private static final com.google.genomics.v1.VariantSetMetadata DEFAULT_INSTANCE;
+  static {
+    DEFAULT_INSTANCE = new com.google.genomics.v1.VariantSetMetadata();
   }
 
   public static com.google.genomics.v1.VariantSetMetadata getDefaultInstance() {
-    return defaultInstance;
+    return DEFAULT_INSTANCE;
+  }
+
+  public static final com.google.protobuf.Parser<VariantSetMetadata> PARSER =
+      new com.google.protobuf.AbstractParser<VariantSetMetadata>() {
+    public VariantSetMetadata parsePartialFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      try {
+        return new VariantSetMetadata(input, extensionRegistry);
+      } catch (RuntimeException e) {
+        if (e.getCause() instanceof
+            com.google.protobuf.InvalidProtocolBufferException) {
+          throw (com.google.protobuf.InvalidProtocolBufferException)
+              e.getCause();
+        }
+        throw e;
+      }
+    }
+  };
+
+  public static com.google.protobuf.Parser<VariantSetMetadata> parser() {
+    return PARSER;
+  }
+
+  @java.lang.Override
+  public com.google.protobuf.Parser<VariantSetMetadata> getParserForType() {
+    return PARSER;
   }
 
   public com.google.genomics.v1.VariantSetMetadata getDefaultInstanceForType() {
-    return defaultInstance;
+    return DEFAULT_INSTANCE;
   }
 
 }

@@ -32,8 +32,7 @@ public  final class ImportReadGroupSetsRequest extends
   }
   private ImportReadGroupSetsRequest(
       com.google.protobuf.CodedInputStream input,
-      com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-      throws com.google.protobuf.InvalidProtocolBufferException {
+      com.google.protobuf.ExtensionRegistryLite extensionRegistry) {
     this();
     int mutable_bitField0_ = 0;
     try {
@@ -80,10 +79,11 @@ public  final class ImportReadGroupSetsRequest extends
         }
       }
     } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-      throw e.setUnfinishedMessage(this);
+      throw new RuntimeException(e.setUnfinishedMessage(this));
     } catch (java.io.IOException e) {
-      throw new com.google.protobuf.InvalidProtocolBufferException(
-          e.getMessage()).setUnfinishedMessage(this);
+      throw new RuntimeException(
+          new com.google.protobuf.InvalidProtocolBufferException(
+              e.getMessage()).setUnfinishedMessage(this));
     } finally {
       if (((mutable_bitField0_ & 0x00000004) == 0x00000004)) {
         sourceUris_ = sourceUris_.getUnmodifiableView();
@@ -101,21 +101,6 @@ public  final class ImportReadGroupSetsRequest extends
     return com.google.genomics.v1.ReadsProto.internal_static_google_genomics_v1_ImportReadGroupSetsRequest_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
             com.google.genomics.v1.ImportReadGroupSetsRequest.class, com.google.genomics.v1.ImportReadGroupSetsRequest.Builder.class);
-  }
-
-  public static final com.google.protobuf.Parser<ImportReadGroupSetsRequest> PARSER =
-      new com.google.protobuf.AbstractParser<ImportReadGroupSetsRequest>() {
-    public ImportReadGroupSetsRequest parsePartialFrom(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return new ImportReadGroupSetsRequest(input, extensionRegistry);
-    }
-  };
-
-  @java.lang.Override
-  public com.google.protobuf.Parser<ImportReadGroupSetsRequest> getParserForType() {
-    return PARSER;
   }
 
   /**
@@ -253,7 +238,7 @@ public  final class ImportReadGroupSetsRequest extends
 
   private int bitField0_;
   public static final int DATASET_ID_FIELD_NUMBER = 1;
-  private java.lang.Object datasetId_;
+  private volatile java.lang.Object datasetId_;
   /**
    * <code>optional string dataset_id = 1;</code>
    *
@@ -299,7 +284,7 @@ public  final class ImportReadGroupSetsRequest extends
   }
 
   public static final int REFERENCE_SET_ID_FIELD_NUMBER = 4;
-  private java.lang.Object referenceSetId_;
+  private volatile java.lang.Object referenceSetId_;
   /**
    * <code>optional string reference_set_id = 4;</code>
    *
@@ -431,7 +416,6 @@ public  final class ImportReadGroupSetsRequest extends
 
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    getSerializedSize();
     if (!getDatasetIdBytes().isEmpty()) {
       output.writeBytes(1, getDatasetIdBytes());
     }
@@ -531,12 +515,17 @@ public  final class ImportReadGroupSetsRequest extends
     return PARSER.parseFrom(input, extensionRegistry);
   }
 
-  public static Builder newBuilder() { return new Builder(); }
   public Builder newBuilderForType() { return newBuilder(); }
-  public static Builder newBuilder(com.google.genomics.v1.ImportReadGroupSetsRequest prototype) {
-    return newBuilder().mergeFrom(prototype);
+  public static Builder newBuilder() {
+    return DEFAULT_INSTANCE.toBuilder();
   }
-  public Builder toBuilder() { return newBuilder(this); }
+  public static Builder newBuilder(com.google.genomics.v1.ImportReadGroupSetsRequest prototype) {
+    return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+  }
+  public Builder toBuilder() {
+    return this == DEFAULT_INSTANCE
+        ? new Builder() : new Builder().mergeFrom(this);
+  }
 
   @java.lang.Override
   protected Builder newBuilderForType(
@@ -1099,16 +1088,45 @@ public  final class ImportReadGroupSetsRequest extends
   }
 
   // @@protoc_insertion_point(class_scope:google.genomics.v1.ImportReadGroupSetsRequest)
-  private static final com.google.genomics.v1.ImportReadGroupSetsRequest defaultInstance;static {
-    defaultInstance = new com.google.genomics.v1.ImportReadGroupSetsRequest();
+  private static final com.google.genomics.v1.ImportReadGroupSetsRequest DEFAULT_INSTANCE;
+  static {
+    DEFAULT_INSTANCE = new com.google.genomics.v1.ImportReadGroupSetsRequest();
   }
 
   public static com.google.genomics.v1.ImportReadGroupSetsRequest getDefaultInstance() {
-    return defaultInstance;
+    return DEFAULT_INSTANCE;
+  }
+
+  public static final com.google.protobuf.Parser<ImportReadGroupSetsRequest> PARSER =
+      new com.google.protobuf.AbstractParser<ImportReadGroupSetsRequest>() {
+    public ImportReadGroupSetsRequest parsePartialFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      try {
+        return new ImportReadGroupSetsRequest(input, extensionRegistry);
+      } catch (RuntimeException e) {
+        if (e.getCause() instanceof
+            com.google.protobuf.InvalidProtocolBufferException) {
+          throw (com.google.protobuf.InvalidProtocolBufferException)
+              e.getCause();
+        }
+        throw e;
+      }
+    }
+  };
+
+  public static com.google.protobuf.Parser<ImportReadGroupSetsRequest> parser() {
+    return PARSER;
+  }
+
+  @java.lang.Override
+  public com.google.protobuf.Parser<ImportReadGroupSetsRequest> getParserForType() {
+    return PARSER;
   }
 
   public com.google.genomics.v1.ImportReadGroupSetsRequest getDefaultInstanceForType() {
-    return defaultInstance;
+    return DEFAULT_INSTANCE;
   }
 
 }

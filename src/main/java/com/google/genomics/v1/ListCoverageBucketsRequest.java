@@ -31,8 +31,7 @@ public  final class ListCoverageBucketsRequest extends
   }
   private ListCoverageBucketsRequest(
       com.google.protobuf.CodedInputStream input,
-      com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-      throws com.google.protobuf.InvalidProtocolBufferException {
+      com.google.protobuf.ExtensionRegistryLite extensionRegistry) {
     this();
     int mutable_bitField0_ = 0;
     try {
@@ -90,10 +89,11 @@ public  final class ListCoverageBucketsRequest extends
         }
       }
     } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-      throw e.setUnfinishedMessage(this);
+      throw new RuntimeException(e.setUnfinishedMessage(this));
     } catch (java.io.IOException e) {
-      throw new com.google.protobuf.InvalidProtocolBufferException(
-          e.getMessage()).setUnfinishedMessage(this);
+      throw new RuntimeException(
+          new com.google.protobuf.InvalidProtocolBufferException(
+              e.getMessage()).setUnfinishedMessage(this));
     } finally {
       makeExtensionsImmutable();
     }
@@ -110,23 +110,8 @@ public  final class ListCoverageBucketsRequest extends
             com.google.genomics.v1.ListCoverageBucketsRequest.class, com.google.genomics.v1.ListCoverageBucketsRequest.Builder.class);
   }
 
-  public static final com.google.protobuf.Parser<ListCoverageBucketsRequest> PARSER =
-      new com.google.protobuf.AbstractParser<ListCoverageBucketsRequest>() {
-    public ListCoverageBucketsRequest parsePartialFrom(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return new ListCoverageBucketsRequest(input, extensionRegistry);
-    }
-  };
-
-  @java.lang.Override
-  public com.google.protobuf.Parser<ListCoverageBucketsRequest> getParserForType() {
-    return PARSER;
-  }
-
   public static final int READ_GROUP_SET_ID_FIELD_NUMBER = 1;
-  private java.lang.Object readGroupSetId_;
+  private volatile java.lang.Object readGroupSetId_;
   /**
    * <code>optional string read_group_set_id = 1;</code>
    *
@@ -170,7 +155,7 @@ public  final class ListCoverageBucketsRequest extends
   }
 
   public static final int REFERENCE_NAME_FIELD_NUMBER = 3;
-  private java.lang.Object referenceName_;
+  private volatile java.lang.Object referenceName_;
   /**
    * <code>optional string reference_name = 3;</code>
    *
@@ -264,7 +249,7 @@ public  final class ListCoverageBucketsRequest extends
   }
 
   public static final int PAGE_TOKEN_FIELD_NUMBER = 7;
-  private java.lang.Object pageToken_;
+  private volatile java.lang.Object pageToken_;
   /**
    * <code>optional string page_token = 7;</code>
    *
@@ -337,7 +322,6 @@ public  final class ListCoverageBucketsRequest extends
 
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    getSerializedSize();
     if (!getReadGroupSetIdBytes().isEmpty()) {
       output.writeBytes(1, getReadGroupSetIdBytes());
     }
@@ -453,12 +437,17 @@ public  final class ListCoverageBucketsRequest extends
     return PARSER.parseFrom(input, extensionRegistry);
   }
 
-  public static Builder newBuilder() { return new Builder(); }
   public Builder newBuilderForType() { return newBuilder(); }
-  public static Builder newBuilder(com.google.genomics.v1.ListCoverageBucketsRequest prototype) {
-    return newBuilder().mergeFrom(prototype);
+  public static Builder newBuilder() {
+    return DEFAULT_INSTANCE.toBuilder();
   }
-  public Builder toBuilder() { return newBuilder(this); }
+  public static Builder newBuilder(com.google.genomics.v1.ListCoverageBucketsRequest prototype) {
+    return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+  }
+  public Builder toBuilder() {
+    return this == DEFAULT_INSTANCE
+        ? new Builder() : new Builder().mergeFrom(this);
+  }
 
   @java.lang.Override
   protected Builder newBuilderForType(
@@ -1090,16 +1079,45 @@ public  final class ListCoverageBucketsRequest extends
   }
 
   // @@protoc_insertion_point(class_scope:google.genomics.v1.ListCoverageBucketsRequest)
-  private static final com.google.genomics.v1.ListCoverageBucketsRequest defaultInstance;static {
-    defaultInstance = new com.google.genomics.v1.ListCoverageBucketsRequest();
+  private static final com.google.genomics.v1.ListCoverageBucketsRequest DEFAULT_INSTANCE;
+  static {
+    DEFAULT_INSTANCE = new com.google.genomics.v1.ListCoverageBucketsRequest();
   }
 
   public static com.google.genomics.v1.ListCoverageBucketsRequest getDefaultInstance() {
-    return defaultInstance;
+    return DEFAULT_INSTANCE;
+  }
+
+  public static final com.google.protobuf.Parser<ListCoverageBucketsRequest> PARSER =
+      new com.google.protobuf.AbstractParser<ListCoverageBucketsRequest>() {
+    public ListCoverageBucketsRequest parsePartialFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      try {
+        return new ListCoverageBucketsRequest(input, extensionRegistry);
+      } catch (RuntimeException e) {
+        if (e.getCause() instanceof
+            com.google.protobuf.InvalidProtocolBufferException) {
+          throw (com.google.protobuf.InvalidProtocolBufferException)
+              e.getCause();
+        }
+        throw e;
+      }
+    }
+  };
+
+  public static com.google.protobuf.Parser<ListCoverageBucketsRequest> parser() {
+    return PARSER;
+  }
+
+  @java.lang.Override
+  public com.google.protobuf.Parser<ListCoverageBucketsRequest> getParserForType() {
+    return PARSER;
   }
 
   public com.google.genomics.v1.ListCoverageBucketsRequest getDefaultInstanceForType() {
-    return defaultInstance;
+    return DEFAULT_INSTANCE;
   }
 
 }

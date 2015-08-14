@@ -47,8 +47,7 @@ public  final class Variant extends
   }
   private Variant(
       com.google.protobuf.CodedInputStream input,
-      com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-      throws com.google.protobuf.InvalidProtocolBufferException {
+      com.google.protobuf.ExtensionRegistryLite extensionRegistry) {
     this();
     int mutable_bitField0_ = 0;
     try {
@@ -112,12 +111,12 @@ public  final class Variant extends
           case 82: {
             if (!((mutable_bitField0_ & 0x00000800) == 0x00000800)) {
               info_ = com.google.protobuf.MapField.newMapField(
-                  infoDefaultEntry);
+                  InfoDefaultEntryHolder.defaultEntry);
               mutable_bitField0_ |= 0x00000800;
             }
             com.google.protobuf.MapEntry<java.lang.String, com.google.protobuf.ListValue>
             info = input.readMessage(
-                infoDefaultEntry.getParserForType(), extensionRegistry);
+                InfoDefaultEntryHolder.defaultEntry.getParserForType(), extensionRegistry);
             info_.getMutableMap().put(info.getKey(), info.getValue());
             break;
           }
@@ -159,10 +158,11 @@ public  final class Variant extends
         }
       }
     } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-      throw e.setUnfinishedMessage(this);
+      throw new RuntimeException(e.setUnfinishedMessage(this));
     } catch (java.io.IOException e) {
-      throw new com.google.protobuf.InvalidProtocolBufferException(
-          e.getMessage()).setUnfinishedMessage(this);
+      throw new RuntimeException(
+          new com.google.protobuf.InvalidProtocolBufferException(
+              e.getMessage()).setUnfinishedMessage(this));
     } finally {
       if (((mutable_bitField0_ & 0x00000004) == 0x00000004)) {
         names_ = names_.getUnmodifiableView();
@@ -189,7 +189,7 @@ public  final class Variant extends
       int number) {
     switch (number) {
       case 10:
-        return info_;
+        return internalGetInfo();
       default:
         throw new RuntimeException(
             "Invalid map field number: " + number);
@@ -202,24 +202,9 @@ public  final class Variant extends
             com.google.genomics.v1.Variant.class, com.google.genomics.v1.Variant.Builder.class);
   }
 
-  public static final com.google.protobuf.Parser<Variant> PARSER =
-      new com.google.protobuf.AbstractParser<Variant>() {
-    public Variant parsePartialFrom(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return new Variant(input, extensionRegistry);
-    }
-  };
-
-  @java.lang.Override
-  public com.google.protobuf.Parser<Variant> getParserForType() {
-    return PARSER;
-  }
-
   private int bitField0_;
   public static final int VARIANT_SET_ID_FIELD_NUMBER = 15;
-  private java.lang.Object variantSetId_;
+  private volatile java.lang.Object variantSetId_;
   /**
    * <code>optional string variant_set_id = 15;</code>
    *
@@ -263,7 +248,7 @@ public  final class Variant extends
   }
 
   public static final int ID_FIELD_NUMBER = 2;
-  private java.lang.Object id_;
+  private volatile java.lang.Object id_;
   /**
    * <code>optional string id = 2;</code>
    *
@@ -365,7 +350,7 @@ public  final class Variant extends
   }
 
   public static final int REFERENCE_NAME_FIELD_NUMBER = 14;
-  private java.lang.Object referenceName_;
+  private volatile java.lang.Object referenceName_;
   /**
    * <code>optional string reference_name = 14;</code>
    *
@@ -441,7 +426,7 @@ public  final class Variant extends
   }
 
   public static final int REFERENCE_BASES_FIELD_NUMBER = 6;
-  private java.lang.Object referenceBases_;
+  private volatile java.lang.Object referenceBases_;
   /**
    * <code>optional string reference_bases = 6;</code>
    *
@@ -595,20 +580,27 @@ public  final class Variant extends
   }
 
   public static final int INFO_FIELD_NUMBER = 10;
-  private static final com.google.protobuf.MapEntry<
-      java.lang.String, com.google.protobuf.ListValue> infoDefaultEntry =
-          com.google.protobuf.MapEntry
-          .<java.lang.String, com.google.protobuf.ListValue>newDefaultInstance(
-              com.google.genomics.v1.VariantsProto.internal_static_google_genomics_v1_Variant_InfoEntry_descriptor, 
-              com.google.protobuf.WireFormat.FieldType.STRING,
-              "",
-              com.google.protobuf.WireFormat.FieldType.MESSAGE,
-              com.google.protobuf.ListValue.getDefaultInstance());
+  private static final class InfoDefaultEntryHolder {
+    static final com.google.protobuf.MapEntry<
+        java.lang.String, com.google.protobuf.ListValue> defaultEntry =
+            com.google.protobuf.MapEntry
+            .<java.lang.String, com.google.protobuf.ListValue>newDefaultInstance(
+                com.google.genomics.v1.VariantsProto.internal_static_google_genomics_v1_Variant_InfoEntry_descriptor, 
+                com.google.protobuf.WireFormat.FieldType.STRING,
+                "",
+                com.google.protobuf.WireFormat.FieldType.MESSAGE,
+                com.google.protobuf.ListValue.getDefaultInstance());
+  }
   private com.google.protobuf.MapField<
-      java.lang.String, com.google.protobuf.ListValue> info_ =
-          com.google.protobuf.MapField.emptyMapField(
-              infoDefaultEntry);
-
+      java.lang.String, com.google.protobuf.ListValue> info_;
+  private com.google.protobuf.MapField<java.lang.String, com.google.protobuf.ListValue>
+  internalGetInfo() {
+    if (info_ == null) {
+      return com.google.protobuf.MapField.emptyMapField(
+          InfoDefaultEntryHolder.defaultEntry);
+   }
+    return info_;
+  }
   /**
    * <code>map&lt;string, .google.protobuf.ListValue&gt; info = 10;</code>
    *
@@ -619,7 +611,7 @@ public  final class Variant extends
    */
 
   public java.util.Map<java.lang.String, com.google.protobuf.ListValue> getInfo() {
-    return info_.getMap();
+    return internalGetInfo().getMap();
   }
 
   public static final int CALLS_FIELD_NUMBER = 11;
@@ -694,7 +686,6 @@ public  final class Variant extends
 
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    getSerializedSize();
     if (!getIdBytes().isEmpty()) {
       output.writeBytes(2, getIdBytes());
     }
@@ -714,9 +705,9 @@ public  final class Variant extends
       output.writeBytes(9, filter_.getByteString(i));
     }
     for (java.util.Map.Entry<java.lang.String, com.google.protobuf.ListValue> entry
-         : info_.getMap().entrySet()) {
+         : internalGetInfo().getMap().entrySet()) {
       com.google.protobuf.MapEntry<java.lang.String, com.google.protobuf.ListValue>
-      info = infoDefaultEntry.newBuilderForType()
+      info = InfoDefaultEntryHolder.defaultEntry.newBuilderForType()
           .setKey(entry.getKey())
           .setValue(entry.getValue())
           .build();
@@ -788,9 +779,9 @@ public  final class Variant extends
       size += 1 * getFilterList().size();
     }
     for (java.util.Map.Entry<java.lang.String, com.google.protobuf.ListValue> entry
-         : info_.getMap().entrySet()) {
+         : internalGetInfo().getMap().entrySet()) {
       com.google.protobuf.MapEntry<java.lang.String, com.google.protobuf.ListValue>
-      info = infoDefaultEntry.newBuilderForType()
+      info = InfoDefaultEntryHolder.defaultEntry.newBuilderForType()
           .setKey(entry.getKey())
           .setValue(entry.getValue())
           .build();
@@ -879,12 +870,17 @@ public  final class Variant extends
     return PARSER.parseFrom(input, extensionRegistry);
   }
 
-  public static Builder newBuilder() { return new Builder(); }
   public Builder newBuilderForType() { return newBuilder(); }
-  public static Builder newBuilder(com.google.genomics.v1.Variant prototype) {
-    return newBuilder().mergeFrom(prototype);
+  public static Builder newBuilder() {
+    return DEFAULT_INSTANCE.toBuilder();
   }
-  public Builder toBuilder() { return newBuilder(this); }
+  public static Builder newBuilder(com.google.genomics.v1.Variant prototype) {
+    return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+  }
+  public Builder toBuilder() {
+    return this == DEFAULT_INSTANCE
+        ? new Builder() : new Builder().mergeFrom(this);
+  }
 
   @java.lang.Override
   protected Builder newBuilderForType(
@@ -920,7 +916,18 @@ public  final class Variant extends
         int number) {
       switch (number) {
         case 10:
-          return info_;
+          return internalGetInfo();
+        default:
+          throw new RuntimeException(
+              "Invalid map field number: " + number);
+      }
+    }
+    @SuppressWarnings({"rawtypes"})
+    protected com.google.protobuf.MapField internalGetMutableMapField(
+        int number) {
+      switch (number) {
+        case 10:
+          return internalGetMutableInfo();
         default:
           throw new RuntimeException(
               "Invalid map field number: " + number);
@@ -972,7 +979,7 @@ public  final class Variant extends
 
       filter_ = com.google.protobuf.LazyStringArrayList.EMPTY;
       bitField0_ = (bitField0_ & ~0x00000400);
-      info_.clear();
+      internalGetMutableInfo().clear();
       if (callsBuilder_ == null) {
         calls_ = java.util.Collections.emptyList();
         bitField0_ = (bitField0_ & ~0x00001000);
@@ -1026,7 +1033,8 @@ public  final class Variant extends
         bitField0_ = (bitField0_ & ~0x00000400);
       }
       result.filter_ = filter_;
-      result.info_ = info_.copy();
+      result.info_ = internalGetInfo();
+      result.info_.makeImmutable();
       if (callsBuilder_ == null) {
         if (((bitField0_ & 0x00001000) == 0x00001000)) {
           calls_ = java.util.Collections.unmodifiableList(calls_);
@@ -1110,7 +1118,8 @@ public  final class Variant extends
         }
         onChanged();
       }
-      info_.mergeFrom(other.info_);
+      internalGetMutableInfo().mergeFrom(
+          other.internalGetInfo());
       if (callsBuilder_ == null) {
         if (!other.calls_.isEmpty()) {
           if (calls_.isEmpty()) {
@@ -2098,10 +2107,27 @@ public  final class Variant extends
     }
 
     private com.google.protobuf.MapField<
-        java.lang.String, com.google.protobuf.ListValue> info_ =
-            com.google.protobuf.MapField.newMapField(
-                infoDefaultEntry);
-
+        java.lang.String, com.google.protobuf.ListValue> info_;
+    private com.google.protobuf.MapField<java.lang.String, com.google.protobuf.ListValue>
+    internalGetInfo() {
+      if (info_ == null) {
+        return com.google.protobuf.MapField.emptyMapField(
+            InfoDefaultEntryHolder.defaultEntry);
+     }
+      return info_;
+    }
+    private com.google.protobuf.MapField<java.lang.String, com.google.protobuf.ListValue>
+    internalGetMutableInfo() {
+      onChanged();;
+      if (info_ == null) {
+        info_ = com.google.protobuf.MapField.newMapField(
+            InfoDefaultEntryHolder.defaultEntry);
+      }
+      if (!info_.isMutable()) {
+        info_ = info_.copy();
+      }
+      return info_;
+    }
     /**
      * <code>map&lt;string, .google.protobuf.ListValue&gt; info = 10;</code>
      *
@@ -2111,7 +2137,7 @@ public  final class Variant extends
      * </pre>
      */
     public java.util.Map<java.lang.String, com.google.protobuf.ListValue> getInfo() {
-      return info_.getMap();
+      return internalGetInfo().getMap();
     }
     /**
      * <code>map&lt;string, .google.protobuf.ListValue&gt; info = 10;</code>
@@ -2123,8 +2149,7 @@ public  final class Variant extends
      */
     public java.util.Map<java.lang.String, com.google.protobuf.ListValue>
     getMutableInfo() {
-      onChanged();
-      return info_.getMutableMap();
+      return internalGetMutableInfo().getMutableMap();
     }
 
     private java.util.List<com.google.genomics.v1.VariantCall> calls_ =
@@ -2471,16 +2496,45 @@ public  final class Variant extends
   }
 
   // @@protoc_insertion_point(class_scope:google.genomics.v1.Variant)
-  private static final com.google.genomics.v1.Variant defaultInstance;static {
-    defaultInstance = new com.google.genomics.v1.Variant();
+  private static final com.google.genomics.v1.Variant DEFAULT_INSTANCE;
+  static {
+    DEFAULT_INSTANCE = new com.google.genomics.v1.Variant();
   }
 
   public static com.google.genomics.v1.Variant getDefaultInstance() {
-    return defaultInstance;
+    return DEFAULT_INSTANCE;
+  }
+
+  public static final com.google.protobuf.Parser<Variant> PARSER =
+      new com.google.protobuf.AbstractParser<Variant>() {
+    public Variant parsePartialFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      try {
+        return new Variant(input, extensionRegistry);
+      } catch (RuntimeException e) {
+        if (e.getCause() instanceof
+            com.google.protobuf.InvalidProtocolBufferException) {
+          throw (com.google.protobuf.InvalidProtocolBufferException)
+              e.getCause();
+        }
+        throw e;
+      }
+    }
+  };
+
+  public static com.google.protobuf.Parser<Variant> parser() {
+    return PARSER;
+  }
+
+  @java.lang.Override
+  public com.google.protobuf.Parser<Variant> getParserForType() {
+    return PARSER;
   }
 
   public com.google.genomics.v1.Variant getDefaultInstanceForType() {
-    return defaultInstance;
+    return DEFAULT_INSTANCE;
   }
 
 }

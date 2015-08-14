@@ -37,8 +37,7 @@ public  final class SearchVariantsRequest extends
   }
   private SearchVariantsRequest(
       com.google.protobuf.CodedInputStream input,
-      com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-      throws com.google.protobuf.InvalidProtocolBufferException {
+      com.google.protobuf.ExtensionRegistryLite extensionRegistry) {
     this();
     int mutable_bitField0_ = 0;
     try {
@@ -114,10 +113,11 @@ public  final class SearchVariantsRequest extends
         }
       }
     } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-      throw e.setUnfinishedMessage(this);
+      throw new RuntimeException(e.setUnfinishedMessage(this));
     } catch (java.io.IOException e) {
-      throw new com.google.protobuf.InvalidProtocolBufferException(
-          e.getMessage()).setUnfinishedMessage(this);
+      throw new RuntimeException(
+          new com.google.protobuf.InvalidProtocolBufferException(
+              e.getMessage()).setUnfinishedMessage(this));
     } finally {
       if (((mutable_bitField0_ & 0x00000001) == 0x00000001)) {
         variantSetIds_ = variantSetIds_.getUnmodifiableView();
@@ -138,21 +138,6 @@ public  final class SearchVariantsRequest extends
     return com.google.genomics.v1.VariantsProto.internal_static_google_genomics_v1_SearchVariantsRequest_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
             com.google.genomics.v1.SearchVariantsRequest.class, com.google.genomics.v1.SearchVariantsRequest.Builder.class);
-  }
-
-  public static final com.google.protobuf.Parser<SearchVariantsRequest> PARSER =
-      new com.google.protobuf.AbstractParser<SearchVariantsRequest>() {
-    public SearchVariantsRequest parsePartialFrom(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return new SearchVariantsRequest(input, extensionRegistry);
-    }
-  };
-
-  @java.lang.Override
-  public com.google.protobuf.Parser<SearchVariantsRequest> getParserForType() {
-    return PARSER;
   }
 
   private int bitField0_;
@@ -210,7 +195,7 @@ public  final class SearchVariantsRequest extends
   }
 
   public static final int VARIANT_NAME_FIELD_NUMBER = 2;
-  private java.lang.Object variantName_;
+  private volatile java.lang.Object variantName_;
   /**
    * <code>optional string variant_name = 2;</code>
    *
@@ -311,7 +296,7 @@ public  final class SearchVariantsRequest extends
   }
 
   public static final int REFERENCE_NAME_FIELD_NUMBER = 4;
-  private java.lang.Object referenceName_;
+  private volatile java.lang.Object referenceName_;
   /**
    * <code>optional string reference_name = 4;</code>
    *
@@ -383,7 +368,7 @@ public  final class SearchVariantsRequest extends
   }
 
   public static final int PAGE_TOKEN_FIELD_NUMBER = 7;
-  private java.lang.Object pageToken_;
+  private volatile java.lang.Object pageToken_;
   /**
    * <code>optional string page_token = 7;</code>
    *
@@ -470,7 +455,6 @@ public  final class SearchVariantsRequest extends
 
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    getSerializedSize();
     for (int i = 0; i < variantSetIds_.size(); i++) {
       output.writeBytes(1, variantSetIds_.getByteString(i));
     }
@@ -610,12 +594,17 @@ public  final class SearchVariantsRequest extends
     return PARSER.parseFrom(input, extensionRegistry);
   }
 
-  public static Builder newBuilder() { return new Builder(); }
   public Builder newBuilderForType() { return newBuilder(); }
-  public static Builder newBuilder(com.google.genomics.v1.SearchVariantsRequest prototype) {
-    return newBuilder().mergeFrom(prototype);
+  public static Builder newBuilder() {
+    return DEFAULT_INSTANCE.toBuilder();
   }
-  public Builder toBuilder() { return newBuilder(this); }
+  public static Builder newBuilder(com.google.genomics.v1.SearchVariantsRequest prototype) {
+    return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+  }
+  public Builder toBuilder() {
+    return this == DEFAULT_INSTANCE
+        ? new Builder() : new Builder().mergeFrom(this);
+  }
 
   @java.lang.Override
   protected Builder newBuilderForType(
@@ -1569,16 +1558,45 @@ public  final class SearchVariantsRequest extends
   }
 
   // @@protoc_insertion_point(class_scope:google.genomics.v1.SearchVariantsRequest)
-  private static final com.google.genomics.v1.SearchVariantsRequest defaultInstance;static {
-    defaultInstance = new com.google.genomics.v1.SearchVariantsRequest();
+  private static final com.google.genomics.v1.SearchVariantsRequest DEFAULT_INSTANCE;
+  static {
+    DEFAULT_INSTANCE = new com.google.genomics.v1.SearchVariantsRequest();
   }
 
   public static com.google.genomics.v1.SearchVariantsRequest getDefaultInstance() {
-    return defaultInstance;
+    return DEFAULT_INSTANCE;
+  }
+
+  public static final com.google.protobuf.Parser<SearchVariantsRequest> PARSER =
+      new com.google.protobuf.AbstractParser<SearchVariantsRequest>() {
+    public SearchVariantsRequest parsePartialFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      try {
+        return new SearchVariantsRequest(input, extensionRegistry);
+      } catch (RuntimeException e) {
+        if (e.getCause() instanceof
+            com.google.protobuf.InvalidProtocolBufferException) {
+          throw (com.google.protobuf.InvalidProtocolBufferException)
+              e.getCause();
+        }
+        throw e;
+      }
+    }
+  };
+
+  public static com.google.protobuf.Parser<SearchVariantsRequest> parser() {
+    return PARSER;
+  }
+
+  @java.lang.Override
+  public com.google.protobuf.Parser<SearchVariantsRequest> getParserForType() {
+    return PARSER;
   }
 
   public com.google.genomics.v1.SearchVariantsRequest getDefaultInstanceForType() {
-    return defaultInstance;
+    return DEFAULT_INSTANCE;
   }
 
 }

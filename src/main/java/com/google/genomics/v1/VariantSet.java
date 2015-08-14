@@ -33,8 +33,7 @@ public  final class VariantSet extends
   }
   private VariantSet(
       com.google.protobuf.CodedInputStream input,
-      com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-      throws com.google.protobuf.InvalidProtocolBufferException {
+      com.google.protobuf.ExtensionRegistryLite extensionRegistry) {
     this();
     int mutable_bitField0_ = 0;
     try {
@@ -82,10 +81,11 @@ public  final class VariantSet extends
         }
       }
     } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-      throw e.setUnfinishedMessage(this);
+      throw new RuntimeException(e.setUnfinishedMessage(this));
     } catch (java.io.IOException e) {
-      throw new com.google.protobuf.InvalidProtocolBufferException(
-          e.getMessage()).setUnfinishedMessage(this);
+      throw new RuntimeException(
+          new com.google.protobuf.InvalidProtocolBufferException(
+              e.getMessage()).setUnfinishedMessage(this));
     } finally {
       if (((mutable_bitField0_ & 0x00000008) == 0x00000008)) {
         metadata_ = java.util.Collections.unmodifiableList(metadata_);
@@ -108,24 +108,9 @@ public  final class VariantSet extends
             com.google.genomics.v1.VariantSet.class, com.google.genomics.v1.VariantSet.Builder.class);
   }
 
-  public static final com.google.protobuf.Parser<VariantSet> PARSER =
-      new com.google.protobuf.AbstractParser<VariantSet>() {
-    public VariantSet parsePartialFrom(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return new VariantSet(input, extensionRegistry);
-    }
-  };
-
-  @java.lang.Override
-  public com.google.protobuf.Parser<VariantSet> getParserForType() {
-    return PARSER;
-  }
-
   private int bitField0_;
   public static final int DATASET_ID_FIELD_NUMBER = 1;
-  private java.lang.Object datasetId_;
+  private volatile java.lang.Object datasetId_;
   /**
    * <code>optional string dataset_id = 1;</code>
    *
@@ -169,7 +154,7 @@ public  final class VariantSet extends
   }
 
   public static final int ID_FIELD_NUMBER = 2;
-  private java.lang.Object id_;
+  private volatile java.lang.Object id_;
   /**
    * <code>optional string id = 2;</code>
    *
@@ -339,7 +324,6 @@ public  final class VariantSet extends
 
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    getSerializedSize();
     if (!getDatasetIdBytes().isEmpty()) {
       output.writeBytes(1, getDatasetIdBytes());
     }
@@ -434,12 +418,17 @@ public  final class VariantSet extends
     return PARSER.parseFrom(input, extensionRegistry);
   }
 
-  public static Builder newBuilder() { return new Builder(); }
   public Builder newBuilderForType() { return newBuilder(); }
-  public static Builder newBuilder(com.google.genomics.v1.VariantSet prototype) {
-    return newBuilder().mergeFrom(prototype);
+  public static Builder newBuilder() {
+    return DEFAULT_INSTANCE.toBuilder();
   }
-  public Builder toBuilder() { return newBuilder(this); }
+  public static Builder newBuilder(com.google.genomics.v1.VariantSet prototype) {
+    return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+  }
+  public Builder toBuilder() {
+    return this == DEFAULT_INSTANCE
+        ? new Builder() : new Builder().mergeFrom(this);
+  }
 
   @java.lang.Override
   protected Builder newBuilderForType(
@@ -1488,16 +1477,45 @@ public  final class VariantSet extends
   }
 
   // @@protoc_insertion_point(class_scope:google.genomics.v1.VariantSet)
-  private static final com.google.genomics.v1.VariantSet defaultInstance;static {
-    defaultInstance = new com.google.genomics.v1.VariantSet();
+  private static final com.google.genomics.v1.VariantSet DEFAULT_INSTANCE;
+  static {
+    DEFAULT_INSTANCE = new com.google.genomics.v1.VariantSet();
   }
 
   public static com.google.genomics.v1.VariantSet getDefaultInstance() {
-    return defaultInstance;
+    return DEFAULT_INSTANCE;
+  }
+
+  public static final com.google.protobuf.Parser<VariantSet> PARSER =
+      new com.google.protobuf.AbstractParser<VariantSet>() {
+    public VariantSet parsePartialFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      try {
+        return new VariantSet(input, extensionRegistry);
+      } catch (RuntimeException e) {
+        if (e.getCause() instanceof
+            com.google.protobuf.InvalidProtocolBufferException) {
+          throw (com.google.protobuf.InvalidProtocolBufferException)
+              e.getCause();
+        }
+        throw e;
+      }
+    }
+  };
+
+  public static com.google.protobuf.Parser<VariantSet> parser() {
+    return PARSER;
+  }
+
+  @java.lang.Override
+  public com.google.protobuf.Parser<VariantSet> getParserForType() {
+    return PARSER;
   }
 
   public com.google.genomics.v1.VariantSet getDefaultInstanceForType() {
-    return defaultInstance;
+    return DEFAULT_INSTANCE;
   }
 
 }

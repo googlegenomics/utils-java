@@ -8,17 +8,17 @@ public final class ReadAlignmentProto {
   public static void registerAllExtensions(
       com.google.protobuf.ExtensionRegistry registry) {
   }
-  static final com.google.protobuf.Descriptors.Descriptor
+  static com.google.protobuf.Descriptors.Descriptor
     internal_static_google_genomics_v1_LinearAlignment_descriptor;
   static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_google_genomics_v1_LinearAlignment_fieldAccessorTable;
-  static final com.google.protobuf.Descriptors.Descriptor
+  static com.google.protobuf.Descriptors.Descriptor
     internal_static_google_genomics_v1_Read_descriptor;
   static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_google_genomics_v1_Read_fieldAccessorTable;
-  static final com.google.protobuf.Descriptors.Descriptor
+  static com.google.protobuf.Descriptors.Descriptor
     internal_static_google_genomics_v1_Read_InfoEntry_descriptor;
   static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable

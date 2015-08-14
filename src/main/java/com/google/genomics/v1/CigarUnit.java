@@ -31,8 +31,7 @@ public  final class CigarUnit extends
   }
   private CigarUnit(
       com.google.protobuf.CodedInputStream input,
-      com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-      throws com.google.protobuf.InvalidProtocolBufferException {
+      com.google.protobuf.ExtensionRegistryLite extensionRegistry) {
     this();
     int mutable_bitField0_ = 0;
     try {
@@ -69,10 +68,11 @@ public  final class CigarUnit extends
         }
       }
     } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-      throw e.setUnfinishedMessage(this);
+      throw new RuntimeException(e.setUnfinishedMessage(this));
     } catch (java.io.IOException e) {
-      throw new com.google.protobuf.InvalidProtocolBufferException(
-          e.getMessage()).setUnfinishedMessage(this);
+      throw new RuntimeException(
+          new com.google.protobuf.InvalidProtocolBufferException(
+              e.getMessage()).setUnfinishedMessage(this));
     } finally {
       makeExtensionsImmutable();
     }
@@ -87,21 +87,6 @@ public  final class CigarUnit extends
     return com.google.genomics.v1.CigarProto.internal_static_google_genomics_v1_CigarUnit_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
             com.google.genomics.v1.CigarUnit.class, com.google.genomics.v1.CigarUnit.Builder.class);
-  }
-
-  public static final com.google.protobuf.Parser<CigarUnit> PARSER =
-      new com.google.protobuf.AbstractParser<CigarUnit>() {
-    public CigarUnit parsePartialFrom(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return new CigarUnit(input, extensionRegistry);
-    }
-  };
-
-  @java.lang.Override
-  public com.google.protobuf.Parser<CigarUnit> getParserForType() {
-    return PARSER;
   }
 
   /**
@@ -427,7 +412,7 @@ public  final class CigarUnit extends
   }
 
   public static final int REFERENCE_SEQUENCE_FIELD_NUMBER = 3;
-  private java.lang.Object referenceSequence_;
+  private volatile java.lang.Object referenceSequence_;
   /**
    * <code>optional string reference_sequence = 3;</code>
    *
@@ -488,7 +473,6 @@ public  final class CigarUnit extends
 
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    getSerializedSize();
     if (operation_ != com.google.genomics.v1.CigarUnit.Operation.OPERATION_UNSPECIFIED.getNumber()) {
       output.writeEnum(1, operation_);
     }
@@ -576,12 +560,17 @@ public  final class CigarUnit extends
     return PARSER.parseFrom(input, extensionRegistry);
   }
 
-  public static Builder newBuilder() { return new Builder(); }
   public Builder newBuilderForType() { return newBuilder(); }
-  public static Builder newBuilder(com.google.genomics.v1.CigarUnit prototype) {
-    return newBuilder().mergeFrom(prototype);
+  public static Builder newBuilder() {
+    return DEFAULT_INSTANCE.toBuilder();
   }
-  public Builder toBuilder() { return newBuilder(this); }
+  public static Builder newBuilder(com.google.genomics.v1.CigarUnit prototype) {
+    return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+  }
+  public Builder toBuilder() {
+    return this == DEFAULT_INSTANCE
+        ? new Builder() : new Builder().mergeFrom(this);
+  }
 
   @java.lang.Override
   protected Builder newBuilderForType(
@@ -911,16 +900,45 @@ public  final class CigarUnit extends
   }
 
   // @@protoc_insertion_point(class_scope:google.genomics.v1.CigarUnit)
-  private static final com.google.genomics.v1.CigarUnit defaultInstance;static {
-    defaultInstance = new com.google.genomics.v1.CigarUnit();
+  private static final com.google.genomics.v1.CigarUnit DEFAULT_INSTANCE;
+  static {
+    DEFAULT_INSTANCE = new com.google.genomics.v1.CigarUnit();
   }
 
   public static com.google.genomics.v1.CigarUnit getDefaultInstance() {
-    return defaultInstance;
+    return DEFAULT_INSTANCE;
+  }
+
+  public static final com.google.protobuf.Parser<CigarUnit> PARSER =
+      new com.google.protobuf.AbstractParser<CigarUnit>() {
+    public CigarUnit parsePartialFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      try {
+        return new CigarUnit(input, extensionRegistry);
+      } catch (RuntimeException e) {
+        if (e.getCause() instanceof
+            com.google.protobuf.InvalidProtocolBufferException) {
+          throw (com.google.protobuf.InvalidProtocolBufferException)
+              e.getCause();
+        }
+        throw e;
+      }
+    }
+  };
+
+  public static com.google.protobuf.Parser<CigarUnit> parser() {
+    return PARSER;
+  }
+
+  @java.lang.Override
+  public com.google.protobuf.Parser<CigarUnit> getParserForType() {
+    return PARSER;
   }
 
   public com.google.genomics.v1.CigarUnit getDefaultInstanceForType() {
-    return defaultInstance;
+    return DEFAULT_INSTANCE;
   }
 
 }

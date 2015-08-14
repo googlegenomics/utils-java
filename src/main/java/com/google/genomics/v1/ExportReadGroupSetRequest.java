@@ -32,8 +32,7 @@ public  final class ExportReadGroupSetRequest extends
   }
   private ExportReadGroupSetRequest(
       com.google.protobuf.CodedInputStream input,
-      com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-      throws com.google.protobuf.InvalidProtocolBufferException {
+      com.google.protobuf.ExtensionRegistryLite extensionRegistry) {
     this();
     int mutable_bitField0_ = 0;
     try {
@@ -80,10 +79,11 @@ public  final class ExportReadGroupSetRequest extends
         }
       }
     } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-      throw e.setUnfinishedMessage(this);
+      throw new RuntimeException(e.setUnfinishedMessage(this));
     } catch (java.io.IOException e) {
-      throw new com.google.protobuf.InvalidProtocolBufferException(
-          e.getMessage()).setUnfinishedMessage(this);
+      throw new RuntimeException(
+          new com.google.protobuf.InvalidProtocolBufferException(
+              e.getMessage()).setUnfinishedMessage(this));
     } finally {
       if (((mutable_bitField0_ & 0x00000008) == 0x00000008)) {
         referenceNames_ = referenceNames_.getUnmodifiableView();
@@ -103,24 +103,9 @@ public  final class ExportReadGroupSetRequest extends
             com.google.genomics.v1.ExportReadGroupSetRequest.class, com.google.genomics.v1.ExportReadGroupSetRequest.Builder.class);
   }
 
-  public static final com.google.protobuf.Parser<ExportReadGroupSetRequest> PARSER =
-      new com.google.protobuf.AbstractParser<ExportReadGroupSetRequest>() {
-    public ExportReadGroupSetRequest parsePartialFrom(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return new ExportReadGroupSetRequest(input, extensionRegistry);
-    }
-  };
-
-  @java.lang.Override
-  public com.google.protobuf.Parser<ExportReadGroupSetRequest> getParserForType() {
-    return PARSER;
-  }
-
   private int bitField0_;
   public static final int PROJECT_ID_FIELD_NUMBER = 1;
-  private java.lang.Object projectId_;
+  private volatile java.lang.Object projectId_;
   /**
    * <code>optional string project_id = 1;</code>
    *
@@ -164,7 +149,7 @@ public  final class ExportReadGroupSetRequest extends
   }
 
   public static final int EXPORT_URI_FIELD_NUMBER = 2;
-  private java.lang.Object exportUri_;
+  private volatile java.lang.Object exportUri_;
   /**
    * <code>optional string export_uri = 2;</code>
    *
@@ -212,7 +197,7 @@ public  final class ExportReadGroupSetRequest extends
   }
 
   public static final int READ_GROUP_SET_ID_FIELD_NUMBER = 3;
-  private java.lang.Object readGroupSetId_;
+  private volatile java.lang.Object readGroupSetId_;
   /**
    * <code>optional string read_group_set_id = 3;</code>
    *
@@ -320,7 +305,6 @@ public  final class ExportReadGroupSetRequest extends
 
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    getSerializedSize();
     if (!getProjectIdBytes().isEmpty()) {
       output.writeBytes(1, getProjectIdBytes());
     }
@@ -420,12 +404,17 @@ public  final class ExportReadGroupSetRequest extends
     return PARSER.parseFrom(input, extensionRegistry);
   }
 
-  public static Builder newBuilder() { return new Builder(); }
   public Builder newBuilderForType() { return newBuilder(); }
-  public static Builder newBuilder(com.google.genomics.v1.ExportReadGroupSetRequest prototype) {
-    return newBuilder().mergeFrom(prototype);
+  public static Builder newBuilder() {
+    return DEFAULT_INSTANCE.toBuilder();
   }
-  public Builder toBuilder() { return newBuilder(this); }
+  public static Builder newBuilder(com.google.genomics.v1.ExportReadGroupSetRequest prototype) {
+    return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+  }
+  public Builder toBuilder() {
+    return this == DEFAULT_INSTANCE
+        ? new Builder() : new Builder().mergeFrom(this);
+  }
 
   @java.lang.Override
   protected Builder newBuilderForType(
@@ -1018,16 +1007,45 @@ public  final class ExportReadGroupSetRequest extends
   }
 
   // @@protoc_insertion_point(class_scope:google.genomics.v1.ExportReadGroupSetRequest)
-  private static final com.google.genomics.v1.ExportReadGroupSetRequest defaultInstance;static {
-    defaultInstance = new com.google.genomics.v1.ExportReadGroupSetRequest();
+  private static final com.google.genomics.v1.ExportReadGroupSetRequest DEFAULT_INSTANCE;
+  static {
+    DEFAULT_INSTANCE = new com.google.genomics.v1.ExportReadGroupSetRequest();
   }
 
   public static com.google.genomics.v1.ExportReadGroupSetRequest getDefaultInstance() {
-    return defaultInstance;
+    return DEFAULT_INSTANCE;
+  }
+
+  public static final com.google.protobuf.Parser<ExportReadGroupSetRequest> PARSER =
+      new com.google.protobuf.AbstractParser<ExportReadGroupSetRequest>() {
+    public ExportReadGroupSetRequest parsePartialFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      try {
+        return new ExportReadGroupSetRequest(input, extensionRegistry);
+      } catch (RuntimeException e) {
+        if (e.getCause() instanceof
+            com.google.protobuf.InvalidProtocolBufferException) {
+          throw (com.google.protobuf.InvalidProtocolBufferException)
+              e.getCause();
+        }
+        throw e;
+      }
+    }
+  };
+
+  public static com.google.protobuf.Parser<ExportReadGroupSetRequest> parser() {
+    return PARSER;
+  }
+
+  @java.lang.Override
+  public com.google.protobuf.Parser<ExportReadGroupSetRequest> getParserForType() {
+    return PARSER;
   }
 
   public com.google.genomics.v1.ExportReadGroupSetRequest getDefaultInstanceForType() {
-    return defaultInstance;
+    return DEFAULT_INSTANCE;
   }
 
 }

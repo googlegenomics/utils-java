@@ -29,8 +29,7 @@ public  final class GetOperationRequest extends
   }
   private GetOperationRequest(
       com.google.protobuf.CodedInputStream input,
-      com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-      throws com.google.protobuf.InvalidProtocolBufferException {
+      com.google.protobuf.ExtensionRegistryLite extensionRegistry) {
     this();
     int mutable_bitField0_ = 0;
     try {
@@ -56,10 +55,11 @@ public  final class GetOperationRequest extends
         }
       }
     } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-      throw e.setUnfinishedMessage(this);
+      throw new RuntimeException(e.setUnfinishedMessage(this));
     } catch (java.io.IOException e) {
-      throw new com.google.protobuf.InvalidProtocolBufferException(
-          e.getMessage()).setUnfinishedMessage(this);
+      throw new RuntimeException(
+          new com.google.protobuf.InvalidProtocolBufferException(
+              e.getMessage()).setUnfinishedMessage(this));
     } finally {
       makeExtensionsImmutable();
     }
@@ -76,23 +76,8 @@ public  final class GetOperationRequest extends
             com.google.longrunning.GetOperationRequest.class, com.google.longrunning.GetOperationRequest.Builder.class);
   }
 
-  public static final com.google.protobuf.Parser<GetOperationRequest> PARSER =
-      new com.google.protobuf.AbstractParser<GetOperationRequest>() {
-    public GetOperationRequest parsePartialFrom(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return new GetOperationRequest(input, extensionRegistry);
-    }
-  };
-
-  @java.lang.Override
-  public com.google.protobuf.Parser<GetOperationRequest> getParserForType() {
-    return PARSER;
-  }
-
   public static final int NAME_FIELD_NUMBER = 1;
-  private java.lang.Object name_;
+  private volatile java.lang.Object name_;
   /**
    * <code>optional string name = 1;</code>
    *
@@ -147,7 +132,6 @@ public  final class GetOperationRequest extends
 
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    getSerializedSize();
     if (!getNameBytes().isEmpty()) {
       output.writeBytes(1, getNameBytes());
     }
@@ -221,12 +205,17 @@ public  final class GetOperationRequest extends
     return PARSER.parseFrom(input, extensionRegistry);
   }
 
-  public static Builder newBuilder() { return new Builder(); }
   public Builder newBuilderForType() { return newBuilder(); }
-  public static Builder newBuilder(com.google.longrunning.GetOperationRequest prototype) {
-    return newBuilder().mergeFrom(prototype);
+  public static Builder newBuilder() {
+    return DEFAULT_INSTANCE.toBuilder();
   }
-  public Builder toBuilder() { return newBuilder(this); }
+  public static Builder newBuilder(com.google.longrunning.GetOperationRequest prototype) {
+    return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+  }
+  public Builder toBuilder() {
+    return this == DEFAULT_INSTANCE
+        ? new Builder() : new Builder().mergeFrom(this);
+  }
 
   @java.lang.Override
   protected Builder newBuilderForType(
@@ -447,16 +436,45 @@ public  final class GetOperationRequest extends
   }
 
   // @@protoc_insertion_point(class_scope:google.longrunning.GetOperationRequest)
-  private static final com.google.longrunning.GetOperationRequest defaultInstance;static {
-    defaultInstance = new com.google.longrunning.GetOperationRequest();
+  private static final com.google.longrunning.GetOperationRequest DEFAULT_INSTANCE;
+  static {
+    DEFAULT_INSTANCE = new com.google.longrunning.GetOperationRequest();
   }
 
   public static com.google.longrunning.GetOperationRequest getDefaultInstance() {
-    return defaultInstance;
+    return DEFAULT_INSTANCE;
+  }
+
+  public static final com.google.protobuf.Parser<GetOperationRequest> PARSER =
+      new com.google.protobuf.AbstractParser<GetOperationRequest>() {
+    public GetOperationRequest parsePartialFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      try {
+        return new GetOperationRequest(input, extensionRegistry);
+      } catch (RuntimeException e) {
+        if (e.getCause() instanceof
+            com.google.protobuf.InvalidProtocolBufferException) {
+          throw (com.google.protobuf.InvalidProtocolBufferException)
+              e.getCause();
+        }
+        throw e;
+      }
+    }
+  };
+
+  public static com.google.protobuf.Parser<GetOperationRequest> parser() {
+    return PARSER;
+  }
+
+  @java.lang.Override
+  public com.google.protobuf.Parser<GetOperationRequest> getParserForType() {
+    return PARSER;
   }
 
   public com.google.longrunning.GetOperationRequest getDefaultInstanceForType() {
-    return defaultInstance;
+    return DEFAULT_INSTANCE;
   }
 
 }

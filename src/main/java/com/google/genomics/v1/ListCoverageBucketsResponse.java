@@ -27,8 +27,7 @@ public  final class ListCoverageBucketsResponse extends
   }
   private ListCoverageBucketsResponse(
       com.google.protobuf.CodedInputStream input,
-      com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-      throws com.google.protobuf.InvalidProtocolBufferException {
+      com.google.protobuf.ExtensionRegistryLite extensionRegistry) {
     this();
     int mutable_bitField0_ = 0;
     try {
@@ -67,10 +66,11 @@ public  final class ListCoverageBucketsResponse extends
         }
       }
     } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-      throw e.setUnfinishedMessage(this);
+      throw new RuntimeException(e.setUnfinishedMessage(this));
     } catch (java.io.IOException e) {
-      throw new com.google.protobuf.InvalidProtocolBufferException(
-          e.getMessage()).setUnfinishedMessage(this);
+      throw new RuntimeException(
+          new com.google.protobuf.InvalidProtocolBufferException(
+              e.getMessage()).setUnfinishedMessage(this));
     } finally {
       if (((mutable_bitField0_ & 0x00000002) == 0x00000002)) {
         coverageBuckets_ = java.util.Collections.unmodifiableList(coverageBuckets_);
@@ -88,21 +88,6 @@ public  final class ListCoverageBucketsResponse extends
     return com.google.genomics.v1.ReadsProto.internal_static_google_genomics_v1_ListCoverageBucketsResponse_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
             com.google.genomics.v1.ListCoverageBucketsResponse.class, com.google.genomics.v1.ListCoverageBucketsResponse.Builder.class);
-  }
-
-  public static final com.google.protobuf.Parser<ListCoverageBucketsResponse> PARSER =
-      new com.google.protobuf.AbstractParser<ListCoverageBucketsResponse>() {
-    public ListCoverageBucketsResponse parsePartialFrom(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return new ListCoverageBucketsResponse(input, extensionRegistry);
-    }
-  };
-
-  @java.lang.Override
-  public com.google.protobuf.Parser<ListCoverageBucketsResponse> getParserForType() {
-    return PARSER;
   }
 
   private int bitField0_;
@@ -193,7 +178,7 @@ public  final class ListCoverageBucketsResponse extends
   }
 
   public static final int NEXT_PAGE_TOKEN_FIELD_NUMBER = 3;
-  private java.lang.Object nextPageToken_;
+  private volatile java.lang.Object nextPageToken_;
   /**
    * <code>optional string next_page_token = 3;</code>
    *
@@ -252,7 +237,6 @@ public  final class ListCoverageBucketsResponse extends
 
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    getSerializedSize();
     if (bucketWidth_ != 0L) {
       output.writeInt64(1, bucketWidth_);
     }
@@ -340,12 +324,17 @@ public  final class ListCoverageBucketsResponse extends
     return PARSER.parseFrom(input, extensionRegistry);
   }
 
-  public static Builder newBuilder() { return new Builder(); }
   public Builder newBuilderForType() { return newBuilder(); }
-  public static Builder newBuilder(com.google.genomics.v1.ListCoverageBucketsResponse prototype) {
-    return newBuilder().mergeFrom(prototype);
+  public static Builder newBuilder() {
+    return DEFAULT_INSTANCE.toBuilder();
   }
-  public Builder toBuilder() { return newBuilder(this); }
+  public static Builder newBuilder(com.google.genomics.v1.ListCoverageBucketsResponse prototype) {
+    return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+  }
+  public Builder toBuilder() {
+    return this == DEFAULT_INSTANCE
+        ? new Builder() : new Builder().mergeFrom(this);
+  }
 
   @java.lang.Override
   protected Builder newBuilderForType(
@@ -1037,16 +1026,45 @@ public  final class ListCoverageBucketsResponse extends
   }
 
   // @@protoc_insertion_point(class_scope:google.genomics.v1.ListCoverageBucketsResponse)
-  private static final com.google.genomics.v1.ListCoverageBucketsResponse defaultInstance;static {
-    defaultInstance = new com.google.genomics.v1.ListCoverageBucketsResponse();
+  private static final com.google.genomics.v1.ListCoverageBucketsResponse DEFAULT_INSTANCE;
+  static {
+    DEFAULT_INSTANCE = new com.google.genomics.v1.ListCoverageBucketsResponse();
   }
 
   public static com.google.genomics.v1.ListCoverageBucketsResponse getDefaultInstance() {
-    return defaultInstance;
+    return DEFAULT_INSTANCE;
+  }
+
+  public static final com.google.protobuf.Parser<ListCoverageBucketsResponse> PARSER =
+      new com.google.protobuf.AbstractParser<ListCoverageBucketsResponse>() {
+    public ListCoverageBucketsResponse parsePartialFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      try {
+        return new ListCoverageBucketsResponse(input, extensionRegistry);
+      } catch (RuntimeException e) {
+        if (e.getCause() instanceof
+            com.google.protobuf.InvalidProtocolBufferException) {
+          throw (com.google.protobuf.InvalidProtocolBufferException)
+              e.getCause();
+        }
+        throw e;
+      }
+    }
+  };
+
+  public static com.google.protobuf.Parser<ListCoverageBucketsResponse> parser() {
+    return PARSER;
+  }
+
+  @java.lang.Override
+  public com.google.protobuf.Parser<ListCoverageBucketsResponse> getParserForType() {
+    return PARSER;
   }
 
   public com.google.genomics.v1.ListCoverageBucketsResponse getDefaultInstanceForType() {
-    return defaultInstance;
+    return DEFAULT_INSTANCE;
   }
 
 }

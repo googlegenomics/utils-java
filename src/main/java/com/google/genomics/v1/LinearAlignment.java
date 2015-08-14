@@ -31,8 +31,7 @@ public  final class LinearAlignment extends
   }
   private LinearAlignment(
       com.google.protobuf.CodedInputStream input,
-      com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-      throws com.google.protobuf.InvalidProtocolBufferException {
+      com.google.protobuf.ExtensionRegistryLite extensionRegistry) {
     this();
     int mutable_bitField0_ = 0;
     try {
@@ -78,10 +77,11 @@ public  final class LinearAlignment extends
         }
       }
     } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-      throw e.setUnfinishedMessage(this);
+      throw new RuntimeException(e.setUnfinishedMessage(this));
     } catch (java.io.IOException e) {
-      throw new com.google.protobuf.InvalidProtocolBufferException(
-          e.getMessage()).setUnfinishedMessage(this);
+      throw new RuntimeException(
+          new com.google.protobuf.InvalidProtocolBufferException(
+              e.getMessage()).setUnfinishedMessage(this));
     } finally {
       if (((mutable_bitField0_ & 0x00000004) == 0x00000004)) {
         cigar_ = java.util.Collections.unmodifiableList(cigar_);
@@ -99,21 +99,6 @@ public  final class LinearAlignment extends
     return com.google.genomics.v1.ReadAlignmentProto.internal_static_google_genomics_v1_LinearAlignment_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
             com.google.genomics.v1.LinearAlignment.class, com.google.genomics.v1.LinearAlignment.Builder.class);
-  }
-
-  public static final com.google.protobuf.Parser<LinearAlignment> PARSER =
-      new com.google.protobuf.AbstractParser<LinearAlignment>() {
-    public LinearAlignment parsePartialFrom(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return new LinearAlignment(input, extensionRegistry);
-    }
-  };
-
-  @java.lang.Override
-  public com.google.protobuf.Parser<LinearAlignment> getParserForType() {
-    return PARSER;
   }
 
   private int bitField0_;
@@ -236,7 +221,6 @@ public  final class LinearAlignment extends
 
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    getSerializedSize();
     if (position_ != null) {
       output.writeMessage(1, getPosition());
     }
@@ -324,12 +308,17 @@ public  final class LinearAlignment extends
     return PARSER.parseFrom(input, extensionRegistry);
   }
 
-  public static Builder newBuilder() { return new Builder(); }
   public Builder newBuilderForType() { return newBuilder(); }
-  public static Builder newBuilder(com.google.genomics.v1.LinearAlignment prototype) {
-    return newBuilder().mergeFrom(prototype);
+  public static Builder newBuilder() {
+    return DEFAULT_INSTANCE.toBuilder();
   }
-  public Builder toBuilder() { return newBuilder(this); }
+  public static Builder newBuilder(com.google.genomics.v1.LinearAlignment prototype) {
+    return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+  }
+  public Builder toBuilder() {
+    return this == DEFAULT_INSTANCE
+        ? new Builder() : new Builder().mergeFrom(this);
+  }
 
   @java.lang.Override
   protected Builder newBuilderForType(
@@ -1044,16 +1033,45 @@ public  final class LinearAlignment extends
   }
 
   // @@protoc_insertion_point(class_scope:google.genomics.v1.LinearAlignment)
-  private static final com.google.genomics.v1.LinearAlignment defaultInstance;static {
-    defaultInstance = new com.google.genomics.v1.LinearAlignment();
+  private static final com.google.genomics.v1.LinearAlignment DEFAULT_INSTANCE;
+  static {
+    DEFAULT_INSTANCE = new com.google.genomics.v1.LinearAlignment();
   }
 
   public static com.google.genomics.v1.LinearAlignment getDefaultInstance() {
-    return defaultInstance;
+    return DEFAULT_INSTANCE;
+  }
+
+  public static final com.google.protobuf.Parser<LinearAlignment> PARSER =
+      new com.google.protobuf.AbstractParser<LinearAlignment>() {
+    public LinearAlignment parsePartialFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      try {
+        return new LinearAlignment(input, extensionRegistry);
+      } catch (RuntimeException e) {
+        if (e.getCause() instanceof
+            com.google.protobuf.InvalidProtocolBufferException) {
+          throw (com.google.protobuf.InvalidProtocolBufferException)
+              e.getCause();
+        }
+        throw e;
+      }
+    }
+  };
+
+  public static com.google.protobuf.Parser<LinearAlignment> parser() {
+    return PARSER;
+  }
+
+  @java.lang.Override
+  public com.google.protobuf.Parser<LinearAlignment> getParserForType() {
+    return PARSER;
   }
 
   public com.google.genomics.v1.LinearAlignment getDefaultInstanceForType() {
-    return defaultInstance;
+    return DEFAULT_INSTANCE;
   }
 
 }

@@ -8,77 +8,77 @@ public final class ReadsProto {
   public static void registerAllExtensions(
       com.google.protobuf.ExtensionRegistry registry) {
   }
-  static final com.google.protobuf.Descriptors.Descriptor
+  static com.google.protobuf.Descriptors.Descriptor
     internal_static_google_genomics_v1_SearchReadGroupSetsRequest_descriptor;
   static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_google_genomics_v1_SearchReadGroupSetsRequest_fieldAccessorTable;
-  static final com.google.protobuf.Descriptors.Descriptor
+  static com.google.protobuf.Descriptors.Descriptor
     internal_static_google_genomics_v1_SearchReadGroupSetsResponse_descriptor;
   static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_google_genomics_v1_SearchReadGroupSetsResponse_fieldAccessorTable;
-  static final com.google.protobuf.Descriptors.Descriptor
+  static com.google.protobuf.Descriptors.Descriptor
     internal_static_google_genomics_v1_ImportReadGroupSetsRequest_descriptor;
   static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_google_genomics_v1_ImportReadGroupSetsRequest_fieldAccessorTable;
-  static final com.google.protobuf.Descriptors.Descriptor
+  static com.google.protobuf.Descriptors.Descriptor
     internal_static_google_genomics_v1_ImportReadGroupSetsResponse_descriptor;
   static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_google_genomics_v1_ImportReadGroupSetsResponse_fieldAccessorTable;
-  static final com.google.protobuf.Descriptors.Descriptor
+  static com.google.protobuf.Descriptors.Descriptor
     internal_static_google_genomics_v1_ExportReadGroupSetRequest_descriptor;
   static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_google_genomics_v1_ExportReadGroupSetRequest_fieldAccessorTable;
-  static final com.google.protobuf.Descriptors.Descriptor
+  static com.google.protobuf.Descriptors.Descriptor
     internal_static_google_genomics_v1_UpdateReadGroupSetRequest_descriptor;
   static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_google_genomics_v1_UpdateReadGroupSetRequest_fieldAccessorTable;
-  static final com.google.protobuf.Descriptors.Descriptor
+  static com.google.protobuf.Descriptors.Descriptor
     internal_static_google_genomics_v1_DeleteReadGroupSetRequest_descriptor;
   static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_google_genomics_v1_DeleteReadGroupSetRequest_fieldAccessorTable;
-  static final com.google.protobuf.Descriptors.Descriptor
+  static com.google.protobuf.Descriptors.Descriptor
     internal_static_google_genomics_v1_GetReadGroupSetRequest_descriptor;
   static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_google_genomics_v1_GetReadGroupSetRequest_fieldAccessorTable;
-  static final com.google.protobuf.Descriptors.Descriptor
+  static com.google.protobuf.Descriptors.Descriptor
     internal_static_google_genomics_v1_ListCoverageBucketsRequest_descriptor;
   static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_google_genomics_v1_ListCoverageBucketsRequest_fieldAccessorTable;
-  static final com.google.protobuf.Descriptors.Descriptor
+  static com.google.protobuf.Descriptors.Descriptor
     internal_static_google_genomics_v1_CoverageBucket_descriptor;
   static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_google_genomics_v1_CoverageBucket_fieldAccessorTable;
-  static final com.google.protobuf.Descriptors.Descriptor
+  static com.google.protobuf.Descriptors.Descriptor
     internal_static_google_genomics_v1_ListCoverageBucketsResponse_descriptor;
   static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_google_genomics_v1_ListCoverageBucketsResponse_fieldAccessorTable;
-  static final com.google.protobuf.Descriptors.Descriptor
+  static com.google.protobuf.Descriptors.Descriptor
     internal_static_google_genomics_v1_SearchReadsRequest_descriptor;
   static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_google_genomics_v1_SearchReadsRequest_fieldAccessorTable;
-  static final com.google.protobuf.Descriptors.Descriptor
+  static com.google.protobuf.Descriptors.Descriptor
     internal_static_google_genomics_v1_SearchReadsResponse_descriptor;
   static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_google_genomics_v1_SearchReadsResponse_fieldAccessorTable;
-  static final com.google.protobuf.Descriptors.Descriptor
+  static com.google.protobuf.Descriptors.Descriptor
     internal_static_google_genomics_v1_StreamReadsRequest_descriptor;
   static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_google_genomics_v1_StreamReadsRequest_fieldAccessorTable;
-  static final com.google.protobuf.Descriptors.Descriptor
+  static com.google.protobuf.Descriptors.Descriptor
     internal_static_google_genomics_v1_StreamReadsResponse_descriptor;
   static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
@@ -293,14 +293,6 @@ public final class ReadsProto {
         new java.lang.String[] { "Alignments", });
     com.google.protobuf.ExtensionRegistry registry =
         com.google.protobuf.ExtensionRegistry.newInstance();
-    registry.add(com.google.api.AnnotationsProto.http);
-    registry.add(com.google.api.AnnotationsProto.http);
-    registry.add(com.google.api.AnnotationsProto.http);
-    registry.add(com.google.api.AnnotationsProto.http);
-    registry.add(com.google.api.AnnotationsProto.http);
-    registry.add(com.google.api.AnnotationsProto.http);
-    registry.add(com.google.api.AnnotationsProto.http);
-    registry.add(com.google.api.AnnotationsProto.http);
     registry.add(com.google.api.AnnotationsProto.http);
     com.google.protobuf.Descriptors.FileDescriptor
         .internalUpdateFileDescriptor(descriptor, registry);

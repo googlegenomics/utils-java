@@ -38,8 +38,7 @@ public  final class Reference extends
   }
   private Reference(
       com.google.protobuf.CodedInputStream input,
-      com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-      throws com.google.protobuf.InvalidProtocolBufferException {
+      com.google.protobuf.ExtensionRegistryLite extensionRegistry) {
     this();
     int mutable_bitField0_ = 0;
     try {
@@ -102,10 +101,11 @@ public  final class Reference extends
         }
       }
     } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-      throw e.setUnfinishedMessage(this);
+      throw new RuntimeException(e.setUnfinishedMessage(this));
     } catch (java.io.IOException e) {
-      throw new com.google.protobuf.InvalidProtocolBufferException(
-          e.getMessage()).setUnfinishedMessage(this);
+      throw new RuntimeException(
+          new com.google.protobuf.InvalidProtocolBufferException(
+              e.getMessage()).setUnfinishedMessage(this));
     } finally {
       if (((mutable_bitField0_ & 0x00000020) == 0x00000020)) {
         sourceAccessions_ = sourceAccessions_.getUnmodifiableView();
@@ -125,24 +125,9 @@ public  final class Reference extends
             com.google.genomics.v1.Reference.class, com.google.genomics.v1.Reference.Builder.class);
   }
 
-  public static final com.google.protobuf.Parser<Reference> PARSER =
-      new com.google.protobuf.AbstractParser<Reference>() {
-    public Reference parsePartialFrom(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return new Reference(input, extensionRegistry);
-    }
-  };
-
-  @java.lang.Override
-  public com.google.protobuf.Parser<Reference> getParserForType() {
-    return PARSER;
-  }
-
   private int bitField0_;
   public static final int ID_FIELD_NUMBER = 1;
-  private java.lang.Object id_;
+  private volatile java.lang.Object id_;
   /**
    * <code>optional string id = 1;</code>
    *
@@ -199,7 +184,7 @@ public  final class Reference extends
   }
 
   public static final int MD5CHECKSUM_FIELD_NUMBER = 3;
-  private java.lang.Object md5Checksum_;
+  private volatile java.lang.Object md5Checksum_;
   /**
    * <code>optional string md5checksum = 3;</code>
    *
@@ -247,7 +232,7 @@ public  final class Reference extends
   }
 
   public static final int NAME_FIELD_NUMBER = 4;
-  private java.lang.Object name_;
+  private volatile java.lang.Object name_;
   /**
    * <code>optional string name = 4;</code>
    *
@@ -291,7 +276,7 @@ public  final class Reference extends
   }
 
   public static final int SOURCE_URI_FIELD_NUMBER = 5;
-  private java.lang.Object sourceUri_;
+  private volatile java.lang.Object sourceUri_;
   /**
    * <code>optional string source_uri = 5;</code>
    *
@@ -411,7 +396,6 @@ public  final class Reference extends
 
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    getSerializedSize();
     if (!getIdBytes().isEmpty()) {
       output.writeBytes(1, getIdBytes());
     }
@@ -532,12 +516,17 @@ public  final class Reference extends
     return PARSER.parseFrom(input, extensionRegistry);
   }
 
-  public static Builder newBuilder() { return new Builder(); }
   public Builder newBuilderForType() { return newBuilder(); }
-  public static Builder newBuilder(com.google.genomics.v1.Reference prototype) {
-    return newBuilder().mergeFrom(prototype);
+  public static Builder newBuilder() {
+    return DEFAULT_INSTANCE.toBuilder();
   }
-  public Builder toBuilder() { return newBuilder(this); }
+  public static Builder newBuilder(com.google.genomics.v1.Reference prototype) {
+    return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+  }
+  public Builder toBuilder() {
+    return this == DEFAULT_INSTANCE
+        ? new Builder() : new Builder().mergeFrom(this);
+  }
 
   @java.lang.Override
   protected Builder newBuilderForType(
@@ -1317,16 +1306,45 @@ public  final class Reference extends
   }
 
   // @@protoc_insertion_point(class_scope:google.genomics.v1.Reference)
-  private static final com.google.genomics.v1.Reference defaultInstance;static {
-    defaultInstance = new com.google.genomics.v1.Reference();
+  private static final com.google.genomics.v1.Reference DEFAULT_INSTANCE;
+  static {
+    DEFAULT_INSTANCE = new com.google.genomics.v1.Reference();
   }
 
   public static com.google.genomics.v1.Reference getDefaultInstance() {
-    return defaultInstance;
+    return DEFAULT_INSTANCE;
+  }
+
+  public static final com.google.protobuf.Parser<Reference> PARSER =
+      new com.google.protobuf.AbstractParser<Reference>() {
+    public Reference parsePartialFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      try {
+        return new Reference(input, extensionRegistry);
+      } catch (RuntimeException e) {
+        if (e.getCause() instanceof
+            com.google.protobuf.InvalidProtocolBufferException) {
+          throw (com.google.protobuf.InvalidProtocolBufferException)
+              e.getCause();
+        }
+        throw e;
+      }
+    }
+  };
+
+  public static com.google.protobuf.Parser<Reference> parser() {
+    return PARSER;
+  }
+
+  @java.lang.Override
+  public com.google.protobuf.Parser<Reference> getParserForType() {
+    return PARSER;
   }
 
   public com.google.genomics.v1.Reference getDefaultInstanceForType() {
-    return defaultInstance;
+    return DEFAULT_INSTANCE;
   }
 
 }

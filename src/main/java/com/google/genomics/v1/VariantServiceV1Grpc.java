@@ -1,298 +1,153 @@
 package com.google.genomics.v1;
 
-import static io.grpc.stub.Calls.createMethodDescriptor;
-import static io.grpc.stub.Calls.asyncUnaryCall;
-import static io.grpc.stub.Calls.asyncServerStreamingCall;
-import static io.grpc.stub.Calls.asyncClientStreamingCall;
-import static io.grpc.stub.Calls.duplexStreamingCall;
-import static io.grpc.stub.Calls.blockingUnaryCall;
-import static io.grpc.stub.Calls.blockingServerStreamingCall;
-import static io.grpc.stub.Calls.unaryFutureCall;
-import static io.grpc.stub.ServerCalls.createMethodDefinition;
-import static io.grpc.stub.ServerCalls.asyncUnaryRequestCall;
-import static io.grpc.stub.ServerCalls.asyncStreamingRequestCall;
+import static io.grpc.stub.ClientCalls.asyncUnaryCall;
+import static io.grpc.stub.ClientCalls.asyncServerStreamingCall;
+import static io.grpc.stub.ClientCalls.asyncClientStreamingCall;
+import static io.grpc.stub.ClientCalls.asyncBidiStreamingCall;
+import static io.grpc.stub.ClientCalls.blockingUnaryCall;
+import static io.grpc.stub.ClientCalls.blockingServerStreamingCall;
+import static io.grpc.stub.ClientCalls.futureUnaryCall;
+import static io.grpc.stub.ServerCalls.asyncUnaryCall;
+import static io.grpc.stub.ServerCalls.asyncServerStreamingCall;
+import static io.grpc.stub.ServerCalls.asyncClientStreamingCall;
+import static io.grpc.stub.ServerCalls.asyncBidiStreamingCall;
 
 @javax.annotation.Generated("by gRPC proto compiler")
 public class VariantServiceV1Grpc {
 
-  private static final io.grpc.stub.Method<com.google.genomics.v1.ImportVariantsRequest,
+  // Static method descriptors that strictly reflect the proto.
+  public static final io.grpc.MethodDescriptor<com.google.genomics.v1.ImportVariantsRequest,
       com.google.longrunning.Operation> METHOD_IMPORT_VARIANTS =
-      io.grpc.stub.Method.create(
-          io.grpc.MethodType.UNARY, "ImportVariants",
-          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.ImportVariantsRequest.PARSER),
-          io.grpc.protobuf.ProtoUtils.marshaller(com.google.longrunning.Operation.PARSER));
-  private static final io.grpc.stub.Method<com.google.genomics.v1.ExportVariantSetRequest,
+      io.grpc.MethodDescriptor.create(
+          io.grpc.MethodDescriptor.MethodType.UNARY,
+          "google.genomics.v1.VariantServiceV1", "ImportVariants",
+          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.ImportVariantsRequest.parser()),
+          io.grpc.protobuf.ProtoUtils.marshaller(com.google.longrunning.Operation.parser()));
+  public static final io.grpc.MethodDescriptor<com.google.genomics.v1.ExportVariantSetRequest,
       com.google.longrunning.Operation> METHOD_EXPORT_VARIANT_SET =
-      io.grpc.stub.Method.create(
-          io.grpc.MethodType.UNARY, "ExportVariantSet",
-          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.ExportVariantSetRequest.PARSER),
-          io.grpc.protobuf.ProtoUtils.marshaller(com.google.longrunning.Operation.PARSER));
-  private static final io.grpc.stub.Method<com.google.genomics.v1.GetVariantSetRequest,
+      io.grpc.MethodDescriptor.create(
+          io.grpc.MethodDescriptor.MethodType.UNARY,
+          "google.genomics.v1.VariantServiceV1", "ExportVariantSet",
+          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.ExportVariantSetRequest.parser()),
+          io.grpc.protobuf.ProtoUtils.marshaller(com.google.longrunning.Operation.parser()));
+  public static final io.grpc.MethodDescriptor<com.google.genomics.v1.GetVariantSetRequest,
       com.google.genomics.v1.VariantSet> METHOD_GET_VARIANT_SET =
-      io.grpc.stub.Method.create(
-          io.grpc.MethodType.UNARY, "GetVariantSet",
-          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.GetVariantSetRequest.PARSER),
-          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.VariantSet.PARSER));
-  private static final io.grpc.stub.Method<com.google.genomics.v1.SearchVariantSetsRequest,
+      io.grpc.MethodDescriptor.create(
+          io.grpc.MethodDescriptor.MethodType.UNARY,
+          "google.genomics.v1.VariantServiceV1", "GetVariantSet",
+          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.GetVariantSetRequest.parser()),
+          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.VariantSet.parser()));
+  public static final io.grpc.MethodDescriptor<com.google.genomics.v1.SearchVariantSetsRequest,
       com.google.genomics.v1.SearchVariantSetsResponse> METHOD_SEARCH_VARIANT_SETS =
-      io.grpc.stub.Method.create(
-          io.grpc.MethodType.UNARY, "SearchVariantSets",
-          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.SearchVariantSetsRequest.PARSER),
-          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.SearchVariantSetsResponse.PARSER));
-  private static final io.grpc.stub.Method<com.google.genomics.v1.DeleteVariantSetRequest,
+      io.grpc.MethodDescriptor.create(
+          io.grpc.MethodDescriptor.MethodType.UNARY,
+          "google.genomics.v1.VariantServiceV1", "SearchVariantSets",
+          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.SearchVariantSetsRequest.parser()),
+          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.SearchVariantSetsResponse.parser()));
+  public static final io.grpc.MethodDescriptor<com.google.genomics.v1.DeleteVariantSetRequest,
       com.google.protobuf.Empty> METHOD_DELETE_VARIANT_SET =
-      io.grpc.stub.Method.create(
-          io.grpc.MethodType.UNARY, "DeleteVariantSet",
-          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.DeleteVariantSetRequest.PARSER),
-          io.grpc.protobuf.ProtoUtils.marshaller(com.google.protobuf.Empty.PARSER));
-  private static final io.grpc.stub.Method<com.google.genomics.v1.UpdateVariantSetRequest,
+      io.grpc.MethodDescriptor.create(
+          io.grpc.MethodDescriptor.MethodType.UNARY,
+          "google.genomics.v1.VariantServiceV1", "DeleteVariantSet",
+          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.DeleteVariantSetRequest.parser()),
+          io.grpc.protobuf.ProtoUtils.marshaller(com.google.protobuf.Empty.parser()));
+  public static final io.grpc.MethodDescriptor<com.google.genomics.v1.UpdateVariantSetRequest,
       com.google.genomics.v1.VariantSet> METHOD_UPDATE_VARIANT_SET =
-      io.grpc.stub.Method.create(
-          io.grpc.MethodType.UNARY, "UpdateVariantSet",
-          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.UpdateVariantSetRequest.PARSER),
-          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.VariantSet.PARSER));
-  private static final io.grpc.stub.Method<com.google.genomics.v1.SearchVariantsRequest,
+      io.grpc.MethodDescriptor.create(
+          io.grpc.MethodDescriptor.MethodType.UNARY,
+          "google.genomics.v1.VariantServiceV1", "UpdateVariantSet",
+          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.UpdateVariantSetRequest.parser()),
+          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.VariantSet.parser()));
+  public static final io.grpc.MethodDescriptor<com.google.genomics.v1.SearchVariantsRequest,
       com.google.genomics.v1.SearchVariantsResponse> METHOD_SEARCH_VARIANTS =
-      io.grpc.stub.Method.create(
-          io.grpc.MethodType.UNARY, "SearchVariants",
-          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.SearchVariantsRequest.PARSER),
-          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.SearchVariantsResponse.PARSER));
-  private static final io.grpc.stub.Method<com.google.genomics.v1.CreateVariantRequest,
+      io.grpc.MethodDescriptor.create(
+          io.grpc.MethodDescriptor.MethodType.UNARY,
+          "google.genomics.v1.VariantServiceV1", "SearchVariants",
+          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.SearchVariantsRequest.parser()),
+          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.SearchVariantsResponse.parser()));
+  public static final io.grpc.MethodDescriptor<com.google.genomics.v1.CreateVariantRequest,
       com.google.genomics.v1.Variant> METHOD_CREATE_VARIANT =
-      io.grpc.stub.Method.create(
-          io.grpc.MethodType.UNARY, "CreateVariant",
-          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.CreateVariantRequest.PARSER),
-          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.Variant.PARSER));
-  private static final io.grpc.stub.Method<com.google.genomics.v1.UpdateVariantRequest,
+      io.grpc.MethodDescriptor.create(
+          io.grpc.MethodDescriptor.MethodType.UNARY,
+          "google.genomics.v1.VariantServiceV1", "CreateVariant",
+          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.CreateVariantRequest.parser()),
+          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.Variant.parser()));
+  public static final io.grpc.MethodDescriptor<com.google.genomics.v1.UpdateVariantRequest,
       com.google.genomics.v1.Variant> METHOD_UPDATE_VARIANT =
-      io.grpc.stub.Method.create(
-          io.grpc.MethodType.UNARY, "UpdateVariant",
-          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.UpdateVariantRequest.PARSER),
-          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.Variant.PARSER));
-  private static final io.grpc.stub.Method<com.google.genomics.v1.DeleteVariantRequest,
+      io.grpc.MethodDescriptor.create(
+          io.grpc.MethodDescriptor.MethodType.UNARY,
+          "google.genomics.v1.VariantServiceV1", "UpdateVariant",
+          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.UpdateVariantRequest.parser()),
+          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.Variant.parser()));
+  public static final io.grpc.MethodDescriptor<com.google.genomics.v1.DeleteVariantRequest,
       com.google.protobuf.Empty> METHOD_DELETE_VARIANT =
-      io.grpc.stub.Method.create(
-          io.grpc.MethodType.UNARY, "DeleteVariant",
-          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.DeleteVariantRequest.PARSER),
-          io.grpc.protobuf.ProtoUtils.marshaller(com.google.protobuf.Empty.PARSER));
-  private static final io.grpc.stub.Method<com.google.genomics.v1.GetVariantRequest,
+      io.grpc.MethodDescriptor.create(
+          io.grpc.MethodDescriptor.MethodType.UNARY,
+          "google.genomics.v1.VariantServiceV1", "DeleteVariant",
+          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.DeleteVariantRequest.parser()),
+          io.grpc.protobuf.ProtoUtils.marshaller(com.google.protobuf.Empty.parser()));
+  public static final io.grpc.MethodDescriptor<com.google.genomics.v1.GetVariantRequest,
       com.google.genomics.v1.Variant> METHOD_GET_VARIANT =
-      io.grpc.stub.Method.create(
-          io.grpc.MethodType.UNARY, "GetVariant",
-          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.GetVariantRequest.PARSER),
-          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.Variant.PARSER));
-  private static final io.grpc.stub.Method<com.google.genomics.v1.MergeVariantsRequest,
+      io.grpc.MethodDescriptor.create(
+          io.grpc.MethodDescriptor.MethodType.UNARY,
+          "google.genomics.v1.VariantServiceV1", "GetVariant",
+          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.GetVariantRequest.parser()),
+          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.Variant.parser()));
+  public static final io.grpc.MethodDescriptor<com.google.genomics.v1.MergeVariantsRequest,
       com.google.protobuf.Empty> METHOD_MERGE_VARIANTS =
-      io.grpc.stub.Method.create(
-          io.grpc.MethodType.UNARY, "MergeVariants",
-          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.MergeVariantsRequest.PARSER),
-          io.grpc.protobuf.ProtoUtils.marshaller(com.google.protobuf.Empty.PARSER));
-  private static final io.grpc.stub.Method<com.google.genomics.v1.SearchCallSetsRequest,
+      io.grpc.MethodDescriptor.create(
+          io.grpc.MethodDescriptor.MethodType.UNARY,
+          "google.genomics.v1.VariantServiceV1", "MergeVariants",
+          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.MergeVariantsRequest.parser()),
+          io.grpc.protobuf.ProtoUtils.marshaller(com.google.protobuf.Empty.parser()));
+  public static final io.grpc.MethodDescriptor<com.google.genomics.v1.SearchCallSetsRequest,
       com.google.genomics.v1.SearchCallSetsResponse> METHOD_SEARCH_CALL_SETS =
-      io.grpc.stub.Method.create(
-          io.grpc.MethodType.UNARY, "SearchCallSets",
-          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.SearchCallSetsRequest.PARSER),
-          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.SearchCallSetsResponse.PARSER));
-  private static final io.grpc.stub.Method<com.google.genomics.v1.CreateCallSetRequest,
+      io.grpc.MethodDescriptor.create(
+          io.grpc.MethodDescriptor.MethodType.UNARY,
+          "google.genomics.v1.VariantServiceV1", "SearchCallSets",
+          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.SearchCallSetsRequest.parser()),
+          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.SearchCallSetsResponse.parser()));
+  public static final io.grpc.MethodDescriptor<com.google.genomics.v1.CreateCallSetRequest,
       com.google.genomics.v1.CallSet> METHOD_CREATE_CALL_SET =
-      io.grpc.stub.Method.create(
-          io.grpc.MethodType.UNARY, "CreateCallSet",
-          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.CreateCallSetRequest.PARSER),
-          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.CallSet.PARSER));
-  private static final io.grpc.stub.Method<com.google.genomics.v1.UpdateCallSetRequest,
+      io.grpc.MethodDescriptor.create(
+          io.grpc.MethodDescriptor.MethodType.UNARY,
+          "google.genomics.v1.VariantServiceV1", "CreateCallSet",
+          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.CreateCallSetRequest.parser()),
+          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.CallSet.parser()));
+  public static final io.grpc.MethodDescriptor<com.google.genomics.v1.UpdateCallSetRequest,
       com.google.genomics.v1.CallSet> METHOD_UPDATE_CALL_SET =
-      io.grpc.stub.Method.create(
-          io.grpc.MethodType.UNARY, "UpdateCallSet",
-          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.UpdateCallSetRequest.PARSER),
-          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.CallSet.PARSER));
-  private static final io.grpc.stub.Method<com.google.genomics.v1.DeleteCallSetRequest,
+      io.grpc.MethodDescriptor.create(
+          io.grpc.MethodDescriptor.MethodType.UNARY,
+          "google.genomics.v1.VariantServiceV1", "UpdateCallSet",
+          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.UpdateCallSetRequest.parser()),
+          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.CallSet.parser()));
+  public static final io.grpc.MethodDescriptor<com.google.genomics.v1.DeleteCallSetRequest,
       com.google.protobuf.Empty> METHOD_DELETE_CALL_SET =
-      io.grpc.stub.Method.create(
-          io.grpc.MethodType.UNARY, "DeleteCallSet",
-          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.DeleteCallSetRequest.PARSER),
-          io.grpc.protobuf.ProtoUtils.marshaller(com.google.protobuf.Empty.PARSER));
-  private static final io.grpc.stub.Method<com.google.genomics.v1.GetCallSetRequest,
+      io.grpc.MethodDescriptor.create(
+          io.grpc.MethodDescriptor.MethodType.UNARY,
+          "google.genomics.v1.VariantServiceV1", "DeleteCallSet",
+          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.DeleteCallSetRequest.parser()),
+          io.grpc.protobuf.ProtoUtils.marshaller(com.google.protobuf.Empty.parser()));
+  public static final io.grpc.MethodDescriptor<com.google.genomics.v1.GetCallSetRequest,
       com.google.genomics.v1.CallSet> METHOD_GET_CALL_SET =
-      io.grpc.stub.Method.create(
-          io.grpc.MethodType.UNARY, "GetCallSet",
-          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.GetCallSetRequest.PARSER),
-          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.CallSet.PARSER));
+      io.grpc.MethodDescriptor.create(
+          io.grpc.MethodDescriptor.MethodType.UNARY,
+          "google.genomics.v1.VariantServiceV1", "GetCallSet",
+          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.GetCallSetRequest.parser()),
+          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.CallSet.parser()));
 
   public static VariantServiceV1Stub newStub(io.grpc.Channel channel) {
-    return new VariantServiceV1Stub(channel, CONFIG);
+    return new VariantServiceV1Stub(channel);
   }
 
   public static VariantServiceV1BlockingStub newBlockingStub(
       io.grpc.Channel channel) {
-    return new VariantServiceV1BlockingStub(channel, CONFIG);
+    return new VariantServiceV1BlockingStub(channel);
   }
 
   public static VariantServiceV1FutureStub newFutureStub(
       io.grpc.Channel channel) {
-    return new VariantServiceV1FutureStub(channel, CONFIG);
-  }
-
-  public static final VariantServiceV1ServiceDescriptor CONFIG =
-      new VariantServiceV1ServiceDescriptor();
-
-  @javax.annotation.concurrent.Immutable
-  public static class VariantServiceV1ServiceDescriptor extends
-      io.grpc.stub.AbstractServiceDescriptor<VariantServiceV1ServiceDescriptor> {
-    public final io.grpc.MethodDescriptor<com.google.genomics.v1.ImportVariantsRequest,
-        com.google.longrunning.Operation> importVariants;
-    public final io.grpc.MethodDescriptor<com.google.genomics.v1.ExportVariantSetRequest,
-        com.google.longrunning.Operation> exportVariantSet;
-    public final io.grpc.MethodDescriptor<com.google.genomics.v1.GetVariantSetRequest,
-        com.google.genomics.v1.VariantSet> getVariantSet;
-    public final io.grpc.MethodDescriptor<com.google.genomics.v1.SearchVariantSetsRequest,
-        com.google.genomics.v1.SearchVariantSetsResponse> searchVariantSets;
-    public final io.grpc.MethodDescriptor<com.google.genomics.v1.DeleteVariantSetRequest,
-        com.google.protobuf.Empty> deleteVariantSet;
-    public final io.grpc.MethodDescriptor<com.google.genomics.v1.UpdateVariantSetRequest,
-        com.google.genomics.v1.VariantSet> updateVariantSet;
-    public final io.grpc.MethodDescriptor<com.google.genomics.v1.SearchVariantsRequest,
-        com.google.genomics.v1.SearchVariantsResponse> searchVariants;
-    public final io.grpc.MethodDescriptor<com.google.genomics.v1.CreateVariantRequest,
-        com.google.genomics.v1.Variant> createVariant;
-    public final io.grpc.MethodDescriptor<com.google.genomics.v1.UpdateVariantRequest,
-        com.google.genomics.v1.Variant> updateVariant;
-    public final io.grpc.MethodDescriptor<com.google.genomics.v1.DeleteVariantRequest,
-        com.google.protobuf.Empty> deleteVariant;
-    public final io.grpc.MethodDescriptor<com.google.genomics.v1.GetVariantRequest,
-        com.google.genomics.v1.Variant> getVariant;
-    public final io.grpc.MethodDescriptor<com.google.genomics.v1.MergeVariantsRequest,
-        com.google.protobuf.Empty> mergeVariants;
-    public final io.grpc.MethodDescriptor<com.google.genomics.v1.SearchCallSetsRequest,
-        com.google.genomics.v1.SearchCallSetsResponse> searchCallSets;
-    public final io.grpc.MethodDescriptor<com.google.genomics.v1.CreateCallSetRequest,
-        com.google.genomics.v1.CallSet> createCallSet;
-    public final io.grpc.MethodDescriptor<com.google.genomics.v1.UpdateCallSetRequest,
-        com.google.genomics.v1.CallSet> updateCallSet;
-    public final io.grpc.MethodDescriptor<com.google.genomics.v1.DeleteCallSetRequest,
-        com.google.protobuf.Empty> deleteCallSet;
-    public final io.grpc.MethodDescriptor<com.google.genomics.v1.GetCallSetRequest,
-        com.google.genomics.v1.CallSet> getCallSet;
-
-    private VariantServiceV1ServiceDescriptor() {
-      importVariants = createMethodDescriptor(
-          "google.genomics.v1.VariantServiceV1", METHOD_IMPORT_VARIANTS);
-      exportVariantSet = createMethodDescriptor(
-          "google.genomics.v1.VariantServiceV1", METHOD_EXPORT_VARIANT_SET);
-      getVariantSet = createMethodDescriptor(
-          "google.genomics.v1.VariantServiceV1", METHOD_GET_VARIANT_SET);
-      searchVariantSets = createMethodDescriptor(
-          "google.genomics.v1.VariantServiceV1", METHOD_SEARCH_VARIANT_SETS);
-      deleteVariantSet = createMethodDescriptor(
-          "google.genomics.v1.VariantServiceV1", METHOD_DELETE_VARIANT_SET);
-      updateVariantSet = createMethodDescriptor(
-          "google.genomics.v1.VariantServiceV1", METHOD_UPDATE_VARIANT_SET);
-      searchVariants = createMethodDescriptor(
-          "google.genomics.v1.VariantServiceV1", METHOD_SEARCH_VARIANTS);
-      createVariant = createMethodDescriptor(
-          "google.genomics.v1.VariantServiceV1", METHOD_CREATE_VARIANT);
-      updateVariant = createMethodDescriptor(
-          "google.genomics.v1.VariantServiceV1", METHOD_UPDATE_VARIANT);
-      deleteVariant = createMethodDescriptor(
-          "google.genomics.v1.VariantServiceV1", METHOD_DELETE_VARIANT);
-      getVariant = createMethodDescriptor(
-          "google.genomics.v1.VariantServiceV1", METHOD_GET_VARIANT);
-      mergeVariants = createMethodDescriptor(
-          "google.genomics.v1.VariantServiceV1", METHOD_MERGE_VARIANTS);
-      searchCallSets = createMethodDescriptor(
-          "google.genomics.v1.VariantServiceV1", METHOD_SEARCH_CALL_SETS);
-      createCallSet = createMethodDescriptor(
-          "google.genomics.v1.VariantServiceV1", METHOD_CREATE_CALL_SET);
-      updateCallSet = createMethodDescriptor(
-          "google.genomics.v1.VariantServiceV1", METHOD_UPDATE_CALL_SET);
-      deleteCallSet = createMethodDescriptor(
-          "google.genomics.v1.VariantServiceV1", METHOD_DELETE_CALL_SET);
-      getCallSet = createMethodDescriptor(
-          "google.genomics.v1.VariantServiceV1", METHOD_GET_CALL_SET);
-    }
-
-    @SuppressWarnings("unchecked")
-    private VariantServiceV1ServiceDescriptor(
-        java.util.Map<java.lang.String, io.grpc.MethodDescriptor<?, ?>> methodMap) {
-      importVariants = (io.grpc.MethodDescriptor<com.google.genomics.v1.ImportVariantsRequest,
-          com.google.longrunning.Operation>) methodMap.get(
-          CONFIG.importVariants.getName());
-      exportVariantSet = (io.grpc.MethodDescriptor<com.google.genomics.v1.ExportVariantSetRequest,
-          com.google.longrunning.Operation>) methodMap.get(
-          CONFIG.exportVariantSet.getName());
-      getVariantSet = (io.grpc.MethodDescriptor<com.google.genomics.v1.GetVariantSetRequest,
-          com.google.genomics.v1.VariantSet>) methodMap.get(
-          CONFIG.getVariantSet.getName());
-      searchVariantSets = (io.grpc.MethodDescriptor<com.google.genomics.v1.SearchVariantSetsRequest,
-          com.google.genomics.v1.SearchVariantSetsResponse>) methodMap.get(
-          CONFIG.searchVariantSets.getName());
-      deleteVariantSet = (io.grpc.MethodDescriptor<com.google.genomics.v1.DeleteVariantSetRequest,
-          com.google.protobuf.Empty>) methodMap.get(
-          CONFIG.deleteVariantSet.getName());
-      updateVariantSet = (io.grpc.MethodDescriptor<com.google.genomics.v1.UpdateVariantSetRequest,
-          com.google.genomics.v1.VariantSet>) methodMap.get(
-          CONFIG.updateVariantSet.getName());
-      searchVariants = (io.grpc.MethodDescriptor<com.google.genomics.v1.SearchVariantsRequest,
-          com.google.genomics.v1.SearchVariantsResponse>) methodMap.get(
-          CONFIG.searchVariants.getName());
-      createVariant = (io.grpc.MethodDescriptor<com.google.genomics.v1.CreateVariantRequest,
-          com.google.genomics.v1.Variant>) methodMap.get(
-          CONFIG.createVariant.getName());
-      updateVariant = (io.grpc.MethodDescriptor<com.google.genomics.v1.UpdateVariantRequest,
-          com.google.genomics.v1.Variant>) methodMap.get(
-          CONFIG.updateVariant.getName());
-      deleteVariant = (io.grpc.MethodDescriptor<com.google.genomics.v1.DeleteVariantRequest,
-          com.google.protobuf.Empty>) methodMap.get(
-          CONFIG.deleteVariant.getName());
-      getVariant = (io.grpc.MethodDescriptor<com.google.genomics.v1.GetVariantRequest,
-          com.google.genomics.v1.Variant>) methodMap.get(
-          CONFIG.getVariant.getName());
-      mergeVariants = (io.grpc.MethodDescriptor<com.google.genomics.v1.MergeVariantsRequest,
-          com.google.protobuf.Empty>) methodMap.get(
-          CONFIG.mergeVariants.getName());
-      searchCallSets = (io.grpc.MethodDescriptor<com.google.genomics.v1.SearchCallSetsRequest,
-          com.google.genomics.v1.SearchCallSetsResponse>) methodMap.get(
-          CONFIG.searchCallSets.getName());
-      createCallSet = (io.grpc.MethodDescriptor<com.google.genomics.v1.CreateCallSetRequest,
-          com.google.genomics.v1.CallSet>) methodMap.get(
-          CONFIG.createCallSet.getName());
-      updateCallSet = (io.grpc.MethodDescriptor<com.google.genomics.v1.UpdateCallSetRequest,
-          com.google.genomics.v1.CallSet>) methodMap.get(
-          CONFIG.updateCallSet.getName());
-      deleteCallSet = (io.grpc.MethodDescriptor<com.google.genomics.v1.DeleteCallSetRequest,
-          com.google.protobuf.Empty>) methodMap.get(
-          CONFIG.deleteCallSet.getName());
-      getCallSet = (io.grpc.MethodDescriptor<com.google.genomics.v1.GetCallSetRequest,
-          com.google.genomics.v1.CallSet>) methodMap.get(
-          CONFIG.getCallSet.getName());
-    }
-
-    @java.lang.Override
-    protected VariantServiceV1ServiceDescriptor build(
-        java.util.Map<java.lang.String, io.grpc.MethodDescriptor<?, ?>> methodMap) {
-      return new VariantServiceV1ServiceDescriptor(methodMap);
-    }
-
-    @java.lang.Override
-    public com.google.common.collect.ImmutableList<io.grpc.MethodDescriptor<?, ?>> methods() {
-      return com.google.common.collect.ImmutableList.<io.grpc.MethodDescriptor<?, ?>>of(
-          importVariants,
-          exportVariantSet,
-          getVariantSet,
-          searchVariantSets,
-          deleteVariantSet,
-          updateVariantSet,
-          searchVariants,
-          createVariant,
-          updateVariant,
-          deleteVariant,
-          getVariant,
-          mergeVariants,
-          searchCallSets,
-          createCallSet,
-          updateCallSet,
-          deleteCallSet,
-          getCallSet);
-    }
+    return new VariantServiceV1FutureStub(channel);
   }
 
   public static interface VariantServiceV1 {
@@ -440,398 +295,407 @@ public class VariantServiceV1Grpc {
         com.google.genomics.v1.GetCallSetRequest request);
   }
 
-  public static class VariantServiceV1Stub extends
-      io.grpc.stub.AbstractStub<VariantServiceV1Stub, VariantServiceV1ServiceDescriptor>
+  public static class VariantServiceV1Stub extends io.grpc.stub.AbstractStub<VariantServiceV1Stub>
       implements VariantServiceV1 {
+    private VariantServiceV1Stub(io.grpc.Channel channel) {
+      super(channel);
+    }
+
     private VariantServiceV1Stub(io.grpc.Channel channel,
-        VariantServiceV1ServiceDescriptor config) {
-      super(channel, config);
+        io.grpc.CallOptions callOptions) {
+      super(channel, callOptions);
     }
 
     @java.lang.Override
     protected VariantServiceV1Stub build(io.grpc.Channel channel,
-        VariantServiceV1ServiceDescriptor config) {
-      return new VariantServiceV1Stub(channel, config);
+        io.grpc.CallOptions callOptions) {
+      return new VariantServiceV1Stub(channel, callOptions);
     }
 
     @java.lang.Override
     public void importVariants(com.google.genomics.v1.ImportVariantsRequest request,
         io.grpc.stub.StreamObserver<com.google.longrunning.Operation> responseObserver) {
       asyncUnaryCall(
-          channel.newCall(config.importVariants), request, responseObserver);
+          channel.newCall(METHOD_IMPORT_VARIANTS, callOptions), request, responseObserver);
     }
 
     @java.lang.Override
     public void exportVariantSet(com.google.genomics.v1.ExportVariantSetRequest request,
         io.grpc.stub.StreamObserver<com.google.longrunning.Operation> responseObserver) {
       asyncUnaryCall(
-          channel.newCall(config.exportVariantSet), request, responseObserver);
+          channel.newCall(METHOD_EXPORT_VARIANT_SET, callOptions), request, responseObserver);
     }
 
     @java.lang.Override
     public void getVariantSet(com.google.genomics.v1.GetVariantSetRequest request,
         io.grpc.stub.StreamObserver<com.google.genomics.v1.VariantSet> responseObserver) {
       asyncUnaryCall(
-          channel.newCall(config.getVariantSet), request, responseObserver);
+          channel.newCall(METHOD_GET_VARIANT_SET, callOptions), request, responseObserver);
     }
 
     @java.lang.Override
     public void searchVariantSets(com.google.genomics.v1.SearchVariantSetsRequest request,
         io.grpc.stub.StreamObserver<com.google.genomics.v1.SearchVariantSetsResponse> responseObserver) {
       asyncUnaryCall(
-          channel.newCall(config.searchVariantSets), request, responseObserver);
+          channel.newCall(METHOD_SEARCH_VARIANT_SETS, callOptions), request, responseObserver);
     }
 
     @java.lang.Override
     public void deleteVariantSet(com.google.genomics.v1.DeleteVariantSetRequest request,
         io.grpc.stub.StreamObserver<com.google.protobuf.Empty> responseObserver) {
       asyncUnaryCall(
-          channel.newCall(config.deleteVariantSet), request, responseObserver);
+          channel.newCall(METHOD_DELETE_VARIANT_SET, callOptions), request, responseObserver);
     }
 
     @java.lang.Override
     public void updateVariantSet(com.google.genomics.v1.UpdateVariantSetRequest request,
         io.grpc.stub.StreamObserver<com.google.genomics.v1.VariantSet> responseObserver) {
       asyncUnaryCall(
-          channel.newCall(config.updateVariantSet), request, responseObserver);
+          channel.newCall(METHOD_UPDATE_VARIANT_SET, callOptions), request, responseObserver);
     }
 
     @java.lang.Override
     public void searchVariants(com.google.genomics.v1.SearchVariantsRequest request,
         io.grpc.stub.StreamObserver<com.google.genomics.v1.SearchVariantsResponse> responseObserver) {
       asyncUnaryCall(
-          channel.newCall(config.searchVariants), request, responseObserver);
+          channel.newCall(METHOD_SEARCH_VARIANTS, callOptions), request, responseObserver);
     }
 
     @java.lang.Override
     public void createVariant(com.google.genomics.v1.CreateVariantRequest request,
         io.grpc.stub.StreamObserver<com.google.genomics.v1.Variant> responseObserver) {
       asyncUnaryCall(
-          channel.newCall(config.createVariant), request, responseObserver);
+          channel.newCall(METHOD_CREATE_VARIANT, callOptions), request, responseObserver);
     }
 
     @java.lang.Override
     public void updateVariant(com.google.genomics.v1.UpdateVariantRequest request,
         io.grpc.stub.StreamObserver<com.google.genomics.v1.Variant> responseObserver) {
       asyncUnaryCall(
-          channel.newCall(config.updateVariant), request, responseObserver);
+          channel.newCall(METHOD_UPDATE_VARIANT, callOptions), request, responseObserver);
     }
 
     @java.lang.Override
     public void deleteVariant(com.google.genomics.v1.DeleteVariantRequest request,
         io.grpc.stub.StreamObserver<com.google.protobuf.Empty> responseObserver) {
       asyncUnaryCall(
-          channel.newCall(config.deleteVariant), request, responseObserver);
+          channel.newCall(METHOD_DELETE_VARIANT, callOptions), request, responseObserver);
     }
 
     @java.lang.Override
     public void getVariant(com.google.genomics.v1.GetVariantRequest request,
         io.grpc.stub.StreamObserver<com.google.genomics.v1.Variant> responseObserver) {
       asyncUnaryCall(
-          channel.newCall(config.getVariant), request, responseObserver);
+          channel.newCall(METHOD_GET_VARIANT, callOptions), request, responseObserver);
     }
 
     @java.lang.Override
     public void mergeVariants(com.google.genomics.v1.MergeVariantsRequest request,
         io.grpc.stub.StreamObserver<com.google.protobuf.Empty> responseObserver) {
       asyncUnaryCall(
-          channel.newCall(config.mergeVariants), request, responseObserver);
+          channel.newCall(METHOD_MERGE_VARIANTS, callOptions), request, responseObserver);
     }
 
     @java.lang.Override
     public void searchCallSets(com.google.genomics.v1.SearchCallSetsRequest request,
         io.grpc.stub.StreamObserver<com.google.genomics.v1.SearchCallSetsResponse> responseObserver) {
       asyncUnaryCall(
-          channel.newCall(config.searchCallSets), request, responseObserver);
+          channel.newCall(METHOD_SEARCH_CALL_SETS, callOptions), request, responseObserver);
     }
 
     @java.lang.Override
     public void createCallSet(com.google.genomics.v1.CreateCallSetRequest request,
         io.grpc.stub.StreamObserver<com.google.genomics.v1.CallSet> responseObserver) {
       asyncUnaryCall(
-          channel.newCall(config.createCallSet), request, responseObserver);
+          channel.newCall(METHOD_CREATE_CALL_SET, callOptions), request, responseObserver);
     }
 
     @java.lang.Override
     public void updateCallSet(com.google.genomics.v1.UpdateCallSetRequest request,
         io.grpc.stub.StreamObserver<com.google.genomics.v1.CallSet> responseObserver) {
       asyncUnaryCall(
-          channel.newCall(config.updateCallSet), request, responseObserver);
+          channel.newCall(METHOD_UPDATE_CALL_SET, callOptions), request, responseObserver);
     }
 
     @java.lang.Override
     public void deleteCallSet(com.google.genomics.v1.DeleteCallSetRequest request,
         io.grpc.stub.StreamObserver<com.google.protobuf.Empty> responseObserver) {
       asyncUnaryCall(
-          channel.newCall(config.deleteCallSet), request, responseObserver);
+          channel.newCall(METHOD_DELETE_CALL_SET, callOptions), request, responseObserver);
     }
 
     @java.lang.Override
     public void getCallSet(com.google.genomics.v1.GetCallSetRequest request,
         io.grpc.stub.StreamObserver<com.google.genomics.v1.CallSet> responseObserver) {
       asyncUnaryCall(
-          channel.newCall(config.getCallSet), request, responseObserver);
+          channel.newCall(METHOD_GET_CALL_SET, callOptions), request, responseObserver);
     }
   }
 
-  public static class VariantServiceV1BlockingStub extends
-      io.grpc.stub.AbstractStub<VariantServiceV1BlockingStub, VariantServiceV1ServiceDescriptor>
+  public static class VariantServiceV1BlockingStub extends io.grpc.stub.AbstractStub<VariantServiceV1BlockingStub>
       implements VariantServiceV1BlockingClient {
+    private VariantServiceV1BlockingStub(io.grpc.Channel channel) {
+      super(channel);
+    }
+
     private VariantServiceV1BlockingStub(io.grpc.Channel channel,
-        VariantServiceV1ServiceDescriptor config) {
-      super(channel, config);
+        io.grpc.CallOptions callOptions) {
+      super(channel, callOptions);
     }
 
     @java.lang.Override
     protected VariantServiceV1BlockingStub build(io.grpc.Channel channel,
-        VariantServiceV1ServiceDescriptor config) {
-      return new VariantServiceV1BlockingStub(channel, config);
+        io.grpc.CallOptions callOptions) {
+      return new VariantServiceV1BlockingStub(channel, callOptions);
     }
 
     @java.lang.Override
     public com.google.longrunning.Operation importVariants(com.google.genomics.v1.ImportVariantsRequest request) {
       return blockingUnaryCall(
-          channel.newCall(config.importVariants), request);
+          channel.newCall(METHOD_IMPORT_VARIANTS, callOptions), request);
     }
 
     @java.lang.Override
     public com.google.longrunning.Operation exportVariantSet(com.google.genomics.v1.ExportVariantSetRequest request) {
       return blockingUnaryCall(
-          channel.newCall(config.exportVariantSet), request);
+          channel.newCall(METHOD_EXPORT_VARIANT_SET, callOptions), request);
     }
 
     @java.lang.Override
     public com.google.genomics.v1.VariantSet getVariantSet(com.google.genomics.v1.GetVariantSetRequest request) {
       return blockingUnaryCall(
-          channel.newCall(config.getVariantSet), request);
+          channel.newCall(METHOD_GET_VARIANT_SET, callOptions), request);
     }
 
     @java.lang.Override
     public com.google.genomics.v1.SearchVariantSetsResponse searchVariantSets(com.google.genomics.v1.SearchVariantSetsRequest request) {
       return blockingUnaryCall(
-          channel.newCall(config.searchVariantSets), request);
+          channel.newCall(METHOD_SEARCH_VARIANT_SETS, callOptions), request);
     }
 
     @java.lang.Override
     public com.google.protobuf.Empty deleteVariantSet(com.google.genomics.v1.DeleteVariantSetRequest request) {
       return blockingUnaryCall(
-          channel.newCall(config.deleteVariantSet), request);
+          channel.newCall(METHOD_DELETE_VARIANT_SET, callOptions), request);
     }
 
     @java.lang.Override
     public com.google.genomics.v1.VariantSet updateVariantSet(com.google.genomics.v1.UpdateVariantSetRequest request) {
       return blockingUnaryCall(
-          channel.newCall(config.updateVariantSet), request);
+          channel.newCall(METHOD_UPDATE_VARIANT_SET, callOptions), request);
     }
 
     @java.lang.Override
     public com.google.genomics.v1.SearchVariantsResponse searchVariants(com.google.genomics.v1.SearchVariantsRequest request) {
       return blockingUnaryCall(
-          channel.newCall(config.searchVariants), request);
+          channel.newCall(METHOD_SEARCH_VARIANTS, callOptions), request);
     }
 
     @java.lang.Override
     public com.google.genomics.v1.Variant createVariant(com.google.genomics.v1.CreateVariantRequest request) {
       return blockingUnaryCall(
-          channel.newCall(config.createVariant), request);
+          channel.newCall(METHOD_CREATE_VARIANT, callOptions), request);
     }
 
     @java.lang.Override
     public com.google.genomics.v1.Variant updateVariant(com.google.genomics.v1.UpdateVariantRequest request) {
       return blockingUnaryCall(
-          channel.newCall(config.updateVariant), request);
+          channel.newCall(METHOD_UPDATE_VARIANT, callOptions), request);
     }
 
     @java.lang.Override
     public com.google.protobuf.Empty deleteVariant(com.google.genomics.v1.DeleteVariantRequest request) {
       return blockingUnaryCall(
-          channel.newCall(config.deleteVariant), request);
+          channel.newCall(METHOD_DELETE_VARIANT, callOptions), request);
     }
 
     @java.lang.Override
     public com.google.genomics.v1.Variant getVariant(com.google.genomics.v1.GetVariantRequest request) {
       return blockingUnaryCall(
-          channel.newCall(config.getVariant), request);
+          channel.newCall(METHOD_GET_VARIANT, callOptions), request);
     }
 
     @java.lang.Override
     public com.google.protobuf.Empty mergeVariants(com.google.genomics.v1.MergeVariantsRequest request) {
       return blockingUnaryCall(
-          channel.newCall(config.mergeVariants), request);
+          channel.newCall(METHOD_MERGE_VARIANTS, callOptions), request);
     }
 
     @java.lang.Override
     public com.google.genomics.v1.SearchCallSetsResponse searchCallSets(com.google.genomics.v1.SearchCallSetsRequest request) {
       return blockingUnaryCall(
-          channel.newCall(config.searchCallSets), request);
+          channel.newCall(METHOD_SEARCH_CALL_SETS, callOptions), request);
     }
 
     @java.lang.Override
     public com.google.genomics.v1.CallSet createCallSet(com.google.genomics.v1.CreateCallSetRequest request) {
       return blockingUnaryCall(
-          channel.newCall(config.createCallSet), request);
+          channel.newCall(METHOD_CREATE_CALL_SET, callOptions), request);
     }
 
     @java.lang.Override
     public com.google.genomics.v1.CallSet updateCallSet(com.google.genomics.v1.UpdateCallSetRequest request) {
       return blockingUnaryCall(
-          channel.newCall(config.updateCallSet), request);
+          channel.newCall(METHOD_UPDATE_CALL_SET, callOptions), request);
     }
 
     @java.lang.Override
     public com.google.protobuf.Empty deleteCallSet(com.google.genomics.v1.DeleteCallSetRequest request) {
       return blockingUnaryCall(
-          channel.newCall(config.deleteCallSet), request);
+          channel.newCall(METHOD_DELETE_CALL_SET, callOptions), request);
     }
 
     @java.lang.Override
     public com.google.genomics.v1.CallSet getCallSet(com.google.genomics.v1.GetCallSetRequest request) {
       return blockingUnaryCall(
-          channel.newCall(config.getCallSet), request);
+          channel.newCall(METHOD_GET_CALL_SET, callOptions), request);
     }
   }
 
-  public static class VariantServiceV1FutureStub extends
-      io.grpc.stub.AbstractStub<VariantServiceV1FutureStub, VariantServiceV1ServiceDescriptor>
+  public static class VariantServiceV1FutureStub extends io.grpc.stub.AbstractStub<VariantServiceV1FutureStub>
       implements VariantServiceV1FutureClient {
+    private VariantServiceV1FutureStub(io.grpc.Channel channel) {
+      super(channel);
+    }
+
     private VariantServiceV1FutureStub(io.grpc.Channel channel,
-        VariantServiceV1ServiceDescriptor config) {
-      super(channel, config);
+        io.grpc.CallOptions callOptions) {
+      super(channel, callOptions);
     }
 
     @java.lang.Override
     protected VariantServiceV1FutureStub build(io.grpc.Channel channel,
-        VariantServiceV1ServiceDescriptor config) {
-      return new VariantServiceV1FutureStub(channel, config);
+        io.grpc.CallOptions callOptions) {
+      return new VariantServiceV1FutureStub(channel, callOptions);
     }
 
     @java.lang.Override
     public com.google.common.util.concurrent.ListenableFuture<com.google.longrunning.Operation> importVariants(
         com.google.genomics.v1.ImportVariantsRequest request) {
-      return unaryFutureCall(
-          channel.newCall(config.importVariants), request);
+      return futureUnaryCall(
+          channel.newCall(METHOD_IMPORT_VARIANTS, callOptions), request);
     }
 
     @java.lang.Override
     public com.google.common.util.concurrent.ListenableFuture<com.google.longrunning.Operation> exportVariantSet(
         com.google.genomics.v1.ExportVariantSetRequest request) {
-      return unaryFutureCall(
-          channel.newCall(config.exportVariantSet), request);
+      return futureUnaryCall(
+          channel.newCall(METHOD_EXPORT_VARIANT_SET, callOptions), request);
     }
 
     @java.lang.Override
     public com.google.common.util.concurrent.ListenableFuture<com.google.genomics.v1.VariantSet> getVariantSet(
         com.google.genomics.v1.GetVariantSetRequest request) {
-      return unaryFutureCall(
-          channel.newCall(config.getVariantSet), request);
+      return futureUnaryCall(
+          channel.newCall(METHOD_GET_VARIANT_SET, callOptions), request);
     }
 
     @java.lang.Override
     public com.google.common.util.concurrent.ListenableFuture<com.google.genomics.v1.SearchVariantSetsResponse> searchVariantSets(
         com.google.genomics.v1.SearchVariantSetsRequest request) {
-      return unaryFutureCall(
-          channel.newCall(config.searchVariantSets), request);
+      return futureUnaryCall(
+          channel.newCall(METHOD_SEARCH_VARIANT_SETS, callOptions), request);
     }
 
     @java.lang.Override
     public com.google.common.util.concurrent.ListenableFuture<com.google.protobuf.Empty> deleteVariantSet(
         com.google.genomics.v1.DeleteVariantSetRequest request) {
-      return unaryFutureCall(
-          channel.newCall(config.deleteVariantSet), request);
+      return futureUnaryCall(
+          channel.newCall(METHOD_DELETE_VARIANT_SET, callOptions), request);
     }
 
     @java.lang.Override
     public com.google.common.util.concurrent.ListenableFuture<com.google.genomics.v1.VariantSet> updateVariantSet(
         com.google.genomics.v1.UpdateVariantSetRequest request) {
-      return unaryFutureCall(
-          channel.newCall(config.updateVariantSet), request);
+      return futureUnaryCall(
+          channel.newCall(METHOD_UPDATE_VARIANT_SET, callOptions), request);
     }
 
     @java.lang.Override
     public com.google.common.util.concurrent.ListenableFuture<com.google.genomics.v1.SearchVariantsResponse> searchVariants(
         com.google.genomics.v1.SearchVariantsRequest request) {
-      return unaryFutureCall(
-          channel.newCall(config.searchVariants), request);
+      return futureUnaryCall(
+          channel.newCall(METHOD_SEARCH_VARIANTS, callOptions), request);
     }
 
     @java.lang.Override
     public com.google.common.util.concurrent.ListenableFuture<com.google.genomics.v1.Variant> createVariant(
         com.google.genomics.v1.CreateVariantRequest request) {
-      return unaryFutureCall(
-          channel.newCall(config.createVariant), request);
+      return futureUnaryCall(
+          channel.newCall(METHOD_CREATE_VARIANT, callOptions), request);
     }
 
     @java.lang.Override
     public com.google.common.util.concurrent.ListenableFuture<com.google.genomics.v1.Variant> updateVariant(
         com.google.genomics.v1.UpdateVariantRequest request) {
-      return unaryFutureCall(
-          channel.newCall(config.updateVariant), request);
+      return futureUnaryCall(
+          channel.newCall(METHOD_UPDATE_VARIANT, callOptions), request);
     }
 
     @java.lang.Override
     public com.google.common.util.concurrent.ListenableFuture<com.google.protobuf.Empty> deleteVariant(
         com.google.genomics.v1.DeleteVariantRequest request) {
-      return unaryFutureCall(
-          channel.newCall(config.deleteVariant), request);
+      return futureUnaryCall(
+          channel.newCall(METHOD_DELETE_VARIANT, callOptions), request);
     }
 
     @java.lang.Override
     public com.google.common.util.concurrent.ListenableFuture<com.google.genomics.v1.Variant> getVariant(
         com.google.genomics.v1.GetVariantRequest request) {
-      return unaryFutureCall(
-          channel.newCall(config.getVariant), request);
+      return futureUnaryCall(
+          channel.newCall(METHOD_GET_VARIANT, callOptions), request);
     }
 
     @java.lang.Override
     public com.google.common.util.concurrent.ListenableFuture<com.google.protobuf.Empty> mergeVariants(
         com.google.genomics.v1.MergeVariantsRequest request) {
-      return unaryFutureCall(
-          channel.newCall(config.mergeVariants), request);
+      return futureUnaryCall(
+          channel.newCall(METHOD_MERGE_VARIANTS, callOptions), request);
     }
 
     @java.lang.Override
     public com.google.common.util.concurrent.ListenableFuture<com.google.genomics.v1.SearchCallSetsResponse> searchCallSets(
         com.google.genomics.v1.SearchCallSetsRequest request) {
-      return unaryFutureCall(
-          channel.newCall(config.searchCallSets), request);
+      return futureUnaryCall(
+          channel.newCall(METHOD_SEARCH_CALL_SETS, callOptions), request);
     }
 
     @java.lang.Override
     public com.google.common.util.concurrent.ListenableFuture<com.google.genomics.v1.CallSet> createCallSet(
         com.google.genomics.v1.CreateCallSetRequest request) {
-      return unaryFutureCall(
-          channel.newCall(config.createCallSet), request);
+      return futureUnaryCall(
+          channel.newCall(METHOD_CREATE_CALL_SET, callOptions), request);
     }
 
     @java.lang.Override
     public com.google.common.util.concurrent.ListenableFuture<com.google.genomics.v1.CallSet> updateCallSet(
         com.google.genomics.v1.UpdateCallSetRequest request) {
-      return unaryFutureCall(
-          channel.newCall(config.updateCallSet), request);
+      return futureUnaryCall(
+          channel.newCall(METHOD_UPDATE_CALL_SET, callOptions), request);
     }
 
     @java.lang.Override
     public com.google.common.util.concurrent.ListenableFuture<com.google.protobuf.Empty> deleteCallSet(
         com.google.genomics.v1.DeleteCallSetRequest request) {
-      return unaryFutureCall(
-          channel.newCall(config.deleteCallSet), request);
+      return futureUnaryCall(
+          channel.newCall(METHOD_DELETE_CALL_SET, callOptions), request);
     }
 
     @java.lang.Override
     public com.google.common.util.concurrent.ListenableFuture<com.google.genomics.v1.CallSet> getCallSet(
         com.google.genomics.v1.GetCallSetRequest request) {
-      return unaryFutureCall(
-          channel.newCall(config.getCallSet), request);
+      return futureUnaryCall(
+          channel.newCall(METHOD_GET_CALL_SET, callOptions), request);
     }
   }
 
   public static io.grpc.ServerServiceDefinition bindService(
       final VariantServiceV1 serviceImpl) {
     return io.grpc.ServerServiceDefinition.builder("google.genomics.v1.VariantServiceV1")
-      .addMethod(createMethodDefinition(
+      .addMethod(io.grpc.ServerMethodDefinition.create(
           METHOD_IMPORT_VARIANTS,
-          asyncUnaryRequestCall(
-            new io.grpc.stub.ServerCalls.UnaryRequestMethod<
+          asyncUnaryCall(
+            new io.grpc.stub.ServerCalls.UnaryMethod<
                 com.google.genomics.v1.ImportVariantsRequest,
                 com.google.longrunning.Operation>() {
               @java.lang.Override
@@ -841,10 +705,10 @@ public class VariantServiceV1Grpc {
                 serviceImpl.importVariants(request, responseObserver);
               }
             })))
-      .addMethod(createMethodDefinition(
+      .addMethod(io.grpc.ServerMethodDefinition.create(
           METHOD_EXPORT_VARIANT_SET,
-          asyncUnaryRequestCall(
-            new io.grpc.stub.ServerCalls.UnaryRequestMethod<
+          asyncUnaryCall(
+            new io.grpc.stub.ServerCalls.UnaryMethod<
                 com.google.genomics.v1.ExportVariantSetRequest,
                 com.google.longrunning.Operation>() {
               @java.lang.Override
@@ -854,10 +718,10 @@ public class VariantServiceV1Grpc {
                 serviceImpl.exportVariantSet(request, responseObserver);
               }
             })))
-      .addMethod(createMethodDefinition(
+      .addMethod(io.grpc.ServerMethodDefinition.create(
           METHOD_GET_VARIANT_SET,
-          asyncUnaryRequestCall(
-            new io.grpc.stub.ServerCalls.UnaryRequestMethod<
+          asyncUnaryCall(
+            new io.grpc.stub.ServerCalls.UnaryMethod<
                 com.google.genomics.v1.GetVariantSetRequest,
                 com.google.genomics.v1.VariantSet>() {
               @java.lang.Override
@@ -867,10 +731,10 @@ public class VariantServiceV1Grpc {
                 serviceImpl.getVariantSet(request, responseObserver);
               }
             })))
-      .addMethod(createMethodDefinition(
+      .addMethod(io.grpc.ServerMethodDefinition.create(
           METHOD_SEARCH_VARIANT_SETS,
-          asyncUnaryRequestCall(
-            new io.grpc.stub.ServerCalls.UnaryRequestMethod<
+          asyncUnaryCall(
+            new io.grpc.stub.ServerCalls.UnaryMethod<
                 com.google.genomics.v1.SearchVariantSetsRequest,
                 com.google.genomics.v1.SearchVariantSetsResponse>() {
               @java.lang.Override
@@ -880,10 +744,10 @@ public class VariantServiceV1Grpc {
                 serviceImpl.searchVariantSets(request, responseObserver);
               }
             })))
-      .addMethod(createMethodDefinition(
+      .addMethod(io.grpc.ServerMethodDefinition.create(
           METHOD_DELETE_VARIANT_SET,
-          asyncUnaryRequestCall(
-            new io.grpc.stub.ServerCalls.UnaryRequestMethod<
+          asyncUnaryCall(
+            new io.grpc.stub.ServerCalls.UnaryMethod<
                 com.google.genomics.v1.DeleteVariantSetRequest,
                 com.google.protobuf.Empty>() {
               @java.lang.Override
@@ -893,10 +757,10 @@ public class VariantServiceV1Grpc {
                 serviceImpl.deleteVariantSet(request, responseObserver);
               }
             })))
-      .addMethod(createMethodDefinition(
+      .addMethod(io.grpc.ServerMethodDefinition.create(
           METHOD_UPDATE_VARIANT_SET,
-          asyncUnaryRequestCall(
-            new io.grpc.stub.ServerCalls.UnaryRequestMethod<
+          asyncUnaryCall(
+            new io.grpc.stub.ServerCalls.UnaryMethod<
                 com.google.genomics.v1.UpdateVariantSetRequest,
                 com.google.genomics.v1.VariantSet>() {
               @java.lang.Override
@@ -906,10 +770,10 @@ public class VariantServiceV1Grpc {
                 serviceImpl.updateVariantSet(request, responseObserver);
               }
             })))
-      .addMethod(createMethodDefinition(
+      .addMethod(io.grpc.ServerMethodDefinition.create(
           METHOD_SEARCH_VARIANTS,
-          asyncUnaryRequestCall(
-            new io.grpc.stub.ServerCalls.UnaryRequestMethod<
+          asyncUnaryCall(
+            new io.grpc.stub.ServerCalls.UnaryMethod<
                 com.google.genomics.v1.SearchVariantsRequest,
                 com.google.genomics.v1.SearchVariantsResponse>() {
               @java.lang.Override
@@ -919,10 +783,10 @@ public class VariantServiceV1Grpc {
                 serviceImpl.searchVariants(request, responseObserver);
               }
             })))
-      .addMethod(createMethodDefinition(
+      .addMethod(io.grpc.ServerMethodDefinition.create(
           METHOD_CREATE_VARIANT,
-          asyncUnaryRequestCall(
-            new io.grpc.stub.ServerCalls.UnaryRequestMethod<
+          asyncUnaryCall(
+            new io.grpc.stub.ServerCalls.UnaryMethod<
                 com.google.genomics.v1.CreateVariantRequest,
                 com.google.genomics.v1.Variant>() {
               @java.lang.Override
@@ -932,10 +796,10 @@ public class VariantServiceV1Grpc {
                 serviceImpl.createVariant(request, responseObserver);
               }
             })))
-      .addMethod(createMethodDefinition(
+      .addMethod(io.grpc.ServerMethodDefinition.create(
           METHOD_UPDATE_VARIANT,
-          asyncUnaryRequestCall(
-            new io.grpc.stub.ServerCalls.UnaryRequestMethod<
+          asyncUnaryCall(
+            new io.grpc.stub.ServerCalls.UnaryMethod<
                 com.google.genomics.v1.UpdateVariantRequest,
                 com.google.genomics.v1.Variant>() {
               @java.lang.Override
@@ -945,10 +809,10 @@ public class VariantServiceV1Grpc {
                 serviceImpl.updateVariant(request, responseObserver);
               }
             })))
-      .addMethod(createMethodDefinition(
+      .addMethod(io.grpc.ServerMethodDefinition.create(
           METHOD_DELETE_VARIANT,
-          asyncUnaryRequestCall(
-            new io.grpc.stub.ServerCalls.UnaryRequestMethod<
+          asyncUnaryCall(
+            new io.grpc.stub.ServerCalls.UnaryMethod<
                 com.google.genomics.v1.DeleteVariantRequest,
                 com.google.protobuf.Empty>() {
               @java.lang.Override
@@ -958,10 +822,10 @@ public class VariantServiceV1Grpc {
                 serviceImpl.deleteVariant(request, responseObserver);
               }
             })))
-      .addMethod(createMethodDefinition(
+      .addMethod(io.grpc.ServerMethodDefinition.create(
           METHOD_GET_VARIANT,
-          asyncUnaryRequestCall(
-            new io.grpc.stub.ServerCalls.UnaryRequestMethod<
+          asyncUnaryCall(
+            new io.grpc.stub.ServerCalls.UnaryMethod<
                 com.google.genomics.v1.GetVariantRequest,
                 com.google.genomics.v1.Variant>() {
               @java.lang.Override
@@ -971,10 +835,10 @@ public class VariantServiceV1Grpc {
                 serviceImpl.getVariant(request, responseObserver);
               }
             })))
-      .addMethod(createMethodDefinition(
+      .addMethod(io.grpc.ServerMethodDefinition.create(
           METHOD_MERGE_VARIANTS,
-          asyncUnaryRequestCall(
-            new io.grpc.stub.ServerCalls.UnaryRequestMethod<
+          asyncUnaryCall(
+            new io.grpc.stub.ServerCalls.UnaryMethod<
                 com.google.genomics.v1.MergeVariantsRequest,
                 com.google.protobuf.Empty>() {
               @java.lang.Override
@@ -984,10 +848,10 @@ public class VariantServiceV1Grpc {
                 serviceImpl.mergeVariants(request, responseObserver);
               }
             })))
-      .addMethod(createMethodDefinition(
+      .addMethod(io.grpc.ServerMethodDefinition.create(
           METHOD_SEARCH_CALL_SETS,
-          asyncUnaryRequestCall(
-            new io.grpc.stub.ServerCalls.UnaryRequestMethod<
+          asyncUnaryCall(
+            new io.grpc.stub.ServerCalls.UnaryMethod<
                 com.google.genomics.v1.SearchCallSetsRequest,
                 com.google.genomics.v1.SearchCallSetsResponse>() {
               @java.lang.Override
@@ -997,10 +861,10 @@ public class VariantServiceV1Grpc {
                 serviceImpl.searchCallSets(request, responseObserver);
               }
             })))
-      .addMethod(createMethodDefinition(
+      .addMethod(io.grpc.ServerMethodDefinition.create(
           METHOD_CREATE_CALL_SET,
-          asyncUnaryRequestCall(
-            new io.grpc.stub.ServerCalls.UnaryRequestMethod<
+          asyncUnaryCall(
+            new io.grpc.stub.ServerCalls.UnaryMethod<
                 com.google.genomics.v1.CreateCallSetRequest,
                 com.google.genomics.v1.CallSet>() {
               @java.lang.Override
@@ -1010,10 +874,10 @@ public class VariantServiceV1Grpc {
                 serviceImpl.createCallSet(request, responseObserver);
               }
             })))
-      .addMethod(createMethodDefinition(
+      .addMethod(io.grpc.ServerMethodDefinition.create(
           METHOD_UPDATE_CALL_SET,
-          asyncUnaryRequestCall(
-            new io.grpc.stub.ServerCalls.UnaryRequestMethod<
+          asyncUnaryCall(
+            new io.grpc.stub.ServerCalls.UnaryMethod<
                 com.google.genomics.v1.UpdateCallSetRequest,
                 com.google.genomics.v1.CallSet>() {
               @java.lang.Override
@@ -1023,10 +887,10 @@ public class VariantServiceV1Grpc {
                 serviceImpl.updateCallSet(request, responseObserver);
               }
             })))
-      .addMethod(createMethodDefinition(
+      .addMethod(io.grpc.ServerMethodDefinition.create(
           METHOD_DELETE_CALL_SET,
-          asyncUnaryRequestCall(
-            new io.grpc.stub.ServerCalls.UnaryRequestMethod<
+          asyncUnaryCall(
+            new io.grpc.stub.ServerCalls.UnaryMethod<
                 com.google.genomics.v1.DeleteCallSetRequest,
                 com.google.protobuf.Empty>() {
               @java.lang.Override
@@ -1036,10 +900,10 @@ public class VariantServiceV1Grpc {
                 serviceImpl.deleteCallSet(request, responseObserver);
               }
             })))
-      .addMethod(createMethodDefinition(
+      .addMethod(io.grpc.ServerMethodDefinition.create(
           METHOD_GET_CALL_SET,
-          asyncUnaryRequestCall(
-            new io.grpc.stub.ServerCalls.UnaryRequestMethod<
+          asyncUnaryCall(
+            new io.grpc.stub.ServerCalls.UnaryMethod<
                 com.google.genomics.v1.GetCallSetRequest,
                 com.google.genomics.v1.CallSet>() {
               @java.lang.Override

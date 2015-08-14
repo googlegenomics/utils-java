@@ -8,12 +8,12 @@ public final class HttpProto {
   public static void registerAllExtensions(
       com.google.protobuf.ExtensionRegistry registry) {
   }
-  static final com.google.protobuf.Descriptors.Descriptor
+  static com.google.protobuf.Descriptors.Descriptor
     internal_static_google_api_HttpRule_descriptor;
   static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_google_api_HttpRule_fieldAccessorTable;
-  static final com.google.protobuf.Descriptors.Descriptor
+  static com.google.protobuf.Descriptors.Descriptor
     internal_static_google_api_CustomHttpPattern_descriptor;
   static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable

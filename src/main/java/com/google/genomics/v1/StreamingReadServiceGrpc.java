@@ -1,74 +1,41 @@
 package com.google.genomics.v1;
 
-import static io.grpc.stub.Calls.createMethodDescriptor;
-import static io.grpc.stub.Calls.asyncUnaryCall;
-import static io.grpc.stub.Calls.asyncServerStreamingCall;
-import static io.grpc.stub.Calls.asyncClientStreamingCall;
-import static io.grpc.stub.Calls.duplexStreamingCall;
-import static io.grpc.stub.Calls.blockingUnaryCall;
-import static io.grpc.stub.Calls.blockingServerStreamingCall;
-import static io.grpc.stub.Calls.unaryFutureCall;
-import static io.grpc.stub.ServerCalls.createMethodDefinition;
-import static io.grpc.stub.ServerCalls.asyncUnaryRequestCall;
-import static io.grpc.stub.ServerCalls.asyncStreamingRequestCall;
+import static io.grpc.stub.ClientCalls.asyncUnaryCall;
+import static io.grpc.stub.ClientCalls.asyncServerStreamingCall;
+import static io.grpc.stub.ClientCalls.asyncClientStreamingCall;
+import static io.grpc.stub.ClientCalls.asyncBidiStreamingCall;
+import static io.grpc.stub.ClientCalls.blockingUnaryCall;
+import static io.grpc.stub.ClientCalls.blockingServerStreamingCall;
+import static io.grpc.stub.ClientCalls.futureUnaryCall;
+import static io.grpc.stub.ServerCalls.asyncUnaryCall;
+import static io.grpc.stub.ServerCalls.asyncServerStreamingCall;
+import static io.grpc.stub.ServerCalls.asyncClientStreamingCall;
+import static io.grpc.stub.ServerCalls.asyncBidiStreamingCall;
 
 @javax.annotation.Generated("by gRPC proto compiler")
 public class StreamingReadServiceGrpc {
 
-  private static final io.grpc.stub.Method<com.google.genomics.v1.StreamReadsRequest,
+  // Static method descriptors that strictly reflect the proto.
+  public static final io.grpc.MethodDescriptor<com.google.genomics.v1.StreamReadsRequest,
       com.google.genomics.v1.StreamReadsResponse> METHOD_STREAM_READS =
-      io.grpc.stub.Method.create(
-          io.grpc.MethodType.SERVER_STREAMING, "StreamReads",
-          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.StreamReadsRequest.PARSER),
-          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.StreamReadsResponse.PARSER));
+      io.grpc.MethodDescriptor.create(
+          io.grpc.MethodDescriptor.MethodType.SERVER_STREAMING,
+          "google.genomics.v1.StreamingReadService", "StreamReads",
+          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.StreamReadsRequest.parser()),
+          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.StreamReadsResponse.parser()));
 
   public static StreamingReadServiceStub newStub(io.grpc.Channel channel) {
-    return new StreamingReadServiceStub(channel, CONFIG);
+    return new StreamingReadServiceStub(channel);
   }
 
   public static StreamingReadServiceBlockingStub newBlockingStub(
       io.grpc.Channel channel) {
-    return new StreamingReadServiceBlockingStub(channel, CONFIG);
+    return new StreamingReadServiceBlockingStub(channel);
   }
 
   public static StreamingReadServiceFutureStub newFutureStub(
       io.grpc.Channel channel) {
-    return new StreamingReadServiceFutureStub(channel, CONFIG);
-  }
-
-  public static final StreamingReadServiceServiceDescriptor CONFIG =
-      new StreamingReadServiceServiceDescriptor();
-
-  @javax.annotation.concurrent.Immutable
-  public static class StreamingReadServiceServiceDescriptor extends
-      io.grpc.stub.AbstractServiceDescriptor<StreamingReadServiceServiceDescriptor> {
-    public final io.grpc.MethodDescriptor<com.google.genomics.v1.StreamReadsRequest,
-        com.google.genomics.v1.StreamReadsResponse> streamReads;
-
-    private StreamingReadServiceServiceDescriptor() {
-      streamReads = createMethodDescriptor(
-          "google.genomics.v1.StreamingReadService", METHOD_STREAM_READS);
-    }
-
-    @SuppressWarnings("unchecked")
-    private StreamingReadServiceServiceDescriptor(
-        java.util.Map<java.lang.String, io.grpc.MethodDescriptor<?, ?>> methodMap) {
-      streamReads = (io.grpc.MethodDescriptor<com.google.genomics.v1.StreamReadsRequest,
-          com.google.genomics.v1.StreamReadsResponse>) methodMap.get(
-          CONFIG.streamReads.getName());
-    }
-
-    @java.lang.Override
-    protected StreamingReadServiceServiceDescriptor build(
-        java.util.Map<java.lang.String, io.grpc.MethodDescriptor<?, ?>> methodMap) {
-      return new StreamingReadServiceServiceDescriptor(methodMap);
-    }
-
-    @java.lang.Override
-    public com.google.common.collect.ImmutableList<io.grpc.MethodDescriptor<?, ?>> methods() {
-      return com.google.common.collect.ImmutableList.<io.grpc.MethodDescriptor<?, ?>>of(
-          streamReads);
-    }
+    return new StreamingReadServiceFutureStub(channel);
   }
 
   public static interface StreamingReadService {
@@ -86,72 +53,81 @@ public class StreamingReadServiceGrpc {
   public static interface StreamingReadServiceFutureClient {
   }
 
-  public static class StreamingReadServiceStub extends
-      io.grpc.stub.AbstractStub<StreamingReadServiceStub, StreamingReadServiceServiceDescriptor>
+  public static class StreamingReadServiceStub extends io.grpc.stub.AbstractStub<StreamingReadServiceStub>
       implements StreamingReadService {
+    private StreamingReadServiceStub(io.grpc.Channel channel) {
+      super(channel);
+    }
+
     private StreamingReadServiceStub(io.grpc.Channel channel,
-        StreamingReadServiceServiceDescriptor config) {
-      super(channel, config);
+        io.grpc.CallOptions callOptions) {
+      super(channel, callOptions);
     }
 
     @java.lang.Override
     protected StreamingReadServiceStub build(io.grpc.Channel channel,
-        StreamingReadServiceServiceDescriptor config) {
-      return new StreamingReadServiceStub(channel, config);
+        io.grpc.CallOptions callOptions) {
+      return new StreamingReadServiceStub(channel, callOptions);
     }
 
     @java.lang.Override
     public void streamReads(com.google.genomics.v1.StreamReadsRequest request,
         io.grpc.stub.StreamObserver<com.google.genomics.v1.StreamReadsResponse> responseObserver) {
       asyncServerStreamingCall(
-          channel.newCall(config.streamReads), request, responseObserver);
+          channel.newCall(METHOD_STREAM_READS, callOptions), request, responseObserver);
     }
   }
 
-  public static class StreamingReadServiceBlockingStub extends
-      io.grpc.stub.AbstractStub<StreamingReadServiceBlockingStub, StreamingReadServiceServiceDescriptor>
+  public static class StreamingReadServiceBlockingStub extends io.grpc.stub.AbstractStub<StreamingReadServiceBlockingStub>
       implements StreamingReadServiceBlockingClient {
+    private StreamingReadServiceBlockingStub(io.grpc.Channel channel) {
+      super(channel);
+    }
+
     private StreamingReadServiceBlockingStub(io.grpc.Channel channel,
-        StreamingReadServiceServiceDescriptor config) {
-      super(channel, config);
+        io.grpc.CallOptions callOptions) {
+      super(channel, callOptions);
     }
 
     @java.lang.Override
     protected StreamingReadServiceBlockingStub build(io.grpc.Channel channel,
-        StreamingReadServiceServiceDescriptor config) {
-      return new StreamingReadServiceBlockingStub(channel, config);
+        io.grpc.CallOptions callOptions) {
+      return new StreamingReadServiceBlockingStub(channel, callOptions);
     }
 
     @java.lang.Override
     public java.util.Iterator<com.google.genomics.v1.StreamReadsResponse> streamReads(
         com.google.genomics.v1.StreamReadsRequest request) {
       return blockingServerStreamingCall(
-          channel.newCall(config.streamReads), request);
+          channel.newCall(METHOD_STREAM_READS, callOptions), request);
     }
   }
 
-  public static class StreamingReadServiceFutureStub extends
-      io.grpc.stub.AbstractStub<StreamingReadServiceFutureStub, StreamingReadServiceServiceDescriptor>
+  public static class StreamingReadServiceFutureStub extends io.grpc.stub.AbstractStub<StreamingReadServiceFutureStub>
       implements StreamingReadServiceFutureClient {
+    private StreamingReadServiceFutureStub(io.grpc.Channel channel) {
+      super(channel);
+    }
+
     private StreamingReadServiceFutureStub(io.grpc.Channel channel,
-        StreamingReadServiceServiceDescriptor config) {
-      super(channel, config);
+        io.grpc.CallOptions callOptions) {
+      super(channel, callOptions);
     }
 
     @java.lang.Override
     protected StreamingReadServiceFutureStub build(io.grpc.Channel channel,
-        StreamingReadServiceServiceDescriptor config) {
-      return new StreamingReadServiceFutureStub(channel, config);
+        io.grpc.CallOptions callOptions) {
+      return new StreamingReadServiceFutureStub(channel, callOptions);
     }
   }
 
   public static io.grpc.ServerServiceDefinition bindService(
       final StreamingReadService serviceImpl) {
     return io.grpc.ServerServiceDefinition.builder("google.genomics.v1.StreamingReadService")
-      .addMethod(createMethodDefinition(
+      .addMethod(io.grpc.ServerMethodDefinition.create(
           METHOD_STREAM_READS,
-          asyncUnaryRequestCall(
-            new io.grpc.stub.ServerCalls.UnaryRequestMethod<
+          asyncServerStreamingCall(
+            new io.grpc.stub.ServerCalls.ServerStreamingMethod<
                 com.google.genomics.v1.StreamReadsRequest,
                 com.google.genomics.v1.StreamReadsResponse>() {
               @java.lang.Override
