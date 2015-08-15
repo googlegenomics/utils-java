@@ -35,6 +35,18 @@ dependencies {
 }
 ```
 
+##Building this project
+
+Use a recent version of [Apache Maven](http://maven.apache.org/download.cgi) (e.g., version 3.3.3) to build this code:
+
+    cd utils-java
+    mvn package
+
+If you wish to modify this code while also modifying a project that depends upon it (e.g., [dataflow-java](https://github.com/googlegenomics/dataflow-java), just
+
+  1. Build and install the jar to your local maven repository via `mvn install`.
+  2. Then update the pom.xml of the dependent project to temporarily depend upon the particular SNAPSHOT version of utils-java now installed in your local maven repository.
+
 ##gRPC
 This project now includes code for calling the Genomics API using <a href="http://www.grpc.io">gRPC</a>.
 Calling the API with gRPC should greatly improve performance but is still experimental (alpha). To use
