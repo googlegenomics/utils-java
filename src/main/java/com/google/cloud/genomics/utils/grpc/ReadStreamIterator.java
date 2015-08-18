@@ -36,7 +36,8 @@ import com.google.genomics.v1.StreamingReadServiceGrpc;
  */
 public class ReadStreamIterator extends ForwardingIterator<StreamReadsResponse> {
   protected final Predicate<Read> shardPredicate;
-  private Iterator<StreamReadsResponse> delegate;
+  protected final Iterator<StreamReadsResponse> delegate;
+  protected final GenomicsChannel genomicsChannel;
 
   /**
    * Create a stream iterator that can enforce shard boundary semantics.
@@ -56,8 +57,9 @@ public class ReadStreamIterator extends ForwardingIterator<StreamReadsResponse> 
         ShardBoundary.getStrictReadPredicate(request.getStart()) :
           null;
 
+    genomicsChannel = GenomicsChannel.fromOfflineAuth(auth);
     StreamingReadServiceGrpc.StreamingReadServiceBlockingStub readStub =
-        StreamingReadServiceGrpc.newBlockingStub(Channels.fromOfflineAuth(auth));
+        StreamingReadServiceGrpc.newBlockingStub(genomicsChannel);
     
     delegate = readStub.streamReads(request);
   }
@@ -68,10 +70,29 @@ public class ReadStreamIterator extends ForwardingIterator<StreamReadsResponse> 
   }
 
   /**
+   * @see java.util.Iterator#hasNext()
+   */
+  public boolean hasNext() {
+    try {
+      return delegate.hasNext();
+    } catch (RuntimeException e) {
+      genomicsChannel.shutdownNow();
+      throw e;
+    }
+  }
+
+  /**
    * @see java.util.Iterator#next()
    */
   public StreamReadsResponse next() {
-    StreamReadsResponse response = delegate.next();
+    StreamReadsResponse response = null;
+    try {
+      response = delegate.next();
+    } catch (RuntimeException e) {
+      genomicsChannel.shutdownNow();
+      throw e;
+    }
+    
     if(null == shardPredicate) {
       return response;
     }
