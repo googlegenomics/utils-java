@@ -59,7 +59,7 @@ public class ReadStreamIterator extends ForwardingIterator<StreamReadsResponse> 
 
     genomicsChannel = GenomicsChannel.fromOfflineAuth(auth);
     StreamingReadServiceGrpc.StreamingReadServiceBlockingStub readStub =
-        StreamingReadServiceGrpc.newBlockingStub(genomicsChannel.getChannel());
+        StreamingReadServiceGrpc.newBlockingStub(genomicsChannel);
     
     delegate = readStub.streamReads(request);
   }

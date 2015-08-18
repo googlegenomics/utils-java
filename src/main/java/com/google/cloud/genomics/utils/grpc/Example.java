@@ -38,7 +38,7 @@ public class Example {
 
     // Regular RPC example: list all reference set assembly ids.
     ReferenceServiceV1BlockingStub refStub =
-        ReferenceServiceV1Grpc.newBlockingStub(channel.getChannel());
+        ReferenceServiceV1Grpc.newBlockingStub(channel);
     SearchReferenceSetsRequest request =
         SearchReferenceSetsRequest.newBuilder().build();
     SearchReferenceSetsResponse response = refStub.searchReferenceSets(request);
@@ -48,7 +48,7 @@ public class Example {
 
     // Streaming RPC example: request the variants within BRCA1 for the Platinum Genomes variant set.
     StreamingVariantServiceBlockingStub varStub =
-        StreamingVariantServiceGrpc.newBlockingStub(channel.getChannel());
+        StreamingVariantServiceGrpc.newBlockingStub(channel);
     StreamVariantsRequest varRequest = StreamVariantsRequest.newBuilder()
         .setVariantSetId("3049512673186936334")
         .setReferenceName("chr17")

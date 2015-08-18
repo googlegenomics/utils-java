@@ -3,10 +3,13 @@ package com.google.cloud.genomics.utils.grpc;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.genomics.utils.GenomicsFactory;
 
+import io.grpc.CallOptions;
 import io.grpc.Channel;
 import io.grpc.ChannelImpl;
+import io.grpc.ClientCall;
 import io.grpc.ClientInterceptors;
 import io.grpc.Metadata;
+import io.grpc.MethodDescriptor;
 import io.grpc.auth.ClientAuthInterceptor;
 import io.grpc.netty.GrpcSslContexts;
 import io.grpc.netty.NegotiationType;
@@ -26,7 +29,7 @@ import javax.net.ssl.SSLException;
 /**
  * A convenience class for creating gRPC channels to the Google Genomics API.
  */
-public class GenomicsChannel {
+public class GenomicsChannel extends Channel {
   private static final String GENOMICS_ENDPOINT = "genomics.googleapis.com";
   private static final String GENOMICS_SCOPE = "https://www.googleapis.com/auth/genomics";
   // TODO: This constant should come from grpc-java.
@@ -35,7 +38,7 @@ public class GenomicsChannel {
   // NOTE: Unfortunately we need to keep a handle to both of these since Channel does not expose
   // the shutdown method and the ClientInterceptors do not return the ChannelImpl instance.
   private final ChannelImpl channelImpl;
-  private final Channel channel;
+  private final Channel delegate;
   
   private ChannelImpl getGenomicsChannelImpl() throws SSLException {
     // Java 8's implementation of GCM ciphers is extremely slow. Therefore we disable
@@ -61,7 +64,7 @@ public class GenomicsChannel {
     Metadata.Key<String> apiKeyHeaderKey =
         Metadata.Key.of(API_KEY_HEADER, Metadata.ASCII_STRING_MARSHALLER);
     headers.put(apiKeyHeaderKey, apiKey);
-    channel = ClientInterceptors.intercept(channelImpl,
+    delegate = ClientInterceptors.intercept(channelImpl,
         MetadataUtils.newAttachHeadersInterceptor(headers)); 
   }
   
@@ -71,19 +74,15 @@ public class GenomicsChannel {
         Arrays.asList(GENOMICS_SCOPE));
     ClientAuthInterceptor interceptor = new ClientAuthInterceptor(creds,
         Executors.newSingleThreadExecutor());
-    channel = ClientInterceptors.intercept(channelImpl, interceptor);
+    delegate = ClientInterceptors.intercept(channelImpl, interceptor);
   }
   
-  /**
-   * Get the underlying gRPC channel.
-   * 
-   * This is needed to pass to gRPC client factory methods.
-   * @return The Channel object.
-   */
-  public Channel getChannel() {
-    return this.channel;
+  @Override
+  public <RequestT, ResponseT> ClientCall<RequestT, ResponseT> newCall(
+      MethodDescriptor<RequestT, ResponseT> arg0, CallOptions arg1) {
+    return delegate.newCall(arg0, arg1);
   }
-  
+
   /**
    * @see io.grpc.ChannelImpl#shutdownNow()
    */

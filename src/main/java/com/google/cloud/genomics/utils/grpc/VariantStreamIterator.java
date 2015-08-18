@@ -59,7 +59,7 @@ public class VariantStreamIterator extends ForwardingIterator<StreamVariantsResp
 
     genomicsChannel = GenomicsChannel.fromOfflineAuth(auth);
     StreamingVariantServiceGrpc.StreamingVariantServiceBlockingStub variantStub =
-        StreamingVariantServiceGrpc.newBlockingStub(genomicsChannel.getChannel());
+        StreamingVariantServiceGrpc.newBlockingStub(genomicsChannel);
 
 
     delegate = variantStub.streamVariants(request);
