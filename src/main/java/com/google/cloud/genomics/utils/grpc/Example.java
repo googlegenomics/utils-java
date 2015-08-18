@@ -1,7 +1,5 @@
 package com.google.cloud.genomics.utils.grpc;
 
-import io.grpc.Channel;
-
 import java.io.FileNotFoundException;
 import java.util.Iterator;
 
@@ -18,6 +16,7 @@ import com.google.genomics.v1.StreamingVariantServiceGrpc;
 import com.google.genomics.v1.StreamingVariantServiceGrpc.StreamingVariantServiceBlockingStub;
 
 public class Example {
+  
   public static void main(String[] args) throws Exception {
     final String clientSecretsJson = "client_secrets.json";
     GenomicsFactory.OfflineAuth auth = null;
@@ -35,11 +34,11 @@ public class Example {
       return;
     }
     
-    Channel channel = Channels.fromOfflineAuth(auth);
+    GenomicsChannel channel = GenomicsChannel.fromOfflineAuth(auth);
 
     // Regular RPC example: list all reference set assembly ids.
     ReferenceServiceV1BlockingStub refStub =
-        ReferenceServiceV1Grpc.newBlockingStub(channel);
+        ReferenceServiceV1Grpc.newBlockingStub(channel.getChannel());
     SearchReferenceSetsRequest request =
         SearchReferenceSetsRequest.newBuilder().build();
     SearchReferenceSetsResponse response = refStub.searchReferenceSets(request);
@@ -49,7 +48,7 @@ public class Example {
 
     // Streaming RPC example: request the variants within BRCA1 for the Platinum Genomes variant set.
     StreamingVariantServiceBlockingStub varStub =
-        StreamingVariantServiceGrpc.newBlockingStub(channel);
+        StreamingVariantServiceGrpc.newBlockingStub(channel.getChannel());
     StreamVariantsRequest varRequest = StreamVariantsRequest.newBuilder()
         .setVariantSetId("3049512673186936334")
         .setReferenceName("chr17")
@@ -57,14 +56,17 @@ public class Example {
         .setEnd(41277499)
         .build();
 
-    Iterator<StreamVariantsResponse> iter = varStub.streamVariants(varRequest);
-    while (iter.hasNext()) {
-      StreamVariantsResponse varResponse = iter.next();
-      System.out.println("Response:");
-      System.out.println(varResponse.toString());
-      System.out.println();
+    try {
+      Iterator<StreamVariantsResponse> iter = varStub.streamVariants(varRequest);
+      while (iter.hasNext()) {
+        StreamVariantsResponse varResponse = iter.next();
+        System.out.println("Response:");
+        System.out.println(varResponse.toString());
+        System.out.println();
+      }
+      System.out.println("Done");
+    } finally {
+      channel.shutdownNow();
     }
-    System.out.println("Done");
-    System.exit(0);
   }
 }

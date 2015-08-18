@@ -36,7 +36,8 @@ import com.google.genomics.v1.Variant;
  */
 public class VariantStreamIterator extends ForwardingIterator<StreamVariantsResponse> {
   protected final Predicate<Variant> shardPredicate;
-  protected Iterator<StreamVariantsResponse> delegate;
+  protected final Iterator<StreamVariantsResponse> delegate;
+  protected final GenomicsChannel genomicsChannel;
 
   /**
    * Create a stream iterator that can enforce shard boundary semantics.
@@ -56,8 +57,9 @@ public class VariantStreamIterator extends ForwardingIterator<StreamVariantsResp
         ShardBoundary.getStrictVariantPredicate(request.getStart()) :
           null;
 
+    genomicsChannel = GenomicsChannel.fromOfflineAuth(auth);
     StreamingVariantServiceGrpc.StreamingVariantServiceBlockingStub variantStub =
-        StreamingVariantServiceGrpc.newBlockingStub(Channels.fromOfflineAuth(auth));
+        StreamingVariantServiceGrpc.newBlockingStub(genomicsChannel.getChannel());
 
 
     delegate = variantStub.streamVariants(request);
@@ -69,10 +71,29 @@ public class VariantStreamIterator extends ForwardingIterator<StreamVariantsResp
   }
 
   /**
+   * @see java.util.Iterator#hasNext()
+   */
+  public boolean hasNext() {
+    try {
+      return delegate.hasNext();
+    } catch (RuntimeException e) {
+      genomicsChannel.shutdownNow();
+      throw e;
+    }
+  }
+
+  /**
    * @see java.util.Iterator#next()
    */
   public StreamVariantsResponse next() {
-    StreamVariantsResponse response = delegate.next();
+    StreamVariantsResponse response = null;
+    try {
+      response = delegate.next();
+    } catch (RuntimeException e) {
+      genomicsChannel.shutdownNow();
+      throw e;
+    }
+
     if(null == shardPredicate) {
       return response;
     }
