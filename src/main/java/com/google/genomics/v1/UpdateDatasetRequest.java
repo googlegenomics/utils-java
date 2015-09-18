@@ -11,7 +11,7 @@ public  final class UpdateDatasetRequest extends
     // @@protoc_insertion_point(message_implements:google.genomics.v1.UpdateDatasetRequest)
     UpdateDatasetRequestOrBuilder {
   // Use UpdateDatasetRequest.newBuilder() to construct.
-  private UpdateDatasetRequest(com.google.protobuf.GeneratedMessage.Builder builder) {
+  private UpdateDatasetRequest(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
     super(builder);
   }
   private UpdateDatasetRequest() {
@@ -43,9 +43,9 @@ public  final class UpdateDatasetRequest extends
             break;
           }
           case 10: {
-            com.google.protobuf.ByteString bs = input.readBytes();
+            String s = input.readStringRequireUtf8();
 
-            datasetId_ = bs;
+            datasetId_ = s;
             break;
           }
           case 18: {
@@ -53,7 +53,7 @@ public  final class UpdateDatasetRequest extends
             if (dataset_ != null) {
               subBuilder = dataset_.toBuilder();
             }
-            dataset_ = input.readMessage(com.google.genomics.v1.Dataset.PARSER, extensionRegistry);
+            dataset_ = input.readMessage(com.google.genomics.v1.Dataset.parser(), extensionRegistry);
             if (subBuilder != null) {
               subBuilder.mergeFrom(dataset_);
               dataset_ = subBuilder.buildPartial();
@@ -102,9 +102,7 @@ public  final class UpdateDatasetRequest extends
       com.google.protobuf.ByteString bs = 
           (com.google.protobuf.ByteString) ref;
       java.lang.String s = bs.toStringUtf8();
-      if (bs.isValidUtf8()) {
-        datasetId_ = s;
-      }
+      datasetId_ = s;
       return s;
     }
   }
@@ -175,28 +173,26 @@ public  final class UpdateDatasetRequest extends
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
     if (!getDatasetIdBytes().isEmpty()) {
-      output.writeBytes(1, getDatasetIdBytes());
+      com.google.protobuf.GeneratedMessage.writeString(output, 1, datasetId_);
     }
     if (dataset_ != null) {
       output.writeMessage(2, getDataset());
     }
   }
 
-  private int memoizedSerializedSize = -1;
   public int getSerializedSize() {
-    int size = memoizedSerializedSize;
+    int size = memoizedSize;
     if (size != -1) return size;
 
     size = 0;
     if (!getDatasetIdBytes().isEmpty()) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeBytesSize(1, getDatasetIdBytes());
+      size += com.google.protobuf.GeneratedMessage.computeStringSize(1, datasetId_);
     }
     if (dataset_ != null) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(2, getDataset());
     }
-    memoizedSerializedSize = size;
+    memoizedSize = size;
     return size;
   }
 
@@ -405,9 +401,7 @@ public  final class UpdateDatasetRequest extends
         com.google.protobuf.ByteString bs =
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          datasetId_ = s;
-        }
+        datasetId_ = s;
         return s;
       } else {
         return (java.lang.String) ref;
@@ -475,7 +469,8 @@ public  final class UpdateDatasetRequest extends
       if (value == null) {
     throw new NullPointerException();
   }
-  
+  checkByteStringIsUtf8(value);
+      
       datasetId_ = value;
       onChanged();
       return this;
@@ -657,8 +652,8 @@ public  final class UpdateDatasetRequest extends
     return DEFAULT_INSTANCE;
   }
 
-  public static final com.google.protobuf.Parser<UpdateDatasetRequest> PARSER =
-      new com.google.protobuf.AbstractParser<UpdateDatasetRequest>() {
+  private static final com.google.protobuf.Parser<UpdateDatasetRequest>
+      PARSER = new com.google.protobuf.AbstractParser<UpdateDatasetRequest>() {
     public UpdateDatasetRequest parsePartialFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)

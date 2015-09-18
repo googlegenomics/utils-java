@@ -15,7 +15,7 @@ public  final class SearchVariantsRequest extends
     // @@protoc_insertion_point(message_implements:google.genomics.v1.SearchVariantsRequest)
     SearchVariantsRequestOrBuilder {
   // Use SearchVariantsRequest.newBuilder() to construct.
-  private SearchVariantsRequest(com.google.protobuf.GeneratedMessage.Builder builder) {
+  private SearchVariantsRequest(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
     super(builder);
   }
   private SearchVariantsRequest() {
@@ -55,33 +55,33 @@ public  final class SearchVariantsRequest extends
             break;
           }
           case 10: {
-            com.google.protobuf.ByteString bs = input.readBytes();
+            String s = input.readStringRequireUtf8();
             if (!((mutable_bitField0_ & 0x00000001) == 0x00000001)) {
               variantSetIds_ = new com.google.protobuf.LazyStringArrayList();
               mutable_bitField0_ |= 0x00000001;
             }
-            variantSetIds_.add(bs);
+            variantSetIds_.add(s);
             break;
           }
           case 18: {
-            com.google.protobuf.ByteString bs = input.readBytes();
+            String s = input.readStringRequireUtf8();
 
-            variantName_ = bs;
+            variantName_ = s;
             break;
           }
           case 26: {
-            com.google.protobuf.ByteString bs = input.readBytes();
+            String s = input.readStringRequireUtf8();
             if (!((mutable_bitField0_ & 0x00000004) == 0x00000004)) {
               callSetIds_ = new com.google.protobuf.LazyStringArrayList();
               mutable_bitField0_ |= 0x00000004;
             }
-            callSetIds_.add(bs);
+            callSetIds_.add(s);
             break;
           }
           case 34: {
-            com.google.protobuf.ByteString bs = input.readBytes();
+            String s = input.readStringRequireUtf8();
 
-            referenceName_ = bs;
+            referenceName_ = s;
             break;
           }
           case 40: {
@@ -95,9 +95,9 @@ public  final class SearchVariantsRequest extends
             break;
           }
           case 58: {
-            com.google.protobuf.ByteString bs = input.readBytes();
+            String s = input.readStringRequireUtf8();
 
-            pageToken_ = bs;
+            pageToken_ = s;
             break;
           }
           case 64: {
@@ -211,9 +211,7 @@ public  final class SearchVariantsRequest extends
       com.google.protobuf.ByteString bs = 
           (com.google.protobuf.ByteString) ref;
       java.lang.String s = bs.toStringUtf8();
-      if (bs.isValidUtf8()) {
-        variantName_ = s;
-      }
+      variantName_ = s;
       return s;
     }
   }
@@ -312,9 +310,7 @@ public  final class SearchVariantsRequest extends
       com.google.protobuf.ByteString bs = 
           (com.google.protobuf.ByteString) ref;
       java.lang.String s = bs.toStringUtf8();
-      if (bs.isValidUtf8()) {
-        referenceName_ = s;
-      }
+      referenceName_ = s;
       return s;
     }
   }
@@ -386,9 +382,7 @@ public  final class SearchVariantsRequest extends
       com.google.protobuf.ByteString bs = 
           (com.google.protobuf.ByteString) ref;
       java.lang.String s = bs.toStringUtf8();
-      if (bs.isValidUtf8()) {
-        pageToken_ = s;
-      }
+      pageToken_ = s;
       return s;
     }
   }
@@ -456,16 +450,16 @@ public  final class SearchVariantsRequest extends
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
     for (int i = 0; i < variantSetIds_.size(); i++) {
-      output.writeBytes(1, variantSetIds_.getByteString(i));
+      com.google.protobuf.GeneratedMessage.writeString(output, 1, variantSetIds_.getRaw(i));
     }
     if (!getVariantNameBytes().isEmpty()) {
-      output.writeBytes(2, getVariantNameBytes());
+      com.google.protobuf.GeneratedMessage.writeString(output, 2, variantName_);
     }
     for (int i = 0; i < callSetIds_.size(); i++) {
-      output.writeBytes(3, callSetIds_.getByteString(i));
+      com.google.protobuf.GeneratedMessage.writeString(output, 3, callSetIds_.getRaw(i));
     }
     if (!getReferenceNameBytes().isEmpty()) {
-      output.writeBytes(4, getReferenceNameBytes());
+      com.google.protobuf.GeneratedMessage.writeString(output, 4, referenceName_);
     }
     if (start_ != 0L) {
       output.writeInt64(5, start_);
@@ -474,7 +468,7 @@ public  final class SearchVariantsRequest extends
       output.writeInt64(6, end_);
     }
     if (!getPageTokenBytes().isEmpty()) {
-      output.writeBytes(7, getPageTokenBytes());
+      com.google.protobuf.GeneratedMessage.writeString(output, 7, pageToken_);
     }
     if (pageSize_ != 0) {
       output.writeInt32(8, pageSize_);
@@ -484,37 +478,32 @@ public  final class SearchVariantsRequest extends
     }
   }
 
-  private int memoizedSerializedSize = -1;
   public int getSerializedSize() {
-    int size = memoizedSerializedSize;
+    int size = memoizedSize;
     if (size != -1) return size;
 
     size = 0;
     {
       int dataSize = 0;
       for (int i = 0; i < variantSetIds_.size(); i++) {
-        dataSize += com.google.protobuf.CodedOutputStream
-          .computeBytesSizeNoTag(variantSetIds_.getByteString(i));
+        dataSize += computeStringSizeNoTag(variantSetIds_.getRaw(i));
       }
       size += dataSize;
       size += 1 * getVariantSetIdsList().size();
     }
     if (!getVariantNameBytes().isEmpty()) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeBytesSize(2, getVariantNameBytes());
+      size += com.google.protobuf.GeneratedMessage.computeStringSize(2, variantName_);
     }
     {
       int dataSize = 0;
       for (int i = 0; i < callSetIds_.size(); i++) {
-        dataSize += com.google.protobuf.CodedOutputStream
-          .computeBytesSizeNoTag(callSetIds_.getByteString(i));
+        dataSize += computeStringSizeNoTag(callSetIds_.getRaw(i));
       }
       size += dataSize;
       size += 1 * getCallSetIdsList().size();
     }
     if (!getReferenceNameBytes().isEmpty()) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeBytesSize(4, getReferenceNameBytes());
+      size += com.google.protobuf.GeneratedMessage.computeStringSize(4, referenceName_);
     }
     if (start_ != 0L) {
       size += com.google.protobuf.CodedOutputStream
@@ -525,8 +514,7 @@ public  final class SearchVariantsRequest extends
         .computeInt64Size(6, end_);
     }
     if (!getPageTokenBytes().isEmpty()) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeBytesSize(7, getPageTokenBytes());
+      size += com.google.protobuf.GeneratedMessage.computeStringSize(7, pageToken_);
     }
     if (pageSize_ != 0) {
       size += com.google.protobuf.CodedOutputStream
@@ -536,7 +524,7 @@ public  final class SearchVariantsRequest extends
       size += com.google.protobuf.CodedOutputStream
         .computeInt32Size(9, maxCalls_);
     }
-    memoizedSerializedSize = size;
+    memoizedSize = size;
     return size;
   }
 
@@ -938,7 +926,8 @@ public  final class SearchVariantsRequest extends
       if (value == null) {
     throw new NullPointerException();
   }
-  ensureVariantSetIdsIsMutable();
+  checkByteStringIsUtf8(value);
+      ensureVariantSetIdsIsMutable();
       variantSetIds_.add(value);
       onChanged();
       return this;
@@ -958,9 +947,7 @@ public  final class SearchVariantsRequest extends
         com.google.protobuf.ByteString bs =
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          variantName_ = s;
-        }
+        variantName_ = s;
         return s;
       } else {
         return (java.lang.String) ref;
@@ -1028,7 +1015,8 @@ public  final class SearchVariantsRequest extends
       if (value == null) {
     throw new NullPointerException();
   }
-  
+  checkByteStringIsUtf8(value);
+      
       variantName_ = value;
       onChanged();
       return this;
@@ -1184,7 +1172,8 @@ public  final class SearchVariantsRequest extends
       if (value == null) {
     throw new NullPointerException();
   }
-  ensureCallSetIdsIsMutable();
+  checkByteStringIsUtf8(value);
+      ensureCallSetIdsIsMutable();
       callSetIds_.add(value);
       onChanged();
       return this;
@@ -1204,9 +1193,7 @@ public  final class SearchVariantsRequest extends
         com.google.protobuf.ByteString bs =
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          referenceName_ = s;
-        }
+        referenceName_ = s;
         return s;
       } else {
         return (java.lang.String) ref;
@@ -1274,7 +1261,8 @@ public  final class SearchVariantsRequest extends
       if (value == null) {
     throw new NullPointerException();
   }
-  
+  checkByteStringIsUtf8(value);
+      
       referenceName_ = value;
       onChanged();
       return this;
@@ -1378,9 +1366,7 @@ public  final class SearchVariantsRequest extends
         com.google.protobuf.ByteString bs =
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          pageToken_ = s;
-        }
+        pageToken_ = s;
         return s;
       } else {
         return (java.lang.String) ref;
@@ -1456,7 +1442,8 @@ public  final class SearchVariantsRequest extends
       if (value == null) {
     throw new NullPointerException();
   }
-  
+  checkByteStringIsUtf8(value);
+      
       pageToken_ = value;
       onChanged();
       return this;
@@ -1567,8 +1554,8 @@ public  final class SearchVariantsRequest extends
     return DEFAULT_INSTANCE;
   }
 
-  public static final com.google.protobuf.Parser<SearchVariantsRequest> PARSER =
-      new com.google.protobuf.AbstractParser<SearchVariantsRequest>() {
+  private static final com.google.protobuf.Parser<SearchVariantsRequest>
+      PARSER = new com.google.protobuf.AbstractParser<SearchVariantsRequest>() {
     public SearchVariantsRequest parsePartialFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)

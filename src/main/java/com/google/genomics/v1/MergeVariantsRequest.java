@@ -11,7 +11,7 @@ public  final class MergeVariantsRequest extends
     // @@protoc_insertion_point(message_implements:google.genomics.v1.MergeVariantsRequest)
     MergeVariantsRequestOrBuilder {
   // Use MergeVariantsRequest.newBuilder() to construct.
-  private MergeVariantsRequest(com.google.protobuf.GeneratedMessage.Builder builder) {
+  private MergeVariantsRequest(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
     super(builder);
   }
   private MergeVariantsRequest() {
@@ -44,9 +44,9 @@ public  final class MergeVariantsRequest extends
             break;
           }
           case 10: {
-            com.google.protobuf.ByteString bs = input.readBytes();
+            String s = input.readStringRequireUtf8();
 
-            variantSetId_ = bs;
+            variantSetId_ = s;
             break;
           }
           case 18: {
@@ -54,7 +54,7 @@ public  final class MergeVariantsRequest extends
               variants_ = new java.util.ArrayList<com.google.genomics.v1.Variant>();
               mutable_bitField0_ |= 0x00000002;
             }
-            variants_.add(input.readMessage(com.google.genomics.v1.Variant.PARSER, extensionRegistry));
+            variants_.add(input.readMessage(com.google.genomics.v1.Variant.parser(), extensionRegistry));
             break;
           }
         }
@@ -102,9 +102,7 @@ public  final class MergeVariantsRequest extends
       com.google.protobuf.ByteString bs = 
           (com.google.protobuf.ByteString) ref;
       java.lang.String s = bs.toStringUtf8();
-      if (bs.isValidUtf8()) {
-        variantSetId_ = s;
-      }
+      variantSetId_ = s;
       return s;
     }
   }
@@ -197,28 +195,26 @@ public  final class MergeVariantsRequest extends
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
     if (!getVariantSetIdBytes().isEmpty()) {
-      output.writeBytes(1, getVariantSetIdBytes());
+      com.google.protobuf.GeneratedMessage.writeString(output, 1, variantSetId_);
     }
     for (int i = 0; i < variants_.size(); i++) {
       output.writeMessage(2, variants_.get(i));
     }
   }
 
-  private int memoizedSerializedSize = -1;
   public int getSerializedSize() {
-    int size = memoizedSerializedSize;
+    int size = memoizedSize;
     if (size != -1) return size;
 
     size = 0;
     if (!getVariantSetIdBytes().isEmpty()) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeBytesSize(1, getVariantSetIdBytes());
+      size += com.google.protobuf.GeneratedMessage.computeStringSize(1, variantSetId_);
     }
     for (int i = 0; i < variants_.size(); i++) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(2, variants_.get(i));
     }
-    memoizedSerializedSize = size;
+    memoizedSize = size;
     return size;
   }
 
@@ -459,9 +455,7 @@ public  final class MergeVariantsRequest extends
         com.google.protobuf.ByteString bs =
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          variantSetId_ = s;
-        }
+        variantSetId_ = s;
         return s;
       } else {
         return (java.lang.String) ref;
@@ -529,7 +523,8 @@ public  final class MergeVariantsRequest extends
       if (value == null) {
     throw new NullPointerException();
   }
-  
+  checkByteStringIsUtf8(value);
+      
       variantSetId_ = value;
       onChanged();
       return this;
@@ -870,8 +865,8 @@ public  final class MergeVariantsRequest extends
     return DEFAULT_INSTANCE;
   }
 
-  public static final com.google.protobuf.Parser<MergeVariantsRequest> PARSER =
-      new com.google.protobuf.AbstractParser<MergeVariantsRequest>() {
+  private static final com.google.protobuf.Parser<MergeVariantsRequest>
+      PARSER = new com.google.protobuf.AbstractParser<MergeVariantsRequest>() {
     public MergeVariantsRequest parsePartialFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)

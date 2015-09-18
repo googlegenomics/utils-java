@@ -15,7 +15,7 @@ public  final class ExportReadGroupSetRequest extends
     // @@protoc_insertion_point(message_implements:google.genomics.v1.ExportReadGroupSetRequest)
     ExportReadGroupSetRequestOrBuilder {
   // Use ExportReadGroupSetRequest.newBuilder() to construct.
-  private ExportReadGroupSetRequest(com.google.protobuf.GeneratedMessage.Builder builder) {
+  private ExportReadGroupSetRequest(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
     super(builder);
   }
   private ExportReadGroupSetRequest() {
@@ -50,30 +50,30 @@ public  final class ExportReadGroupSetRequest extends
             break;
           }
           case 10: {
-            com.google.protobuf.ByteString bs = input.readBytes();
+            String s = input.readStringRequireUtf8();
 
-            projectId_ = bs;
+            projectId_ = s;
             break;
           }
           case 18: {
-            com.google.protobuf.ByteString bs = input.readBytes();
+            String s = input.readStringRequireUtf8();
 
-            exportUri_ = bs;
+            exportUri_ = s;
             break;
           }
           case 26: {
-            com.google.protobuf.ByteString bs = input.readBytes();
+            String s = input.readStringRequireUtf8();
 
-            readGroupSetId_ = bs;
+            readGroupSetId_ = s;
             break;
           }
           case 34: {
-            com.google.protobuf.ByteString bs = input.readBytes();
+            String s = input.readStringRequireUtf8();
             if (!((mutable_bitField0_ & 0x00000008) == 0x00000008)) {
               referenceNames_ = new com.google.protobuf.LazyStringArrayList();
               mutable_bitField0_ |= 0x00000008;
             }
-            referenceNames_.add(bs);
+            referenceNames_.add(s);
             break;
           }
         }
@@ -121,9 +121,7 @@ public  final class ExportReadGroupSetRequest extends
       com.google.protobuf.ByteString bs = 
           (com.google.protobuf.ByteString) ref;
       java.lang.String s = bs.toStringUtf8();
-      if (bs.isValidUtf8()) {
-        projectId_ = s;
-      }
+      projectId_ = s;
       return s;
     }
   }
@@ -167,9 +165,7 @@ public  final class ExportReadGroupSetRequest extends
       com.google.protobuf.ByteString bs = 
           (com.google.protobuf.ByteString) ref;
       java.lang.String s = bs.toStringUtf8();
-      if (bs.isValidUtf8()) {
-        exportUri_ = s;
-      }
+      exportUri_ = s;
       return s;
     }
   }
@@ -213,9 +209,7 @@ public  final class ExportReadGroupSetRequest extends
       com.google.protobuf.ByteString bs = 
           (com.google.protobuf.ByteString) ref;
       java.lang.String s = bs.toStringUtf8();
-      if (bs.isValidUtf8()) {
-        readGroupSetId_ = s;
-      }
+      readGroupSetId_ = s;
       return s;
     }
   }
@@ -306,47 +300,42 @@ public  final class ExportReadGroupSetRequest extends
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
     if (!getProjectIdBytes().isEmpty()) {
-      output.writeBytes(1, getProjectIdBytes());
+      com.google.protobuf.GeneratedMessage.writeString(output, 1, projectId_);
     }
     if (!getExportUriBytes().isEmpty()) {
-      output.writeBytes(2, getExportUriBytes());
+      com.google.protobuf.GeneratedMessage.writeString(output, 2, exportUri_);
     }
     if (!getReadGroupSetIdBytes().isEmpty()) {
-      output.writeBytes(3, getReadGroupSetIdBytes());
+      com.google.protobuf.GeneratedMessage.writeString(output, 3, readGroupSetId_);
     }
     for (int i = 0; i < referenceNames_.size(); i++) {
-      output.writeBytes(4, referenceNames_.getByteString(i));
+      com.google.protobuf.GeneratedMessage.writeString(output, 4, referenceNames_.getRaw(i));
     }
   }
 
-  private int memoizedSerializedSize = -1;
   public int getSerializedSize() {
-    int size = memoizedSerializedSize;
+    int size = memoizedSize;
     if (size != -1) return size;
 
     size = 0;
     if (!getProjectIdBytes().isEmpty()) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeBytesSize(1, getProjectIdBytes());
+      size += com.google.protobuf.GeneratedMessage.computeStringSize(1, projectId_);
     }
     if (!getExportUriBytes().isEmpty()) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeBytesSize(2, getExportUriBytes());
+      size += com.google.protobuf.GeneratedMessage.computeStringSize(2, exportUri_);
     }
     if (!getReadGroupSetIdBytes().isEmpty()) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeBytesSize(3, getReadGroupSetIdBytes());
+      size += com.google.protobuf.GeneratedMessage.computeStringSize(3, readGroupSetId_);
     }
     {
       int dataSize = 0;
       for (int i = 0; i < referenceNames_.size(); i++) {
-        dataSize += com.google.protobuf.CodedOutputStream
-          .computeBytesSizeNoTag(referenceNames_.getByteString(i));
+        dataSize += computeStringSizeNoTag(referenceNames_.getRaw(i));
       }
       size += dataSize;
       size += 1 * getReferenceNamesList().size();
     }
-    memoizedSerializedSize = size;
+    memoizedSize = size;
     return size;
   }
 
@@ -580,9 +569,7 @@ public  final class ExportReadGroupSetRequest extends
         com.google.protobuf.ByteString bs =
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          projectId_ = s;
-        }
+        projectId_ = s;
         return s;
       } else {
         return (java.lang.String) ref;
@@ -650,7 +637,8 @@ public  final class ExportReadGroupSetRequest extends
       if (value == null) {
     throw new NullPointerException();
   }
-  
+  checkByteStringIsUtf8(value);
+      
       projectId_ = value;
       onChanged();
       return this;
@@ -672,9 +660,7 @@ public  final class ExportReadGroupSetRequest extends
         com.google.protobuf.ByteString bs =
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          exportUri_ = s;
-        }
+        exportUri_ = s;
         return s;
       } else {
         return (java.lang.String) ref;
@@ -750,7 +736,8 @@ public  final class ExportReadGroupSetRequest extends
       if (value == null) {
     throw new NullPointerException();
   }
-  
+  checkByteStringIsUtf8(value);
+      
       exportUri_ = value;
       onChanged();
       return this;
@@ -770,9 +757,7 @@ public  final class ExportReadGroupSetRequest extends
         com.google.protobuf.ByteString bs =
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          readGroupSetId_ = s;
-        }
+        readGroupSetId_ = s;
         return s;
       } else {
         return (java.lang.String) ref;
@@ -840,7 +825,8 @@ public  final class ExportReadGroupSetRequest extends
       if (value == null) {
     throw new NullPointerException();
   }
-  
+  checkByteStringIsUtf8(value);
+      
       readGroupSetId_ = value;
       onChanged();
       return this;
@@ -987,7 +973,8 @@ public  final class ExportReadGroupSetRequest extends
       if (value == null) {
     throw new NullPointerException();
   }
-  ensureReferenceNamesIsMutable();
+  checkByteStringIsUtf8(value);
+      ensureReferenceNamesIsMutable();
       referenceNames_.add(value);
       onChanged();
       return this;
@@ -1016,8 +1003,8 @@ public  final class ExportReadGroupSetRequest extends
     return DEFAULT_INSTANCE;
   }
 
-  public static final com.google.protobuf.Parser<ExportReadGroupSetRequest> PARSER =
-      new com.google.protobuf.AbstractParser<ExportReadGroupSetRequest>() {
+  private static final com.google.protobuf.Parser<ExportReadGroupSetRequest>
+      PARSER = new com.google.protobuf.AbstractParser<ExportReadGroupSetRequest>() {
     public ExportReadGroupSetRequest parsePartialFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)

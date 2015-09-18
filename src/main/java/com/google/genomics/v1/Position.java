@@ -18,7 +18,7 @@ public  final class Position extends
     // @@protoc_insertion_point(message_implements:google.genomics.v1.Position)
     PositionOrBuilder {
   // Use Position.newBuilder() to construct.
-  private Position(com.google.protobuf.GeneratedMessage.Builder builder) {
+  private Position(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
     super(builder);
   }
   private Position() {
@@ -52,9 +52,9 @@ public  final class Position extends
             break;
           }
           case 10: {
-            com.google.protobuf.ByteString bs = input.readBytes();
+            String s = input.readStringRequireUtf8();
 
-            referenceName_ = bs;
+            referenceName_ = s;
             break;
           }
           case 16: {
@@ -108,9 +108,7 @@ public  final class Position extends
       com.google.protobuf.ByteString bs = 
           (com.google.protobuf.ByteString) ref;
       java.lang.String s = bs.toStringUtf8();
-      if (bs.isValidUtf8()) {
-        referenceName_ = s;
-      }
+      referenceName_ = s;
       return s;
     }
   }
@@ -175,7 +173,7 @@ public  final class Position extends
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
     if (!getReferenceNameBytes().isEmpty()) {
-      output.writeBytes(1, getReferenceNameBytes());
+      com.google.protobuf.GeneratedMessage.writeString(output, 1, referenceName_);
     }
     if (position_ != 0L) {
       output.writeInt64(2, position_);
@@ -185,15 +183,13 @@ public  final class Position extends
     }
   }
 
-  private int memoizedSerializedSize = -1;
   public int getSerializedSize() {
-    int size = memoizedSerializedSize;
+    int size = memoizedSize;
     if (size != -1) return size;
 
     size = 0;
     if (!getReferenceNameBytes().isEmpty()) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeBytesSize(1, getReferenceNameBytes());
+      size += com.google.protobuf.GeneratedMessage.computeStringSize(1, referenceName_);
     }
     if (position_ != 0L) {
       size += com.google.protobuf.CodedOutputStream
@@ -203,7 +199,7 @@ public  final class Position extends
       size += com.google.protobuf.CodedOutputStream
         .computeBoolSize(3, reverseStrand_);
     }
-    memoizedSerializedSize = size;
+    memoizedSize = size;
     return size;
   }
 
@@ -417,9 +413,7 @@ public  final class Position extends
         com.google.protobuf.ByteString bs =
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          referenceName_ = s;
-        }
+        referenceName_ = s;
         return s;
       } else {
         return (java.lang.String) ref;
@@ -487,7 +481,8 @@ public  final class Position extends
       if (value == null) {
     throw new NullPointerException();
   }
-  
+  checkByteStringIsUtf8(value);
+      
       referenceName_ = value;
       onChanged();
       return this;
@@ -595,8 +590,8 @@ public  final class Position extends
     return DEFAULT_INSTANCE;
   }
 
-  public static final com.google.protobuf.Parser<Position> PARSER =
-      new com.google.protobuf.AbstractParser<Position>() {
+  private static final com.google.protobuf.Parser<Position>
+      PARSER = new com.google.protobuf.AbstractParser<Position>() {
     public Position parsePartialFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)

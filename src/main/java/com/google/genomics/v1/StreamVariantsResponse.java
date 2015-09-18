@@ -11,7 +11,7 @@ public  final class StreamVariantsResponse extends
     // @@protoc_insertion_point(message_implements:google.genomics.v1.StreamVariantsResponse)
     StreamVariantsResponseOrBuilder {
   // Use StreamVariantsResponse.newBuilder() to construct.
-  private StreamVariantsResponse(com.google.protobuf.GeneratedMessage.Builder builder) {
+  private StreamVariantsResponse(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
     super(builder);
   }
   private StreamVariantsResponse() {
@@ -47,7 +47,7 @@ public  final class StreamVariantsResponse extends
               variants_ = new java.util.ArrayList<com.google.genomics.v1.Variant>();
               mutable_bitField0_ |= 0x00000001;
             }
-            variants_.add(input.readMessage(com.google.genomics.v1.Variant.PARSER, extensionRegistry));
+            variants_.add(input.readMessage(com.google.genomics.v1.Variant.parser(), extensionRegistry));
             break;
           }
         }
@@ -129,9 +129,8 @@ public  final class StreamVariantsResponse extends
     }
   }
 
-  private int memoizedSerializedSize = -1;
   public int getSerializedSize() {
-    int size = memoizedSerializedSize;
+    int size = memoizedSize;
     if (size != -1) return size;
 
     size = 0;
@@ -139,7 +138,7 @@ public  final class StreamVariantsResponse extends
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(1, variants_.get(i));
     }
-    memoizedSerializedSize = size;
+    memoizedSize = size;
     return size;
   }
 
@@ -620,8 +619,8 @@ public  final class StreamVariantsResponse extends
     return DEFAULT_INSTANCE;
   }
 
-  public static final com.google.protobuf.Parser<StreamVariantsResponse> PARSER =
-      new com.google.protobuf.AbstractParser<StreamVariantsResponse>() {
+  private static final com.google.protobuf.Parser<StreamVariantsResponse>
+      PARSER = new com.google.protobuf.AbstractParser<StreamVariantsResponse>() {
     public StreamVariantsResponse parsePartialFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)

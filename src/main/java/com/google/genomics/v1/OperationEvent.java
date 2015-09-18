@@ -15,7 +15,7 @@ public  final class OperationEvent extends
     // @@protoc_insertion_point(message_implements:google.genomics.v1.OperationEvent)
     OperationEventOrBuilder {
   // Use OperationEvent.newBuilder() to construct.
-  private OperationEvent(com.google.protobuf.GeneratedMessage.Builder builder) {
+  private OperationEvent(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
     super(builder);
   }
   private OperationEvent() {
@@ -47,9 +47,9 @@ public  final class OperationEvent extends
             break;
           }
           case 26: {
-            com.google.protobuf.ByteString bs = input.readBytes();
+            String s = input.readStringRequireUtf8();
 
-            description_ = bs;
+            description_ = s;
             break;
           }
         }
@@ -93,9 +93,7 @@ public  final class OperationEvent extends
       com.google.protobuf.ByteString bs = 
           (com.google.protobuf.ByteString) ref;
       java.lang.String s = bs.toStringUtf8();
-      if (bs.isValidUtf8()) {
-        description_ = s;
-      }
+      description_ = s;
       return s;
     }
   }
@@ -133,21 +131,19 @@ public  final class OperationEvent extends
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
     if (!getDescriptionBytes().isEmpty()) {
-      output.writeBytes(3, getDescriptionBytes());
+      com.google.protobuf.GeneratedMessage.writeString(output, 3, description_);
     }
   }
 
-  private int memoizedSerializedSize = -1;
   public int getSerializedSize() {
-    int size = memoizedSerializedSize;
+    int size = memoizedSize;
     if (size != -1) return size;
 
     size = 0;
     if (!getDescriptionBytes().isEmpty()) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeBytesSize(3, getDescriptionBytes());
+      size += com.google.protobuf.GeneratedMessage.computeStringSize(3, description_);
     }
-    memoizedSerializedSize = size;
+    memoizedSize = size;
     return size;
   }
 
@@ -346,9 +342,7 @@ public  final class OperationEvent extends
         com.google.protobuf.ByteString bs =
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          description_ = s;
-        }
+        description_ = s;
         return s;
       } else {
         return (java.lang.String) ref;
@@ -416,7 +410,8 @@ public  final class OperationEvent extends
       if (value == null) {
     throw new NullPointerException();
   }
-  
+  checkByteStringIsUtf8(value);
+      
       description_ = value;
       onChanged();
       return this;
@@ -445,8 +440,8 @@ public  final class OperationEvent extends
     return DEFAULT_INSTANCE;
   }
 
-  public static final com.google.protobuf.Parser<OperationEvent> PARSER =
-      new com.google.protobuf.AbstractParser<OperationEvent>() {
+  private static final com.google.protobuf.Parser<OperationEvent>
+      PARSER = new com.google.protobuf.AbstractParser<OperationEvent>() {
     public OperationEvent parsePartialFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)

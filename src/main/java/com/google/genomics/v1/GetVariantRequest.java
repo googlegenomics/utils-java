@@ -11,7 +11,7 @@ public  final class GetVariantRequest extends
     // @@protoc_insertion_point(message_implements:google.genomics.v1.GetVariantRequest)
     GetVariantRequestOrBuilder {
   // Use GetVariantRequest.newBuilder() to construct.
-  private GetVariantRequest(com.google.protobuf.GeneratedMessage.Builder builder) {
+  private GetVariantRequest(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
     super(builder);
   }
   private GetVariantRequest() {
@@ -43,9 +43,9 @@ public  final class GetVariantRequest extends
             break;
           }
           case 10: {
-            com.google.protobuf.ByteString bs = input.readBytes();
+            String s = input.readStringRequireUtf8();
 
-            variantId_ = bs;
+            variantId_ = s;
             break;
           }
         }
@@ -89,9 +89,7 @@ public  final class GetVariantRequest extends
       com.google.protobuf.ByteString bs = 
           (com.google.protobuf.ByteString) ref;
       java.lang.String s = bs.toStringUtf8();
-      if (bs.isValidUtf8()) {
-        variantId_ = s;
-      }
+      variantId_ = s;
       return s;
     }
   }
@@ -129,21 +127,19 @@ public  final class GetVariantRequest extends
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
     if (!getVariantIdBytes().isEmpty()) {
-      output.writeBytes(1, getVariantIdBytes());
+      com.google.protobuf.GeneratedMessage.writeString(output, 1, variantId_);
     }
   }
 
-  private int memoizedSerializedSize = -1;
   public int getSerializedSize() {
-    int size = memoizedSerializedSize;
+    int size = memoizedSize;
     if (size != -1) return size;
 
     size = 0;
     if (!getVariantIdBytes().isEmpty()) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeBytesSize(1, getVariantIdBytes());
+      size += com.google.protobuf.GeneratedMessage.computeStringSize(1, variantId_);
     }
-    memoizedSerializedSize = size;
+    memoizedSize = size;
     return size;
   }
 
@@ -338,9 +334,7 @@ public  final class GetVariantRequest extends
         com.google.protobuf.ByteString bs =
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          variantId_ = s;
-        }
+        variantId_ = s;
         return s;
       } else {
         return (java.lang.String) ref;
@@ -408,7 +402,8 @@ public  final class GetVariantRequest extends
       if (value == null) {
     throw new NullPointerException();
   }
-  
+  checkByteStringIsUtf8(value);
+      
       variantId_ = value;
       onChanged();
       return this;
@@ -437,8 +432,8 @@ public  final class GetVariantRequest extends
     return DEFAULT_INSTANCE;
   }
 
-  public static final com.google.protobuf.Parser<GetVariantRequest> PARSER =
-      new com.google.protobuf.AbstractParser<GetVariantRequest>() {
+  private static final com.google.protobuf.Parser<GetVariantRequest>
+      PARSER = new com.google.protobuf.AbstractParser<GetVariantRequest>() {
     public GetVariantRequest parsePartialFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)

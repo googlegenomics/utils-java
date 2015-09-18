@@ -11,7 +11,7 @@ public  final class ListBasesResponse extends
     // @@protoc_insertion_point(message_implements:google.genomics.v1.ListBasesResponse)
     ListBasesResponseOrBuilder {
   // Use ListBasesResponse.newBuilder() to construct.
-  private ListBasesResponse(com.google.protobuf.GeneratedMessage.Builder builder) {
+  private ListBasesResponse(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
     super(builder);
   }
   private ListBasesResponse() {
@@ -50,15 +50,15 @@ public  final class ListBasesResponse extends
             break;
           }
           case 18: {
-            com.google.protobuf.ByteString bs = input.readBytes();
+            String s = input.readStringRequireUtf8();
 
-            sequence_ = bs;
+            sequence_ = s;
             break;
           }
           case 26: {
-            com.google.protobuf.ByteString bs = input.readBytes();
+            String s = input.readStringRequireUtf8();
 
-            nextPageToken_ = bs;
+            nextPageToken_ = s;
             break;
           }
         }
@@ -117,9 +117,7 @@ public  final class ListBasesResponse extends
       com.google.protobuf.ByteString bs = 
           (com.google.protobuf.ByteString) ref;
       java.lang.String s = bs.toStringUtf8();
-      if (bs.isValidUtf8()) {
-        sequence_ = s;
-      }
+      sequence_ = s;
       return s;
     }
   }
@@ -163,9 +161,7 @@ public  final class ListBasesResponse extends
       com.google.protobuf.ByteString bs = 
           (com.google.protobuf.ByteString) ref;
       java.lang.String s = bs.toStringUtf8();
-      if (bs.isValidUtf8()) {
-        nextPageToken_ = s;
-      }
+      nextPageToken_ = s;
       return s;
     }
   }
@@ -208,16 +204,15 @@ public  final class ListBasesResponse extends
       output.writeInt64(1, offset_);
     }
     if (!getSequenceBytes().isEmpty()) {
-      output.writeBytes(2, getSequenceBytes());
+      com.google.protobuf.GeneratedMessage.writeString(output, 2, sequence_);
     }
     if (!getNextPageTokenBytes().isEmpty()) {
-      output.writeBytes(3, getNextPageTokenBytes());
+      com.google.protobuf.GeneratedMessage.writeString(output, 3, nextPageToken_);
     }
   }
 
-  private int memoizedSerializedSize = -1;
   public int getSerializedSize() {
-    int size = memoizedSerializedSize;
+    int size = memoizedSize;
     if (size != -1) return size;
 
     size = 0;
@@ -226,14 +221,12 @@ public  final class ListBasesResponse extends
         .computeInt64Size(1, offset_);
     }
     if (!getSequenceBytes().isEmpty()) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeBytesSize(2, getSequenceBytes());
+      size += com.google.protobuf.GeneratedMessage.computeStringSize(2, sequence_);
     }
     if (!getNextPageTokenBytes().isEmpty()) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeBytesSize(3, getNextPageTokenBytes());
+      size += com.google.protobuf.GeneratedMessage.computeStringSize(3, nextPageToken_);
     }
-    memoizedSerializedSize = size;
+    memoizedSize = size;
     return size;
   }
 
@@ -485,9 +478,7 @@ public  final class ListBasesResponse extends
         com.google.protobuf.ByteString bs =
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          sequence_ = s;
-        }
+        sequence_ = s;
         return s;
       } else {
         return (java.lang.String) ref;
@@ -555,7 +546,8 @@ public  final class ListBasesResponse extends
       if (value == null) {
     throw new NullPointerException();
   }
-  
+  checkByteStringIsUtf8(value);
+      
       sequence_ = value;
       onChanged();
       return this;
@@ -577,9 +569,7 @@ public  final class ListBasesResponse extends
         com.google.protobuf.ByteString bs =
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          nextPageToken_ = s;
-        }
+        nextPageToken_ = s;
         return s;
       } else {
         return (java.lang.String) ref;
@@ -655,7 +645,8 @@ public  final class ListBasesResponse extends
       if (value == null) {
     throw new NullPointerException();
   }
-  
+  checkByteStringIsUtf8(value);
+      
       nextPageToken_ = value;
       onChanged();
       return this;
@@ -684,8 +675,8 @@ public  final class ListBasesResponse extends
     return DEFAULT_INSTANCE;
   }
 
-  public static final com.google.protobuf.Parser<ListBasesResponse> PARSER =
-      new com.google.protobuf.AbstractParser<ListBasesResponse>() {
+  private static final com.google.protobuf.Parser<ListBasesResponse>
+      PARSER = new com.google.protobuf.AbstractParser<ListBasesResponse>() {
     public ListBasesResponse parsePartialFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)

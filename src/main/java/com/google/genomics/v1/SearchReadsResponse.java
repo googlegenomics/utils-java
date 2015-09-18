@@ -15,7 +15,7 @@ public  final class SearchReadsResponse extends
     // @@protoc_insertion_point(message_implements:google.genomics.v1.SearchReadsResponse)
     SearchReadsResponseOrBuilder {
   // Use SearchReadsResponse.newBuilder() to construct.
-  private SearchReadsResponse(com.google.protobuf.GeneratedMessage.Builder builder) {
+  private SearchReadsResponse(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
     super(builder);
   }
   private SearchReadsResponse() {
@@ -52,13 +52,13 @@ public  final class SearchReadsResponse extends
               alignments_ = new java.util.ArrayList<com.google.genomics.v1.Read>();
               mutable_bitField0_ |= 0x00000001;
             }
-            alignments_.add(input.readMessage(com.google.genomics.v1.Read.PARSER, extensionRegistry));
+            alignments_.add(input.readMessage(com.google.genomics.v1.Read.parser(), extensionRegistry));
             break;
           }
           case 18: {
-            com.google.protobuf.ByteString bs = input.readBytes();
+            String s = input.readStringRequireUtf8();
 
-            nextPageToken_ = bs;
+            nextPageToken_ = s;
             break;
           }
         }
@@ -178,9 +178,7 @@ public  final class SearchReadsResponse extends
       com.google.protobuf.ByteString bs = 
           (com.google.protobuf.ByteString) ref;
       java.lang.String s = bs.toStringUtf8();
-      if (bs.isValidUtf8()) {
-        nextPageToken_ = s;
-      }
+      nextPageToken_ = s;
       return s;
     }
   }
@@ -223,13 +221,12 @@ public  final class SearchReadsResponse extends
       output.writeMessage(1, alignments_.get(i));
     }
     if (!getNextPageTokenBytes().isEmpty()) {
-      output.writeBytes(2, getNextPageTokenBytes());
+      com.google.protobuf.GeneratedMessage.writeString(output, 2, nextPageToken_);
     }
   }
 
-  private int memoizedSerializedSize = -1;
   public int getSerializedSize() {
-    int size = memoizedSerializedSize;
+    int size = memoizedSize;
     if (size != -1) return size;
 
     size = 0;
@@ -238,10 +235,9 @@ public  final class SearchReadsResponse extends
         .computeMessageSize(1, alignments_.get(i));
     }
     if (!getNextPageTokenBytes().isEmpty()) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeBytesSize(2, getNextPageTokenBytes());
+      size += com.google.protobuf.GeneratedMessage.computeStringSize(2, nextPageToken_);
     }
-    memoizedSerializedSize = size;
+    memoizedSize = size;
     return size;
   }
 
@@ -854,9 +850,7 @@ public  final class SearchReadsResponse extends
         com.google.protobuf.ByteString bs =
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          nextPageToken_ = s;
-        }
+        nextPageToken_ = s;
         return s;
       } else {
         return (java.lang.String) ref;
@@ -932,7 +926,8 @@ public  final class SearchReadsResponse extends
       if (value == null) {
     throw new NullPointerException();
   }
-  
+  checkByteStringIsUtf8(value);
+      
       nextPageToken_ = value;
       onChanged();
       return this;
@@ -961,8 +956,8 @@ public  final class SearchReadsResponse extends
     return DEFAULT_INSTANCE;
   }
 
-  public static final com.google.protobuf.Parser<SearchReadsResponse> PARSER =
-      new com.google.protobuf.AbstractParser<SearchReadsResponse>() {
+  private static final com.google.protobuf.Parser<SearchReadsResponse>
+      PARSER = new com.google.protobuf.AbstractParser<SearchReadsResponse>() {
     public SearchReadsResponse parsePartialFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)

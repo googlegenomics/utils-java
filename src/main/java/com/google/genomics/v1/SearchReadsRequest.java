@@ -15,7 +15,7 @@ public  final class SearchReadsRequest extends
     // @@protoc_insertion_point(message_implements:google.genomics.v1.SearchReadsRequest)
     SearchReadsRequestOrBuilder {
   // Use SearchReadsRequest.newBuilder() to construct.
-  private SearchReadsRequest(com.google.protobuf.GeneratedMessage.Builder builder) {
+  private SearchReadsRequest(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
     super(builder);
   }
   private SearchReadsRequest() {
@@ -53,18 +53,18 @@ public  final class SearchReadsRequest extends
             break;
           }
           case 10: {
-            com.google.protobuf.ByteString bs = input.readBytes();
+            String s = input.readStringRequireUtf8();
             if (!((mutable_bitField0_ & 0x00000001) == 0x00000001)) {
               readGroupSetIds_ = new com.google.protobuf.LazyStringArrayList();
               mutable_bitField0_ |= 0x00000001;
             }
-            readGroupSetIds_.add(bs);
+            readGroupSetIds_.add(s);
             break;
           }
           case 26: {
-            com.google.protobuf.ByteString bs = input.readBytes();
+            String s = input.readStringRequireUtf8();
 
-            pageToken_ = bs;
+            pageToken_ = s;
             break;
           }
           case 32: {
@@ -73,18 +73,18 @@ public  final class SearchReadsRequest extends
             break;
           }
           case 42: {
-            com.google.protobuf.ByteString bs = input.readBytes();
+            String s = input.readStringRequireUtf8();
             if (!((mutable_bitField0_ & 0x00000002) == 0x00000002)) {
               readGroupIds_ = new com.google.protobuf.LazyStringArrayList();
               mutable_bitField0_ |= 0x00000002;
             }
-            readGroupIds_.add(bs);
+            readGroupIds_.add(s);
             break;
           }
           case 58: {
-            com.google.protobuf.ByteString bs = input.readBytes();
+            String s = input.readStringRequireUtf8();
 
-            referenceName_ = bs;
+            referenceName_ = s;
             break;
           }
           case 64: {
@@ -257,9 +257,7 @@ public  final class SearchReadsRequest extends
       com.google.protobuf.ByteString bs = 
           (com.google.protobuf.ByteString) ref;
       java.lang.String s = bs.toStringUtf8();
-      if (bs.isValidUtf8()) {
-        referenceName_ = s;
-      }
+      referenceName_ = s;
       return s;
     }
   }
@@ -333,9 +331,7 @@ public  final class SearchReadsRequest extends
       com.google.protobuf.ByteString bs = 
           (com.google.protobuf.ByteString) ref;
       java.lang.String s = bs.toStringUtf8();
-      if (bs.isValidUtf8()) {
-        pageToken_ = s;
-      }
+      pageToken_ = s;
       return s;
     }
   }
@@ -389,19 +385,19 @@ public  final class SearchReadsRequest extends
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
     for (int i = 0; i < readGroupSetIds_.size(); i++) {
-      output.writeBytes(1, readGroupSetIds_.getByteString(i));
+      com.google.protobuf.GeneratedMessage.writeString(output, 1, readGroupSetIds_.getRaw(i));
     }
     if (!getPageTokenBytes().isEmpty()) {
-      output.writeBytes(3, getPageTokenBytes());
+      com.google.protobuf.GeneratedMessage.writeString(output, 3, pageToken_);
     }
     if (pageSize_ != 0) {
       output.writeInt32(4, pageSize_);
     }
     for (int i = 0; i < readGroupIds_.size(); i++) {
-      output.writeBytes(5, readGroupIds_.getByteString(i));
+      com.google.protobuf.GeneratedMessage.writeString(output, 5, readGroupIds_.getRaw(i));
     }
     if (!getReferenceNameBytes().isEmpty()) {
-      output.writeBytes(7, getReferenceNameBytes());
+      com.google.protobuf.GeneratedMessage.writeString(output, 7, referenceName_);
     }
     if (start_ != 0L) {
       output.writeInt64(8, start_);
@@ -411,24 +407,21 @@ public  final class SearchReadsRequest extends
     }
   }
 
-  private int memoizedSerializedSize = -1;
   public int getSerializedSize() {
-    int size = memoizedSerializedSize;
+    int size = memoizedSize;
     if (size != -1) return size;
 
     size = 0;
     {
       int dataSize = 0;
       for (int i = 0; i < readGroupSetIds_.size(); i++) {
-        dataSize += com.google.protobuf.CodedOutputStream
-          .computeBytesSizeNoTag(readGroupSetIds_.getByteString(i));
+        dataSize += computeStringSizeNoTag(readGroupSetIds_.getRaw(i));
       }
       size += dataSize;
       size += 1 * getReadGroupSetIdsList().size();
     }
     if (!getPageTokenBytes().isEmpty()) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeBytesSize(3, getPageTokenBytes());
+      size += com.google.protobuf.GeneratedMessage.computeStringSize(3, pageToken_);
     }
     if (pageSize_ != 0) {
       size += com.google.protobuf.CodedOutputStream
@@ -437,15 +430,13 @@ public  final class SearchReadsRequest extends
     {
       int dataSize = 0;
       for (int i = 0; i < readGroupIds_.size(); i++) {
-        dataSize += com.google.protobuf.CodedOutputStream
-          .computeBytesSizeNoTag(readGroupIds_.getByteString(i));
+        dataSize += computeStringSizeNoTag(readGroupIds_.getRaw(i));
       }
       size += dataSize;
       size += 1 * getReadGroupIdsList().size();
     }
     if (!getReferenceNameBytes().isEmpty()) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeBytesSize(7, getReferenceNameBytes());
+      size += com.google.protobuf.GeneratedMessage.computeStringSize(7, referenceName_);
     }
     if (start_ != 0L) {
       size += com.google.protobuf.CodedOutputStream
@@ -455,7 +446,7 @@ public  final class SearchReadsRequest extends
       size += com.google.protobuf.CodedOutputStream
         .computeInt64Size(9, end_);
     }
-    memoizedSerializedSize = size;
+    memoizedSize = size;
     return size;
   }
 
@@ -853,7 +844,8 @@ public  final class SearchReadsRequest extends
       if (value == null) {
     throw new NullPointerException();
   }
-  ensureReadGroupSetIdsIsMutable();
+  checkByteStringIsUtf8(value);
+      ensureReadGroupSetIdsIsMutable();
       readGroupSetIds_.add(value);
       onChanged();
       return this;
@@ -1000,7 +992,8 @@ public  final class SearchReadsRequest extends
       if (value == null) {
     throw new NullPointerException();
   }
-  ensureReadGroupIdsIsMutable();
+  checkByteStringIsUtf8(value);
+      ensureReadGroupIdsIsMutable();
       readGroupIds_.add(value);
       onChanged();
       return this;
@@ -1022,9 +1015,7 @@ public  final class SearchReadsRequest extends
         com.google.protobuf.ByteString bs =
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          referenceName_ = s;
-        }
+        referenceName_ = s;
         return s;
       } else {
         return (java.lang.String) ref;
@@ -1100,7 +1091,8 @@ public  final class SearchReadsRequest extends
       if (value == null) {
     throw new NullPointerException();
   }
-  
+  checkByteStringIsUtf8(value);
+      
       referenceName_ = value;
       onChanged();
       return this;
@@ -1204,9 +1196,7 @@ public  final class SearchReadsRequest extends
         com.google.protobuf.ByteString bs =
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          pageToken_ = s;
-        }
+        pageToken_ = s;
         return s;
       } else {
         return (java.lang.String) ref;
@@ -1282,7 +1272,8 @@ public  final class SearchReadsRequest extends
       if (value == null) {
     throw new NullPointerException();
   }
-  
+  checkByteStringIsUtf8(value);
+      
       pageToken_ = value;
       onChanged();
       return this;
@@ -1352,8 +1343,8 @@ public  final class SearchReadsRequest extends
     return DEFAULT_INSTANCE;
   }
 
-  public static final com.google.protobuf.Parser<SearchReadsRequest> PARSER =
-      new com.google.protobuf.AbstractParser<SearchReadsRequest>() {
+  private static final com.google.protobuf.Parser<SearchReadsRequest>
+      PARSER = new com.google.protobuf.AbstractParser<SearchReadsRequest>() {
     public SearchReadsRequest parsePartialFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)

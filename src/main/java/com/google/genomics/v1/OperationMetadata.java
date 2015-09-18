@@ -15,7 +15,7 @@ public  final class OperationMetadata extends
     // @@protoc_insertion_point(message_implements:google.genomics.v1.OperationMetadata)
     OperationMetadataOrBuilder {
   // Use OperationMetadata.newBuilder() to construct.
-  private OperationMetadata(com.google.protobuf.GeneratedMessage.Builder builder) {
+  private OperationMetadata(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
     super(builder);
   }
   private OperationMetadata() {
@@ -48,9 +48,9 @@ public  final class OperationMetadata extends
             break;
           }
           case 10: {
-            com.google.protobuf.ByteString bs = input.readBytes();
+            String s = input.readStringRequireUtf8();
 
-            projectId_ = bs;
+            projectId_ = s;
             break;
           }
           case 18: {
@@ -58,7 +58,7 @@ public  final class OperationMetadata extends
             if (created_ != null) {
               subBuilder = created_.toBuilder();
             }
-            created_ = input.readMessage(com.google.protobuf.Timestamp.PARSER, extensionRegistry);
+            created_ = input.readMessage(com.google.protobuf.Timestamp.parser(), extensionRegistry);
             if (subBuilder != null) {
               subBuilder.mergeFrom(created_);
               created_ = subBuilder.buildPartial();
@@ -71,7 +71,7 @@ public  final class OperationMetadata extends
             if (request_ != null) {
               subBuilder = request_.toBuilder();
             }
-            request_ = input.readMessage(com.google.protobuf.Any.PARSER, extensionRegistry);
+            request_ = input.readMessage(com.google.protobuf.Any.parser(), extensionRegistry);
             if (subBuilder != null) {
               subBuilder.mergeFrom(request_);
               request_ = subBuilder.buildPartial();
@@ -84,7 +84,7 @@ public  final class OperationMetadata extends
               events_ = new java.util.ArrayList<com.google.genomics.v1.OperationEvent>();
               mutable_bitField0_ |= 0x00000008;
             }
-            events_.add(input.readMessage(com.google.genomics.v1.OperationEvent.PARSER, extensionRegistry));
+            events_.add(input.readMessage(com.google.genomics.v1.OperationEvent.parser(), extensionRegistry));
             break;
           }
         }
@@ -132,9 +132,7 @@ public  final class OperationMetadata extends
       com.google.protobuf.ByteString bs = 
           (com.google.protobuf.ByteString) ref;
       java.lang.String s = bs.toStringUtf8();
-      if (bs.isValidUtf8()) {
-        projectId_ = s;
-      }
+      projectId_ = s;
       return s;
     }
   }
@@ -309,7 +307,7 @@ public  final class OperationMetadata extends
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
     if (!getProjectIdBytes().isEmpty()) {
-      output.writeBytes(1, getProjectIdBytes());
+      com.google.protobuf.GeneratedMessage.writeString(output, 1, projectId_);
     }
     if (created_ != null) {
       output.writeMessage(2, getCreated());
@@ -322,15 +320,13 @@ public  final class OperationMetadata extends
     }
   }
 
-  private int memoizedSerializedSize = -1;
   public int getSerializedSize() {
-    int size = memoizedSerializedSize;
+    int size = memoizedSize;
     if (size != -1) return size;
 
     size = 0;
     if (!getProjectIdBytes().isEmpty()) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeBytesSize(1, getProjectIdBytes());
+      size += com.google.protobuf.GeneratedMessage.computeStringSize(1, projectId_);
     }
     if (created_ != null) {
       size += com.google.protobuf.CodedOutputStream
@@ -344,7 +340,7 @@ public  final class OperationMetadata extends
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(6, events_.get(i));
     }
-    memoizedSerializedSize = size;
+    memoizedSize = size;
     return size;
   }
 
@@ -617,9 +613,7 @@ public  final class OperationMetadata extends
         com.google.protobuf.ByteString bs =
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          projectId_ = s;
-        }
+        projectId_ = s;
         return s;
       } else {
         return (java.lang.String) ref;
@@ -687,7 +681,8 @@ public  final class OperationMetadata extends
       if (value == null) {
     throw new NullPointerException();
   }
-  
+  checkByteStringIsUtf8(value);
+      
       projectId_ = value;
       onChanged();
       return this;
@@ -1388,8 +1383,8 @@ public  final class OperationMetadata extends
     return DEFAULT_INSTANCE;
   }
 
-  public static final com.google.protobuf.Parser<OperationMetadata> PARSER =
-      new com.google.protobuf.AbstractParser<OperationMetadata>() {
+  private static final com.google.protobuf.Parser<OperationMetadata>
+      PARSER = new com.google.protobuf.AbstractParser<OperationMetadata>() {
     public OperationMetadata parsePartialFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)

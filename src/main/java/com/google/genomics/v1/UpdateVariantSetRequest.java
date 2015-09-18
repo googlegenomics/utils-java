@@ -11,7 +11,7 @@ public  final class UpdateVariantSetRequest extends
     // @@protoc_insertion_point(message_implements:google.genomics.v1.UpdateVariantSetRequest)
     UpdateVariantSetRequestOrBuilder {
   // Use UpdateVariantSetRequest.newBuilder() to construct.
-  private UpdateVariantSetRequest(com.google.protobuf.GeneratedMessage.Builder builder) {
+  private UpdateVariantSetRequest(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
     super(builder);
   }
   private UpdateVariantSetRequest() {
@@ -43,9 +43,9 @@ public  final class UpdateVariantSetRequest extends
             break;
           }
           case 10: {
-            com.google.protobuf.ByteString bs = input.readBytes();
+            String s = input.readStringRequireUtf8();
 
-            variantSetId_ = bs;
+            variantSetId_ = s;
             break;
           }
           case 18: {
@@ -53,7 +53,7 @@ public  final class UpdateVariantSetRequest extends
             if (variantSet_ != null) {
               subBuilder = variantSet_.toBuilder();
             }
-            variantSet_ = input.readMessage(com.google.genomics.v1.VariantSet.PARSER, extensionRegistry);
+            variantSet_ = input.readMessage(com.google.genomics.v1.VariantSet.parser(), extensionRegistry);
             if (subBuilder != null) {
               subBuilder.mergeFrom(variantSet_);
               variantSet_ = subBuilder.buildPartial();
@@ -66,7 +66,7 @@ public  final class UpdateVariantSetRequest extends
             if (updateMask_ != null) {
               subBuilder = updateMask_.toBuilder();
             }
-            updateMask_ = input.readMessage(com.google.protobuf.FieldMask.PARSER, extensionRegistry);
+            updateMask_ = input.readMessage(com.google.protobuf.FieldMask.parser(), extensionRegistry);
             if (subBuilder != null) {
               subBuilder.mergeFrom(updateMask_);
               updateMask_ = subBuilder.buildPartial();
@@ -115,9 +115,7 @@ public  final class UpdateVariantSetRequest extends
       com.google.protobuf.ByteString bs = 
           (com.google.protobuf.ByteString) ref;
       java.lang.String s = bs.toStringUtf8();
-      if (bs.isValidUtf8()) {
-        variantSetId_ = s;
-      }
+      variantSetId_ = s;
       return s;
     }
   }
@@ -230,7 +228,7 @@ public  final class UpdateVariantSetRequest extends
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
     if (!getVariantSetIdBytes().isEmpty()) {
-      output.writeBytes(1, getVariantSetIdBytes());
+      com.google.protobuf.GeneratedMessage.writeString(output, 1, variantSetId_);
     }
     if (variantSet_ != null) {
       output.writeMessage(2, getVariantSet());
@@ -240,15 +238,13 @@ public  final class UpdateVariantSetRequest extends
     }
   }
 
-  private int memoizedSerializedSize = -1;
   public int getSerializedSize() {
-    int size = memoizedSerializedSize;
+    int size = memoizedSize;
     if (size != -1) return size;
 
     size = 0;
     if (!getVariantSetIdBytes().isEmpty()) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeBytesSize(1, getVariantSetIdBytes());
+      size += com.google.protobuf.GeneratedMessage.computeStringSize(1, variantSetId_);
     }
     if (variantSet_ != null) {
       size += com.google.protobuf.CodedOutputStream
@@ -258,7 +254,7 @@ public  final class UpdateVariantSetRequest extends
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(5, getUpdateMask());
     }
-    memoizedSerializedSize = size;
+    memoizedSize = size;
     return size;
   }
 
@@ -481,9 +477,7 @@ public  final class UpdateVariantSetRequest extends
         com.google.protobuf.ByteString bs =
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          variantSetId_ = s;
-        }
+        variantSetId_ = s;
         return s;
       } else {
         return (java.lang.String) ref;
@@ -551,7 +545,8 @@ public  final class UpdateVariantSetRequest extends
       if (value == null) {
     throw new NullPointerException();
   }
-  
+  checkByteStringIsUtf8(value);
+      
       variantSetId_ = value;
       onChanged();
       return this;
@@ -913,8 +908,8 @@ public  final class UpdateVariantSetRequest extends
     return DEFAULT_INSTANCE;
   }
 
-  public static final com.google.protobuf.Parser<UpdateVariantSetRequest> PARSER =
-      new com.google.protobuf.AbstractParser<UpdateVariantSetRequest>() {
+  private static final com.google.protobuf.Parser<UpdateVariantSetRequest>
+      PARSER = new com.google.protobuf.AbstractParser<UpdateVariantSetRequest>() {
     public UpdateVariantSetRequest parsePartialFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)

@@ -11,7 +11,7 @@ public  final class SearchReferenceSetsRequest extends
     // @@protoc_insertion_point(message_implements:google.genomics.v1.SearchReferenceSetsRequest)
     SearchReferenceSetsRequestOrBuilder {
   // Use SearchReferenceSetsRequest.newBuilder() to construct.
-  private SearchReferenceSetsRequest(com.google.protobuf.GeneratedMessage.Builder builder) {
+  private SearchReferenceSetsRequest(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
     super(builder);
   }
   private SearchReferenceSetsRequest() {
@@ -47,33 +47,33 @@ public  final class SearchReferenceSetsRequest extends
             break;
           }
           case 10: {
-            com.google.protobuf.ByteString bs = input.readBytes();
+            String s = input.readStringRequireUtf8();
             if (!((mutable_bitField0_ & 0x00000001) == 0x00000001)) {
               md5Checksums_ = new com.google.protobuf.LazyStringArrayList();
               mutable_bitField0_ |= 0x00000001;
             }
-            md5Checksums_.add(bs);
+            md5Checksums_.add(s);
             break;
           }
           case 18: {
-            com.google.protobuf.ByteString bs = input.readBytes();
+            String s = input.readStringRequireUtf8();
             if (!((mutable_bitField0_ & 0x00000002) == 0x00000002)) {
               accessions_ = new com.google.protobuf.LazyStringArrayList();
               mutable_bitField0_ |= 0x00000002;
             }
-            accessions_.add(bs);
+            accessions_.add(s);
             break;
           }
           case 26: {
-            com.google.protobuf.ByteString bs = input.readBytes();
+            String s = input.readStringRequireUtf8();
 
-            assemblyId_ = bs;
+            assemblyId_ = s;
             break;
           }
           case 34: {
-            com.google.protobuf.ByteString bs = input.readBytes();
+            String s = input.readStringRequireUtf8();
 
-            pageToken_ = bs;
+            pageToken_ = s;
             break;
           }
           case 40: {
@@ -240,9 +240,7 @@ public  final class SearchReferenceSetsRequest extends
       com.google.protobuf.ByteString bs = 
           (com.google.protobuf.ByteString) ref;
       java.lang.String s = bs.toStringUtf8();
-      if (bs.isValidUtf8()) {
-        assemblyId_ = s;
-      }
+      assemblyId_ = s;
       return s;
     }
   }
@@ -287,9 +285,7 @@ public  final class SearchReferenceSetsRequest extends
       com.google.protobuf.ByteString bs = 
           (com.google.protobuf.ByteString) ref;
       java.lang.String s = bs.toStringUtf8();
-      if (bs.isValidUtf8()) {
-        pageToken_ = s;
-      }
+      pageToken_ = s;
       return s;
     }
   }
@@ -342,33 +338,31 @@ public  final class SearchReferenceSetsRequest extends
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
     for (int i = 0; i < md5Checksums_.size(); i++) {
-      output.writeBytes(1, md5Checksums_.getByteString(i));
+      com.google.protobuf.GeneratedMessage.writeString(output, 1, md5Checksums_.getRaw(i));
     }
     for (int i = 0; i < accessions_.size(); i++) {
-      output.writeBytes(2, accessions_.getByteString(i));
+      com.google.protobuf.GeneratedMessage.writeString(output, 2, accessions_.getRaw(i));
     }
     if (!getAssemblyIdBytes().isEmpty()) {
-      output.writeBytes(3, getAssemblyIdBytes());
+      com.google.protobuf.GeneratedMessage.writeString(output, 3, assemblyId_);
     }
     if (!getPageTokenBytes().isEmpty()) {
-      output.writeBytes(4, getPageTokenBytes());
+      com.google.protobuf.GeneratedMessage.writeString(output, 4, pageToken_);
     }
     if (pageSize_ != 0) {
       output.writeInt32(5, pageSize_);
     }
   }
 
-  private int memoizedSerializedSize = -1;
   public int getSerializedSize() {
-    int size = memoizedSerializedSize;
+    int size = memoizedSize;
     if (size != -1) return size;
 
     size = 0;
     {
       int dataSize = 0;
       for (int i = 0; i < md5Checksums_.size(); i++) {
-        dataSize += com.google.protobuf.CodedOutputStream
-          .computeBytesSizeNoTag(md5Checksums_.getByteString(i));
+        dataSize += computeStringSizeNoTag(md5Checksums_.getRaw(i));
       }
       size += dataSize;
       size += 1 * getMd5ChecksumsList().size();
@@ -376,25 +370,22 @@ public  final class SearchReferenceSetsRequest extends
     {
       int dataSize = 0;
       for (int i = 0; i < accessions_.size(); i++) {
-        dataSize += com.google.protobuf.CodedOutputStream
-          .computeBytesSizeNoTag(accessions_.getByteString(i));
+        dataSize += computeStringSizeNoTag(accessions_.getRaw(i));
       }
       size += dataSize;
       size += 1 * getAccessionsList().size();
     }
     if (!getAssemblyIdBytes().isEmpty()) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeBytesSize(3, getAssemblyIdBytes());
+      size += com.google.protobuf.GeneratedMessage.computeStringSize(3, assemblyId_);
     }
     if (!getPageTokenBytes().isEmpty()) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeBytesSize(4, getPageTokenBytes());
+      size += com.google.protobuf.GeneratedMessage.computeStringSize(4, pageToken_);
     }
     if (pageSize_ != 0) {
       size += com.google.protobuf.CodedOutputStream
         .computeInt32Size(5, pageSize_);
     }
-    memoizedSerializedSize = size;
+    memoizedSize = size;
     return size;
   }
 
@@ -758,7 +749,8 @@ public  final class SearchReferenceSetsRequest extends
       if (value == null) {
     throw new NullPointerException();
   }
-  ensureMd5ChecksumsIsMutable();
+  checkByteStringIsUtf8(value);
+      ensureMd5ChecksumsIsMutable();
       md5Checksums_.add(value);
       onChanged();
       return this;
@@ -923,7 +915,8 @@ public  final class SearchReferenceSetsRequest extends
       if (value == null) {
     throw new NullPointerException();
   }
-  ensureAccessionsIsMutable();
+  checkByteStringIsUtf8(value);
+      ensureAccessionsIsMutable();
       accessions_.add(value);
       onChanged();
       return this;
@@ -944,9 +937,7 @@ public  final class SearchReferenceSetsRequest extends
         com.google.protobuf.ByteString bs =
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          assemblyId_ = s;
-        }
+        assemblyId_ = s;
         return s;
       } else {
         return (java.lang.String) ref;
@@ -1018,7 +1009,8 @@ public  final class SearchReferenceSetsRequest extends
       if (value == null) {
     throw new NullPointerException();
   }
-  
+  checkByteStringIsUtf8(value);
+      
       assemblyId_ = value;
       onChanged();
       return this;
@@ -1040,9 +1032,7 @@ public  final class SearchReferenceSetsRequest extends
         com.google.protobuf.ByteString bs =
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          pageToken_ = s;
-        }
+        pageToken_ = s;
         return s;
       } else {
         return (java.lang.String) ref;
@@ -1118,7 +1108,8 @@ public  final class SearchReferenceSetsRequest extends
       if (value == null) {
     throw new NullPointerException();
   }
-  
+  checkByteStringIsUtf8(value);
+      
       pageToken_ = value;
       onChanged();
       return this;
@@ -1185,8 +1176,8 @@ public  final class SearchReferenceSetsRequest extends
     return DEFAULT_INSTANCE;
   }
 
-  public static final com.google.protobuf.Parser<SearchReferenceSetsRequest> PARSER =
-      new com.google.protobuf.AbstractParser<SearchReferenceSetsRequest>() {
+  private static final com.google.protobuf.Parser<SearchReferenceSetsRequest>
+      PARSER = new com.google.protobuf.AbstractParser<SearchReferenceSetsRequest>() {
     public SearchReferenceSetsRequest parsePartialFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)

@@ -15,7 +15,7 @@ public  final class SearchCallSetsResponse extends
     // @@protoc_insertion_point(message_implements:google.genomics.v1.SearchCallSetsResponse)
     SearchCallSetsResponseOrBuilder {
   // Use SearchCallSetsResponse.newBuilder() to construct.
-  private SearchCallSetsResponse(com.google.protobuf.GeneratedMessage.Builder builder) {
+  private SearchCallSetsResponse(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
     super(builder);
   }
   private SearchCallSetsResponse() {
@@ -52,13 +52,13 @@ public  final class SearchCallSetsResponse extends
               callSets_ = new java.util.ArrayList<com.google.genomics.v1.CallSet>();
               mutable_bitField0_ |= 0x00000001;
             }
-            callSets_.add(input.readMessage(com.google.genomics.v1.CallSet.PARSER, extensionRegistry));
+            callSets_.add(input.readMessage(com.google.genomics.v1.CallSet.parser(), extensionRegistry));
             break;
           }
           case 18: {
-            com.google.protobuf.ByteString bs = input.readBytes();
+            String s = input.readStringRequireUtf8();
 
-            nextPageToken_ = bs;
+            nextPageToken_ = s;
             break;
           }
         }
@@ -163,9 +163,7 @@ public  final class SearchCallSetsResponse extends
       com.google.protobuf.ByteString bs = 
           (com.google.protobuf.ByteString) ref;
       java.lang.String s = bs.toStringUtf8();
-      if (bs.isValidUtf8()) {
-        nextPageToken_ = s;
-      }
+      nextPageToken_ = s;
       return s;
     }
   }
@@ -208,13 +206,12 @@ public  final class SearchCallSetsResponse extends
       output.writeMessage(1, callSets_.get(i));
     }
     if (!getNextPageTokenBytes().isEmpty()) {
-      output.writeBytes(2, getNextPageTokenBytes());
+      com.google.protobuf.GeneratedMessage.writeString(output, 2, nextPageToken_);
     }
   }
 
-  private int memoizedSerializedSize = -1;
   public int getSerializedSize() {
-    int size = memoizedSerializedSize;
+    int size = memoizedSize;
     if (size != -1) return size;
 
     size = 0;
@@ -223,10 +220,9 @@ public  final class SearchCallSetsResponse extends
         .computeMessageSize(1, callSets_.get(i));
     }
     if (!getNextPageTokenBytes().isEmpty()) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeBytesSize(2, getNextPageTokenBytes());
+      size += com.google.protobuf.GeneratedMessage.computeStringSize(2, nextPageToken_);
     }
-    memoizedSerializedSize = size;
+    memoizedSize = size;
     return size;
   }
 
@@ -785,9 +781,7 @@ public  final class SearchCallSetsResponse extends
         com.google.protobuf.ByteString bs =
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          nextPageToken_ = s;
-        }
+        nextPageToken_ = s;
         return s;
       } else {
         return (java.lang.String) ref;
@@ -863,7 +857,8 @@ public  final class SearchCallSetsResponse extends
       if (value == null) {
     throw new NullPointerException();
   }
-  
+  checkByteStringIsUtf8(value);
+      
       nextPageToken_ = value;
       onChanged();
       return this;
@@ -892,8 +887,8 @@ public  final class SearchCallSetsResponse extends
     return DEFAULT_INSTANCE;
   }
 
-  public static final com.google.protobuf.Parser<SearchCallSetsResponse> PARSER =
-      new com.google.protobuf.AbstractParser<SearchCallSetsResponse>() {
+  private static final com.google.protobuf.Parser<SearchCallSetsResponse>
+      PARSER = new com.google.protobuf.AbstractParser<SearchCallSetsResponse>() {
     public SearchCallSetsResponse parsePartialFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)

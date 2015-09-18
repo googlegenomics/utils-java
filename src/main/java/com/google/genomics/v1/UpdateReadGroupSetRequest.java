@@ -11,7 +11,7 @@ public  final class UpdateReadGroupSetRequest extends
     // @@protoc_insertion_point(message_implements:google.genomics.v1.UpdateReadGroupSetRequest)
     UpdateReadGroupSetRequestOrBuilder {
   // Use UpdateReadGroupSetRequest.newBuilder() to construct.
-  private UpdateReadGroupSetRequest(com.google.protobuf.GeneratedMessage.Builder builder) {
+  private UpdateReadGroupSetRequest(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
     super(builder);
   }
   private UpdateReadGroupSetRequest() {
@@ -43,9 +43,9 @@ public  final class UpdateReadGroupSetRequest extends
             break;
           }
           case 10: {
-            com.google.protobuf.ByteString bs = input.readBytes();
+            String s = input.readStringRequireUtf8();
 
-            readGroupSetId_ = bs;
+            readGroupSetId_ = s;
             break;
           }
           case 18: {
@@ -53,7 +53,7 @@ public  final class UpdateReadGroupSetRequest extends
             if (readGroupSet_ != null) {
               subBuilder = readGroupSet_.toBuilder();
             }
-            readGroupSet_ = input.readMessage(com.google.genomics.v1.ReadGroupSet.PARSER, extensionRegistry);
+            readGroupSet_ = input.readMessage(com.google.genomics.v1.ReadGroupSet.parser(), extensionRegistry);
             if (subBuilder != null) {
               subBuilder.mergeFrom(readGroupSet_);
               readGroupSet_ = subBuilder.buildPartial();
@@ -66,7 +66,7 @@ public  final class UpdateReadGroupSetRequest extends
             if (updateMask_ != null) {
               subBuilder = updateMask_.toBuilder();
             }
-            updateMask_ = input.readMessage(com.google.protobuf.FieldMask.PARSER, extensionRegistry);
+            updateMask_ = input.readMessage(com.google.protobuf.FieldMask.parser(), extensionRegistry);
             if (subBuilder != null) {
               subBuilder.mergeFrom(updateMask_);
               updateMask_ = subBuilder.buildPartial();
@@ -116,9 +116,7 @@ public  final class UpdateReadGroupSetRequest extends
       com.google.protobuf.ByteString bs = 
           (com.google.protobuf.ByteString) ref;
       java.lang.String s = bs.toStringUtf8();
-      if (bs.isValidUtf8()) {
-        readGroupSetId_ = s;
-      }
+      readGroupSetId_ = s;
       return s;
     }
   }
@@ -232,7 +230,7 @@ public  final class UpdateReadGroupSetRequest extends
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
     if (!getReadGroupSetIdBytes().isEmpty()) {
-      output.writeBytes(1, getReadGroupSetIdBytes());
+      com.google.protobuf.GeneratedMessage.writeString(output, 1, readGroupSetId_);
     }
     if (readGroupSet_ != null) {
       output.writeMessage(2, getReadGroupSet());
@@ -242,15 +240,13 @@ public  final class UpdateReadGroupSetRequest extends
     }
   }
 
-  private int memoizedSerializedSize = -1;
   public int getSerializedSize() {
-    int size = memoizedSerializedSize;
+    int size = memoizedSize;
     if (size != -1) return size;
 
     size = 0;
     if (!getReadGroupSetIdBytes().isEmpty()) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeBytesSize(1, getReadGroupSetIdBytes());
+      size += com.google.protobuf.GeneratedMessage.computeStringSize(1, readGroupSetId_);
     }
     if (readGroupSet_ != null) {
       size += com.google.protobuf.CodedOutputStream
@@ -260,7 +256,7 @@ public  final class UpdateReadGroupSetRequest extends
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(3, getUpdateMask());
     }
-    memoizedSerializedSize = size;
+    memoizedSize = size;
     return size;
   }
 
@@ -484,9 +480,7 @@ public  final class UpdateReadGroupSetRequest extends
         com.google.protobuf.ByteString bs =
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          readGroupSetId_ = s;
-        }
+        readGroupSetId_ = s;
         return s;
       } else {
         return (java.lang.String) ref;
@@ -558,7 +552,8 @@ public  final class UpdateReadGroupSetRequest extends
       if (value == null) {
     throw new NullPointerException();
   }
-  
+  checkByteStringIsUtf8(value);
+      
       readGroupSetId_ = value;
       onChanged();
       return this;
@@ -920,8 +915,8 @@ public  final class UpdateReadGroupSetRequest extends
     return DEFAULT_INSTANCE;
   }
 
-  public static final com.google.protobuf.Parser<UpdateReadGroupSetRequest> PARSER =
-      new com.google.protobuf.AbstractParser<UpdateReadGroupSetRequest>() {
+  private static final com.google.protobuf.Parser<UpdateReadGroupSetRequest>
+      PARSER = new com.google.protobuf.AbstractParser<UpdateReadGroupSetRequest>() {
     public UpdateReadGroupSetRequest parsePartialFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)

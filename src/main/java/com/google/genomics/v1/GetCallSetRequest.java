@@ -11,7 +11,7 @@ public  final class GetCallSetRequest extends
     // @@protoc_insertion_point(message_implements:google.genomics.v1.GetCallSetRequest)
     GetCallSetRequestOrBuilder {
   // Use GetCallSetRequest.newBuilder() to construct.
-  private GetCallSetRequest(com.google.protobuf.GeneratedMessage.Builder builder) {
+  private GetCallSetRequest(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
     super(builder);
   }
   private GetCallSetRequest() {
@@ -43,9 +43,9 @@ public  final class GetCallSetRequest extends
             break;
           }
           case 10: {
-            com.google.protobuf.ByteString bs = input.readBytes();
+            String s = input.readStringRequireUtf8();
 
-            callSetId_ = bs;
+            callSetId_ = s;
             break;
           }
         }
@@ -89,9 +89,7 @@ public  final class GetCallSetRequest extends
       com.google.protobuf.ByteString bs = 
           (com.google.protobuf.ByteString) ref;
       java.lang.String s = bs.toStringUtf8();
-      if (bs.isValidUtf8()) {
-        callSetId_ = s;
-      }
+      callSetId_ = s;
       return s;
     }
   }
@@ -129,21 +127,19 @@ public  final class GetCallSetRequest extends
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
     if (!getCallSetIdBytes().isEmpty()) {
-      output.writeBytes(1, getCallSetIdBytes());
+      com.google.protobuf.GeneratedMessage.writeString(output, 1, callSetId_);
     }
   }
 
-  private int memoizedSerializedSize = -1;
   public int getSerializedSize() {
-    int size = memoizedSerializedSize;
+    int size = memoizedSize;
     if (size != -1) return size;
 
     size = 0;
     if (!getCallSetIdBytes().isEmpty()) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeBytesSize(1, getCallSetIdBytes());
+      size += com.google.protobuf.GeneratedMessage.computeStringSize(1, callSetId_);
     }
-    memoizedSerializedSize = size;
+    memoizedSize = size;
     return size;
   }
 
@@ -338,9 +334,7 @@ public  final class GetCallSetRequest extends
         com.google.protobuf.ByteString bs =
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          callSetId_ = s;
-        }
+        callSetId_ = s;
         return s;
       } else {
         return (java.lang.String) ref;
@@ -408,7 +402,8 @@ public  final class GetCallSetRequest extends
       if (value == null) {
     throw new NullPointerException();
   }
-  
+  checkByteStringIsUtf8(value);
+      
       callSetId_ = value;
       onChanged();
       return this;
@@ -437,8 +432,8 @@ public  final class GetCallSetRequest extends
     return DEFAULT_INSTANCE;
   }
 
-  public static final com.google.protobuf.Parser<GetCallSetRequest> PARSER =
-      new com.google.protobuf.AbstractParser<GetCallSetRequest>() {
+  private static final com.google.protobuf.Parser<GetCallSetRequest>
+      PARSER = new com.google.protobuf.AbstractParser<GetCallSetRequest>() {
     public GetCallSetRequest parsePartialFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)

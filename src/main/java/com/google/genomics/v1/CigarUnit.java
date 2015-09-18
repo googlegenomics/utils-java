@@ -15,7 +15,7 @@ public  final class CigarUnit extends
     // @@protoc_insertion_point(message_implements:google.genomics.v1.CigarUnit)
     CigarUnitOrBuilder {
   // Use CigarUnit.newBuilder() to construct.
-  private CigarUnit(com.google.protobuf.GeneratedMessage.Builder builder) {
+  private CigarUnit(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
     super(builder);
   }
   private CigarUnit() {
@@ -60,9 +60,9 @@ public  final class CigarUnit extends
             break;
           }
           case 26: {
-            com.google.protobuf.ByteString bs = input.readBytes();
+            String s = input.readStringRequireUtf8();
 
-            referenceSequence_ = bs;
+            referenceSequence_ = s;
             break;
           }
         }
@@ -336,8 +336,8 @@ public  final class CigarUnit extends
         internalGetValueMap() {
       return internalValueMap;
     }
-    private static com.google.protobuf.Internal.EnumLiteMap<Operation>
-        internalValueMap =
+    private static final com.google.protobuf.Internal.EnumLiteMap<
+        Operation> internalValueMap =
           new com.google.protobuf.Internal.EnumLiteMap<Operation>() {
             public Operation findValueByNumber(int number) {
               return Operation.valueOf(number);
@@ -431,9 +431,7 @@ public  final class CigarUnit extends
       com.google.protobuf.ByteString bs = 
           (com.google.protobuf.ByteString) ref;
       java.lang.String s = bs.toStringUtf8();
-      if (bs.isValidUtf8()) {
-        referenceSequence_ = s;
-      }
+      referenceSequence_ = s;
       return s;
     }
   }
@@ -480,13 +478,12 @@ public  final class CigarUnit extends
       output.writeInt64(2, operationLength_);
     }
     if (!getReferenceSequenceBytes().isEmpty()) {
-      output.writeBytes(3, getReferenceSequenceBytes());
+      com.google.protobuf.GeneratedMessage.writeString(output, 3, referenceSequence_);
     }
   }
 
-  private int memoizedSerializedSize = -1;
   public int getSerializedSize() {
-    int size = memoizedSerializedSize;
+    int size = memoizedSize;
     if (size != -1) return size;
 
     size = 0;
@@ -499,10 +496,9 @@ public  final class CigarUnit extends
         .computeInt64Size(2, operationLength_);
     }
     if (!getReferenceSequenceBytes().isEmpty()) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeBytesSize(3, getReferenceSequenceBytes());
+      size += com.google.protobuf.GeneratedMessage.computeStringSize(3, referenceSequence_);
     }
-    memoizedSerializedSize = size;
+    memoizedSize = size;
     return size;
   }
 
@@ -798,9 +794,7 @@ public  final class CigarUnit extends
         com.google.protobuf.ByteString bs =
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          referenceSequence_ = s;
-        }
+        referenceSequence_ = s;
         return s;
       } else {
         return (java.lang.String) ref;
@@ -880,7 +874,8 @@ public  final class CigarUnit extends
       if (value == null) {
     throw new NullPointerException();
   }
-  
+  checkByteStringIsUtf8(value);
+      
       referenceSequence_ = value;
       onChanged();
       return this;
@@ -909,8 +904,8 @@ public  final class CigarUnit extends
     return DEFAULT_INSTANCE;
   }
 
-  public static final com.google.protobuf.Parser<CigarUnit> PARSER =
-      new com.google.protobuf.AbstractParser<CigarUnit>() {
+  private static final com.google.protobuf.Parser<CigarUnit>
+      PARSER = new com.google.protobuf.AbstractParser<CigarUnit>() {
     public CigarUnit parsePartialFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)

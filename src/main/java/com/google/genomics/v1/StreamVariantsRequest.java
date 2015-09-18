@@ -15,7 +15,7 @@ public  final class StreamVariantsRequest extends
     // @@protoc_insertion_point(message_implements:google.genomics.v1.StreamVariantsRequest)
     StreamVariantsRequestOrBuilder {
   // Use StreamVariantsRequest.newBuilder() to construct.
-  private StreamVariantsRequest(com.google.protobuf.GeneratedMessage.Builder builder) {
+  private StreamVariantsRequest(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
     super(builder);
   }
   private StreamVariantsRequest() {
@@ -52,30 +52,30 @@ public  final class StreamVariantsRequest extends
             break;
           }
           case 10: {
-            com.google.protobuf.ByteString bs = input.readBytes();
+            String s = input.readStringRequireUtf8();
 
-            projectId_ = bs;
+            projectId_ = s;
             break;
           }
           case 18: {
-            com.google.protobuf.ByteString bs = input.readBytes();
+            String s = input.readStringRequireUtf8();
 
-            variantSetId_ = bs;
+            variantSetId_ = s;
             break;
           }
           case 26: {
-            com.google.protobuf.ByteString bs = input.readBytes();
+            String s = input.readStringRequireUtf8();
             if (!((mutable_bitField0_ & 0x00000004) == 0x00000004)) {
               callSetIds_ = new com.google.protobuf.LazyStringArrayList();
               mutable_bitField0_ |= 0x00000004;
             }
-            callSetIds_.add(bs);
+            callSetIds_.add(s);
             break;
           }
           case 34: {
-            com.google.protobuf.ByteString bs = input.readBytes();
+            String s = input.readStringRequireUtf8();
 
-            referenceName_ = bs;
+            referenceName_ = s;
             break;
           }
           case 40: {
@@ -134,9 +134,7 @@ public  final class StreamVariantsRequest extends
       com.google.protobuf.ByteString bs = 
           (com.google.protobuf.ByteString) ref;
       java.lang.String s = bs.toStringUtf8();
-      if (bs.isValidUtf8()) {
-        projectId_ = s;
-      }
+      projectId_ = s;
       return s;
     }
   }
@@ -179,9 +177,7 @@ public  final class StreamVariantsRequest extends
       com.google.protobuf.ByteString bs = 
           (com.google.protobuf.ByteString) ref;
       java.lang.String s = bs.toStringUtf8();
-      if (bs.isValidUtf8()) {
-        variantSetId_ = s;
-      }
+      variantSetId_ = s;
       return s;
     }
   }
@@ -272,9 +268,7 @@ public  final class StreamVariantsRequest extends
       com.google.protobuf.ByteString bs = 
           (com.google.protobuf.ByteString) ref;
       java.lang.String s = bs.toStringUtf8();
-      if (bs.isValidUtf8()) {
-        referenceName_ = s;
-      }
+      referenceName_ = s;
       return s;
     }
   }
@@ -340,16 +334,16 @@ public  final class StreamVariantsRequest extends
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
     if (!getProjectIdBytes().isEmpty()) {
-      output.writeBytes(1, getProjectIdBytes());
+      com.google.protobuf.GeneratedMessage.writeString(output, 1, projectId_);
     }
     if (!getVariantSetIdBytes().isEmpty()) {
-      output.writeBytes(2, getVariantSetIdBytes());
+      com.google.protobuf.GeneratedMessage.writeString(output, 2, variantSetId_);
     }
     for (int i = 0; i < callSetIds_.size(); i++) {
-      output.writeBytes(3, callSetIds_.getByteString(i));
+      com.google.protobuf.GeneratedMessage.writeString(output, 3, callSetIds_.getRaw(i));
     }
     if (!getReferenceNameBytes().isEmpty()) {
-      output.writeBytes(4, getReferenceNameBytes());
+      com.google.protobuf.GeneratedMessage.writeString(output, 4, referenceName_);
     }
     if (start_ != 0L) {
       output.writeInt64(5, start_);
@@ -359,32 +353,27 @@ public  final class StreamVariantsRequest extends
     }
   }
 
-  private int memoizedSerializedSize = -1;
   public int getSerializedSize() {
-    int size = memoizedSerializedSize;
+    int size = memoizedSize;
     if (size != -1) return size;
 
     size = 0;
     if (!getProjectIdBytes().isEmpty()) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeBytesSize(1, getProjectIdBytes());
+      size += com.google.protobuf.GeneratedMessage.computeStringSize(1, projectId_);
     }
     if (!getVariantSetIdBytes().isEmpty()) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeBytesSize(2, getVariantSetIdBytes());
+      size += com.google.protobuf.GeneratedMessage.computeStringSize(2, variantSetId_);
     }
     {
       int dataSize = 0;
       for (int i = 0; i < callSetIds_.size(); i++) {
-        dataSize += com.google.protobuf.CodedOutputStream
-          .computeBytesSizeNoTag(callSetIds_.getByteString(i));
+        dataSize += computeStringSizeNoTag(callSetIds_.getRaw(i));
       }
       size += dataSize;
       size += 1 * getCallSetIdsList().size();
     }
     if (!getReferenceNameBytes().isEmpty()) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeBytesSize(4, getReferenceNameBytes());
+      size += com.google.protobuf.GeneratedMessage.computeStringSize(4, referenceName_);
     }
     if (start_ != 0L) {
       size += com.google.protobuf.CodedOutputStream
@@ -394,7 +383,7 @@ public  final class StreamVariantsRequest extends
       size += com.google.protobuf.CodedOutputStream
         .computeInt64Size(6, end_);
     }
-    memoizedSerializedSize = size;
+    memoizedSize = size;
     return size;
   }
 
@@ -641,9 +630,7 @@ public  final class StreamVariantsRequest extends
         com.google.protobuf.ByteString bs =
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          projectId_ = s;
-        }
+        projectId_ = s;
         return s;
       } else {
         return (java.lang.String) ref;
@@ -715,7 +702,8 @@ public  final class StreamVariantsRequest extends
       if (value == null) {
     throw new NullPointerException();
   }
-  
+  checkByteStringIsUtf8(value);
+      
       projectId_ = value;
       onChanged();
       return this;
@@ -735,9 +723,7 @@ public  final class StreamVariantsRequest extends
         com.google.protobuf.ByteString bs =
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          variantSetId_ = s;
-        }
+        variantSetId_ = s;
         return s;
       } else {
         return (java.lang.String) ref;
@@ -805,7 +791,8 @@ public  final class StreamVariantsRequest extends
       if (value == null) {
     throw new NullPointerException();
   }
-  
+  checkByteStringIsUtf8(value);
+      
       variantSetId_ = value;
       onChanged();
       return this;
@@ -943,7 +930,8 @@ public  final class StreamVariantsRequest extends
       if (value == null) {
     throw new NullPointerException();
   }
-  ensureCallSetIdsIsMutable();
+  checkByteStringIsUtf8(value);
+      ensureCallSetIdsIsMutable();
       callSetIds_.add(value);
       onChanged();
       return this;
@@ -963,9 +951,7 @@ public  final class StreamVariantsRequest extends
         com.google.protobuf.ByteString bs =
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          referenceName_ = s;
-        }
+        referenceName_ = s;
         return s;
       } else {
         return (java.lang.String) ref;
@@ -1033,7 +1019,8 @@ public  final class StreamVariantsRequest extends
       if (value == null) {
     throw new NullPointerException();
   }
-  
+  checkByteStringIsUtf8(value);
+      
       referenceName_ = value;
       onChanged();
       return this;
@@ -1144,8 +1131,8 @@ public  final class StreamVariantsRequest extends
     return DEFAULT_INSTANCE;
   }
 
-  public static final com.google.protobuf.Parser<StreamVariantsRequest> PARSER =
-      new com.google.protobuf.AbstractParser<StreamVariantsRequest>() {
+  private static final com.google.protobuf.Parser<StreamVariantsRequest>
+      PARSER = new com.google.protobuf.AbstractParser<StreamVariantsRequest>() {
     public StreamVariantsRequest parsePartialFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)

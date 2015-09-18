@@ -16,7 +16,7 @@ public  final class LinearAlignment extends
     // @@protoc_insertion_point(message_implements:google.genomics.v1.LinearAlignment)
     LinearAlignmentOrBuilder {
   // Use LinearAlignment.newBuilder() to construct.
-  private LinearAlignment(com.google.protobuf.GeneratedMessage.Builder builder) {
+  private LinearAlignment(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
     super(builder);
   }
   private LinearAlignment() {
@@ -53,7 +53,7 @@ public  final class LinearAlignment extends
             if (position_ != null) {
               subBuilder = position_.toBuilder();
             }
-            position_ = input.readMessage(com.google.genomics.v1.Position.PARSER, extensionRegistry);
+            position_ = input.readMessage(com.google.genomics.v1.Position.parser(), extensionRegistry);
             if (subBuilder != null) {
               subBuilder.mergeFrom(position_);
               position_ = subBuilder.buildPartial();
@@ -71,7 +71,7 @@ public  final class LinearAlignment extends
               cigar_ = new java.util.ArrayList<com.google.genomics.v1.CigarUnit>();
               mutable_bitField0_ |= 0x00000004;
             }
-            cigar_.add(input.readMessage(com.google.genomics.v1.CigarUnit.PARSER, extensionRegistry));
+            cigar_.add(input.readMessage(com.google.genomics.v1.CigarUnit.parser(), extensionRegistry));
             break;
           }
         }
@@ -232,9 +232,8 @@ public  final class LinearAlignment extends
     }
   }
 
-  private int memoizedSerializedSize = -1;
   public int getSerializedSize() {
-    int size = memoizedSerializedSize;
+    int size = memoizedSize;
     if (size != -1) return size;
 
     size = 0;
@@ -250,7 +249,7 @@ public  final class LinearAlignment extends
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(3, cigar_.get(i));
     }
-    memoizedSerializedSize = size;
+    memoizedSize = size;
     return size;
   }
 
@@ -1042,8 +1041,8 @@ public  final class LinearAlignment extends
     return DEFAULT_INSTANCE;
   }
 
-  public static final com.google.protobuf.Parser<LinearAlignment> PARSER =
-      new com.google.protobuf.AbstractParser<LinearAlignment>() {
+  private static final com.google.protobuf.Parser<LinearAlignment>
+      PARSER = new com.google.protobuf.AbstractParser<LinearAlignment>() {
     public LinearAlignment parsePartialFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
