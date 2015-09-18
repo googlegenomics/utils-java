@@ -16,7 +16,7 @@ public  final class VariantSet extends
     // @@protoc_insertion_point(message_implements:google.genomics.v1.VariantSet)
     VariantSetOrBuilder {
   // Use VariantSet.newBuilder() to construct.
-  private VariantSet(com.google.protobuf.GeneratedMessage.Builder builder) {
+  private VariantSet(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
     super(builder);
   }
   private VariantSet() {
@@ -51,15 +51,15 @@ public  final class VariantSet extends
             break;
           }
           case 10: {
-            com.google.protobuf.ByteString bs = input.readBytes();
+            String s = input.readStringRequireUtf8();
 
-            datasetId_ = bs;
+            datasetId_ = s;
             break;
           }
           case 18: {
-            com.google.protobuf.ByteString bs = input.readBytes();
+            String s = input.readStringRequireUtf8();
 
-            id_ = bs;
+            id_ = s;
             break;
           }
           case 34: {
@@ -67,7 +67,7 @@ public  final class VariantSet extends
               metadata_ = new java.util.ArrayList<com.google.genomics.v1.VariantSetMetadata>();
               mutable_bitField0_ |= 0x00000008;
             }
-            metadata_.add(input.readMessage(com.google.genomics.v1.VariantSetMetadata.PARSER, extensionRegistry));
+            metadata_.add(input.readMessage(com.google.genomics.v1.VariantSetMetadata.parser(), extensionRegistry));
             break;
           }
           case 42: {
@@ -75,7 +75,7 @@ public  final class VariantSet extends
               referenceBounds_ = new java.util.ArrayList<com.google.genomics.v1.ReferenceBound>();
               mutable_bitField0_ |= 0x00000004;
             }
-            referenceBounds_.add(input.readMessage(com.google.genomics.v1.ReferenceBound.PARSER, extensionRegistry));
+            referenceBounds_.add(input.readMessage(com.google.genomics.v1.ReferenceBound.parser(), extensionRegistry));
             break;
           }
         }
@@ -126,9 +126,7 @@ public  final class VariantSet extends
       com.google.protobuf.ByteString bs = 
           (com.google.protobuf.ByteString) ref;
       java.lang.String s = bs.toStringUtf8();
-      if (bs.isValidUtf8()) {
-        datasetId_ = s;
-      }
+      datasetId_ = s;
       return s;
     }
   }
@@ -170,9 +168,7 @@ public  final class VariantSet extends
       com.google.protobuf.ByteString bs = 
           (com.google.protobuf.ByteString) ref;
       java.lang.String s = bs.toStringUtf8();
-      if (bs.isValidUtf8()) {
-        id_ = s;
-      }
+      id_ = s;
       return s;
     }
   }
@@ -325,10 +321,10 @@ public  final class VariantSet extends
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
     if (!getDatasetIdBytes().isEmpty()) {
-      output.writeBytes(1, getDatasetIdBytes());
+      com.google.protobuf.GeneratedMessage.writeString(output, 1, datasetId_);
     }
     if (!getIdBytes().isEmpty()) {
-      output.writeBytes(2, getIdBytes());
+      com.google.protobuf.GeneratedMessage.writeString(output, 2, id_);
     }
     for (int i = 0; i < metadata_.size(); i++) {
       output.writeMessage(4, metadata_.get(i));
@@ -338,19 +334,16 @@ public  final class VariantSet extends
     }
   }
 
-  private int memoizedSerializedSize = -1;
   public int getSerializedSize() {
-    int size = memoizedSerializedSize;
+    int size = memoizedSize;
     if (size != -1) return size;
 
     size = 0;
     if (!getDatasetIdBytes().isEmpty()) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeBytesSize(1, getDatasetIdBytes());
+      size += com.google.protobuf.GeneratedMessage.computeStringSize(1, datasetId_);
     }
     if (!getIdBytes().isEmpty()) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeBytesSize(2, getIdBytes());
+      size += com.google.protobuf.GeneratedMessage.computeStringSize(2, id_);
     }
     for (int i = 0; i < metadata_.size(); i++) {
       size += com.google.protobuf.CodedOutputStream
@@ -360,7 +353,7 @@ public  final class VariantSet extends
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(5, referenceBounds_.get(i));
     }
-    memoizedSerializedSize = size;
+    memoizedSize = size;
     return size;
   }
 
@@ -655,9 +648,7 @@ public  final class VariantSet extends
         com.google.protobuf.ByteString bs =
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          datasetId_ = s;
-        }
+        datasetId_ = s;
         return s;
       } else {
         return (java.lang.String) ref;
@@ -725,7 +716,8 @@ public  final class VariantSet extends
       if (value == null) {
     throw new NullPointerException();
   }
-  
+  checkByteStringIsUtf8(value);
+      
       datasetId_ = value;
       onChanged();
       return this;
@@ -745,9 +737,7 @@ public  final class VariantSet extends
         com.google.protobuf.ByteString bs =
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          id_ = s;
-        }
+        id_ = s;
         return s;
       } else {
         return (java.lang.String) ref;
@@ -815,7 +805,8 @@ public  final class VariantSet extends
       if (value == null) {
     throw new NullPointerException();
   }
-  
+  checkByteStringIsUtf8(value);
+      
       id_ = value;
       onChanged();
       return this;
@@ -1486,8 +1477,8 @@ public  final class VariantSet extends
     return DEFAULT_INSTANCE;
   }
 
-  public static final com.google.protobuf.Parser<VariantSet> PARSER =
-      new com.google.protobuf.AbstractParser<VariantSet>() {
+  private static final com.google.protobuf.Parser<VariantSet>
+      PARSER = new com.google.protobuf.AbstractParser<VariantSet>() {
     public VariantSet parsePartialFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)

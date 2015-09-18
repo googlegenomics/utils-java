@@ -15,7 +15,7 @@ public  final class ImportReadGroupSetsRequest extends
     // @@protoc_insertion_point(message_implements:google.genomics.v1.ImportReadGroupSetsRequest)
     ImportReadGroupSetsRequestOrBuilder {
   // Use ImportReadGroupSetsRequest.newBuilder() to construct.
-  private ImportReadGroupSetsRequest(com.google.protobuf.GeneratedMessage.Builder builder) {
+  private ImportReadGroupSetsRequest(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
     super(builder);
   }
   private ImportReadGroupSetsRequest() {
@@ -50,24 +50,24 @@ public  final class ImportReadGroupSetsRequest extends
             break;
           }
           case 10: {
-            com.google.protobuf.ByteString bs = input.readBytes();
+            String s = input.readStringRequireUtf8();
 
-            datasetId_ = bs;
+            datasetId_ = s;
             break;
           }
           case 18: {
-            com.google.protobuf.ByteString bs = input.readBytes();
+            String s = input.readStringRequireUtf8();
             if (!((mutable_bitField0_ & 0x00000004) == 0x00000004)) {
               sourceUris_ = new com.google.protobuf.LazyStringArrayList();
               mutable_bitField0_ |= 0x00000004;
             }
-            sourceUris_.add(bs);
+            sourceUris_.add(s);
             break;
           }
           case 34: {
-            com.google.protobuf.ByteString bs = input.readBytes();
+            String s = input.readStringRequireUtf8();
 
-            referenceSetId_ = bs;
+            referenceSetId_ = s;
             break;
           }
           case 40: {
@@ -190,8 +190,8 @@ public  final class ImportReadGroupSetsRequest extends
         internalGetValueMap() {
       return internalValueMap;
     }
-    private static com.google.protobuf.Internal.EnumLiteMap<PartitionStrategy>
-        internalValueMap =
+    private static final com.google.protobuf.Internal.EnumLiteMap<
+        PartitionStrategy> internalValueMap =
           new com.google.protobuf.Internal.EnumLiteMap<PartitionStrategy>() {
             public PartitionStrategy findValueByNumber(int number) {
               return PartitionStrategy.valueOf(number);
@@ -255,9 +255,7 @@ public  final class ImportReadGroupSetsRequest extends
       com.google.protobuf.ByteString bs = 
           (com.google.protobuf.ByteString) ref;
       java.lang.String s = bs.toStringUtf8();
-      if (bs.isValidUtf8()) {
-        datasetId_ = s;
-      }
+      datasetId_ = s;
       return s;
     }
   }
@@ -303,9 +301,7 @@ public  final class ImportReadGroupSetsRequest extends
       com.google.protobuf.ByteString bs = 
           (com.google.protobuf.ByteString) ref;
       java.lang.String s = bs.toStringUtf8();
-      if (bs.isValidUtf8()) {
-        referenceSetId_ = s;
-      }
+      referenceSetId_ = s;
       return s;
     }
   }
@@ -417,47 +413,43 @@ public  final class ImportReadGroupSetsRequest extends
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
     if (!getDatasetIdBytes().isEmpty()) {
-      output.writeBytes(1, getDatasetIdBytes());
+      com.google.protobuf.GeneratedMessage.writeString(output, 1, datasetId_);
     }
     for (int i = 0; i < sourceUris_.size(); i++) {
-      output.writeBytes(2, sourceUris_.getByteString(i));
+      com.google.protobuf.GeneratedMessage.writeString(output, 2, sourceUris_.getRaw(i));
     }
     if (!getReferenceSetIdBytes().isEmpty()) {
-      output.writeBytes(4, getReferenceSetIdBytes());
+      com.google.protobuf.GeneratedMessage.writeString(output, 4, referenceSetId_);
     }
     if (partitionStrategy_ != com.google.genomics.v1.ImportReadGroupSetsRequest.PartitionStrategy.PARTITION_STRATEGY_UNSPECIFIED.getNumber()) {
       output.writeEnum(5, partitionStrategy_);
     }
   }
 
-  private int memoizedSerializedSize = -1;
   public int getSerializedSize() {
-    int size = memoizedSerializedSize;
+    int size = memoizedSize;
     if (size != -1) return size;
 
     size = 0;
     if (!getDatasetIdBytes().isEmpty()) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeBytesSize(1, getDatasetIdBytes());
+      size += com.google.protobuf.GeneratedMessage.computeStringSize(1, datasetId_);
     }
     {
       int dataSize = 0;
       for (int i = 0; i < sourceUris_.size(); i++) {
-        dataSize += com.google.protobuf.CodedOutputStream
-          .computeBytesSizeNoTag(sourceUris_.getByteString(i));
+        dataSize += computeStringSizeNoTag(sourceUris_.getRaw(i));
       }
       size += dataSize;
       size += 1 * getSourceUrisList().size();
     }
     if (!getReferenceSetIdBytes().isEmpty()) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeBytesSize(4, getReferenceSetIdBytes());
+      size += com.google.protobuf.GeneratedMessage.computeStringSize(4, referenceSetId_);
     }
     if (partitionStrategy_ != com.google.genomics.v1.ImportReadGroupSetsRequest.PartitionStrategy.PARTITION_STRATEGY_UNSPECIFIED.getNumber()) {
       size += com.google.protobuf.CodedOutputStream
         .computeEnumSize(5, partitionStrategy_);
     }
-    memoizedSerializedSize = size;
+    memoizedSize = size;
     return size;
   }
 
@@ -691,9 +683,7 @@ public  final class ImportReadGroupSetsRequest extends
         com.google.protobuf.ByteString bs =
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          datasetId_ = s;
-        }
+        datasetId_ = s;
         return s;
       } else {
         return (java.lang.String) ref;
@@ -765,7 +755,8 @@ public  final class ImportReadGroupSetsRequest extends
       if (value == null) {
     throw new NullPointerException();
   }
-  
+  checkByteStringIsUtf8(value);
+      
       datasetId_ = value;
       onChanged();
       return this;
@@ -788,9 +779,7 @@ public  final class ImportReadGroupSetsRequest extends
         com.google.protobuf.ByteString bs =
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          referenceSetId_ = s;
-        }
+        referenceSetId_ = s;
         return s;
       } else {
         return (java.lang.String) ref;
@@ -870,7 +859,8 @@ public  final class ImportReadGroupSetsRequest extends
       if (value == null) {
     throw new NullPointerException();
   }
-  
+  checkByteStringIsUtf8(value);
+      
       referenceSetId_ = value;
       onChanged();
       return this;
@@ -999,7 +989,8 @@ public  final class ImportReadGroupSetsRequest extends
       if (value == null) {
     throw new NullPointerException();
   }
-  ensureSourceUrisIsMutable();
+  checkByteStringIsUtf8(value);
+      ensureSourceUrisIsMutable();
       sourceUris_.add(value);
       onChanged();
       return this;
@@ -1097,8 +1088,8 @@ public  final class ImportReadGroupSetsRequest extends
     return DEFAULT_INSTANCE;
   }
 
-  public static final com.google.protobuf.Parser<ImportReadGroupSetsRequest> PARSER =
-      new com.google.protobuf.AbstractParser<ImportReadGroupSetsRequest>() {
+  private static final com.google.protobuf.Parser<ImportReadGroupSetsRequest>
+      PARSER = new com.google.protobuf.AbstractParser<ImportReadGroupSetsRequest>() {
     public ImportReadGroupSetsRequest parsePartialFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)

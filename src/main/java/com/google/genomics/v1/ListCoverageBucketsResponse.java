@@ -11,7 +11,7 @@ public  final class ListCoverageBucketsResponse extends
     // @@protoc_insertion_point(message_implements:google.genomics.v1.ListCoverageBucketsResponse)
     ListCoverageBucketsResponseOrBuilder {
   // Use ListCoverageBucketsResponse.newBuilder() to construct.
-  private ListCoverageBucketsResponse(com.google.protobuf.GeneratedMessage.Builder builder) {
+  private ListCoverageBucketsResponse(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
     super(builder);
   }
   private ListCoverageBucketsResponse() {
@@ -54,13 +54,13 @@ public  final class ListCoverageBucketsResponse extends
               coverageBuckets_ = new java.util.ArrayList<com.google.genomics.v1.CoverageBucket>();
               mutable_bitField0_ |= 0x00000002;
             }
-            coverageBuckets_.add(input.readMessage(com.google.genomics.v1.CoverageBucket.PARSER, extensionRegistry));
+            coverageBuckets_.add(input.readMessage(com.google.genomics.v1.CoverageBucket.parser(), extensionRegistry));
             break;
           }
           case 26: {
-            com.google.protobuf.ByteString bs = input.readBytes();
+            String s = input.readStringRequireUtf8();
 
-            nextPageToken_ = bs;
+            nextPageToken_ = s;
             break;
           }
         }
@@ -196,9 +196,7 @@ public  final class ListCoverageBucketsResponse extends
       com.google.protobuf.ByteString bs = 
           (com.google.protobuf.ByteString) ref;
       java.lang.String s = bs.toStringUtf8();
-      if (bs.isValidUtf8()) {
-        nextPageToken_ = s;
-      }
+      nextPageToken_ = s;
       return s;
     }
   }
@@ -244,13 +242,12 @@ public  final class ListCoverageBucketsResponse extends
       output.writeMessage(2, coverageBuckets_.get(i));
     }
     if (!getNextPageTokenBytes().isEmpty()) {
-      output.writeBytes(3, getNextPageTokenBytes());
+      com.google.protobuf.GeneratedMessage.writeString(output, 3, nextPageToken_);
     }
   }
 
-  private int memoizedSerializedSize = -1;
   public int getSerializedSize() {
-    int size = memoizedSerializedSize;
+    int size = memoizedSize;
     if (size != -1) return size;
 
     size = 0;
@@ -263,10 +260,9 @@ public  final class ListCoverageBucketsResponse extends
         .computeMessageSize(2, coverageBuckets_.get(i));
     }
     if (!getNextPageTokenBytes().isEmpty()) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeBytesSize(3, getNextPageTokenBytes());
+      size += com.google.protobuf.GeneratedMessage.computeStringSize(3, nextPageToken_);
     }
-    memoizedSerializedSize = size;
+    memoizedSize = size;
     return size;
   }
 
@@ -928,9 +924,7 @@ public  final class ListCoverageBucketsResponse extends
         com.google.protobuf.ByteString bs =
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          nextPageToken_ = s;
-        }
+        nextPageToken_ = s;
         return s;
       } else {
         return (java.lang.String) ref;
@@ -1006,7 +1000,8 @@ public  final class ListCoverageBucketsResponse extends
       if (value == null) {
     throw new NullPointerException();
   }
-  
+  checkByteStringIsUtf8(value);
+      
       nextPageToken_ = value;
       onChanged();
       return this;
@@ -1035,8 +1030,8 @@ public  final class ListCoverageBucketsResponse extends
     return DEFAULT_INSTANCE;
   }
 
-  public static final com.google.protobuf.Parser<ListCoverageBucketsResponse> PARSER =
-      new com.google.protobuf.AbstractParser<ListCoverageBucketsResponse>() {
+  private static final com.google.protobuf.Parser<ListCoverageBucketsResponse>
+      PARSER = new com.google.protobuf.AbstractParser<ListCoverageBucketsResponse>() {
     public ListCoverageBucketsResponse parsePartialFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)

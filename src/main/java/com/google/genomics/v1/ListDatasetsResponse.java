@@ -15,7 +15,7 @@ public  final class ListDatasetsResponse extends
     // @@protoc_insertion_point(message_implements:google.genomics.v1.ListDatasetsResponse)
     ListDatasetsResponseOrBuilder {
   // Use ListDatasetsResponse.newBuilder() to construct.
-  private ListDatasetsResponse(com.google.protobuf.GeneratedMessage.Builder builder) {
+  private ListDatasetsResponse(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
     super(builder);
   }
   private ListDatasetsResponse() {
@@ -52,13 +52,13 @@ public  final class ListDatasetsResponse extends
               datasets_ = new java.util.ArrayList<com.google.genomics.v1.Dataset>();
               mutable_bitField0_ |= 0x00000001;
             }
-            datasets_.add(input.readMessage(com.google.genomics.v1.Dataset.PARSER, extensionRegistry));
+            datasets_.add(input.readMessage(com.google.genomics.v1.Dataset.parser(), extensionRegistry));
             break;
           }
           case 18: {
-            com.google.protobuf.ByteString bs = input.readBytes();
+            String s = input.readStringRequireUtf8();
 
-            nextPageToken_ = bs;
+            nextPageToken_ = s;
             break;
           }
         }
@@ -163,9 +163,7 @@ public  final class ListDatasetsResponse extends
       com.google.protobuf.ByteString bs = 
           (com.google.protobuf.ByteString) ref;
       java.lang.String s = bs.toStringUtf8();
-      if (bs.isValidUtf8()) {
-        nextPageToken_ = s;
-      }
+      nextPageToken_ = s;
       return s;
     }
   }
@@ -208,13 +206,12 @@ public  final class ListDatasetsResponse extends
       output.writeMessage(1, datasets_.get(i));
     }
     if (!getNextPageTokenBytes().isEmpty()) {
-      output.writeBytes(2, getNextPageTokenBytes());
+      com.google.protobuf.GeneratedMessage.writeString(output, 2, nextPageToken_);
     }
   }
 
-  private int memoizedSerializedSize = -1;
   public int getSerializedSize() {
-    int size = memoizedSerializedSize;
+    int size = memoizedSize;
     if (size != -1) return size;
 
     size = 0;
@@ -223,10 +220,9 @@ public  final class ListDatasetsResponse extends
         .computeMessageSize(1, datasets_.get(i));
     }
     if (!getNextPageTokenBytes().isEmpty()) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeBytesSize(2, getNextPageTokenBytes());
+      size += com.google.protobuf.GeneratedMessage.computeStringSize(2, nextPageToken_);
     }
-    memoizedSerializedSize = size;
+    memoizedSize = size;
     return size;
   }
 
@@ -785,9 +781,7 @@ public  final class ListDatasetsResponse extends
         com.google.protobuf.ByteString bs =
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          nextPageToken_ = s;
-        }
+        nextPageToken_ = s;
         return s;
       } else {
         return (java.lang.String) ref;
@@ -863,7 +857,8 @@ public  final class ListDatasetsResponse extends
       if (value == null) {
     throw new NullPointerException();
   }
-  
+  checkByteStringIsUtf8(value);
+      
       nextPageToken_ = value;
       onChanged();
       return this;
@@ -892,8 +887,8 @@ public  final class ListDatasetsResponse extends
     return DEFAULT_INSTANCE;
   }
 
-  public static final com.google.protobuf.Parser<ListDatasetsResponse> PARSER =
-      new com.google.protobuf.AbstractParser<ListDatasetsResponse>() {
+  private static final com.google.protobuf.Parser<ListDatasetsResponse>
+      PARSER = new com.google.protobuf.AbstractParser<ListDatasetsResponse>() {
     public ListDatasetsResponse parsePartialFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)

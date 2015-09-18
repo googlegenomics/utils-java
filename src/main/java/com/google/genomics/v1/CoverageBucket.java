@@ -16,7 +16,7 @@ public  final class CoverageBucket extends
     // @@protoc_insertion_point(message_implements:google.genomics.v1.CoverageBucket)
     CoverageBucketOrBuilder {
   // Use CoverageBucket.newBuilder() to construct.
-  private CoverageBucket(com.google.protobuf.GeneratedMessage.Builder builder) {
+  private CoverageBucket(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
     super(builder);
   }
   private CoverageBucket() {
@@ -52,7 +52,7 @@ public  final class CoverageBucket extends
             if (range_ != null) {
               subBuilder = range_.toBuilder();
             }
-            range_ = input.readMessage(com.google.genomics.v1.Range.PARSER, extensionRegistry);
+            range_ = input.readMessage(com.google.genomics.v1.Range.parser(), extensionRegistry);
             if (subBuilder != null) {
               subBuilder.mergeFrom(range_);
               range_ = subBuilder.buildPartial();
@@ -156,9 +156,8 @@ public  final class CoverageBucket extends
     }
   }
 
-  private int memoizedSerializedSize = -1;
   public int getSerializedSize() {
-    int size = memoizedSerializedSize;
+    int size = memoizedSize;
     if (size != -1) return size;
 
     size = 0;
@@ -170,7 +169,7 @@ public  final class CoverageBucket extends
       size += com.google.protobuf.CodedOutputStream
         .computeFloatSize(2, meanCoverage_);
     }
-    memoizedSerializedSize = size;
+    memoizedSize = size;
     return size;
   }
 
@@ -586,8 +585,8 @@ public  final class CoverageBucket extends
     return DEFAULT_INSTANCE;
   }
 
-  public static final com.google.protobuf.Parser<CoverageBucket> PARSER =
-      new com.google.protobuf.AbstractParser<CoverageBucket>() {
+  private static final com.google.protobuf.Parser<CoverageBucket>
+      PARSER = new com.google.protobuf.AbstractParser<CoverageBucket>() {
     public CoverageBucket parsePartialFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)

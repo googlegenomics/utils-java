@@ -15,7 +15,7 @@ public  final class ExportVariantSetRequest extends
     // @@protoc_insertion_point(message_implements:google.genomics.v1.ExportVariantSetRequest)
     ExportVariantSetRequestOrBuilder {
   // Use ExportVariantSetRequest.newBuilder() to construct.
-  private ExportVariantSetRequest(com.google.protobuf.GeneratedMessage.Builder builder) {
+  private ExportVariantSetRequest(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
     super(builder);
   }
   private ExportVariantSetRequest() {
@@ -52,24 +52,24 @@ public  final class ExportVariantSetRequest extends
             break;
           }
           case 10: {
-            com.google.protobuf.ByteString bs = input.readBytes();
+            String s = input.readStringRequireUtf8();
 
-            variantSetId_ = bs;
+            variantSetId_ = s;
             break;
           }
           case 18: {
-            com.google.protobuf.ByteString bs = input.readBytes();
+            String s = input.readStringRequireUtf8();
             if (!((mutable_bitField0_ & 0x00000002) == 0x00000002)) {
               callSetIds_ = new com.google.protobuf.LazyStringArrayList();
               mutable_bitField0_ |= 0x00000002;
             }
-            callSetIds_.add(bs);
+            callSetIds_.add(s);
             break;
           }
           case 26: {
-            com.google.protobuf.ByteString bs = input.readBytes();
+            String s = input.readStringRequireUtf8();
 
-            projectId_ = bs;
+            projectId_ = s;
             break;
           }
           case 32: {
@@ -79,15 +79,15 @@ public  final class ExportVariantSetRequest extends
             break;
           }
           case 42: {
-            com.google.protobuf.ByteString bs = input.readBytes();
+            String s = input.readStringRequireUtf8();
 
-            bigqueryDataset_ = bs;
+            bigqueryDataset_ = s;
             break;
           }
           case 50: {
-            com.google.protobuf.ByteString bs = input.readBytes();
+            String s = input.readStringRequireUtf8();
 
-            bigqueryTable_ = bs;
+            bigqueryTable_ = s;
             break;
           }
         }
@@ -171,8 +171,8 @@ public  final class ExportVariantSetRequest extends
         internalGetValueMap() {
       return internalValueMap;
     }
-    private static com.google.protobuf.Internal.EnumLiteMap<Format>
-        internalValueMap =
+    private static final com.google.protobuf.Internal.EnumLiteMap<
+        Format> internalValueMap =
           new com.google.protobuf.Internal.EnumLiteMap<Format>() {
             public Format findValueByNumber(int number) {
               return Format.valueOf(number);
@@ -236,9 +236,7 @@ public  final class ExportVariantSetRequest extends
       com.google.protobuf.ByteString bs = 
           (com.google.protobuf.ByteString) ref;
       java.lang.String s = bs.toStringUtf8();
-      if (bs.isValidUtf8()) {
-        variantSetId_ = s;
-      }
+      variantSetId_ = s;
       return s;
     }
   }
@@ -332,9 +330,7 @@ public  final class ExportVariantSetRequest extends
       com.google.protobuf.ByteString bs = 
           (com.google.protobuf.ByteString) ref;
       java.lang.String s = bs.toStringUtf8();
-      if (bs.isValidUtf8()) {
-        projectId_ = s;
-      }
+      projectId_ = s;
       return s;
     }
   }
@@ -403,9 +399,7 @@ public  final class ExportVariantSetRequest extends
       com.google.protobuf.ByteString bs = 
           (com.google.protobuf.ByteString) ref;
       java.lang.String s = bs.toStringUtf8();
-      if (bs.isValidUtf8()) {
-        bigqueryDataset_ = s;
-      }
+      bigqueryDataset_ = s;
       return s;
     }
   }
@@ -450,9 +444,7 @@ public  final class ExportVariantSetRequest extends
       com.google.protobuf.ByteString bs = 
           (com.google.protobuf.ByteString) ref;
       java.lang.String s = bs.toStringUtf8();
-      if (bs.isValidUtf8()) {
-        bigqueryTable_ = s;
-      }
+      bigqueryTable_ = s;
       return s;
     }
   }
@@ -492,61 +484,55 @@ public  final class ExportVariantSetRequest extends
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
     if (!getVariantSetIdBytes().isEmpty()) {
-      output.writeBytes(1, getVariantSetIdBytes());
+      com.google.protobuf.GeneratedMessage.writeString(output, 1, variantSetId_);
     }
     for (int i = 0; i < callSetIds_.size(); i++) {
-      output.writeBytes(2, callSetIds_.getByteString(i));
+      com.google.protobuf.GeneratedMessage.writeString(output, 2, callSetIds_.getRaw(i));
     }
     if (!getProjectIdBytes().isEmpty()) {
-      output.writeBytes(3, getProjectIdBytes());
+      com.google.protobuf.GeneratedMessage.writeString(output, 3, projectId_);
     }
     if (format_ != com.google.genomics.v1.ExportVariantSetRequest.Format.FORMAT_UNSPECIFIED.getNumber()) {
       output.writeEnum(4, format_);
     }
     if (!getBigqueryDatasetBytes().isEmpty()) {
-      output.writeBytes(5, getBigqueryDatasetBytes());
+      com.google.protobuf.GeneratedMessage.writeString(output, 5, bigqueryDataset_);
     }
     if (!getBigqueryTableBytes().isEmpty()) {
-      output.writeBytes(6, getBigqueryTableBytes());
+      com.google.protobuf.GeneratedMessage.writeString(output, 6, bigqueryTable_);
     }
   }
 
-  private int memoizedSerializedSize = -1;
   public int getSerializedSize() {
-    int size = memoizedSerializedSize;
+    int size = memoizedSize;
     if (size != -1) return size;
 
     size = 0;
     if (!getVariantSetIdBytes().isEmpty()) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeBytesSize(1, getVariantSetIdBytes());
+      size += com.google.protobuf.GeneratedMessage.computeStringSize(1, variantSetId_);
     }
     {
       int dataSize = 0;
       for (int i = 0; i < callSetIds_.size(); i++) {
-        dataSize += com.google.protobuf.CodedOutputStream
-          .computeBytesSizeNoTag(callSetIds_.getByteString(i));
+        dataSize += computeStringSizeNoTag(callSetIds_.getRaw(i));
       }
       size += dataSize;
       size += 1 * getCallSetIdsList().size();
     }
     if (!getProjectIdBytes().isEmpty()) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeBytesSize(3, getProjectIdBytes());
+      size += com.google.protobuf.GeneratedMessage.computeStringSize(3, projectId_);
     }
     if (format_ != com.google.genomics.v1.ExportVariantSetRequest.Format.FORMAT_UNSPECIFIED.getNumber()) {
       size += com.google.protobuf.CodedOutputStream
         .computeEnumSize(4, format_);
     }
     if (!getBigqueryDatasetBytes().isEmpty()) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeBytesSize(5, getBigqueryDatasetBytes());
+      size += com.google.protobuf.GeneratedMessage.computeStringSize(5, bigqueryDataset_);
     }
     if (!getBigqueryTableBytes().isEmpty()) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeBytesSize(6, getBigqueryTableBytes());
+      size += com.google.protobuf.GeneratedMessage.computeStringSize(6, bigqueryTable_);
     }
-    memoizedSerializedSize = size;
+    memoizedSize = size;
     return size;
   }
 
@@ -794,9 +780,7 @@ public  final class ExportVariantSetRequest extends
         com.google.protobuf.ByteString bs =
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          variantSetId_ = s;
-        }
+        variantSetId_ = s;
         return s;
       } else {
         return (java.lang.String) ref;
@@ -868,7 +852,8 @@ public  final class ExportVariantSetRequest extends
       if (value == null) {
     throw new NullPointerException();
   }
-  
+  checkByteStringIsUtf8(value);
+      
       variantSetId_ = value;
       onChanged();
       return this;
@@ -1006,7 +991,8 @@ public  final class ExportVariantSetRequest extends
       if (value == null) {
     throw new NullPointerException();
   }
-  ensureCallSetIdsIsMutable();
+  checkByteStringIsUtf8(value);
+      ensureCallSetIdsIsMutable();
       callSetIds_.add(value);
       onChanged();
       return this;
@@ -1028,9 +1014,7 @@ public  final class ExportVariantSetRequest extends
         com.google.protobuf.ByteString bs =
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          projectId_ = s;
-        }
+        projectId_ = s;
         return s;
       } else {
         return (java.lang.String) ref;
@@ -1106,7 +1090,8 @@ public  final class ExportVariantSetRequest extends
       if (value == null) {
     throw new NullPointerException();
   }
-  
+  checkByteStringIsUtf8(value);
+      
       projectId_ = value;
       onChanged();
       return this;
@@ -1191,9 +1176,7 @@ public  final class ExportVariantSetRequest extends
         com.google.protobuf.ByteString bs =
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          bigqueryDataset_ = s;
-        }
+        bigqueryDataset_ = s;
         return s;
       } else {
         return (java.lang.String) ref;
@@ -1265,7 +1248,8 @@ public  final class ExportVariantSetRequest extends
       if (value == null) {
     throw new NullPointerException();
   }
-  
+  checkByteStringIsUtf8(value);
+      
       bigqueryDataset_ = value;
       onChanged();
       return this;
@@ -1287,9 +1271,7 @@ public  final class ExportVariantSetRequest extends
         com.google.protobuf.ByteString bs =
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          bigqueryTable_ = s;
-        }
+        bigqueryTable_ = s;
         return s;
       } else {
         return (java.lang.String) ref;
@@ -1365,7 +1347,8 @@ public  final class ExportVariantSetRequest extends
       if (value == null) {
     throw new NullPointerException();
   }
-  
+  checkByteStringIsUtf8(value);
+      
       bigqueryTable_ = value;
       onChanged();
       return this;
@@ -1394,8 +1377,8 @@ public  final class ExportVariantSetRequest extends
     return DEFAULT_INSTANCE;
   }
 
-  public static final com.google.protobuf.Parser<ExportVariantSetRequest> PARSER =
-      new com.google.protobuf.AbstractParser<ExportVariantSetRequest>() {
+  private static final com.google.protobuf.Parser<ExportVariantSetRequest>
+      PARSER = new com.google.protobuf.AbstractParser<ExportVariantSetRequest>() {
     public ExportVariantSetRequest parsePartialFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)

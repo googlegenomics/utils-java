@@ -15,7 +15,7 @@ public  final class ListDatasetsRequest extends
     // @@protoc_insertion_point(message_implements:google.genomics.v1.ListDatasetsRequest)
     ListDatasetsRequestOrBuilder {
   // Use ListDatasetsRequest.newBuilder() to construct.
-  private ListDatasetsRequest(com.google.protobuf.GeneratedMessage.Builder builder) {
+  private ListDatasetsRequest(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
     super(builder);
   }
   private ListDatasetsRequest() {
@@ -49,9 +49,9 @@ public  final class ListDatasetsRequest extends
             break;
           }
           case 10: {
-            com.google.protobuf.ByteString bs = input.readBytes();
+            String s = input.readStringRequireUtf8();
 
-            projectId_ = bs;
+            projectId_ = s;
             break;
           }
           case 16: {
@@ -60,9 +60,9 @@ public  final class ListDatasetsRequest extends
             break;
           }
           case 26: {
-            com.google.protobuf.ByteString bs = input.readBytes();
+            String s = input.readStringRequireUtf8();
 
-            pageToken_ = bs;
+            pageToken_ = s;
             break;
           }
         }
@@ -106,9 +106,7 @@ public  final class ListDatasetsRequest extends
       com.google.protobuf.ByteString bs = 
           (com.google.protobuf.ByteString) ref;
       java.lang.String s = bs.toStringUtf8();
-      if (bs.isValidUtf8()) {
-        projectId_ = s;
-      }
+      projectId_ = s;
       return s;
     }
   }
@@ -166,9 +164,7 @@ public  final class ListDatasetsRequest extends
       com.google.protobuf.ByteString bs = 
           (com.google.protobuf.ByteString) ref;
       java.lang.String s = bs.toStringUtf8();
-      if (bs.isValidUtf8()) {
-        pageToken_ = s;
-      }
+      pageToken_ = s;
       return s;
     }
   }
@@ -208,35 +204,32 @@ public  final class ListDatasetsRequest extends
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
     if (!getProjectIdBytes().isEmpty()) {
-      output.writeBytes(1, getProjectIdBytes());
+      com.google.protobuf.GeneratedMessage.writeString(output, 1, projectId_);
     }
     if (pageSize_ != 0) {
       output.writeInt32(2, pageSize_);
     }
     if (!getPageTokenBytes().isEmpty()) {
-      output.writeBytes(3, getPageTokenBytes());
+      com.google.protobuf.GeneratedMessage.writeString(output, 3, pageToken_);
     }
   }
 
-  private int memoizedSerializedSize = -1;
   public int getSerializedSize() {
-    int size = memoizedSerializedSize;
+    int size = memoizedSize;
     if (size != -1) return size;
 
     size = 0;
     if (!getProjectIdBytes().isEmpty()) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeBytesSize(1, getProjectIdBytes());
+      size += com.google.protobuf.GeneratedMessage.computeStringSize(1, projectId_);
     }
     if (pageSize_ != 0) {
       size += com.google.protobuf.CodedOutputStream
         .computeInt32Size(2, pageSize_);
     }
     if (!getPageTokenBytes().isEmpty()) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeBytesSize(3, getPageTokenBytes());
+      size += com.google.protobuf.GeneratedMessage.computeStringSize(3, pageToken_);
     }
-    memoizedSerializedSize = size;
+    memoizedSize = size;
     return size;
   }
 
@@ -448,9 +441,7 @@ public  final class ListDatasetsRequest extends
         com.google.protobuf.ByteString bs =
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          projectId_ = s;
-        }
+        projectId_ = s;
         return s;
       } else {
         return (java.lang.String) ref;
@@ -518,7 +509,8 @@ public  final class ListDatasetsRequest extends
       if (value == null) {
     throw new NullPointerException();
   }
-  
+  checkByteStringIsUtf8(value);
+      
       projectId_ = value;
       onChanged();
       return this;
@@ -581,9 +573,7 @@ public  final class ListDatasetsRequest extends
         com.google.protobuf.ByteString bs =
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          pageToken_ = s;
-        }
+        pageToken_ = s;
         return s;
       } else {
         return (java.lang.String) ref;
@@ -659,7 +649,8 @@ public  final class ListDatasetsRequest extends
       if (value == null) {
     throw new NullPointerException();
   }
-  
+  checkByteStringIsUtf8(value);
+      
       pageToken_ = value;
       onChanged();
       return this;
@@ -688,8 +679,8 @@ public  final class ListDatasetsRequest extends
     return DEFAULT_INSTANCE;
   }
 
-  public static final com.google.protobuf.Parser<ListDatasetsRequest> PARSER =
-      new com.google.protobuf.AbstractParser<ListDatasetsRequest>() {
+  private static final com.google.protobuf.Parser<ListDatasetsRequest>
+      PARSER = new com.google.protobuf.AbstractParser<ListDatasetsRequest>() {
     public ListDatasetsRequest parsePartialFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)

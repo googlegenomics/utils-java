@@ -15,7 +15,7 @@ public  final class SearchVariantSetsRequest extends
     // @@protoc_insertion_point(message_implements:google.genomics.v1.SearchVariantSetsRequest)
     SearchVariantSetsRequestOrBuilder {
   // Use SearchVariantSetsRequest.newBuilder() to construct.
-  private SearchVariantSetsRequest(com.google.protobuf.GeneratedMessage.Builder builder) {
+  private SearchVariantSetsRequest(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
     super(builder);
   }
   private SearchVariantSetsRequest() {
@@ -49,18 +49,18 @@ public  final class SearchVariantSetsRequest extends
             break;
           }
           case 10: {
-            com.google.protobuf.ByteString bs = input.readBytes();
+            String s = input.readStringRequireUtf8();
             if (!((mutable_bitField0_ & 0x00000001) == 0x00000001)) {
               datasetIds_ = new com.google.protobuf.LazyStringArrayList();
               mutable_bitField0_ |= 0x00000001;
             }
-            datasetIds_.add(bs);
+            datasetIds_.add(s);
             break;
           }
           case 18: {
-            com.google.protobuf.ByteString bs = input.readBytes();
+            String s = input.readStringRequireUtf8();
 
-            pageToken_ = bs;
+            pageToken_ = s;
             break;
           }
           case 24: {
@@ -164,9 +164,7 @@ public  final class SearchVariantSetsRequest extends
       com.google.protobuf.ByteString bs = 
           (com.google.protobuf.ByteString) ref;
       java.lang.String s = bs.toStringUtf8();
-      if (bs.isValidUtf8()) {
-        pageToken_ = s;
-      }
+      pageToken_ = s;
       return s;
     }
   }
@@ -219,40 +217,37 @@ public  final class SearchVariantSetsRequest extends
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
     for (int i = 0; i < datasetIds_.size(); i++) {
-      output.writeBytes(1, datasetIds_.getByteString(i));
+      com.google.protobuf.GeneratedMessage.writeString(output, 1, datasetIds_.getRaw(i));
     }
     if (!getPageTokenBytes().isEmpty()) {
-      output.writeBytes(2, getPageTokenBytes());
+      com.google.protobuf.GeneratedMessage.writeString(output, 2, pageToken_);
     }
     if (pageSize_ != 0) {
       output.writeInt32(3, pageSize_);
     }
   }
 
-  private int memoizedSerializedSize = -1;
   public int getSerializedSize() {
-    int size = memoizedSerializedSize;
+    int size = memoizedSize;
     if (size != -1) return size;
 
     size = 0;
     {
       int dataSize = 0;
       for (int i = 0; i < datasetIds_.size(); i++) {
-        dataSize += com.google.protobuf.CodedOutputStream
-          .computeBytesSizeNoTag(datasetIds_.getByteString(i));
+        dataSize += computeStringSizeNoTag(datasetIds_.getRaw(i));
       }
       size += dataSize;
       size += 1 * getDatasetIdsList().size();
     }
     if (!getPageTokenBytes().isEmpty()) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeBytesSize(2, getPageTokenBytes());
+      size += com.google.protobuf.GeneratedMessage.computeStringSize(2, pageToken_);
     }
     if (pageSize_ != 0) {
       size += com.google.protobuf.CodedOutputStream
         .computeInt32Size(3, pageSize_);
     }
-    memoizedSerializedSize = size;
+    memoizedSize = size;
     return size;
   }
 
@@ -596,7 +591,8 @@ public  final class SearchVariantSetsRequest extends
       if (value == null) {
     throw new NullPointerException();
   }
-  ensureDatasetIdsIsMutable();
+  checkByteStringIsUtf8(value);
+      ensureDatasetIdsIsMutable();
       datasetIds_.add(value);
       onChanged();
       return this;
@@ -618,9 +614,7 @@ public  final class SearchVariantSetsRequest extends
         com.google.protobuf.ByteString bs =
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          pageToken_ = s;
-        }
+        pageToken_ = s;
         return s;
       } else {
         return (java.lang.String) ref;
@@ -696,7 +690,8 @@ public  final class SearchVariantSetsRequest extends
       if (value == null) {
     throw new NullPointerException();
   }
-  
+  checkByteStringIsUtf8(value);
+      
       pageToken_ = value;
       onChanged();
       return this;
@@ -763,8 +758,8 @@ public  final class SearchVariantSetsRequest extends
     return DEFAULT_INSTANCE;
   }
 
-  public static final com.google.protobuf.Parser<SearchVariantSetsRequest> PARSER =
-      new com.google.protobuf.AbstractParser<SearchVariantSetsRequest>() {
+  private static final com.google.protobuf.Parser<SearchVariantSetsRequest>
+      PARSER = new com.google.protobuf.AbstractParser<SearchVariantSetsRequest>() {
     public SearchVariantSetsRequest parsePartialFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)

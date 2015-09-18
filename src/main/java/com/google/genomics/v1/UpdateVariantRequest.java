@@ -11,7 +11,7 @@ public  final class UpdateVariantRequest extends
     // @@protoc_insertion_point(message_implements:google.genomics.v1.UpdateVariantRequest)
     UpdateVariantRequestOrBuilder {
   // Use UpdateVariantRequest.newBuilder() to construct.
-  private UpdateVariantRequest(com.google.protobuf.GeneratedMessage.Builder builder) {
+  private UpdateVariantRequest(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
     super(builder);
   }
   private UpdateVariantRequest() {
@@ -43,9 +43,9 @@ public  final class UpdateVariantRequest extends
             break;
           }
           case 10: {
-            com.google.protobuf.ByteString bs = input.readBytes();
+            String s = input.readStringRequireUtf8();
 
-            variantId_ = bs;
+            variantId_ = s;
             break;
           }
           case 18: {
@@ -53,7 +53,7 @@ public  final class UpdateVariantRequest extends
             if (variant_ != null) {
               subBuilder = variant_.toBuilder();
             }
-            variant_ = input.readMessage(com.google.genomics.v1.Variant.PARSER, extensionRegistry);
+            variant_ = input.readMessage(com.google.genomics.v1.Variant.parser(), extensionRegistry);
             if (subBuilder != null) {
               subBuilder.mergeFrom(variant_);
               variant_ = subBuilder.buildPartial();
@@ -66,7 +66,7 @@ public  final class UpdateVariantRequest extends
             if (updateMask_ != null) {
               subBuilder = updateMask_.toBuilder();
             }
-            updateMask_ = input.readMessage(com.google.protobuf.FieldMask.PARSER, extensionRegistry);
+            updateMask_ = input.readMessage(com.google.protobuf.FieldMask.parser(), extensionRegistry);
             if (subBuilder != null) {
               subBuilder.mergeFrom(updateMask_);
               updateMask_ = subBuilder.buildPartial();
@@ -115,9 +115,7 @@ public  final class UpdateVariantRequest extends
       com.google.protobuf.ByteString bs = 
           (com.google.protobuf.ByteString) ref;
       java.lang.String s = bs.toStringUtf8();
-      if (bs.isValidUtf8()) {
-        variantId_ = s;
-      }
+      variantId_ = s;
       return s;
     }
   }
@@ -227,7 +225,7 @@ public  final class UpdateVariantRequest extends
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
     if (!getVariantIdBytes().isEmpty()) {
-      output.writeBytes(1, getVariantIdBytes());
+      com.google.protobuf.GeneratedMessage.writeString(output, 1, variantId_);
     }
     if (variant_ != null) {
       output.writeMessage(2, getVariant());
@@ -237,15 +235,13 @@ public  final class UpdateVariantRequest extends
     }
   }
 
-  private int memoizedSerializedSize = -1;
   public int getSerializedSize() {
-    int size = memoizedSerializedSize;
+    int size = memoizedSize;
     if (size != -1) return size;
 
     size = 0;
     if (!getVariantIdBytes().isEmpty()) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeBytesSize(1, getVariantIdBytes());
+      size += com.google.protobuf.GeneratedMessage.computeStringSize(1, variantId_);
     }
     if (variant_ != null) {
       size += com.google.protobuf.CodedOutputStream
@@ -255,7 +251,7 @@ public  final class UpdateVariantRequest extends
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(3, getUpdateMask());
     }
-    memoizedSerializedSize = size;
+    memoizedSize = size;
     return size;
   }
 
@@ -478,9 +474,7 @@ public  final class UpdateVariantRequest extends
         com.google.protobuf.ByteString bs =
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          variantId_ = s;
-        }
+        variantId_ = s;
         return s;
       } else {
         return (java.lang.String) ref;
@@ -548,7 +542,8 @@ public  final class UpdateVariantRequest extends
       if (value == null) {
     throw new NullPointerException();
   }
-  
+  checkByteStringIsUtf8(value);
+      
       variantId_ = value;
       onChanged();
       return this;
@@ -901,8 +896,8 @@ public  final class UpdateVariantRequest extends
     return DEFAULT_INSTANCE;
   }
 
-  public static final com.google.protobuf.Parser<UpdateVariantRequest> PARSER =
-      new com.google.protobuf.AbstractParser<UpdateVariantRequest>() {
+  private static final com.google.protobuf.Parser<UpdateVariantRequest>
+      PARSER = new com.google.protobuf.AbstractParser<UpdateVariantRequest>() {
     public UpdateVariantRequest parsePartialFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)

@@ -69,7 +69,7 @@ public  final class Read extends
     // @@protoc_insertion_point(message_implements:google.genomics.v1.Read)
     ReadOrBuilder {
   // Use Read.newBuilder() to construct.
-  private Read(com.google.protobuf.GeneratedMessage.Builder builder) {
+  private Read(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
     super(builder);
   }
   private Read() {
@@ -114,27 +114,27 @@ public  final class Read extends
             break;
           }
           case 10: {
-            com.google.protobuf.ByteString bs = input.readBytes();
+            String s = input.readStringRequireUtf8();
 
-            id_ = bs;
+            id_ = s;
             break;
           }
           case 18: {
-            com.google.protobuf.ByteString bs = input.readBytes();
+            String s = input.readStringRequireUtf8();
 
-            readGroupId_ = bs;
+            readGroupId_ = s;
             break;
           }
           case 26: {
-            com.google.protobuf.ByteString bs = input.readBytes();
+            String s = input.readStringRequireUtf8();
 
-            readGroupSetId_ = bs;
+            readGroupSetId_ = s;
             break;
           }
           case 34: {
-            com.google.protobuf.ByteString bs = input.readBytes();
+            String s = input.readStringRequireUtf8();
 
-            fragmentName_ = bs;
+            fragmentName_ = s;
             break;
           }
           case 40: {
@@ -172,7 +172,7 @@ public  final class Read extends
             if (alignment_ != null) {
               subBuilder = alignment_.toBuilder();
             }
-            alignment_ = input.readMessage(com.google.genomics.v1.LinearAlignment.PARSER, extensionRegistry);
+            alignment_ = input.readMessage(com.google.genomics.v1.LinearAlignment.parser(), extensionRegistry);
             if (subBuilder != null) {
               subBuilder.mergeFrom(alignment_);
               alignment_ = subBuilder.buildPartial();
@@ -191,9 +191,9 @@ public  final class Read extends
             break;
           }
           case 114: {
-            com.google.protobuf.ByteString bs = input.readBytes();
+            String s = input.readStringRequireUtf8();
 
-            alignedSequence_ = bs;
+            alignedSequence_ = s;
             break;
           }
           case 120: {
@@ -222,7 +222,7 @@ public  final class Read extends
             if (nextMatePosition_ != null) {
               subBuilder = nextMatePosition_.toBuilder();
             }
-            nextMatePosition_ = input.readMessage(com.google.genomics.v1.Position.PARSER, extensionRegistry);
+            nextMatePosition_ = input.readMessage(com.google.genomics.v1.Position.parser(), extensionRegistry);
             if (subBuilder != null) {
               subBuilder.mergeFrom(nextMatePosition_);
               nextMatePosition_ = subBuilder.buildPartial();
@@ -299,9 +299,7 @@ public  final class Read extends
       com.google.protobuf.ByteString bs = 
           (com.google.protobuf.ByteString) ref;
       java.lang.String s = bs.toStringUtf8();
-      if (bs.isValidUtf8()) {
-        id_ = s;
-      }
+      id_ = s;
       return s;
     }
   }
@@ -345,9 +343,7 @@ public  final class Read extends
       com.google.protobuf.ByteString bs = 
           (com.google.protobuf.ByteString) ref;
       java.lang.String s = bs.toStringUtf8();
-      if (bs.isValidUtf8()) {
-        readGroupId_ = s;
-      }
+      readGroupId_ = s;
       return s;
     }
   }
@@ -391,9 +387,7 @@ public  final class Read extends
       com.google.protobuf.ByteString bs = 
           (com.google.protobuf.ByteString) ref;
       java.lang.String s = bs.toStringUtf8();
-      if (bs.isValidUtf8()) {
-        readGroupSetId_ = s;
-      }
+      readGroupSetId_ = s;
       return s;
     }
   }
@@ -436,9 +430,7 @@ public  final class Read extends
       com.google.protobuf.ByteString bs = 
           (com.google.protobuf.ByteString) ref;
       java.lang.String s = bs.toStringUtf8();
-      if (bs.isValidUtf8()) {
-        fragmentName_ = s;
-      }
+      fragmentName_ = s;
       return s;
     }
   }
@@ -643,9 +635,7 @@ public  final class Read extends
       com.google.protobuf.ByteString bs = 
           (com.google.protobuf.ByteString) ref;
       java.lang.String s = bs.toStringUtf8();
-      if (bs.isValidUtf8()) {
-        alignedSequence_ = s;
-      }
+      alignedSequence_ = s;
       return s;
     }
   }
@@ -814,16 +804,16 @@ public  final class Read extends
                       throws java.io.IOException {
     getSerializedSize();
     if (!getIdBytes().isEmpty()) {
-      output.writeBytes(1, getIdBytes());
+      com.google.protobuf.GeneratedMessage.writeString(output, 1, id_);
     }
     if (!getReadGroupIdBytes().isEmpty()) {
-      output.writeBytes(2, getReadGroupIdBytes());
+      com.google.protobuf.GeneratedMessage.writeString(output, 2, readGroupId_);
     }
     if (!getReadGroupSetIdBytes().isEmpty()) {
-      output.writeBytes(3, getReadGroupSetIdBytes());
+      com.google.protobuf.GeneratedMessage.writeString(output, 3, readGroupSetId_);
     }
     if (!getFragmentNameBytes().isEmpty()) {
-      output.writeBytes(4, getFragmentNameBytes());
+      com.google.protobuf.GeneratedMessage.writeString(output, 4, fragmentName_);
     }
     if (properPlacement_ != false) {
       output.writeBool(5, properPlacement_);
@@ -853,7 +843,7 @@ public  final class Read extends
       output.writeBool(13, supplementaryAlignment_);
     }
     if (!getAlignedSequenceBytes().isEmpty()) {
-      output.writeBytes(14, getAlignedSequenceBytes());
+      com.google.protobuf.GeneratedMessage.writeString(output, 14, alignedSequence_);
     }
     if (getAlignedQualityList().size() > 0) {
       output.writeRawVarint32(122);
@@ -876,27 +866,22 @@ public  final class Read extends
     }
   }
 
-  private int memoizedSerializedSize = -1;
   public int getSerializedSize() {
-    int size = memoizedSerializedSize;
+    int size = memoizedSize;
     if (size != -1) return size;
 
     size = 0;
     if (!getIdBytes().isEmpty()) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeBytesSize(1, getIdBytes());
+      size += com.google.protobuf.GeneratedMessage.computeStringSize(1, id_);
     }
     if (!getReadGroupIdBytes().isEmpty()) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeBytesSize(2, getReadGroupIdBytes());
+      size += com.google.protobuf.GeneratedMessage.computeStringSize(2, readGroupId_);
     }
     if (!getReadGroupSetIdBytes().isEmpty()) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeBytesSize(3, getReadGroupSetIdBytes());
+      size += com.google.protobuf.GeneratedMessage.computeStringSize(3, readGroupSetId_);
     }
     if (!getFragmentNameBytes().isEmpty()) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeBytesSize(4, getFragmentNameBytes());
+      size += com.google.protobuf.GeneratedMessage.computeStringSize(4, fragmentName_);
     }
     if (properPlacement_ != false) {
       size += com.google.protobuf.CodedOutputStream
@@ -935,8 +920,7 @@ public  final class Read extends
         .computeBoolSize(13, supplementaryAlignment_);
     }
     if (!getAlignedSequenceBytes().isEmpty()) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeBytesSize(14, getAlignedSequenceBytes());
+      size += com.google.protobuf.GeneratedMessage.computeStringSize(14, alignedSequence_);
     }
     {
       int dataSize = 0;
@@ -966,7 +950,7 @@ public  final class Read extends
       size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(17, info);
     }
-    memoizedSerializedSize = size;
+    memoizedSize = size;
     return size;
   }
 
@@ -1372,9 +1356,7 @@ public  final class Read extends
         com.google.protobuf.ByteString bs =
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          id_ = s;
-        }
+        id_ = s;
         return s;
       } else {
         return (java.lang.String) ref;
@@ -1446,7 +1428,8 @@ public  final class Read extends
       if (value == null) {
     throw new NullPointerException();
   }
-  
+  checkByteStringIsUtf8(value);
+      
       id_ = value;
       onChanged();
       return this;
@@ -1467,9 +1450,7 @@ public  final class Read extends
         com.google.protobuf.ByteString bs =
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          readGroupId_ = s;
-        }
+        readGroupId_ = s;
         return s;
       } else {
         return (java.lang.String) ref;
@@ -1541,7 +1522,8 @@ public  final class Read extends
       if (value == null) {
     throw new NullPointerException();
   }
-  
+  checkByteStringIsUtf8(value);
+      
       readGroupId_ = value;
       onChanged();
       return this;
@@ -1562,9 +1544,7 @@ public  final class Read extends
         com.google.protobuf.ByteString bs =
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          readGroupSetId_ = s;
-        }
+        readGroupSetId_ = s;
         return s;
       } else {
         return (java.lang.String) ref;
@@ -1636,7 +1616,8 @@ public  final class Read extends
       if (value == null) {
     throw new NullPointerException();
   }
-  
+  checkByteStringIsUtf8(value);
+      
       readGroupSetId_ = value;
       onChanged();
       return this;
@@ -1656,9 +1637,7 @@ public  final class Read extends
         com.google.protobuf.ByteString bs =
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          fragmentName_ = s;
-        }
+        fragmentName_ = s;
         return s;
       } else {
         return (java.lang.String) ref;
@@ -1726,7 +1705,8 @@ public  final class Read extends
       if (value == null) {
     throw new NullPointerException();
   }
-  
+  checkByteStringIsUtf8(value);
+      
       fragmentName_ = value;
       onChanged();
       return this;
@@ -2269,9 +2249,7 @@ public  final class Read extends
         com.google.protobuf.ByteString bs =
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          alignedSequence_ = s;
-        }
+        alignedSequence_ = s;
         return s;
       } else {
         return (java.lang.String) ref;
@@ -2363,7 +2341,8 @@ public  final class Read extends
       if (value == null) {
     throw new NullPointerException();
   }
-  
+  checkByteStringIsUtf8(value);
+      
       alignedSequence_ = value;
       onChanged();
       return this;
@@ -2714,6 +2693,19 @@ public  final class Read extends
     getMutableInfo() {
       return internalGetMutableInfo().getMutableMap();
     }
+    /**
+     * <code>map&lt;string, .google.protobuf.ListValue&gt; info = 17;</code>
+     *
+     * <pre>
+     * A map of additional read alignment information. This must be of the form
+     * map&lt;string, string[]&gt; (string key mapping to a list of string values).
+     * </pre>
+     */
+    public Builder putAllInfo(
+        java.util.Map<java.lang.String, com.google.protobuf.ListValue> values) {
+      getMutableInfo().putAll(values);
+      return this;
+    }
     public final Builder setUnknownFields(
         final com.google.protobuf.UnknownFieldSet unknownFields) {
       return this;
@@ -2738,8 +2730,8 @@ public  final class Read extends
     return DEFAULT_INSTANCE;
   }
 
-  public static final com.google.protobuf.Parser<Read> PARSER =
-      new com.google.protobuf.AbstractParser<Read>() {
+  private static final com.google.protobuf.Parser<Read>
+      PARSER = new com.google.protobuf.AbstractParser<Read>() {
     public Read parsePartialFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)

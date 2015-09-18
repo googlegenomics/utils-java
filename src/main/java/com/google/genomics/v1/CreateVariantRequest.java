@@ -11,7 +11,7 @@ public  final class CreateVariantRequest extends
     // @@protoc_insertion_point(message_implements:google.genomics.v1.CreateVariantRequest)
     CreateVariantRequestOrBuilder {
   // Use CreateVariantRequest.newBuilder() to construct.
-  private CreateVariantRequest(com.google.protobuf.GeneratedMessage.Builder builder) {
+  private CreateVariantRequest(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
     super(builder);
   }
   private CreateVariantRequest() {
@@ -46,7 +46,7 @@ public  final class CreateVariantRequest extends
             if (variant_ != null) {
               subBuilder = variant_.toBuilder();
             }
-            variant_ = input.readMessage(com.google.genomics.v1.Variant.PARSER, extensionRegistry);
+            variant_ = input.readMessage(com.google.genomics.v1.Variant.parser(), extensionRegistry);
             if (subBuilder != null) {
               subBuilder.mergeFrom(variant_);
               variant_ = subBuilder.buildPartial();
@@ -128,9 +128,8 @@ public  final class CreateVariantRequest extends
     }
   }
 
-  private int memoizedSerializedSize = -1;
   public int getSerializedSize() {
-    int size = memoizedSerializedSize;
+    int size = memoizedSize;
     if (size != -1) return size;
 
     size = 0;
@@ -138,7 +137,7 @@ public  final class CreateVariantRequest extends
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(1, getVariant());
     }
-    memoizedSerializedSize = size;
+    memoizedSize = size;
     return size;
   }
 
@@ -502,8 +501,8 @@ public  final class CreateVariantRequest extends
     return DEFAULT_INSTANCE;
   }
 
-  public static final com.google.protobuf.Parser<CreateVariantRequest> PARSER =
-      new com.google.protobuf.AbstractParser<CreateVariantRequest>() {
+  private static final com.google.protobuf.Parser<CreateVariantRequest>
+      PARSER = new com.google.protobuf.AbstractParser<CreateVariantRequest>() {
     public CreateVariantRequest parsePartialFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)

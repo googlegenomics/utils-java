@@ -138,7 +138,7 @@
     <dependency>
       <groupId>io.grpc</groupId>
       <artifactId>grpc-all</artifactId>
-      <version>0.8.0</version>
+      <version>0.9.0</version>
     </dependency>
 
     <!-- Used to test the custom builder logic -->
@@ -253,9 +253,9 @@
           protobuf-java directly, you will be transitively depending on the
           protobuf-java version that grpc depends on.
         -->
-        <protocArtifact>com.google.protobuf:protoc:3.0.0-alpha-3.1:exe:${os.detected.classifier}</protocArtifact>
+        <protocArtifact>com.google.protobuf:protoc:3.0.0-beta-1:exe:${os.detected.classifier}</protocArtifact>
         <pluginId>grpc-java</pluginId>
-        <pluginArtifact>io.grpc:protoc-gen-grpc-java:0.8.0:exe:${os.detected.classifier}</pluginArtifact>
+        <pluginArtifact>io.grpc:protoc-gen-grpc-java:0.9.0:exe:${os.detected.classifier}</pluginArtifact>
       </configuration>
       <executions>
         <execution>
@@ -268,6 +268,22 @@
       </executions>
     </plugin>
     </plugins>
+
+  <pluginManagement>
+    <plugins>
+      <!--
+      Use a newer version of the plugin to avoid long build times on
+      machines with slow Unix group lookups
+      https://www.mail-archive.com/issues@maven.apache.org/msg95302.html
+      -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <version>2.6</version>
+      </plugin>
+    </plugins>
+  </pluginManagement>
+
   </build>
 
   <properties>

@@ -18,7 +18,7 @@ public  final class VariantCall extends
     // @@protoc_insertion_point(message_implements:google.genomics.v1.VariantCall)
     VariantCallOrBuilder {
   // Use VariantCall.newBuilder() to construct.
-  private VariantCall(com.google.protobuf.GeneratedMessage.Builder builder) {
+  private VariantCall(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
     super(builder);
   }
   private VariantCall() {
@@ -66,9 +66,9 @@ public  final class VariantCall extends
             break;
           }
           case 42: {
-            com.google.protobuf.ByteString bs = input.readBytes();
+            String s = input.readStringRequireUtf8();
 
-            phaseset_ = bs;
+            phaseset_ = s;
             break;
           }
           case 49: {
@@ -114,15 +114,15 @@ public  final class VariantCall extends
             break;
           }
           case 66: {
-            com.google.protobuf.ByteString bs = input.readBytes();
+            String s = input.readStringRequireUtf8();
 
-            callSetId_ = bs;
+            callSetId_ = s;
             break;
           }
           case 74: {
-            com.google.protobuf.ByteString bs = input.readBytes();
+            String s = input.readStringRequireUtf8();
 
-            callSetName_ = bs;
+            callSetName_ = s;
             break;
           }
         }
@@ -184,9 +184,7 @@ public  final class VariantCall extends
       com.google.protobuf.ByteString bs = 
           (com.google.protobuf.ByteString) ref;
       java.lang.String s = bs.toStringUtf8();
-      if (bs.isValidUtf8()) {
-        callSetId_ = s;
-      }
+      callSetId_ = s;
       return s;
     }
   }
@@ -228,9 +226,7 @@ public  final class VariantCall extends
       com.google.protobuf.ByteString bs = 
           (com.google.protobuf.ByteString) ref;
       java.lang.String s = bs.toStringUtf8();
-      if (bs.isValidUtf8()) {
-        callSetName_ = s;
-      }
+      callSetName_ = s;
       return s;
     }
   }
@@ -344,9 +340,7 @@ public  final class VariantCall extends
       com.google.protobuf.ByteString bs = 
           (com.google.protobuf.ByteString) ref;
       java.lang.String s = bs.toStringUtf8();
-      if (bs.isValidUtf8()) {
-        phaseset_ = s;
-      }
+      phaseset_ = s;
       return s;
     }
   }
@@ -483,7 +477,7 @@ public  final class VariantCall extends
       output.writeMessage(2, info);
     }
     if (!getPhasesetBytes().isEmpty()) {
-      output.writeBytes(5, getPhasesetBytes());
+      com.google.protobuf.GeneratedMessage.writeString(output, 5, phaseset_);
     }
     if (getGenotypeLikelihoodList().size() > 0) {
       output.writeRawVarint32(50);
@@ -500,16 +494,15 @@ public  final class VariantCall extends
       output.writeInt32NoTag(genotype_.get(i));
     }
     if (!getCallSetIdBytes().isEmpty()) {
-      output.writeBytes(8, getCallSetIdBytes());
+      com.google.protobuf.GeneratedMessage.writeString(output, 8, callSetId_);
     }
     if (!getCallSetNameBytes().isEmpty()) {
-      output.writeBytes(9, getCallSetNameBytes());
+      com.google.protobuf.GeneratedMessage.writeString(output, 9, callSetName_);
     }
   }
 
-  private int memoizedSerializedSize = -1;
   public int getSerializedSize() {
-    int size = memoizedSerializedSize;
+    int size = memoizedSize;
     if (size != -1) return size;
 
     size = 0;
@@ -524,8 +517,7 @@ public  final class VariantCall extends
           .computeMessageSize(2, info);
     }
     if (!getPhasesetBytes().isEmpty()) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeBytesSize(5, getPhasesetBytes());
+      size += com.google.protobuf.GeneratedMessage.computeStringSize(5, phaseset_);
     }
     {
       int dataSize = 0;
@@ -553,14 +545,12 @@ public  final class VariantCall extends
       genotypeMemoizedSerializedSize = dataSize;
     }
     if (!getCallSetIdBytes().isEmpty()) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeBytesSize(8, getCallSetIdBytes());
+      size += com.google.protobuf.GeneratedMessage.computeStringSize(8, callSetId_);
     }
     if (!getCallSetNameBytes().isEmpty()) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeBytesSize(9, getCallSetNameBytes());
+      size += com.google.protobuf.GeneratedMessage.computeStringSize(9, callSetName_);
     }
-    memoizedSerializedSize = size;
+    memoizedSize = size;
     return size;
   }
 
@@ -841,9 +831,7 @@ public  final class VariantCall extends
         com.google.protobuf.ByteString bs =
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          callSetId_ = s;
-        }
+        callSetId_ = s;
         return s;
       } else {
         return (java.lang.String) ref;
@@ -911,7 +899,8 @@ public  final class VariantCall extends
       if (value == null) {
     throw new NullPointerException();
   }
-  
+  checkByteStringIsUtf8(value);
+      
       callSetId_ = value;
       onChanged();
       return this;
@@ -931,9 +920,7 @@ public  final class VariantCall extends
         com.google.protobuf.ByteString bs =
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          callSetName_ = s;
-        }
+        callSetName_ = s;
         return s;
       } else {
         return (java.lang.String) ref;
@@ -1001,7 +988,8 @@ public  final class VariantCall extends
       if (value == null) {
     throw new NullPointerException();
   }
-  
+  checkByteStringIsUtf8(value);
+      
       callSetName_ = value;
       onChanged();
       return this;
@@ -1196,9 +1184,7 @@ public  final class VariantCall extends
         com.google.protobuf.ByteString bs =
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          phaseset_ = s;
-        }
+        phaseset_ = s;
         return s;
       } else {
         return (java.lang.String) ref;
@@ -1282,7 +1268,8 @@ public  final class VariantCall extends
       if (value == null) {
     throw new NullPointerException();
   }
-  
+  checkByteStringIsUtf8(value);
+      
       phaseset_ = value;
       onChanged();
       return this;
@@ -1462,6 +1449,19 @@ public  final class VariantCall extends
     getMutableInfo() {
       return internalGetMutableInfo().getMutableMap();
     }
+    /**
+     * <code>map&lt;string, .google.protobuf.ListValue&gt; info = 2;</code>
+     *
+     * <pre>
+     * A map of additional variant call information. This must be of the form
+     * map&lt;string, string[]&gt; (string key mapping to a list of string values).
+     * </pre>
+     */
+    public Builder putAllInfo(
+        java.util.Map<java.lang.String, com.google.protobuf.ListValue> values) {
+      getMutableInfo().putAll(values);
+      return this;
+    }
     public final Builder setUnknownFields(
         final com.google.protobuf.UnknownFieldSet unknownFields) {
       return this;
@@ -1486,8 +1486,8 @@ public  final class VariantCall extends
     return DEFAULT_INSTANCE;
   }
 
-  public static final com.google.protobuf.Parser<VariantCall> PARSER =
-      new com.google.protobuf.AbstractParser<VariantCall>() {
+  private static final com.google.protobuf.Parser<VariantCall>
+      PARSER = new com.google.protobuf.AbstractParser<VariantCall>() {
     public VariantCall parsePartialFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)

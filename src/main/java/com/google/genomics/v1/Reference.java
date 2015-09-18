@@ -18,7 +18,7 @@ public  final class Reference extends
     // @@protoc_insertion_point(message_implements:google.genomics.v1.Reference)
     ReferenceOrBuilder {
   // Use Reference.newBuilder() to construct.
-  private Reference(com.google.protobuf.GeneratedMessage.Builder builder) {
+  private Reference(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
     super(builder);
   }
   private Reference() {
@@ -56,9 +56,9 @@ public  final class Reference extends
             break;
           }
           case 10: {
-            com.google.protobuf.ByteString bs = input.readBytes();
+            String s = input.readStringRequireUtf8();
 
-            id_ = bs;
+            id_ = s;
             break;
           }
           case 16: {
@@ -67,30 +67,30 @@ public  final class Reference extends
             break;
           }
           case 26: {
-            com.google.protobuf.ByteString bs = input.readBytes();
+            String s = input.readStringRequireUtf8();
 
-            md5Checksum_ = bs;
+            md5Checksum_ = s;
             break;
           }
           case 34: {
-            com.google.protobuf.ByteString bs = input.readBytes();
+            String s = input.readStringRequireUtf8();
 
-            name_ = bs;
+            name_ = s;
             break;
           }
           case 42: {
-            com.google.protobuf.ByteString bs = input.readBytes();
+            String s = input.readStringRequireUtf8();
 
-            sourceUri_ = bs;
+            sourceUri_ = s;
             break;
           }
           case 50: {
-            com.google.protobuf.ByteString bs = input.readBytes();
+            String s = input.readStringRequireUtf8();
             if (!((mutable_bitField0_ & 0x00000020) == 0x00000020)) {
               sourceAccessions_ = new com.google.protobuf.LazyStringArrayList();
               mutable_bitField0_ |= 0x00000020;
             }
-            sourceAccessions_.add(bs);
+            sourceAccessions_.add(s);
             break;
           }
           case 56: {
@@ -143,9 +143,7 @@ public  final class Reference extends
       com.google.protobuf.ByteString bs = 
           (com.google.protobuf.ByteString) ref;
       java.lang.String s = bs.toStringUtf8();
-      if (bs.isValidUtf8()) {
-        id_ = s;
-      }
+      id_ = s;
       return s;
     }
   }
@@ -202,9 +200,7 @@ public  final class Reference extends
       com.google.protobuf.ByteString bs = 
           (com.google.protobuf.ByteString) ref;
       java.lang.String s = bs.toStringUtf8();
-      if (bs.isValidUtf8()) {
-        md5Checksum_ = s;
-      }
+      md5Checksum_ = s;
       return s;
     }
   }
@@ -248,9 +244,7 @@ public  final class Reference extends
       com.google.protobuf.ByteString bs = 
           (com.google.protobuf.ByteString) ref;
       java.lang.String s = bs.toStringUtf8();
-      if (bs.isValidUtf8()) {
-        name_ = s;
-      }
+      name_ = s;
       return s;
     }
   }
@@ -293,9 +287,7 @@ public  final class Reference extends
       com.google.protobuf.ByteString bs = 
           (com.google.protobuf.ByteString) ref;
       java.lang.String s = bs.toStringUtf8();
-      if (bs.isValidUtf8()) {
-        sourceUri_ = s;
-      }
+      sourceUri_ = s;
       return s;
     }
   }
@@ -397,59 +389,53 @@ public  final class Reference extends
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
     if (!getIdBytes().isEmpty()) {
-      output.writeBytes(1, getIdBytes());
+      com.google.protobuf.GeneratedMessage.writeString(output, 1, id_);
     }
     if (length_ != 0L) {
       output.writeInt64(2, length_);
     }
     if (!getMd5ChecksumBytes().isEmpty()) {
-      output.writeBytes(3, getMd5ChecksumBytes());
+      com.google.protobuf.GeneratedMessage.writeString(output, 3, md5Checksum_);
     }
     if (!getNameBytes().isEmpty()) {
-      output.writeBytes(4, getNameBytes());
+      com.google.protobuf.GeneratedMessage.writeString(output, 4, name_);
     }
     if (!getSourceUriBytes().isEmpty()) {
-      output.writeBytes(5, getSourceUriBytes());
+      com.google.protobuf.GeneratedMessage.writeString(output, 5, sourceUri_);
     }
     for (int i = 0; i < sourceAccessions_.size(); i++) {
-      output.writeBytes(6, sourceAccessions_.getByteString(i));
+      com.google.protobuf.GeneratedMessage.writeString(output, 6, sourceAccessions_.getRaw(i));
     }
     if (ncbiTaxonId_ != 0) {
       output.writeInt32(7, ncbiTaxonId_);
     }
   }
 
-  private int memoizedSerializedSize = -1;
   public int getSerializedSize() {
-    int size = memoizedSerializedSize;
+    int size = memoizedSize;
     if (size != -1) return size;
 
     size = 0;
     if (!getIdBytes().isEmpty()) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeBytesSize(1, getIdBytes());
+      size += com.google.protobuf.GeneratedMessage.computeStringSize(1, id_);
     }
     if (length_ != 0L) {
       size += com.google.protobuf.CodedOutputStream
         .computeInt64Size(2, length_);
     }
     if (!getMd5ChecksumBytes().isEmpty()) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeBytesSize(3, getMd5ChecksumBytes());
+      size += com.google.protobuf.GeneratedMessage.computeStringSize(3, md5Checksum_);
     }
     if (!getNameBytes().isEmpty()) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeBytesSize(4, getNameBytes());
+      size += com.google.protobuf.GeneratedMessage.computeStringSize(4, name_);
     }
     if (!getSourceUriBytes().isEmpty()) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeBytesSize(5, getSourceUriBytes());
+      size += com.google.protobuf.GeneratedMessage.computeStringSize(5, sourceUri_);
     }
     {
       int dataSize = 0;
       for (int i = 0; i < sourceAccessions_.size(); i++) {
-        dataSize += com.google.protobuf.CodedOutputStream
-          .computeBytesSizeNoTag(sourceAccessions_.getByteString(i));
+        dataSize += computeStringSizeNoTag(sourceAccessions_.getRaw(i));
       }
       size += dataSize;
       size += 1 * getSourceAccessionsList().size();
@@ -458,7 +444,7 @@ public  final class Reference extends
       size += com.google.protobuf.CodedOutputStream
         .computeInt32Size(7, ncbiTaxonId_);
     }
-    memoizedSerializedSize = size;
+    memoizedSize = size;
     return size;
   }
 
@@ -714,9 +700,7 @@ public  final class Reference extends
         com.google.protobuf.ByteString bs =
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          id_ = s;
-        }
+        id_ = s;
         return s;
       } else {
         return (java.lang.String) ref;
@@ -784,7 +768,8 @@ public  final class Reference extends
       if (value == null) {
     throw new NullPointerException();
   }
-  
+  checkByteStringIsUtf8(value);
+      
       id_ = value;
       onChanged();
       return this;
@@ -844,9 +829,7 @@ public  final class Reference extends
         com.google.protobuf.ByteString bs =
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          md5Checksum_ = s;
-        }
+        md5Checksum_ = s;
         return s;
       } else {
         return (java.lang.String) ref;
@@ -922,7 +905,8 @@ public  final class Reference extends
       if (value == null) {
     throw new NullPointerException();
   }
-  
+  checkByteStringIsUtf8(value);
+      
       md5Checksum_ = value;
       onChanged();
       return this;
@@ -942,9 +926,7 @@ public  final class Reference extends
         com.google.protobuf.ByteString bs =
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          name_ = s;
-        }
+        name_ = s;
         return s;
       } else {
         return (java.lang.String) ref;
@@ -1012,7 +994,8 @@ public  final class Reference extends
       if (value == null) {
     throw new NullPointerException();
   }
-  
+  checkByteStringIsUtf8(value);
+      
       name_ = value;
       onChanged();
       return this;
@@ -1033,9 +1016,7 @@ public  final class Reference extends
         com.google.protobuf.ByteString bs =
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          sourceUri_ = s;
-        }
+        sourceUri_ = s;
         return s;
       } else {
         return (java.lang.String) ref;
@@ -1107,7 +1088,8 @@ public  final class Reference extends
       if (value == null) {
     throw new NullPointerException();
   }
-  
+  checkByteStringIsUtf8(value);
+      
       sourceUri_ = value;
       onChanged();
       return this;
@@ -1245,7 +1227,8 @@ public  final class Reference extends
       if (value == null) {
     throw new NullPointerException();
   }
-  ensureSourceAccessionsIsMutable();
+  checkByteStringIsUtf8(value);
+      ensureSourceAccessionsIsMutable();
       sourceAccessions_.add(value);
       onChanged();
       return this;
@@ -1315,8 +1298,8 @@ public  final class Reference extends
     return DEFAULT_INSTANCE;
   }
 
-  public static final com.google.protobuf.Parser<Reference> PARSER =
-      new com.google.protobuf.AbstractParser<Reference>() {
+  private static final com.google.protobuf.Parser<Reference>
+      PARSER = new com.google.protobuf.AbstractParser<Reference>() {
     public Reference parsePartialFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)

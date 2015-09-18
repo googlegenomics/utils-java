@@ -18,7 +18,7 @@ public  final class VariantSetMetadata extends
     // @@protoc_insertion_point(message_implements:google.genomics.v1.VariantSetMetadata)
     VariantSetMetadataOrBuilder {
   // Use VariantSetMetadata.newBuilder() to construct.
-  private VariantSetMetadata(com.google.protobuf.GeneratedMessage.Builder builder) {
+  private VariantSetMetadata(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
     super(builder);
   }
   private VariantSetMetadata() {
@@ -55,15 +55,15 @@ public  final class VariantSetMetadata extends
             break;
           }
           case 10: {
-            com.google.protobuf.ByteString bs = input.readBytes();
+            String s = input.readStringRequireUtf8();
 
-            key_ = bs;
+            key_ = s;
             break;
           }
           case 18: {
-            com.google.protobuf.ByteString bs = input.readBytes();
+            String s = input.readStringRequireUtf8();
 
-            value_ = bs;
+            value_ = s;
             break;
           }
           case 26: {
@@ -79,9 +79,9 @@ public  final class VariantSetMetadata extends
             break;
           }
           case 34: {
-            com.google.protobuf.ByteString bs = input.readBytes();
+            String s = input.readStringRequireUtf8();
 
-            id_ = bs;
+            id_ = s;
             break;
           }
           case 40: {
@@ -96,9 +96,9 @@ public  final class VariantSetMetadata extends
             break;
           }
           case 58: {
-            com.google.protobuf.ByteString bs = input.readBytes();
+            String s = input.readStringRequireUtf8();
 
-            description_ = bs;
+            description_ = s;
             break;
           }
         }
@@ -218,8 +218,8 @@ public  final class VariantSetMetadata extends
         internalGetValueMap() {
       return internalValueMap;
     }
-    private static com.google.protobuf.Internal.EnumLiteMap<Type>
-        internalValueMap =
+    private static final com.google.protobuf.Internal.EnumLiteMap<
+        Type> internalValueMap =
           new com.google.protobuf.Internal.EnumLiteMap<Type>() {
             public Type findValueByNumber(int number) {
               return Type.valueOf(number);
@@ -282,9 +282,7 @@ public  final class VariantSetMetadata extends
       com.google.protobuf.ByteString bs = 
           (com.google.protobuf.ByteString) ref;
       java.lang.String s = bs.toStringUtf8();
-      if (bs.isValidUtf8()) {
-        key_ = s;
-      }
+      key_ = s;
       return s;
     }
   }
@@ -326,9 +324,7 @@ public  final class VariantSetMetadata extends
       com.google.protobuf.ByteString bs = 
           (com.google.protobuf.ByteString) ref;
       java.lang.String s = bs.toStringUtf8();
-      if (bs.isValidUtf8()) {
-        value_ = s;
-      }
+      value_ = s;
       return s;
     }
   }
@@ -372,9 +368,7 @@ public  final class VariantSetMetadata extends
       com.google.protobuf.ByteString bs = 
           (com.google.protobuf.ByteString) ref;
       java.lang.String s = bs.toStringUtf8();
-      if (bs.isValidUtf8()) {
-        id_ = s;
-      }
+      id_ = s;
       return s;
     }
   }
@@ -458,9 +452,7 @@ public  final class VariantSetMetadata extends
       com.google.protobuf.ByteString bs = 
           (com.google.protobuf.ByteString) ref;
       java.lang.String s = bs.toStringUtf8();
-      if (bs.isValidUtf8()) {
-        description_ = s;
-      }
+      description_ = s;
       return s;
     }
   }
@@ -533,10 +525,10 @@ public  final class VariantSetMetadata extends
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
     if (!getKeyBytes().isEmpty()) {
-      output.writeBytes(1, getKeyBytes());
+      com.google.protobuf.GeneratedMessage.writeString(output, 1, key_);
     }
     if (!getValueBytes().isEmpty()) {
-      output.writeBytes(2, getValueBytes());
+      com.google.protobuf.GeneratedMessage.writeString(output, 2, value_);
     }
     for (java.util.Map.Entry<java.lang.String, com.google.protobuf.ListValue> entry
          : internalGetInfo().getMap().entrySet()) {
@@ -548,7 +540,7 @@ public  final class VariantSetMetadata extends
       output.writeMessage(3, info);
     }
     if (!getIdBytes().isEmpty()) {
-      output.writeBytes(4, getIdBytes());
+      com.google.protobuf.GeneratedMessage.writeString(output, 4, id_);
     }
     if (type_ != com.google.genomics.v1.VariantSetMetadata.Type.TYPE_UNSPECIFIED.getNumber()) {
       output.writeEnum(5, type_);
@@ -557,23 +549,20 @@ public  final class VariantSetMetadata extends
       output.writeInt32(6, number_);
     }
     if (!getDescriptionBytes().isEmpty()) {
-      output.writeBytes(7, getDescriptionBytes());
+      com.google.protobuf.GeneratedMessage.writeString(output, 7, description_);
     }
   }
 
-  private int memoizedSerializedSize = -1;
   public int getSerializedSize() {
-    int size = memoizedSerializedSize;
+    int size = memoizedSize;
     if (size != -1) return size;
 
     size = 0;
     if (!getKeyBytes().isEmpty()) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeBytesSize(1, getKeyBytes());
+      size += com.google.protobuf.GeneratedMessage.computeStringSize(1, key_);
     }
     if (!getValueBytes().isEmpty()) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeBytesSize(2, getValueBytes());
+      size += com.google.protobuf.GeneratedMessage.computeStringSize(2, value_);
     }
     for (java.util.Map.Entry<java.lang.String, com.google.protobuf.ListValue> entry
          : internalGetInfo().getMap().entrySet()) {
@@ -586,8 +575,7 @@ public  final class VariantSetMetadata extends
           .computeMessageSize(3, info);
     }
     if (!getIdBytes().isEmpty()) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeBytesSize(4, getIdBytes());
+      size += com.google.protobuf.GeneratedMessage.computeStringSize(4, id_);
     }
     if (type_ != com.google.genomics.v1.VariantSetMetadata.Type.TYPE_UNSPECIFIED.getNumber()) {
       size += com.google.protobuf.CodedOutputStream
@@ -598,10 +586,9 @@ public  final class VariantSetMetadata extends
         .computeInt32Size(6, number_);
     }
     if (!getDescriptionBytes().isEmpty()) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeBytesSize(7, getDescriptionBytes());
+      size += com.google.protobuf.GeneratedMessage.computeStringSize(7, description_);
     }
-    memoizedSerializedSize = size;
+    memoizedSize = size;
     return size;
   }
 
@@ -867,9 +854,7 @@ public  final class VariantSetMetadata extends
         com.google.protobuf.ByteString bs =
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          key_ = s;
-        }
+        key_ = s;
         return s;
       } else {
         return (java.lang.String) ref;
@@ -937,7 +922,8 @@ public  final class VariantSetMetadata extends
       if (value == null) {
     throw new NullPointerException();
   }
-  
+  checkByteStringIsUtf8(value);
+      
       key_ = value;
       onChanged();
       return this;
@@ -957,9 +943,7 @@ public  final class VariantSetMetadata extends
         com.google.protobuf.ByteString bs =
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          value_ = s;
-        }
+        value_ = s;
         return s;
       } else {
         return (java.lang.String) ref;
@@ -1027,7 +1011,8 @@ public  final class VariantSetMetadata extends
       if (value == null) {
     throw new NullPointerException();
   }
-  
+  checkByteStringIsUtf8(value);
+      
       value_ = value;
       onChanged();
       return this;
@@ -1049,9 +1034,7 @@ public  final class VariantSetMetadata extends
         com.google.protobuf.ByteString bs =
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          id_ = s;
-        }
+        id_ = s;
         return s;
       } else {
         return (java.lang.String) ref;
@@ -1127,7 +1110,8 @@ public  final class VariantSetMetadata extends
       if (value == null) {
     throw new NullPointerException();
   }
-  
+  checkByteStringIsUtf8(value);
+      
       id_ = value;
       onChanged();
       return this;
@@ -1257,9 +1241,7 @@ public  final class VariantSetMetadata extends
         com.google.protobuf.ByteString bs =
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          description_ = s;
-        }
+        description_ = s;
         return s;
       } else {
         return (java.lang.String) ref;
@@ -1327,7 +1309,8 @@ public  final class VariantSetMetadata extends
       if (value == null) {
     throw new NullPointerException();
   }
-  
+  checkByteStringIsUtf8(value);
+      
       description_ = value;
       onChanged();
       return this;
@@ -1378,6 +1361,19 @@ public  final class VariantSetMetadata extends
     getMutableInfo() {
       return internalGetMutableInfo().getMutableMap();
     }
+    /**
+     * <code>map&lt;string, .google.protobuf.ListValue&gt; info = 3;</code>
+     *
+     * <pre>
+     * Remaining structured metadata key-value pairs. This must be of the form
+     * map&lt;string, string[]&gt; (string key mapping to a list of string values).
+     * </pre>
+     */
+    public Builder putAllInfo(
+        java.util.Map<java.lang.String, com.google.protobuf.ListValue> values) {
+      getMutableInfo().putAll(values);
+      return this;
+    }
     public final Builder setUnknownFields(
         final com.google.protobuf.UnknownFieldSet unknownFields) {
       return this;
@@ -1402,8 +1398,8 @@ public  final class VariantSetMetadata extends
     return DEFAULT_INSTANCE;
   }
 
-  public static final com.google.protobuf.Parser<VariantSetMetadata> PARSER =
-      new com.google.protobuf.AbstractParser<VariantSetMetadata>() {
+  private static final com.google.protobuf.Parser<VariantSetMetadata>
+      PARSER = new com.google.protobuf.AbstractParser<VariantSetMetadata>() {
     public VariantSetMetadata parsePartialFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)

@@ -74,12 +74,17 @@ public class VariantStreamIterator extends ForwardingIterator<StreamVariantsResp
    * @see java.util.Iterator#hasNext()
    */
   public boolean hasNext() {
+    boolean hasNext;
     try {
-      return delegate.hasNext();
-    } catch (RuntimeException e) {
+      hasNext = delegate.hasNext();
+    } catch (Exception e) {
       genomicsChannel.shutdownNow();
       throw e;
     }
+    if(!hasNext) {
+      genomicsChannel.shutdownNow();      
+    }
+    return hasNext;
   }
 
   /**
@@ -89,7 +94,7 @@ public class VariantStreamIterator extends ForwardingIterator<StreamVariantsResp
     StreamVariantsResponse response = null;
     try {
       response = delegate.next();
-    } catch (RuntimeException e) {
+    } catch (Exception e) {
       genomicsChannel.shutdownNow();
       throw e;
     }

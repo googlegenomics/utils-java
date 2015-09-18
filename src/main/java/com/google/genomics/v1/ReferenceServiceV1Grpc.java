@@ -7,6 +7,7 @@ import static io.grpc.stub.ClientCalls.asyncBidiStreamingCall;
 import static io.grpc.stub.ClientCalls.blockingUnaryCall;
 import static io.grpc.stub.ClientCalls.blockingServerStreamingCall;
 import static io.grpc.stub.ClientCalls.futureUnaryCall;
+import static io.grpc.MethodDescriptor.generateFullMethodName;
 import static io.grpc.stub.ServerCalls.asyncUnaryCall;
 import static io.grpc.stub.ServerCalls.asyncServerStreamingCall;
 import static io.grpc.stub.ServerCalls.asyncClientStreamingCall;
@@ -15,42 +16,56 @@ import static io.grpc.stub.ServerCalls.asyncBidiStreamingCall;
 @javax.annotation.Generated("by gRPC proto compiler")
 public class ReferenceServiceV1Grpc {
 
+  private ReferenceServiceV1Grpc() {}
+
+  public static final String SERVICE_NAME = "google.genomics.v1.ReferenceServiceV1";
+
   // Static method descriptors that strictly reflect the proto.
+  @io.grpc.ExperimentalApi
   public static final io.grpc.MethodDescriptor<com.google.genomics.v1.SearchReferenceSetsRequest,
       com.google.genomics.v1.SearchReferenceSetsResponse> METHOD_SEARCH_REFERENCE_SETS =
       io.grpc.MethodDescriptor.create(
           io.grpc.MethodDescriptor.MethodType.UNARY,
-          "google.genomics.v1.ReferenceServiceV1", "SearchReferenceSets",
-          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.SearchReferenceSetsRequest.parser()),
-          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.SearchReferenceSetsResponse.parser()));
+          generateFullMethodName(
+              "google.genomics.v1.ReferenceServiceV1", "SearchReferenceSets"),
+          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.SearchReferenceSetsRequest.getDefaultInstance()),
+          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.SearchReferenceSetsResponse.getDefaultInstance()));
+  @io.grpc.ExperimentalApi
   public static final io.grpc.MethodDescriptor<com.google.genomics.v1.GetReferenceSetRequest,
       com.google.genomics.v1.ReferenceSet> METHOD_GET_REFERENCE_SET =
       io.grpc.MethodDescriptor.create(
           io.grpc.MethodDescriptor.MethodType.UNARY,
-          "google.genomics.v1.ReferenceServiceV1", "GetReferenceSet",
-          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.GetReferenceSetRequest.parser()),
-          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.ReferenceSet.parser()));
+          generateFullMethodName(
+              "google.genomics.v1.ReferenceServiceV1", "GetReferenceSet"),
+          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.GetReferenceSetRequest.getDefaultInstance()),
+          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.ReferenceSet.getDefaultInstance()));
+  @io.grpc.ExperimentalApi
   public static final io.grpc.MethodDescriptor<com.google.genomics.v1.SearchReferencesRequest,
       com.google.genomics.v1.SearchReferencesResponse> METHOD_SEARCH_REFERENCES =
       io.grpc.MethodDescriptor.create(
           io.grpc.MethodDescriptor.MethodType.UNARY,
-          "google.genomics.v1.ReferenceServiceV1", "SearchReferences",
-          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.SearchReferencesRequest.parser()),
-          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.SearchReferencesResponse.parser()));
+          generateFullMethodName(
+              "google.genomics.v1.ReferenceServiceV1", "SearchReferences"),
+          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.SearchReferencesRequest.getDefaultInstance()),
+          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.SearchReferencesResponse.getDefaultInstance()));
+  @io.grpc.ExperimentalApi
   public static final io.grpc.MethodDescriptor<com.google.genomics.v1.GetReferenceRequest,
       com.google.genomics.v1.Reference> METHOD_GET_REFERENCE =
       io.grpc.MethodDescriptor.create(
           io.grpc.MethodDescriptor.MethodType.UNARY,
-          "google.genomics.v1.ReferenceServiceV1", "GetReference",
-          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.GetReferenceRequest.parser()),
-          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.Reference.parser()));
+          generateFullMethodName(
+              "google.genomics.v1.ReferenceServiceV1", "GetReference"),
+          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.GetReferenceRequest.getDefaultInstance()),
+          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.Reference.getDefaultInstance()));
+  @io.grpc.ExperimentalApi
   public static final io.grpc.MethodDescriptor<com.google.genomics.v1.ListBasesRequest,
       com.google.genomics.v1.ListBasesResponse> METHOD_LIST_BASES =
       io.grpc.MethodDescriptor.create(
           io.grpc.MethodDescriptor.MethodType.UNARY,
-          "google.genomics.v1.ReferenceServiceV1", "ListBases",
-          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.ListBasesRequest.parser()),
-          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.ListBasesResponse.parser()));
+          generateFullMethodName(
+              "google.genomics.v1.ReferenceServiceV1", "ListBases"),
+          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.ListBasesRequest.getDefaultInstance()),
+          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.ListBasesResponse.getDefaultInstance()));
 
   public static ReferenceServiceV1Stub newStub(io.grpc.Channel channel) {
     return new ReferenceServiceV1Stub(channel);
@@ -136,35 +151,35 @@ public class ReferenceServiceV1Grpc {
     public void searchReferenceSets(com.google.genomics.v1.SearchReferenceSetsRequest request,
         io.grpc.stub.StreamObserver<com.google.genomics.v1.SearchReferenceSetsResponse> responseObserver) {
       asyncUnaryCall(
-          channel.newCall(METHOD_SEARCH_REFERENCE_SETS, callOptions), request, responseObserver);
+          getChannel().newCall(METHOD_SEARCH_REFERENCE_SETS, getCallOptions()), request, responseObserver);
     }
 
     @java.lang.Override
     public void getReferenceSet(com.google.genomics.v1.GetReferenceSetRequest request,
         io.grpc.stub.StreamObserver<com.google.genomics.v1.ReferenceSet> responseObserver) {
       asyncUnaryCall(
-          channel.newCall(METHOD_GET_REFERENCE_SET, callOptions), request, responseObserver);
+          getChannel().newCall(METHOD_GET_REFERENCE_SET, getCallOptions()), request, responseObserver);
     }
 
     @java.lang.Override
     public void searchReferences(com.google.genomics.v1.SearchReferencesRequest request,
         io.grpc.stub.StreamObserver<com.google.genomics.v1.SearchReferencesResponse> responseObserver) {
       asyncUnaryCall(
-          channel.newCall(METHOD_SEARCH_REFERENCES, callOptions), request, responseObserver);
+          getChannel().newCall(METHOD_SEARCH_REFERENCES, getCallOptions()), request, responseObserver);
     }
 
     @java.lang.Override
     public void getReference(com.google.genomics.v1.GetReferenceRequest request,
         io.grpc.stub.StreamObserver<com.google.genomics.v1.Reference> responseObserver) {
       asyncUnaryCall(
-          channel.newCall(METHOD_GET_REFERENCE, callOptions), request, responseObserver);
+          getChannel().newCall(METHOD_GET_REFERENCE, getCallOptions()), request, responseObserver);
     }
 
     @java.lang.Override
     public void listBases(com.google.genomics.v1.ListBasesRequest request,
         io.grpc.stub.StreamObserver<com.google.genomics.v1.ListBasesResponse> responseObserver) {
       asyncUnaryCall(
-          channel.newCall(METHOD_LIST_BASES, callOptions), request, responseObserver);
+          getChannel().newCall(METHOD_LIST_BASES, getCallOptions()), request, responseObserver);
     }
   }
 
@@ -188,31 +203,31 @@ public class ReferenceServiceV1Grpc {
     @java.lang.Override
     public com.google.genomics.v1.SearchReferenceSetsResponse searchReferenceSets(com.google.genomics.v1.SearchReferenceSetsRequest request) {
       return blockingUnaryCall(
-          channel.newCall(METHOD_SEARCH_REFERENCE_SETS, callOptions), request);
+          getChannel().newCall(METHOD_SEARCH_REFERENCE_SETS, getCallOptions()), request);
     }
 
     @java.lang.Override
     public com.google.genomics.v1.ReferenceSet getReferenceSet(com.google.genomics.v1.GetReferenceSetRequest request) {
       return blockingUnaryCall(
-          channel.newCall(METHOD_GET_REFERENCE_SET, callOptions), request);
+          getChannel().newCall(METHOD_GET_REFERENCE_SET, getCallOptions()), request);
     }
 
     @java.lang.Override
     public com.google.genomics.v1.SearchReferencesResponse searchReferences(com.google.genomics.v1.SearchReferencesRequest request) {
       return blockingUnaryCall(
-          channel.newCall(METHOD_SEARCH_REFERENCES, callOptions), request);
+          getChannel().newCall(METHOD_SEARCH_REFERENCES, getCallOptions()), request);
     }
 
     @java.lang.Override
     public com.google.genomics.v1.Reference getReference(com.google.genomics.v1.GetReferenceRequest request) {
       return blockingUnaryCall(
-          channel.newCall(METHOD_GET_REFERENCE, callOptions), request);
+          getChannel().newCall(METHOD_GET_REFERENCE, getCallOptions()), request);
     }
 
     @java.lang.Override
     public com.google.genomics.v1.ListBasesResponse listBases(com.google.genomics.v1.ListBasesRequest request) {
       return blockingUnaryCall(
-          channel.newCall(METHOD_LIST_BASES, callOptions), request);
+          getChannel().newCall(METHOD_LIST_BASES, getCallOptions()), request);
     }
   }
 
@@ -237,105 +252,105 @@ public class ReferenceServiceV1Grpc {
     public com.google.common.util.concurrent.ListenableFuture<com.google.genomics.v1.SearchReferenceSetsResponse> searchReferenceSets(
         com.google.genomics.v1.SearchReferenceSetsRequest request) {
       return futureUnaryCall(
-          channel.newCall(METHOD_SEARCH_REFERENCE_SETS, callOptions), request);
+          getChannel().newCall(METHOD_SEARCH_REFERENCE_SETS, getCallOptions()), request);
     }
 
     @java.lang.Override
     public com.google.common.util.concurrent.ListenableFuture<com.google.genomics.v1.ReferenceSet> getReferenceSet(
         com.google.genomics.v1.GetReferenceSetRequest request) {
       return futureUnaryCall(
-          channel.newCall(METHOD_GET_REFERENCE_SET, callOptions), request);
+          getChannel().newCall(METHOD_GET_REFERENCE_SET, getCallOptions()), request);
     }
 
     @java.lang.Override
     public com.google.common.util.concurrent.ListenableFuture<com.google.genomics.v1.SearchReferencesResponse> searchReferences(
         com.google.genomics.v1.SearchReferencesRequest request) {
       return futureUnaryCall(
-          channel.newCall(METHOD_SEARCH_REFERENCES, callOptions), request);
+          getChannel().newCall(METHOD_SEARCH_REFERENCES, getCallOptions()), request);
     }
 
     @java.lang.Override
     public com.google.common.util.concurrent.ListenableFuture<com.google.genomics.v1.Reference> getReference(
         com.google.genomics.v1.GetReferenceRequest request) {
       return futureUnaryCall(
-          channel.newCall(METHOD_GET_REFERENCE, callOptions), request);
+          getChannel().newCall(METHOD_GET_REFERENCE, getCallOptions()), request);
     }
 
     @java.lang.Override
     public com.google.common.util.concurrent.ListenableFuture<com.google.genomics.v1.ListBasesResponse> listBases(
         com.google.genomics.v1.ListBasesRequest request) {
       return futureUnaryCall(
-          channel.newCall(METHOD_LIST_BASES, callOptions), request);
+          getChannel().newCall(METHOD_LIST_BASES, getCallOptions()), request);
     }
   }
 
   public static io.grpc.ServerServiceDefinition bindService(
       final ReferenceServiceV1 serviceImpl) {
-    return io.grpc.ServerServiceDefinition.builder("google.genomics.v1.ReferenceServiceV1")
-      .addMethod(io.grpc.ServerMethodDefinition.create(
-          METHOD_SEARCH_REFERENCE_SETS,
-          asyncUnaryCall(
-            new io.grpc.stub.ServerCalls.UnaryMethod<
-                com.google.genomics.v1.SearchReferenceSetsRequest,
-                com.google.genomics.v1.SearchReferenceSetsResponse>() {
-              @java.lang.Override
-              public void invoke(
-                  com.google.genomics.v1.SearchReferenceSetsRequest request,
-                  io.grpc.stub.StreamObserver<com.google.genomics.v1.SearchReferenceSetsResponse> responseObserver) {
-                serviceImpl.searchReferenceSets(request, responseObserver);
-              }
-            })))
-      .addMethod(io.grpc.ServerMethodDefinition.create(
-          METHOD_GET_REFERENCE_SET,
-          asyncUnaryCall(
-            new io.grpc.stub.ServerCalls.UnaryMethod<
-                com.google.genomics.v1.GetReferenceSetRequest,
-                com.google.genomics.v1.ReferenceSet>() {
-              @java.lang.Override
-              public void invoke(
-                  com.google.genomics.v1.GetReferenceSetRequest request,
-                  io.grpc.stub.StreamObserver<com.google.genomics.v1.ReferenceSet> responseObserver) {
-                serviceImpl.getReferenceSet(request, responseObserver);
-              }
-            })))
-      .addMethod(io.grpc.ServerMethodDefinition.create(
-          METHOD_SEARCH_REFERENCES,
-          asyncUnaryCall(
-            new io.grpc.stub.ServerCalls.UnaryMethod<
-                com.google.genomics.v1.SearchReferencesRequest,
-                com.google.genomics.v1.SearchReferencesResponse>() {
-              @java.lang.Override
-              public void invoke(
-                  com.google.genomics.v1.SearchReferencesRequest request,
-                  io.grpc.stub.StreamObserver<com.google.genomics.v1.SearchReferencesResponse> responseObserver) {
-                serviceImpl.searchReferences(request, responseObserver);
-              }
-            })))
-      .addMethod(io.grpc.ServerMethodDefinition.create(
-          METHOD_GET_REFERENCE,
-          asyncUnaryCall(
-            new io.grpc.stub.ServerCalls.UnaryMethod<
-                com.google.genomics.v1.GetReferenceRequest,
-                com.google.genomics.v1.Reference>() {
-              @java.lang.Override
-              public void invoke(
-                  com.google.genomics.v1.GetReferenceRequest request,
-                  io.grpc.stub.StreamObserver<com.google.genomics.v1.Reference> responseObserver) {
-                serviceImpl.getReference(request, responseObserver);
-              }
-            })))
-      .addMethod(io.grpc.ServerMethodDefinition.create(
-          METHOD_LIST_BASES,
-          asyncUnaryCall(
-            new io.grpc.stub.ServerCalls.UnaryMethod<
-                com.google.genomics.v1.ListBasesRequest,
-                com.google.genomics.v1.ListBasesResponse>() {
-              @java.lang.Override
-              public void invoke(
-                  com.google.genomics.v1.ListBasesRequest request,
-                  io.grpc.stub.StreamObserver<com.google.genomics.v1.ListBasesResponse> responseObserver) {
-                serviceImpl.listBases(request, responseObserver);
-              }
-            }))).build();
+    return io.grpc.ServerServiceDefinition.builder(SERVICE_NAME)
+      .addMethod(
+        METHOD_SEARCH_REFERENCE_SETS,
+        asyncUnaryCall(
+          new io.grpc.stub.ServerCalls.UnaryMethod<
+              com.google.genomics.v1.SearchReferenceSetsRequest,
+              com.google.genomics.v1.SearchReferenceSetsResponse>() {
+            @java.lang.Override
+            public void invoke(
+                com.google.genomics.v1.SearchReferenceSetsRequest request,
+                io.grpc.stub.StreamObserver<com.google.genomics.v1.SearchReferenceSetsResponse> responseObserver) {
+              serviceImpl.searchReferenceSets(request, responseObserver);
+            }
+          }))
+      .addMethod(
+        METHOD_GET_REFERENCE_SET,
+        asyncUnaryCall(
+          new io.grpc.stub.ServerCalls.UnaryMethod<
+              com.google.genomics.v1.GetReferenceSetRequest,
+              com.google.genomics.v1.ReferenceSet>() {
+            @java.lang.Override
+            public void invoke(
+                com.google.genomics.v1.GetReferenceSetRequest request,
+                io.grpc.stub.StreamObserver<com.google.genomics.v1.ReferenceSet> responseObserver) {
+              serviceImpl.getReferenceSet(request, responseObserver);
+            }
+          }))
+      .addMethod(
+        METHOD_SEARCH_REFERENCES,
+        asyncUnaryCall(
+          new io.grpc.stub.ServerCalls.UnaryMethod<
+              com.google.genomics.v1.SearchReferencesRequest,
+              com.google.genomics.v1.SearchReferencesResponse>() {
+            @java.lang.Override
+            public void invoke(
+                com.google.genomics.v1.SearchReferencesRequest request,
+                io.grpc.stub.StreamObserver<com.google.genomics.v1.SearchReferencesResponse> responseObserver) {
+              serviceImpl.searchReferences(request, responseObserver);
+            }
+          }))
+      .addMethod(
+        METHOD_GET_REFERENCE,
+        asyncUnaryCall(
+          new io.grpc.stub.ServerCalls.UnaryMethod<
+              com.google.genomics.v1.GetReferenceRequest,
+              com.google.genomics.v1.Reference>() {
+            @java.lang.Override
+            public void invoke(
+                com.google.genomics.v1.GetReferenceRequest request,
+                io.grpc.stub.StreamObserver<com.google.genomics.v1.Reference> responseObserver) {
+              serviceImpl.getReference(request, responseObserver);
+            }
+          }))
+      .addMethod(
+        METHOD_LIST_BASES,
+        asyncUnaryCall(
+          new io.grpc.stub.ServerCalls.UnaryMethod<
+              com.google.genomics.v1.ListBasesRequest,
+              com.google.genomics.v1.ListBasesResponse>() {
+            @java.lang.Override
+            public void invoke(
+                com.google.genomics.v1.ListBasesRequest request,
+                io.grpc.stub.StreamObserver<com.google.genomics.v1.ListBasesResponse> responseObserver) {
+              serviceImpl.listBases(request, responseObserver);
+            }
+          })).build();
   }
 }

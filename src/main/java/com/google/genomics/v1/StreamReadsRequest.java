@@ -15,7 +15,7 @@ public  final class StreamReadsRequest extends
     // @@protoc_insertion_point(message_implements:google.genomics.v1.StreamReadsRequest)
     StreamReadsRequestOrBuilder {
   // Use StreamReadsRequest.newBuilder() to construct.
-  private StreamReadsRequest(com.google.protobuf.GeneratedMessage.Builder builder) {
+  private StreamReadsRequest(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
     super(builder);
   }
   private StreamReadsRequest() {
@@ -51,21 +51,21 @@ public  final class StreamReadsRequest extends
             break;
           }
           case 10: {
-            com.google.protobuf.ByteString bs = input.readBytes();
+            String s = input.readStringRequireUtf8();
 
-            projectId_ = bs;
+            projectId_ = s;
             break;
           }
           case 18: {
-            com.google.protobuf.ByteString bs = input.readBytes();
+            String s = input.readStringRequireUtf8();
 
-            readGroupSetId_ = bs;
+            readGroupSetId_ = s;
             break;
           }
           case 26: {
-            com.google.protobuf.ByteString bs = input.readBytes();
+            String s = input.readStringRequireUtf8();
 
-            referenceName_ = bs;
+            referenceName_ = s;
             break;
           }
           case 32: {
@@ -120,9 +120,7 @@ public  final class StreamReadsRequest extends
       com.google.protobuf.ByteString bs = 
           (com.google.protobuf.ByteString) ref;
       java.lang.String s = bs.toStringUtf8();
-      if (bs.isValidUtf8()) {
-        projectId_ = s;
-      }
+      projectId_ = s;
       return s;
     }
   }
@@ -165,9 +163,7 @@ public  final class StreamReadsRequest extends
       com.google.protobuf.ByteString bs = 
           (com.google.protobuf.ByteString) ref;
       java.lang.String s = bs.toStringUtf8();
-      if (bs.isValidUtf8()) {
-        readGroupSetId_ = s;
-      }
+      readGroupSetId_ = s;
       return s;
     }
   }
@@ -211,9 +207,7 @@ public  final class StreamReadsRequest extends
       com.google.protobuf.ByteString bs = 
           (com.google.protobuf.ByteString) ref;
       java.lang.String s = bs.toStringUtf8();
-      if (bs.isValidUtf8()) {
-        referenceName_ = s;
-      }
+      referenceName_ = s;
       return s;
     }
   }
@@ -281,13 +275,13 @@ public  final class StreamReadsRequest extends
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
     if (!getProjectIdBytes().isEmpty()) {
-      output.writeBytes(1, getProjectIdBytes());
+      com.google.protobuf.GeneratedMessage.writeString(output, 1, projectId_);
     }
     if (!getReadGroupSetIdBytes().isEmpty()) {
-      output.writeBytes(2, getReadGroupSetIdBytes());
+      com.google.protobuf.GeneratedMessage.writeString(output, 2, readGroupSetId_);
     }
     if (!getReferenceNameBytes().isEmpty()) {
-      output.writeBytes(3, getReferenceNameBytes());
+      com.google.protobuf.GeneratedMessage.writeString(output, 3, referenceName_);
     }
     if (start_ != 0L) {
       output.writeInt64(4, start_);
@@ -297,23 +291,19 @@ public  final class StreamReadsRequest extends
     }
   }
 
-  private int memoizedSerializedSize = -1;
   public int getSerializedSize() {
-    int size = memoizedSerializedSize;
+    int size = memoizedSize;
     if (size != -1) return size;
 
     size = 0;
     if (!getProjectIdBytes().isEmpty()) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeBytesSize(1, getProjectIdBytes());
+      size += com.google.protobuf.GeneratedMessage.computeStringSize(1, projectId_);
     }
     if (!getReadGroupSetIdBytes().isEmpty()) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeBytesSize(2, getReadGroupSetIdBytes());
+      size += com.google.protobuf.GeneratedMessage.computeStringSize(2, readGroupSetId_);
     }
     if (!getReferenceNameBytes().isEmpty()) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeBytesSize(3, getReferenceNameBytes());
+      size += com.google.protobuf.GeneratedMessage.computeStringSize(3, referenceName_);
     }
     if (start_ != 0L) {
       size += com.google.protobuf.CodedOutputStream
@@ -323,7 +313,7 @@ public  final class StreamReadsRequest extends
       size += com.google.protobuf.CodedOutputStream
         .computeInt64Size(5, end_);
     }
-    memoizedSerializedSize = size;
+    memoizedSize = size;
     return size;
   }
 
@@ -549,9 +539,7 @@ public  final class StreamReadsRequest extends
         com.google.protobuf.ByteString bs =
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          projectId_ = s;
-        }
+        projectId_ = s;
         return s;
       } else {
         return (java.lang.String) ref;
@@ -623,7 +611,8 @@ public  final class StreamReadsRequest extends
       if (value == null) {
     throw new NullPointerException();
   }
-  
+  checkByteStringIsUtf8(value);
+      
       projectId_ = value;
       onChanged();
       return this;
@@ -643,9 +632,7 @@ public  final class StreamReadsRequest extends
         com.google.protobuf.ByteString bs =
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          readGroupSetId_ = s;
-        }
+        readGroupSetId_ = s;
         return s;
       } else {
         return (java.lang.String) ref;
@@ -713,7 +700,8 @@ public  final class StreamReadsRequest extends
       if (value == null) {
     throw new NullPointerException();
   }
-  
+  checkByteStringIsUtf8(value);
+      
       readGroupSetId_ = value;
       onChanged();
       return this;
@@ -735,9 +723,7 @@ public  final class StreamReadsRequest extends
         com.google.protobuf.ByteString bs =
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          referenceName_ = s;
-        }
+        referenceName_ = s;
         return s;
       } else {
         return (java.lang.String) ref;
@@ -813,7 +799,8 @@ public  final class StreamReadsRequest extends
       if (value == null) {
     throw new NullPointerException();
   }
-  
+  checkByteStringIsUtf8(value);
+      
       referenceName_ = value;
       onChanged();
       return this;
@@ -924,8 +911,8 @@ public  final class StreamReadsRequest extends
     return DEFAULT_INSTANCE;
   }
 
-  public static final com.google.protobuf.Parser<StreamReadsRequest> PARSER =
-      new com.google.protobuf.AbstractParser<StreamReadsRequest>() {
+  private static final com.google.protobuf.Parser<StreamReadsRequest>
+      PARSER = new com.google.protobuf.AbstractParser<StreamReadsRequest>() {
     public StreamReadsRequest parsePartialFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)

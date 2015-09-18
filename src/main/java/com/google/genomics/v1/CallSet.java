@@ -16,7 +16,7 @@ public  final class CallSet extends
     // @@protoc_insertion_point(message_implements:google.genomics.v1.CallSet)
     CallSetOrBuilder {
   // Use CallSet.newBuilder() to construct.
-  private CallSet(com.google.protobuf.GeneratedMessage.Builder builder) {
+  private CallSet(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
     super(builder);
   }
   private CallSet() {
@@ -52,15 +52,15 @@ public  final class CallSet extends
             break;
           }
           case 10: {
-            com.google.protobuf.ByteString bs = input.readBytes();
+            String s = input.readStringRequireUtf8();
 
-            id_ = bs;
+            id_ = s;
             break;
           }
           case 18: {
-            com.google.protobuf.ByteString bs = input.readBytes();
+            String s = input.readStringRequireUtf8();
 
-            name_ = bs;
+            name_ = s;
             break;
           }
           case 34: {
@@ -81,18 +81,18 @@ public  final class CallSet extends
             break;
           }
           case 50: {
-            com.google.protobuf.ByteString bs = input.readBytes();
+            String s = input.readStringRequireUtf8();
             if (!((mutable_bitField0_ & 0x00000008) == 0x00000008)) {
               variantSetIds_ = new com.google.protobuf.LazyStringArrayList();
               mutable_bitField0_ |= 0x00000008;
             }
-            variantSetIds_.add(bs);
+            variantSetIds_.add(s);
             break;
           }
           case 58: {
-            com.google.protobuf.ByteString bs = input.readBytes();
+            String s = input.readStringRequireUtf8();
 
-            sampleId_ = bs;
+            sampleId_ = s;
             break;
           }
         }
@@ -151,9 +151,7 @@ public  final class CallSet extends
       com.google.protobuf.ByteString bs = 
           (com.google.protobuf.ByteString) ref;
       java.lang.String s = bs.toStringUtf8();
-      if (bs.isValidUtf8()) {
-        id_ = s;
-      }
+      id_ = s;
       return s;
     }
   }
@@ -195,9 +193,7 @@ public  final class CallSet extends
       com.google.protobuf.ByteString bs = 
           (com.google.protobuf.ByteString) ref;
       java.lang.String s = bs.toStringUtf8();
-      if (bs.isValidUtf8()) {
-        name_ = s;
-      }
+      name_ = s;
       return s;
     }
   }
@@ -239,9 +235,7 @@ public  final class CallSet extends
       com.google.protobuf.ByteString bs = 
           (com.google.protobuf.ByteString) ref;
       java.lang.String s = bs.toStringUtf8();
-      if (bs.isValidUtf8()) {
-        sampleId_ = s;
-      }
+      sampleId_ = s;
       return s;
     }
   }
@@ -372,10 +366,10 @@ public  final class CallSet extends
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
     if (!getIdBytes().isEmpty()) {
-      output.writeBytes(1, getIdBytes());
+      com.google.protobuf.GeneratedMessage.writeString(output, 1, id_);
     }
     if (!getNameBytes().isEmpty()) {
-      output.writeBytes(2, getNameBytes());
+      com.google.protobuf.GeneratedMessage.writeString(output, 2, name_);
     }
     for (java.util.Map.Entry<java.lang.String, com.google.protobuf.ListValue> entry
          : internalGetInfo().getMap().entrySet()) {
@@ -390,26 +384,23 @@ public  final class CallSet extends
       output.writeInt64(5, created_);
     }
     for (int i = 0; i < variantSetIds_.size(); i++) {
-      output.writeBytes(6, variantSetIds_.getByteString(i));
+      com.google.protobuf.GeneratedMessage.writeString(output, 6, variantSetIds_.getRaw(i));
     }
     if (!getSampleIdBytes().isEmpty()) {
-      output.writeBytes(7, getSampleIdBytes());
+      com.google.protobuf.GeneratedMessage.writeString(output, 7, sampleId_);
     }
   }
 
-  private int memoizedSerializedSize = -1;
   public int getSerializedSize() {
-    int size = memoizedSerializedSize;
+    int size = memoizedSize;
     if (size != -1) return size;
 
     size = 0;
     if (!getIdBytes().isEmpty()) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeBytesSize(1, getIdBytes());
+      size += com.google.protobuf.GeneratedMessage.computeStringSize(1, id_);
     }
     if (!getNameBytes().isEmpty()) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeBytesSize(2, getNameBytes());
+      size += com.google.protobuf.GeneratedMessage.computeStringSize(2, name_);
     }
     for (java.util.Map.Entry<java.lang.String, com.google.protobuf.ListValue> entry
          : internalGetInfo().getMap().entrySet()) {
@@ -428,17 +419,15 @@ public  final class CallSet extends
     {
       int dataSize = 0;
       for (int i = 0; i < variantSetIds_.size(); i++) {
-        dataSize += com.google.protobuf.CodedOutputStream
-          .computeBytesSizeNoTag(variantSetIds_.getByteString(i));
+        dataSize += computeStringSizeNoTag(variantSetIds_.getRaw(i));
       }
       size += dataSize;
       size += 1 * getVariantSetIdsList().size();
     }
     if (!getSampleIdBytes().isEmpty()) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeBytesSize(7, getSampleIdBytes());
+      size += com.google.protobuf.GeneratedMessage.computeStringSize(7, sampleId_);
     }
-    memoizedSerializedSize = size;
+    memoizedSize = size;
     return size;
   }
 
@@ -706,9 +695,7 @@ public  final class CallSet extends
         com.google.protobuf.ByteString bs =
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          id_ = s;
-        }
+        id_ = s;
         return s;
       } else {
         return (java.lang.String) ref;
@@ -776,7 +763,8 @@ public  final class CallSet extends
       if (value == null) {
     throw new NullPointerException();
   }
-  
+  checkByteStringIsUtf8(value);
+      
       id_ = value;
       onChanged();
       return this;
@@ -796,9 +784,7 @@ public  final class CallSet extends
         com.google.protobuf.ByteString bs =
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          name_ = s;
-        }
+        name_ = s;
         return s;
       } else {
         return (java.lang.String) ref;
@@ -866,7 +852,8 @@ public  final class CallSet extends
       if (value == null) {
     throw new NullPointerException();
   }
-  
+  checkByteStringIsUtf8(value);
+      
       name_ = value;
       onChanged();
       return this;
@@ -886,9 +873,7 @@ public  final class CallSet extends
         com.google.protobuf.ByteString bs =
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          sampleId_ = s;
-        }
+        sampleId_ = s;
         return s;
       } else {
         return (java.lang.String) ref;
@@ -956,7 +941,8 @@ public  final class CallSet extends
       if (value == null) {
     throw new NullPointerException();
   }
-  
+  checkByteStringIsUtf8(value);
+      
       sampleId_ = value;
       onChanged();
       return this;
@@ -1085,7 +1071,8 @@ public  final class CallSet extends
       if (value == null) {
     throw new NullPointerException();
   }
-  ensureVariantSetIdsIsMutable();
+  checkByteStringIsUtf8(value);
+      ensureVariantSetIdsIsMutable();
       variantSetIds_.add(value);
       onChanged();
       return this;
@@ -1174,6 +1161,19 @@ public  final class CallSet extends
     getMutableInfo() {
       return internalGetMutableInfo().getMutableMap();
     }
+    /**
+     * <code>map&lt;string, .google.protobuf.ListValue&gt; info = 4;</code>
+     *
+     * <pre>
+     * A map of additional call set information. This must be of the form
+     * map&lt;string, string[]&gt; (string key mapping to a list of string values).
+     * </pre>
+     */
+    public Builder putAllInfo(
+        java.util.Map<java.lang.String, com.google.protobuf.ListValue> values) {
+      getMutableInfo().putAll(values);
+      return this;
+    }
     public final Builder setUnknownFields(
         final com.google.protobuf.UnknownFieldSet unknownFields) {
       return this;
@@ -1198,8 +1198,8 @@ public  final class CallSet extends
     return DEFAULT_INSTANCE;
   }
 
-  public static final com.google.protobuf.Parser<CallSet> PARSER =
-      new com.google.protobuf.AbstractParser<CallSet>() {
+  private static final com.google.protobuf.Parser<CallSet>
+      PARSER = new com.google.protobuf.AbstractParser<CallSet>() {
     public CallSet parsePartialFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)

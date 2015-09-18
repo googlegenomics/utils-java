@@ -7,6 +7,7 @@ import static io.grpc.stub.ClientCalls.asyncBidiStreamingCall;
 import static io.grpc.stub.ClientCalls.blockingUnaryCall;
 import static io.grpc.stub.ClientCalls.blockingServerStreamingCall;
 import static io.grpc.stub.ClientCalls.futureUnaryCall;
+import static io.grpc.MethodDescriptor.generateFullMethodName;
 import static io.grpc.stub.ServerCalls.asyncUnaryCall;
 import static io.grpc.stub.ServerCalls.asyncServerStreamingCall;
 import static io.grpc.stub.ServerCalls.asyncClientStreamingCall;
@@ -15,14 +16,20 @@ import static io.grpc.stub.ServerCalls.asyncBidiStreamingCall;
 @javax.annotation.Generated("by gRPC proto compiler")
 public class StreamingVariantServiceGrpc {
 
+  private StreamingVariantServiceGrpc() {}
+
+  public static final String SERVICE_NAME = "google.genomics.v1.StreamingVariantService";
+
   // Static method descriptors that strictly reflect the proto.
+  @io.grpc.ExperimentalApi
   public static final io.grpc.MethodDescriptor<com.google.genomics.v1.StreamVariantsRequest,
       com.google.genomics.v1.StreamVariantsResponse> METHOD_STREAM_VARIANTS =
       io.grpc.MethodDescriptor.create(
           io.grpc.MethodDescriptor.MethodType.SERVER_STREAMING,
-          "google.genomics.v1.StreamingVariantService", "StreamVariants",
-          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.StreamVariantsRequest.parser()),
-          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.StreamVariantsResponse.parser()));
+          generateFullMethodName(
+              "google.genomics.v1.StreamingVariantService", "StreamVariants"),
+          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.StreamVariantsRequest.getDefaultInstance()),
+          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.StreamVariantsResponse.getDefaultInstance()));
 
   public static StreamingVariantServiceStub newStub(io.grpc.Channel channel) {
     return new StreamingVariantServiceStub(channel);
@@ -74,7 +81,7 @@ public class StreamingVariantServiceGrpc {
     public void streamVariants(com.google.genomics.v1.StreamVariantsRequest request,
         io.grpc.stub.StreamObserver<com.google.genomics.v1.StreamVariantsResponse> responseObserver) {
       asyncServerStreamingCall(
-          channel.newCall(METHOD_STREAM_VARIANTS, callOptions), request, responseObserver);
+          getChannel().newCall(METHOD_STREAM_VARIANTS, getCallOptions()), request, responseObserver);
     }
   }
 
@@ -99,7 +106,7 @@ public class StreamingVariantServiceGrpc {
     public java.util.Iterator<com.google.genomics.v1.StreamVariantsResponse> streamVariants(
         com.google.genomics.v1.StreamVariantsRequest request) {
       return blockingServerStreamingCall(
-          channel.newCall(METHOD_STREAM_VARIANTS, callOptions), request);
+          getChannel().newCall(METHOD_STREAM_VARIANTS, getCallOptions()), request);
     }
   }
 
@@ -123,19 +130,19 @@ public class StreamingVariantServiceGrpc {
 
   public static io.grpc.ServerServiceDefinition bindService(
       final StreamingVariantService serviceImpl) {
-    return io.grpc.ServerServiceDefinition.builder("google.genomics.v1.StreamingVariantService")
-      .addMethod(io.grpc.ServerMethodDefinition.create(
-          METHOD_STREAM_VARIANTS,
-          asyncServerStreamingCall(
-            new io.grpc.stub.ServerCalls.ServerStreamingMethod<
-                com.google.genomics.v1.StreamVariantsRequest,
-                com.google.genomics.v1.StreamVariantsResponse>() {
-              @java.lang.Override
-              public void invoke(
-                  com.google.genomics.v1.StreamVariantsRequest request,
-                  io.grpc.stub.StreamObserver<com.google.genomics.v1.StreamVariantsResponse> responseObserver) {
-                serviceImpl.streamVariants(request, responseObserver);
-              }
-            }))).build();
+    return io.grpc.ServerServiceDefinition.builder(SERVICE_NAME)
+      .addMethod(
+        METHOD_STREAM_VARIANTS,
+        asyncServerStreamingCall(
+          new io.grpc.stub.ServerCalls.ServerStreamingMethod<
+              com.google.genomics.v1.StreamVariantsRequest,
+              com.google.genomics.v1.StreamVariantsResponse>() {
+            @java.lang.Override
+            public void invoke(
+                com.google.genomics.v1.StreamVariantsRequest request,
+                io.grpc.stub.StreamObserver<com.google.genomics.v1.StreamVariantsResponse> responseObserver) {
+              serviceImpl.streamVariants(request, responseObserver);
+            }
+          })).build();
   }
 }

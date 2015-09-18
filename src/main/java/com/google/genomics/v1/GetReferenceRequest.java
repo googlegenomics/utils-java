@@ -11,7 +11,7 @@ public  final class GetReferenceRequest extends
     // @@protoc_insertion_point(message_implements:google.genomics.v1.GetReferenceRequest)
     GetReferenceRequestOrBuilder {
   // Use GetReferenceRequest.newBuilder() to construct.
-  private GetReferenceRequest(com.google.protobuf.GeneratedMessage.Builder builder) {
+  private GetReferenceRequest(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
     super(builder);
   }
   private GetReferenceRequest() {
@@ -43,9 +43,9 @@ public  final class GetReferenceRequest extends
             break;
           }
           case 10: {
-            com.google.protobuf.ByteString bs = input.readBytes();
+            String s = input.readStringRequireUtf8();
 
-            referenceId_ = bs;
+            referenceId_ = s;
             break;
           }
         }
@@ -89,9 +89,7 @@ public  final class GetReferenceRequest extends
       com.google.protobuf.ByteString bs = 
           (com.google.protobuf.ByteString) ref;
       java.lang.String s = bs.toStringUtf8();
-      if (bs.isValidUtf8()) {
-        referenceId_ = s;
-      }
+      referenceId_ = s;
       return s;
     }
   }
@@ -129,21 +127,19 @@ public  final class GetReferenceRequest extends
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
     if (!getReferenceIdBytes().isEmpty()) {
-      output.writeBytes(1, getReferenceIdBytes());
+      com.google.protobuf.GeneratedMessage.writeString(output, 1, referenceId_);
     }
   }
 
-  private int memoizedSerializedSize = -1;
   public int getSerializedSize() {
-    int size = memoizedSerializedSize;
+    int size = memoizedSize;
     if (size != -1) return size;
 
     size = 0;
     if (!getReferenceIdBytes().isEmpty()) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeBytesSize(1, getReferenceIdBytes());
+      size += com.google.protobuf.GeneratedMessage.computeStringSize(1, referenceId_);
     }
-    memoizedSerializedSize = size;
+    memoizedSize = size;
     return size;
   }
 
@@ -338,9 +334,7 @@ public  final class GetReferenceRequest extends
         com.google.protobuf.ByteString bs =
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          referenceId_ = s;
-        }
+        referenceId_ = s;
         return s;
       } else {
         return (java.lang.String) ref;
@@ -408,7 +402,8 @@ public  final class GetReferenceRequest extends
       if (value == null) {
     throw new NullPointerException();
   }
-  
+  checkByteStringIsUtf8(value);
+      
       referenceId_ = value;
       onChanged();
       return this;
@@ -437,8 +432,8 @@ public  final class GetReferenceRequest extends
     return DEFAULT_INSTANCE;
   }
 
-  public static final com.google.protobuf.Parser<GetReferenceRequest> PARSER =
-      new com.google.protobuf.AbstractParser<GetReferenceRequest>() {
+  private static final com.google.protobuf.Parser<GetReferenceRequest>
+      PARSER = new com.google.protobuf.AbstractParser<GetReferenceRequest>() {
     public GetReferenceRequest parsePartialFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)

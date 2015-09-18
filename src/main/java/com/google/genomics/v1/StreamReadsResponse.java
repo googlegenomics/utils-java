@@ -11,7 +11,7 @@ public  final class StreamReadsResponse extends
     // @@protoc_insertion_point(message_implements:google.genomics.v1.StreamReadsResponse)
     StreamReadsResponseOrBuilder {
   // Use StreamReadsResponse.newBuilder() to construct.
-  private StreamReadsResponse(com.google.protobuf.GeneratedMessage.Builder builder) {
+  private StreamReadsResponse(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
     super(builder);
   }
   private StreamReadsResponse() {
@@ -47,7 +47,7 @@ public  final class StreamReadsResponse extends
               alignments_ = new java.util.ArrayList<com.google.genomics.v1.Read>();
               mutable_bitField0_ |= 0x00000001;
             }
-            alignments_.add(input.readMessage(com.google.genomics.v1.Read.PARSER, extensionRegistry));
+            alignments_.add(input.readMessage(com.google.genomics.v1.Read.parser(), extensionRegistry));
             break;
           }
         }
@@ -129,9 +129,8 @@ public  final class StreamReadsResponse extends
     }
   }
 
-  private int memoizedSerializedSize = -1;
   public int getSerializedSize() {
-    int size = memoizedSerializedSize;
+    int size = memoizedSize;
     if (size != -1) return size;
 
     size = 0;
@@ -139,7 +138,7 @@ public  final class StreamReadsResponse extends
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(1, alignments_.get(i));
     }
-    memoizedSerializedSize = size;
+    memoizedSize = size;
     return size;
   }
 
@@ -620,8 +619,8 @@ public  final class StreamReadsResponse extends
     return DEFAULT_INSTANCE;
   }
 
-  public static final com.google.protobuf.Parser<StreamReadsResponse> PARSER =
-      new com.google.protobuf.AbstractParser<StreamReadsResponse>() {
+  private static final com.google.protobuf.Parser<StreamReadsResponse>
+      PARSER = new com.google.protobuf.AbstractParser<StreamReadsResponse>() {
     public StreamReadsResponse parsePartialFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)

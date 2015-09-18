@@ -15,7 +15,7 @@ public  final class DeleteVariantSetRequest extends
     // @@protoc_insertion_point(message_implements:google.genomics.v1.DeleteVariantSetRequest)
     DeleteVariantSetRequestOrBuilder {
   // Use DeleteVariantSetRequest.newBuilder() to construct.
-  private DeleteVariantSetRequest(com.google.protobuf.GeneratedMessage.Builder builder) {
+  private DeleteVariantSetRequest(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
     super(builder);
   }
   private DeleteVariantSetRequest() {
@@ -47,9 +47,9 @@ public  final class DeleteVariantSetRequest extends
             break;
           }
           case 10: {
-            com.google.protobuf.ByteString bs = input.readBytes();
+            String s = input.readStringRequireUtf8();
 
-            variantSetId_ = bs;
+            variantSetId_ = s;
             break;
           }
         }
@@ -93,9 +93,7 @@ public  final class DeleteVariantSetRequest extends
       com.google.protobuf.ByteString bs = 
           (com.google.protobuf.ByteString) ref;
       java.lang.String s = bs.toStringUtf8();
-      if (bs.isValidUtf8()) {
-        variantSetId_ = s;
-      }
+      variantSetId_ = s;
       return s;
     }
   }
@@ -133,21 +131,19 @@ public  final class DeleteVariantSetRequest extends
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
     if (!getVariantSetIdBytes().isEmpty()) {
-      output.writeBytes(1, getVariantSetIdBytes());
+      com.google.protobuf.GeneratedMessage.writeString(output, 1, variantSetId_);
     }
   }
 
-  private int memoizedSerializedSize = -1;
   public int getSerializedSize() {
-    int size = memoizedSerializedSize;
+    int size = memoizedSize;
     if (size != -1) return size;
 
     size = 0;
     if (!getVariantSetIdBytes().isEmpty()) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeBytesSize(1, getVariantSetIdBytes());
+      size += com.google.protobuf.GeneratedMessage.computeStringSize(1, variantSetId_);
     }
-    memoizedSerializedSize = size;
+    memoizedSize = size;
     return size;
   }
 
@@ -346,9 +342,7 @@ public  final class DeleteVariantSetRequest extends
         com.google.protobuf.ByteString bs =
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          variantSetId_ = s;
-        }
+        variantSetId_ = s;
         return s;
       } else {
         return (java.lang.String) ref;
@@ -416,7 +410,8 @@ public  final class DeleteVariantSetRequest extends
       if (value == null) {
     throw new NullPointerException();
   }
-  
+  checkByteStringIsUtf8(value);
+      
       variantSetId_ = value;
       onChanged();
       return this;
@@ -445,8 +440,8 @@ public  final class DeleteVariantSetRequest extends
     return DEFAULT_INSTANCE;
   }
 
-  public static final com.google.protobuf.Parser<DeleteVariantSetRequest> PARSER =
-      new com.google.protobuf.AbstractParser<DeleteVariantSetRequest>() {
+  private static final com.google.protobuf.Parser<DeleteVariantSetRequest>
+      PARSER = new com.google.protobuf.AbstractParser<DeleteVariantSetRequest>() {
     public DeleteVariantSetRequest parsePartialFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)

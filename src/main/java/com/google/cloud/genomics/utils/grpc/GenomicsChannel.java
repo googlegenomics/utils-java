@@ -5,7 +5,7 @@ import com.google.cloud.genomics.utils.GenomicsFactory;
 
 import io.grpc.CallOptions;
 import io.grpc.Channel;
-import io.grpc.ChannelImpl;
+import io.grpc.ManagedChannel;
 import io.grpc.ClientCall;
 import io.grpc.ClientInterceptors;
 import io.grpc.Metadata;
@@ -36,11 +36,11 @@ public class GenomicsChannel extends Channel {
   private static final String API_KEY_HEADER = "X-Goog-Api-Key";
 
   // NOTE: Unfortunately we need to keep a handle to both of these since Channel does not expose
-  // the shutdown method and the ClientInterceptors do not return the ChannelImpl instance.
-  private final ChannelImpl channelImpl;
+  // the shutdown method and the ClientInterceptors do not return the ManagedChannel instance.
+  private final ManagedChannel managedChannel;
   private final Channel delegate;
   
-  private ChannelImpl getGenomicsChannelImpl() throws SSLException {
+  private ManagedChannel getGenomicsManagedChannel() throws SSLException {
     // Java 8's implementation of GCM ciphers is extremely slow. Therefore we disable
     // them here.
     List<String> defaultCiphers =
@@ -59,22 +59,22 @@ public class GenomicsChannel extends Channel {
   }
   
   private GenomicsChannel(String apiKey) throws SSLException {
-    channelImpl = getGenomicsChannelImpl();
-    Metadata.Headers headers = new Metadata.Headers();
+    managedChannel = getGenomicsManagedChannel();
+    Metadata headers = new Metadata();
     Metadata.Key<String> apiKeyHeaderKey =
         Metadata.Key.of(API_KEY_HEADER, Metadata.ASCII_STRING_MARSHALLER);
     headers.put(apiKeyHeaderKey, apiKey);
-    delegate = ClientInterceptors.intercept(channelImpl,
+    delegate = ClientInterceptors.intercept(managedChannel,
         MetadataUtils.newAttachHeadersInterceptor(headers)); 
   }
   
   private GenomicsChannel(GoogleCredentials creds) throws SSLException {
-    channelImpl = getGenomicsChannelImpl();
+    managedChannel = getGenomicsManagedChannel();
     creds = creds.createScoped(
         Arrays.asList(GENOMICS_SCOPE));
     ClientAuthInterceptor interceptor = new ClientAuthInterceptor(creds,
         Executors.newSingleThreadExecutor());
-    delegate = ClientInterceptors.intercept(channelImpl, interceptor);
+    delegate = ClientInterceptors.intercept(managedChannel, interceptor);
   }
   
   @Override
@@ -84,19 +84,19 @@ public class GenomicsChannel extends Channel {
   }
 
   /**
-   * @see io.grpc.ChannelImpl#shutdownNow()
+   * @see io.grpc.ManagedChannel#shutdownNow()
    */
   public void shutdownNow() {
-    channelImpl.shutdownNow();
+    managedChannel.shutdownNow();
   }
   
   /**
    * @throws InterruptedException 
-   * @see io.grpc.ChannelImpl#shutdown()
-   * @see io.grpc.ChannelImpl#awaitTermination(long, TimeUnit)
+   * @see io.grpc.ManagedChannel#shutdown()
+   * @see io.grpc.ManagedChannel#awaitTermination(long, TimeUnit)
    */
   public void shutdown(long timeout, TimeUnit unit) throws InterruptedException {
-    channelImpl.shutdown().awaitTermination(timeout, unit);
+    managedChannel.shutdown().awaitTermination(timeout, unit);
   }
 
   /**
@@ -144,6 +144,11 @@ public class GenomicsChannel extends Channel {
     }
     // Fall back to Default Credentials if the user did not specify user credentials or an api key.
     return fromDefaultCreds();
+  }
+
+  @Override
+  public String authority() {
+    return delegate.authority();
   }
 }
 

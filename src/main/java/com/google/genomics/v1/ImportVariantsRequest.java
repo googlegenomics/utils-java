@@ -15,7 +15,7 @@ public  final class ImportVariantsRequest extends
     // @@protoc_insertion_point(message_implements:google.genomics.v1.ImportVariantsRequest)
     ImportVariantsRequestOrBuilder {
   // Use ImportVariantsRequest.newBuilder() to construct.
-  private ImportVariantsRequest(com.google.protobuf.GeneratedMessage.Builder builder) {
+  private ImportVariantsRequest(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
     super(builder);
   }
   private ImportVariantsRequest() {
@@ -50,18 +50,18 @@ public  final class ImportVariantsRequest extends
             break;
           }
           case 10: {
-            com.google.protobuf.ByteString bs = input.readBytes();
+            String s = input.readStringRequireUtf8();
 
-            variantSetId_ = bs;
+            variantSetId_ = s;
             break;
           }
           case 18: {
-            com.google.protobuf.ByteString bs = input.readBytes();
+            String s = input.readStringRequireUtf8();
             if (!((mutable_bitField0_ & 0x00000002) == 0x00000002)) {
               sourceUris_ = new com.google.protobuf.LazyStringArrayList();
               mutable_bitField0_ |= 0x00000002;
             }
-            sourceUris_.add(bs);
+            sourceUris_.add(s);
             break;
           }
           case 24: {
@@ -177,8 +177,8 @@ public  final class ImportVariantsRequest extends
         internalGetValueMap() {
       return internalValueMap;
     }
-    private static com.google.protobuf.Internal.EnumLiteMap<Format>
-        internalValueMap =
+    private static final com.google.protobuf.Internal.EnumLiteMap<
+        Format> internalValueMap =
           new com.google.protobuf.Internal.EnumLiteMap<Format>() {
             public Format findValueByNumber(int number) {
               return Format.valueOf(number);
@@ -241,9 +241,7 @@ public  final class ImportVariantsRequest extends
       com.google.protobuf.ByteString bs = 
           (com.google.protobuf.ByteString) ref;
       java.lang.String s = bs.toStringUtf8();
-      if (bs.isValidUtf8()) {
-        variantSetId_ = s;
-      }
+      variantSetId_ = s;
       return s;
     }
   }
@@ -380,10 +378,10 @@ public  final class ImportVariantsRequest extends
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
     if (!getVariantSetIdBytes().isEmpty()) {
-      output.writeBytes(1, getVariantSetIdBytes());
+      com.google.protobuf.GeneratedMessage.writeString(output, 1, variantSetId_);
     }
     for (int i = 0; i < sourceUris_.size(); i++) {
-      output.writeBytes(2, sourceUris_.getByteString(i));
+      com.google.protobuf.GeneratedMessage.writeString(output, 2, sourceUris_.getRaw(i));
     }
     if (format_ != com.google.genomics.v1.ImportVariantsRequest.Format.FORMAT_UNSPECIFIED.getNumber()) {
       output.writeEnum(3, format_);
@@ -393,21 +391,18 @@ public  final class ImportVariantsRequest extends
     }
   }
 
-  private int memoizedSerializedSize = -1;
   public int getSerializedSize() {
-    int size = memoizedSerializedSize;
+    int size = memoizedSize;
     if (size != -1) return size;
 
     size = 0;
     if (!getVariantSetIdBytes().isEmpty()) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeBytesSize(1, getVariantSetIdBytes());
+      size += com.google.protobuf.GeneratedMessage.computeStringSize(1, variantSetId_);
     }
     {
       int dataSize = 0;
       for (int i = 0; i < sourceUris_.size(); i++) {
-        dataSize += com.google.protobuf.CodedOutputStream
-          .computeBytesSizeNoTag(sourceUris_.getByteString(i));
+        dataSize += computeStringSizeNoTag(sourceUris_.getRaw(i));
       }
       size += dataSize;
       size += 1 * getSourceUrisList().size();
@@ -420,7 +415,7 @@ public  final class ImportVariantsRequest extends
       size += com.google.protobuf.CodedOutputStream
         .computeBoolSize(5, normalizeReferenceNames_);
     }
-    memoizedSerializedSize = size;
+    memoizedSize = size;
     return size;
   }
 
@@ -652,9 +647,7 @@ public  final class ImportVariantsRequest extends
         com.google.protobuf.ByteString bs =
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          variantSetId_ = s;
-        }
+        variantSetId_ = s;
         return s;
       } else {
         return (java.lang.String) ref;
@@ -722,7 +715,8 @@ public  final class ImportVariantsRequest extends
       if (value == null) {
     throw new NullPointerException();
   }
-  
+  checkByteStringIsUtf8(value);
+      
       variantSetId_ = value;
       onChanged();
       return this;
@@ -869,7 +863,8 @@ public  final class ImportVariantsRequest extends
       if (value == null) {
     throw new NullPointerException();
   }
-  ensureSourceUrisIsMutable();
+  checkByteStringIsUtf8(value);
+      ensureSourceUrisIsMutable();
       sourceUris_.add(value);
       onChanged();
       return this;
@@ -1026,8 +1021,8 @@ public  final class ImportVariantsRequest extends
     return DEFAULT_INSTANCE;
   }
 
-  public static final com.google.protobuf.Parser<ImportVariantsRequest> PARSER =
-      new com.google.protobuf.AbstractParser<ImportVariantsRequest>() {
+  private static final com.google.protobuf.Parser<ImportVariantsRequest>
+      PARSER = new com.google.protobuf.AbstractParser<ImportVariantsRequest>() {
     public ImportVariantsRequest parsePartialFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)

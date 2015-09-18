@@ -15,7 +15,7 @@ public  final class ImportReadGroupSetsResponse extends
     // @@protoc_insertion_point(message_implements:google.genomics.v1.ImportReadGroupSetsResponse)
     ImportReadGroupSetsResponseOrBuilder {
   // Use ImportReadGroupSetsResponse.newBuilder() to construct.
-  private ImportReadGroupSetsResponse(com.google.protobuf.GeneratedMessage.Builder builder) {
+  private ImportReadGroupSetsResponse(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
     super(builder);
   }
   private ImportReadGroupSetsResponse() {
@@ -47,12 +47,12 @@ public  final class ImportReadGroupSetsResponse extends
             break;
           }
           case 10: {
-            com.google.protobuf.ByteString bs = input.readBytes();
+            String s = input.readStringRequireUtf8();
             if (!((mutable_bitField0_ & 0x00000001) == 0x00000001)) {
               readGroupSetIds_ = new com.google.protobuf.LazyStringArrayList();
               mutable_bitField0_ |= 0x00000001;
             }
-            readGroupSetIds_.add(bs);
+            readGroupSetIds_.add(s);
             break;
           }
         }
@@ -140,26 +140,24 @@ public  final class ImportReadGroupSetsResponse extends
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
     for (int i = 0; i < readGroupSetIds_.size(); i++) {
-      output.writeBytes(1, readGroupSetIds_.getByteString(i));
+      com.google.protobuf.GeneratedMessage.writeString(output, 1, readGroupSetIds_.getRaw(i));
     }
   }
 
-  private int memoizedSerializedSize = -1;
   public int getSerializedSize() {
-    int size = memoizedSerializedSize;
+    int size = memoizedSize;
     if (size != -1) return size;
 
     size = 0;
     {
       int dataSize = 0;
       for (int i = 0; i < readGroupSetIds_.size(); i++) {
-        dataSize += com.google.protobuf.CodedOutputStream
-          .computeBytesSizeNoTag(readGroupSetIds_.getByteString(i));
+        dataSize += computeStringSizeNoTag(readGroupSetIds_.getRaw(i));
       }
       size += dataSize;
       size += 1 * getReadGroupSetIdsList().size();
     }
-    memoizedSerializedSize = size;
+    memoizedSize = size;
     return size;
   }
 
@@ -479,7 +477,8 @@ public  final class ImportReadGroupSetsResponse extends
       if (value == null) {
     throw new NullPointerException();
   }
-  ensureReadGroupSetIdsIsMutable();
+  checkByteStringIsUtf8(value);
+      ensureReadGroupSetIdsIsMutable();
       readGroupSetIds_.add(value);
       onChanged();
       return this;
@@ -508,8 +507,8 @@ public  final class ImportReadGroupSetsResponse extends
     return DEFAULT_INSTANCE;
   }
 
-  public static final com.google.protobuf.Parser<ImportReadGroupSetsResponse> PARSER =
-      new com.google.protobuf.AbstractParser<ImportReadGroupSetsResponse>() {
+  private static final com.google.protobuf.Parser<ImportReadGroupSetsResponse>
+      PARSER = new com.google.protobuf.AbstractParser<ImportReadGroupSetsResponse>() {
     public ImportReadGroupSetsResponse parsePartialFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)

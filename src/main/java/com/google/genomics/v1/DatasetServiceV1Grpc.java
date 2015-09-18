@@ -7,6 +7,7 @@ import static io.grpc.stub.ClientCalls.asyncBidiStreamingCall;
 import static io.grpc.stub.ClientCalls.blockingUnaryCall;
 import static io.grpc.stub.ClientCalls.blockingServerStreamingCall;
 import static io.grpc.stub.ClientCalls.futureUnaryCall;
+import static io.grpc.MethodDescriptor.generateFullMethodName;
 import static io.grpc.stub.ServerCalls.asyncUnaryCall;
 import static io.grpc.stub.ServerCalls.asyncServerStreamingCall;
 import static io.grpc.stub.ServerCalls.asyncClientStreamingCall;
@@ -15,49 +16,65 @@ import static io.grpc.stub.ServerCalls.asyncBidiStreamingCall;
 @javax.annotation.Generated("by gRPC proto compiler")
 public class DatasetServiceV1Grpc {
 
+  private DatasetServiceV1Grpc() {}
+
+  public static final String SERVICE_NAME = "google.genomics.v1.DatasetServiceV1";
+
   // Static method descriptors that strictly reflect the proto.
+  @io.grpc.ExperimentalApi
   public static final io.grpc.MethodDescriptor<com.google.genomics.v1.ListDatasetsRequest,
       com.google.genomics.v1.ListDatasetsResponse> METHOD_LIST_DATASETS =
       io.grpc.MethodDescriptor.create(
           io.grpc.MethodDescriptor.MethodType.UNARY,
-          "google.genomics.v1.DatasetServiceV1", "ListDatasets",
-          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.ListDatasetsRequest.parser()),
-          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.ListDatasetsResponse.parser()));
+          generateFullMethodName(
+              "google.genomics.v1.DatasetServiceV1", "ListDatasets"),
+          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.ListDatasetsRequest.getDefaultInstance()),
+          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.ListDatasetsResponse.getDefaultInstance()));
+  @io.grpc.ExperimentalApi
   public static final io.grpc.MethodDescriptor<com.google.genomics.v1.CreateDatasetRequest,
       com.google.genomics.v1.Dataset> METHOD_CREATE_DATASET =
       io.grpc.MethodDescriptor.create(
           io.grpc.MethodDescriptor.MethodType.UNARY,
-          "google.genomics.v1.DatasetServiceV1", "CreateDataset",
-          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.CreateDatasetRequest.parser()),
-          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.Dataset.parser()));
+          generateFullMethodName(
+              "google.genomics.v1.DatasetServiceV1", "CreateDataset"),
+          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.CreateDatasetRequest.getDefaultInstance()),
+          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.Dataset.getDefaultInstance()));
+  @io.grpc.ExperimentalApi
   public static final io.grpc.MethodDescriptor<com.google.genomics.v1.GetDatasetRequest,
       com.google.genomics.v1.Dataset> METHOD_GET_DATASET =
       io.grpc.MethodDescriptor.create(
           io.grpc.MethodDescriptor.MethodType.UNARY,
-          "google.genomics.v1.DatasetServiceV1", "GetDataset",
-          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.GetDatasetRequest.parser()),
-          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.Dataset.parser()));
+          generateFullMethodName(
+              "google.genomics.v1.DatasetServiceV1", "GetDataset"),
+          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.GetDatasetRequest.getDefaultInstance()),
+          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.Dataset.getDefaultInstance()));
+  @io.grpc.ExperimentalApi
   public static final io.grpc.MethodDescriptor<com.google.genomics.v1.UpdateDatasetRequest,
       com.google.genomics.v1.Dataset> METHOD_UPDATE_DATASET =
       io.grpc.MethodDescriptor.create(
           io.grpc.MethodDescriptor.MethodType.UNARY,
-          "google.genomics.v1.DatasetServiceV1", "UpdateDataset",
-          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.UpdateDatasetRequest.parser()),
-          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.Dataset.parser()));
+          generateFullMethodName(
+              "google.genomics.v1.DatasetServiceV1", "UpdateDataset"),
+          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.UpdateDatasetRequest.getDefaultInstance()),
+          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.Dataset.getDefaultInstance()));
+  @io.grpc.ExperimentalApi
   public static final io.grpc.MethodDescriptor<com.google.genomics.v1.DeleteDatasetRequest,
       com.google.protobuf.Empty> METHOD_DELETE_DATASET =
       io.grpc.MethodDescriptor.create(
           io.grpc.MethodDescriptor.MethodType.UNARY,
-          "google.genomics.v1.DatasetServiceV1", "DeleteDataset",
-          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.DeleteDatasetRequest.parser()),
-          io.grpc.protobuf.ProtoUtils.marshaller(com.google.protobuf.Empty.parser()));
+          generateFullMethodName(
+              "google.genomics.v1.DatasetServiceV1", "DeleteDataset"),
+          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.DeleteDatasetRequest.getDefaultInstance()),
+          io.grpc.protobuf.ProtoUtils.marshaller(com.google.protobuf.Empty.getDefaultInstance()));
+  @io.grpc.ExperimentalApi
   public static final io.grpc.MethodDescriptor<com.google.genomics.v1.UndeleteDatasetRequest,
       com.google.genomics.v1.Dataset> METHOD_UNDELETE_DATASET =
       io.grpc.MethodDescriptor.create(
           io.grpc.MethodDescriptor.MethodType.UNARY,
-          "google.genomics.v1.DatasetServiceV1", "UndeleteDataset",
-          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.UndeleteDatasetRequest.parser()),
-          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.Dataset.parser()));
+          generateFullMethodName(
+              "google.genomics.v1.DatasetServiceV1", "UndeleteDataset"),
+          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.UndeleteDatasetRequest.getDefaultInstance()),
+          io.grpc.protobuf.ProtoUtils.marshaller(com.google.genomics.v1.Dataset.getDefaultInstance()));
 
   public static DatasetServiceV1Stub newStub(io.grpc.Channel channel) {
     return new DatasetServiceV1Stub(channel);
@@ -151,42 +168,42 @@ public class DatasetServiceV1Grpc {
     public void listDatasets(com.google.genomics.v1.ListDatasetsRequest request,
         io.grpc.stub.StreamObserver<com.google.genomics.v1.ListDatasetsResponse> responseObserver) {
       asyncUnaryCall(
-          channel.newCall(METHOD_LIST_DATASETS, callOptions), request, responseObserver);
+          getChannel().newCall(METHOD_LIST_DATASETS, getCallOptions()), request, responseObserver);
     }
 
     @java.lang.Override
     public void createDataset(com.google.genomics.v1.CreateDatasetRequest request,
         io.grpc.stub.StreamObserver<com.google.genomics.v1.Dataset> responseObserver) {
       asyncUnaryCall(
-          channel.newCall(METHOD_CREATE_DATASET, callOptions), request, responseObserver);
+          getChannel().newCall(METHOD_CREATE_DATASET, getCallOptions()), request, responseObserver);
     }
 
     @java.lang.Override
     public void getDataset(com.google.genomics.v1.GetDatasetRequest request,
         io.grpc.stub.StreamObserver<com.google.genomics.v1.Dataset> responseObserver) {
       asyncUnaryCall(
-          channel.newCall(METHOD_GET_DATASET, callOptions), request, responseObserver);
+          getChannel().newCall(METHOD_GET_DATASET, getCallOptions()), request, responseObserver);
     }
 
     @java.lang.Override
     public void updateDataset(com.google.genomics.v1.UpdateDatasetRequest request,
         io.grpc.stub.StreamObserver<com.google.genomics.v1.Dataset> responseObserver) {
       asyncUnaryCall(
-          channel.newCall(METHOD_UPDATE_DATASET, callOptions), request, responseObserver);
+          getChannel().newCall(METHOD_UPDATE_DATASET, getCallOptions()), request, responseObserver);
     }
 
     @java.lang.Override
     public void deleteDataset(com.google.genomics.v1.DeleteDatasetRequest request,
         io.grpc.stub.StreamObserver<com.google.protobuf.Empty> responseObserver) {
       asyncUnaryCall(
-          channel.newCall(METHOD_DELETE_DATASET, callOptions), request, responseObserver);
+          getChannel().newCall(METHOD_DELETE_DATASET, getCallOptions()), request, responseObserver);
     }
 
     @java.lang.Override
     public void undeleteDataset(com.google.genomics.v1.UndeleteDatasetRequest request,
         io.grpc.stub.StreamObserver<com.google.genomics.v1.Dataset> responseObserver) {
       asyncUnaryCall(
-          channel.newCall(METHOD_UNDELETE_DATASET, callOptions), request, responseObserver);
+          getChannel().newCall(METHOD_UNDELETE_DATASET, getCallOptions()), request, responseObserver);
     }
   }
 
@@ -210,37 +227,37 @@ public class DatasetServiceV1Grpc {
     @java.lang.Override
     public com.google.genomics.v1.ListDatasetsResponse listDatasets(com.google.genomics.v1.ListDatasetsRequest request) {
       return blockingUnaryCall(
-          channel.newCall(METHOD_LIST_DATASETS, callOptions), request);
+          getChannel().newCall(METHOD_LIST_DATASETS, getCallOptions()), request);
     }
 
     @java.lang.Override
     public com.google.genomics.v1.Dataset createDataset(com.google.genomics.v1.CreateDatasetRequest request) {
       return blockingUnaryCall(
-          channel.newCall(METHOD_CREATE_DATASET, callOptions), request);
+          getChannel().newCall(METHOD_CREATE_DATASET, getCallOptions()), request);
     }
 
     @java.lang.Override
     public com.google.genomics.v1.Dataset getDataset(com.google.genomics.v1.GetDatasetRequest request) {
       return blockingUnaryCall(
-          channel.newCall(METHOD_GET_DATASET, callOptions), request);
+          getChannel().newCall(METHOD_GET_DATASET, getCallOptions()), request);
     }
 
     @java.lang.Override
     public com.google.genomics.v1.Dataset updateDataset(com.google.genomics.v1.UpdateDatasetRequest request) {
       return blockingUnaryCall(
-          channel.newCall(METHOD_UPDATE_DATASET, callOptions), request);
+          getChannel().newCall(METHOD_UPDATE_DATASET, getCallOptions()), request);
     }
 
     @java.lang.Override
     public com.google.protobuf.Empty deleteDataset(com.google.genomics.v1.DeleteDatasetRequest request) {
       return blockingUnaryCall(
-          channel.newCall(METHOD_DELETE_DATASET, callOptions), request);
+          getChannel().newCall(METHOD_DELETE_DATASET, getCallOptions()), request);
     }
 
     @java.lang.Override
     public com.google.genomics.v1.Dataset undeleteDataset(com.google.genomics.v1.UndeleteDatasetRequest request) {
       return blockingUnaryCall(
-          channel.newCall(METHOD_UNDELETE_DATASET, callOptions), request);
+          getChannel().newCall(METHOD_UNDELETE_DATASET, getCallOptions()), request);
     }
   }
 
@@ -265,125 +282,125 @@ public class DatasetServiceV1Grpc {
     public com.google.common.util.concurrent.ListenableFuture<com.google.genomics.v1.ListDatasetsResponse> listDatasets(
         com.google.genomics.v1.ListDatasetsRequest request) {
       return futureUnaryCall(
-          channel.newCall(METHOD_LIST_DATASETS, callOptions), request);
+          getChannel().newCall(METHOD_LIST_DATASETS, getCallOptions()), request);
     }
 
     @java.lang.Override
     public com.google.common.util.concurrent.ListenableFuture<com.google.genomics.v1.Dataset> createDataset(
         com.google.genomics.v1.CreateDatasetRequest request) {
       return futureUnaryCall(
-          channel.newCall(METHOD_CREATE_DATASET, callOptions), request);
+          getChannel().newCall(METHOD_CREATE_DATASET, getCallOptions()), request);
     }
 
     @java.lang.Override
     public com.google.common.util.concurrent.ListenableFuture<com.google.genomics.v1.Dataset> getDataset(
         com.google.genomics.v1.GetDatasetRequest request) {
       return futureUnaryCall(
-          channel.newCall(METHOD_GET_DATASET, callOptions), request);
+          getChannel().newCall(METHOD_GET_DATASET, getCallOptions()), request);
     }
 
     @java.lang.Override
     public com.google.common.util.concurrent.ListenableFuture<com.google.genomics.v1.Dataset> updateDataset(
         com.google.genomics.v1.UpdateDatasetRequest request) {
       return futureUnaryCall(
-          channel.newCall(METHOD_UPDATE_DATASET, callOptions), request);
+          getChannel().newCall(METHOD_UPDATE_DATASET, getCallOptions()), request);
     }
 
     @java.lang.Override
     public com.google.common.util.concurrent.ListenableFuture<com.google.protobuf.Empty> deleteDataset(
         com.google.genomics.v1.DeleteDatasetRequest request) {
       return futureUnaryCall(
-          channel.newCall(METHOD_DELETE_DATASET, callOptions), request);
+          getChannel().newCall(METHOD_DELETE_DATASET, getCallOptions()), request);
     }
 
     @java.lang.Override
     public com.google.common.util.concurrent.ListenableFuture<com.google.genomics.v1.Dataset> undeleteDataset(
         com.google.genomics.v1.UndeleteDatasetRequest request) {
       return futureUnaryCall(
-          channel.newCall(METHOD_UNDELETE_DATASET, callOptions), request);
+          getChannel().newCall(METHOD_UNDELETE_DATASET, getCallOptions()), request);
     }
   }
 
   public static io.grpc.ServerServiceDefinition bindService(
       final DatasetServiceV1 serviceImpl) {
-    return io.grpc.ServerServiceDefinition.builder("google.genomics.v1.DatasetServiceV1")
-      .addMethod(io.grpc.ServerMethodDefinition.create(
-          METHOD_LIST_DATASETS,
-          asyncUnaryCall(
-            new io.grpc.stub.ServerCalls.UnaryMethod<
-                com.google.genomics.v1.ListDatasetsRequest,
-                com.google.genomics.v1.ListDatasetsResponse>() {
-              @java.lang.Override
-              public void invoke(
-                  com.google.genomics.v1.ListDatasetsRequest request,
-                  io.grpc.stub.StreamObserver<com.google.genomics.v1.ListDatasetsResponse> responseObserver) {
-                serviceImpl.listDatasets(request, responseObserver);
-              }
-            })))
-      .addMethod(io.grpc.ServerMethodDefinition.create(
-          METHOD_CREATE_DATASET,
-          asyncUnaryCall(
-            new io.grpc.stub.ServerCalls.UnaryMethod<
-                com.google.genomics.v1.CreateDatasetRequest,
-                com.google.genomics.v1.Dataset>() {
-              @java.lang.Override
-              public void invoke(
-                  com.google.genomics.v1.CreateDatasetRequest request,
-                  io.grpc.stub.StreamObserver<com.google.genomics.v1.Dataset> responseObserver) {
-                serviceImpl.createDataset(request, responseObserver);
-              }
-            })))
-      .addMethod(io.grpc.ServerMethodDefinition.create(
-          METHOD_GET_DATASET,
-          asyncUnaryCall(
-            new io.grpc.stub.ServerCalls.UnaryMethod<
-                com.google.genomics.v1.GetDatasetRequest,
-                com.google.genomics.v1.Dataset>() {
-              @java.lang.Override
-              public void invoke(
-                  com.google.genomics.v1.GetDatasetRequest request,
-                  io.grpc.stub.StreamObserver<com.google.genomics.v1.Dataset> responseObserver) {
-                serviceImpl.getDataset(request, responseObserver);
-              }
-            })))
-      .addMethod(io.grpc.ServerMethodDefinition.create(
-          METHOD_UPDATE_DATASET,
-          asyncUnaryCall(
-            new io.grpc.stub.ServerCalls.UnaryMethod<
-                com.google.genomics.v1.UpdateDatasetRequest,
-                com.google.genomics.v1.Dataset>() {
-              @java.lang.Override
-              public void invoke(
-                  com.google.genomics.v1.UpdateDatasetRequest request,
-                  io.grpc.stub.StreamObserver<com.google.genomics.v1.Dataset> responseObserver) {
-                serviceImpl.updateDataset(request, responseObserver);
-              }
-            })))
-      .addMethod(io.grpc.ServerMethodDefinition.create(
-          METHOD_DELETE_DATASET,
-          asyncUnaryCall(
-            new io.grpc.stub.ServerCalls.UnaryMethod<
-                com.google.genomics.v1.DeleteDatasetRequest,
-                com.google.protobuf.Empty>() {
-              @java.lang.Override
-              public void invoke(
-                  com.google.genomics.v1.DeleteDatasetRequest request,
-                  io.grpc.stub.StreamObserver<com.google.protobuf.Empty> responseObserver) {
-                serviceImpl.deleteDataset(request, responseObserver);
-              }
-            })))
-      .addMethod(io.grpc.ServerMethodDefinition.create(
-          METHOD_UNDELETE_DATASET,
-          asyncUnaryCall(
-            new io.grpc.stub.ServerCalls.UnaryMethod<
-                com.google.genomics.v1.UndeleteDatasetRequest,
-                com.google.genomics.v1.Dataset>() {
-              @java.lang.Override
-              public void invoke(
-                  com.google.genomics.v1.UndeleteDatasetRequest request,
-                  io.grpc.stub.StreamObserver<com.google.genomics.v1.Dataset> responseObserver) {
-                serviceImpl.undeleteDataset(request, responseObserver);
-              }
-            }))).build();
+    return io.grpc.ServerServiceDefinition.builder(SERVICE_NAME)
+      .addMethod(
+        METHOD_LIST_DATASETS,
+        asyncUnaryCall(
+          new io.grpc.stub.ServerCalls.UnaryMethod<
+              com.google.genomics.v1.ListDatasetsRequest,
+              com.google.genomics.v1.ListDatasetsResponse>() {
+            @java.lang.Override
+            public void invoke(
+                com.google.genomics.v1.ListDatasetsRequest request,
+                io.grpc.stub.StreamObserver<com.google.genomics.v1.ListDatasetsResponse> responseObserver) {
+              serviceImpl.listDatasets(request, responseObserver);
+            }
+          }))
+      .addMethod(
+        METHOD_CREATE_DATASET,
+        asyncUnaryCall(
+          new io.grpc.stub.ServerCalls.UnaryMethod<
+              com.google.genomics.v1.CreateDatasetRequest,
+              com.google.genomics.v1.Dataset>() {
+            @java.lang.Override
+            public void invoke(
+                com.google.genomics.v1.CreateDatasetRequest request,
+                io.grpc.stub.StreamObserver<com.google.genomics.v1.Dataset> responseObserver) {
+              serviceImpl.createDataset(request, responseObserver);
+            }
+          }))
+      .addMethod(
+        METHOD_GET_DATASET,
+        asyncUnaryCall(
+          new io.grpc.stub.ServerCalls.UnaryMethod<
+              com.google.genomics.v1.GetDatasetRequest,
+              com.google.genomics.v1.Dataset>() {
+            @java.lang.Override
+            public void invoke(
+                com.google.genomics.v1.GetDatasetRequest request,
+                io.grpc.stub.StreamObserver<com.google.genomics.v1.Dataset> responseObserver) {
+              serviceImpl.getDataset(request, responseObserver);
+            }
+          }))
+      .addMethod(
+        METHOD_UPDATE_DATASET,
+        asyncUnaryCall(
+          new io.grpc.stub.ServerCalls.UnaryMethod<
+              com.google.genomics.v1.UpdateDatasetRequest,
+              com.google.genomics.v1.Dataset>() {
+            @java.lang.Override
+            public void invoke(
+                com.google.genomics.v1.UpdateDatasetRequest request,
+                io.grpc.stub.StreamObserver<com.google.genomics.v1.Dataset> responseObserver) {
+              serviceImpl.updateDataset(request, responseObserver);
+            }
+          }))
+      .addMethod(
+        METHOD_DELETE_DATASET,
+        asyncUnaryCall(
+          new io.grpc.stub.ServerCalls.UnaryMethod<
+              com.google.genomics.v1.DeleteDatasetRequest,
+              com.google.protobuf.Empty>() {
+            @java.lang.Override
+            public void invoke(
+                com.google.genomics.v1.DeleteDatasetRequest request,
+                io.grpc.stub.StreamObserver<com.google.protobuf.Empty> responseObserver) {
+              serviceImpl.deleteDataset(request, responseObserver);
+            }
+          }))
+      .addMethod(
+        METHOD_UNDELETE_DATASET,
+        asyncUnaryCall(
+          new io.grpc.stub.ServerCalls.UnaryMethod<
+              com.google.genomics.v1.UndeleteDatasetRequest,
+              com.google.genomics.v1.Dataset>() {
+            @java.lang.Override
+            public void invoke(
+                com.google.genomics.v1.UndeleteDatasetRequest request,
+                io.grpc.stub.StreamObserver<com.google.genomics.v1.Dataset> responseObserver) {
+              serviceImpl.undeleteDataset(request, responseObserver);
+            }
+          })).build();
   }
 }

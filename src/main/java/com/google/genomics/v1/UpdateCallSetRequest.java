@@ -11,7 +11,7 @@ public  final class UpdateCallSetRequest extends
     // @@protoc_insertion_point(message_implements:google.genomics.v1.UpdateCallSetRequest)
     UpdateCallSetRequestOrBuilder {
   // Use UpdateCallSetRequest.newBuilder() to construct.
-  private UpdateCallSetRequest(com.google.protobuf.GeneratedMessage.Builder builder) {
+  private UpdateCallSetRequest(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
     super(builder);
   }
   private UpdateCallSetRequest() {
@@ -43,9 +43,9 @@ public  final class UpdateCallSetRequest extends
             break;
           }
           case 10: {
-            com.google.protobuf.ByteString bs = input.readBytes();
+            String s = input.readStringRequireUtf8();
 
-            callSetId_ = bs;
+            callSetId_ = s;
             break;
           }
           case 18: {
@@ -53,7 +53,7 @@ public  final class UpdateCallSetRequest extends
             if (callSet_ != null) {
               subBuilder = callSet_.toBuilder();
             }
-            callSet_ = input.readMessage(com.google.genomics.v1.CallSet.PARSER, extensionRegistry);
+            callSet_ = input.readMessage(com.google.genomics.v1.CallSet.parser(), extensionRegistry);
             if (subBuilder != null) {
               subBuilder.mergeFrom(callSet_);
               callSet_ = subBuilder.buildPartial();
@@ -66,7 +66,7 @@ public  final class UpdateCallSetRequest extends
             if (updateMask_ != null) {
               subBuilder = updateMask_.toBuilder();
             }
-            updateMask_ = input.readMessage(com.google.protobuf.FieldMask.PARSER, extensionRegistry);
+            updateMask_ = input.readMessage(com.google.protobuf.FieldMask.parser(), extensionRegistry);
             if (subBuilder != null) {
               subBuilder.mergeFrom(updateMask_);
               updateMask_ = subBuilder.buildPartial();
@@ -115,9 +115,7 @@ public  final class UpdateCallSetRequest extends
       com.google.protobuf.ByteString bs = 
           (com.google.protobuf.ByteString) ref;
       java.lang.String s = bs.toStringUtf8();
-      if (bs.isValidUtf8()) {
-        callSetId_ = s;
-      }
+      callSetId_ = s;
       return s;
     }
   }
@@ -227,7 +225,7 @@ public  final class UpdateCallSetRequest extends
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
     if (!getCallSetIdBytes().isEmpty()) {
-      output.writeBytes(1, getCallSetIdBytes());
+      com.google.protobuf.GeneratedMessage.writeString(output, 1, callSetId_);
     }
     if (callSet_ != null) {
       output.writeMessage(2, getCallSet());
@@ -237,15 +235,13 @@ public  final class UpdateCallSetRequest extends
     }
   }
 
-  private int memoizedSerializedSize = -1;
   public int getSerializedSize() {
-    int size = memoizedSerializedSize;
+    int size = memoizedSize;
     if (size != -1) return size;
 
     size = 0;
     if (!getCallSetIdBytes().isEmpty()) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeBytesSize(1, getCallSetIdBytes());
+      size += com.google.protobuf.GeneratedMessage.computeStringSize(1, callSetId_);
     }
     if (callSet_ != null) {
       size += com.google.protobuf.CodedOutputStream
@@ -255,7 +251,7 @@ public  final class UpdateCallSetRequest extends
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(3, getUpdateMask());
     }
-    memoizedSerializedSize = size;
+    memoizedSize = size;
     return size;
   }
 
@@ -478,9 +474,7 @@ public  final class UpdateCallSetRequest extends
         com.google.protobuf.ByteString bs =
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          callSetId_ = s;
-        }
+        callSetId_ = s;
         return s;
       } else {
         return (java.lang.String) ref;
@@ -548,7 +542,8 @@ public  final class UpdateCallSetRequest extends
       if (value == null) {
     throw new NullPointerException();
   }
-  
+  checkByteStringIsUtf8(value);
+      
       callSetId_ = value;
       onChanged();
       return this;
@@ -901,8 +896,8 @@ public  final class UpdateCallSetRequest extends
     return DEFAULT_INSTANCE;
   }
 
-  public static final com.google.protobuf.Parser<UpdateCallSetRequest> PARSER =
-      new com.google.protobuf.AbstractParser<UpdateCallSetRequest>() {
+  private static final com.google.protobuf.Parser<UpdateCallSetRequest>
+      PARSER = new com.google.protobuf.AbstractParser<UpdateCallSetRequest>() {
     public UpdateCallSetRequest parsePartialFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
