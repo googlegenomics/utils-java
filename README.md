@@ -49,7 +49,9 @@ If you wish to modify this code while also modifying a project that depends upon
   3. Eclipse users: 
     * For each of utils-java, dataflow-java, etc... in Eclipse do: `File -> Import -> Maven -> Existing Maven Projects`
     * If at any point in Eclipse becomes confused (lot of red X's) in Eclipse do: `Project -> Clean -> Clean All Projects`
-  
+  4. IntelliJ users:
+    * Import the project via File > Open and then double-click on the pom.xml file.
+
 ##gRPC
 This project now includes code for calling the Genomics API using <a href="http://www.grpc.io">gRPC</a>.
 Calling the API with gRPC should greatly improve performance but is still experimental (alpha). To use
