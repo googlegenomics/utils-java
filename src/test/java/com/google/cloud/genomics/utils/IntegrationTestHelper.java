@@ -120,17 +120,4 @@ public class IntegrationTestHelper {
   public OfflineAuth getAuth() {
     return auth;
   }
-  
-  // TODO: Remove this whole method when gRPC is no longer behind a whitelist.  We really want to keep 
-  // integration tests to just API_KEY to keep them simple and only functional against public data.
-  // https://github.com/googlegenomics/utils-java/issues/51
-  public GenomicsFactory.OfflineAuth getAuthWithUserCredentials() throws GeneralSecurityException, IOException {
-    // This code is intentionally all in one method to make it easier to remove.
-    final String ENV_VAR = "GOOGLE_CLIENT_SECRETS_FILEPATH";
-    final String CLIENT_SECRECTS_FILEPATH = System.getenv(ENV_VAR);
-    assertNotNull("You must set the " + ENV_VAR + " environment variable for this test.", CLIENT_SECRECTS_FILEPATH);
-    
-    Builder builder = GenomicsFactory.builder(IntegrationTestHelper.class.getName());
-    return builder.build().getOfflineAuthFromClientSecretsFile(CLIENT_SECRECTS_FILEPATH);
-  }
 }

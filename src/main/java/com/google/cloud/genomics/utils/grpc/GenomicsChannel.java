@@ -32,7 +32,6 @@ import javax.net.ssl.SSLException;
 public class GenomicsChannel extends Channel {
   private static final String GENOMICS_ENDPOINT = "genomics.googleapis.com";
   private static final String GENOMICS_SCOPE = "https://www.googleapis.com/auth/genomics";
-  // TODO: This constant should come from grpc-java.
   private static final String API_KEY_HEADER = "X-Goog-Api-Key";
 
   // NOTE: Unfortunately we need to keep a handle to both of these since Channel does not expose
@@ -138,9 +137,8 @@ public class GenomicsChannel extends Channel {
   public static GenomicsChannel fromOfflineAuth(GenomicsFactory.OfflineAuth auth) throws IOException, GeneralSecurityException {
     if(auth.hasUserCredentials()) {
       return fromCreds(auth.getUserCredentials());
-// TODO: https://github.com/googlegenomics/utils-java/issues/51      
-//    } else if(auth.hasApiKey()) {
-//      return new Channels(auth.apiKey);
+    } else if(auth.hasApiKey()) {
+      return fromApiKey(auth.apiKey);
     }
     // Fall back to Default Credentials if the user did not specify user credentials or an api key.
     return fromDefaultCreds();

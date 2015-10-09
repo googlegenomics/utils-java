@@ -50,13 +50,8 @@ public class ReadStreamIteratorITCase {
         REFERENCES, 100L);
     assertEquals(1, requests.size());
     
-    // TODO: switch this to helper.getAuth() to use api key once gRPC is no longer behind a whitelist.
-    // At that time, application default credentials would also work.  Right now application default credentials
-    // will not work locally since they come from a gcloud project not in the whitelist.  Application default
-    // credentials do work fine on Google Compute Engine if running in a project in the whitelist.
-    // https://github.com/googlegenomics/utils-java/issues/51
     Iterator<StreamReadsResponse> iter = new ReadStreamIterator(requests.get(0),
-        helper.getAuthWithUserCredentials(), ShardBoundary.Requirement.OVERLAPS, null);
+        helper.getAuth(), ShardBoundary.Requirement.OVERLAPS, null);
     
     assertTrue(iter.hasNext());
     StreamReadsResponse readResponse = iter.next();
@@ -64,7 +59,7 @@ public class ReadStreamIteratorITCase {
     assertFalse(iter.hasNext());
 
     iter = new ReadStreamIterator(requests.get(0),
-        helper.getAuthWithUserCredentials(), ShardBoundary.Requirement.STRICT, null);
+        helper.getAuth(), ShardBoundary.Requirement.STRICT, null);
     
     assertTrue(iter.hasNext());
     readResponse = iter.next();
