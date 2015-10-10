@@ -15,6 +15,7 @@ package com.google.cloud.genomics.utils.grpc;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
@@ -23,6 +24,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.google.cloud.genomics.utils.IntegrationTestHelper;
@@ -67,6 +69,30 @@ public class VariantStreamIteratorITCase {
     // This includes only the klotho SNP.
     assertEquals(1, variantResponse.getVariantsList().size());
     assertFalse(iter.hasNext());
+  }
+
+  @Test
+  @Ignore
+  // TODO https://github.com/googlegenomics/utils-java/issues/48
+  public void testPartialResponses() throws IOException, GeneralSecurityException {
+    ImmutableList<StreamVariantsRequest> requests =
+        ShardUtils.getVariantRequests(helper.PLATINUM_GENOMES_VARIANTSET,
+            helper.PLATINUM_GENOMES_KLOTHO_REFERENCES, 100L);
+    assertEquals(1, requests.size());
+
+    Iterator<StreamVariantsResponse> iter = new VariantStreamIterator(requests.get(0),
+        helper.getAuth(), ShardBoundary.Requirement.STRICT, "variants(reference_name,start)");
+
+    assertTrue(iter.hasNext());
+    StreamVariantsResponse variantResponse = iter.next();
+    List<Variant> variants = variantResponse.getVariantsList();
+    // This includes only the klotho SNP.
+    assertEquals(1, variants.size());
+    assertFalse(iter.hasNext());
+    
+    assertEquals("chr13", variants.get(0).getReferenceName());
+    assertEquals(33628137, variants.get(0).getStart());
+    assertNull(variants.get(0).getReferenceBases());
   }
 
 }

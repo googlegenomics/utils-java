@@ -33,6 +33,8 @@ public class GenomicsChannel extends Channel {
   private static final String GENOMICS_ENDPOINT = "genomics.googleapis.com";
   private static final String GENOMICS_SCOPE = "https://www.googleapis.com/auth/genomics";
   private static final String API_KEY_HEADER = "X-Goog-Api-Key";
+  // TODO https://github.com/googlegenomics/utils-java/issues/48
+  private static final String PARTIAL_RESPONSE_HEADER = "X-Goog-FieldMask";
 
   // NOTE: Unfortunately we need to keep a handle to both of these since Channel does not expose
   // the shutdown method and the ClientInterceptors do not return the ManagedChannel instance.
@@ -60,9 +62,9 @@ public class GenomicsChannel extends Channel {
   private GenomicsChannel(String apiKey) throws SSLException {
     managedChannel = getGenomicsManagedChannel();
     Metadata headers = new Metadata();
-    Metadata.Key<String> apiKeyHeaderKey =
+    Metadata.Key<String> apiKeyHeader =
         Metadata.Key.of(API_KEY_HEADER, Metadata.ASCII_STRING_MARSHALLER);
-    headers.put(apiKeyHeaderKey, apiKey);
+    headers.put(apiKeyHeader, apiKey);
     delegate = ClientInterceptors.intercept(managedChannel,
         MetadataUtils.newAttachHeadersInterceptor(headers)); 
   }

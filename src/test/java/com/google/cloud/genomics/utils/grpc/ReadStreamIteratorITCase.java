@@ -15,22 +15,27 @@ package com.google.cloud.genomics.utils.grpc;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.List;
 
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.google.cloud.genomics.utils.IntegrationTestHelper;
 import com.google.cloud.genomics.utils.ShardBoundary;
 import com.google.cloud.genomics.utils.ShardUtils;
 import com.google.common.collect.ImmutableList;
+import com.google.genomics.v1.Read;
 import com.google.genomics.v1.StreamReadsRequest;
 import com.google.genomics.v1.StreamReadsResponse;
+import com.google.genomics.v1.Variant;
 
 
 public class ReadStreamIteratorITCase {
@@ -65,6 +70,30 @@ public class ReadStreamIteratorITCase {
     readResponse = iter.next();
     assertEquals(2, readResponse.getAlignmentsList().size());
     assertFalse(iter.hasNext());
+  }
+
+  @Test
+  @Ignore
+  // TODO https://github.com/googlegenomics/utils-java/issues/48
+  public void testPartialResponses() throws IOException, GeneralSecurityException {
+    ImmutableList<StreamReadsRequest> requests =
+        ShardUtils.getReadRequests(Collections.singletonList(helper.PLATINUM_GENOMES_READGROUPSETS[0]),
+        REFERENCES, 100L);
+    assertEquals(1, requests.size());
+    
+    Iterator<StreamReadsResponse> iter = new ReadStreamIterator(requests.get(0),
+        helper.getAuth(), ShardBoundary.Requirement.STRICT, "reads(alignments)");
+    
+    assertTrue(iter.hasNext());
+    StreamReadsResponse readResponse = iter.next();
+    List<Read> reads = readResponse.getAlignmentsList();
+    assertEquals(2, reads.size());
+    assertFalse(iter.hasNext());
+    
+
+    assertEquals("chr13", reads.get(0).getAlignment().getPosition().getReferenceName());
+    assertEquals(33628134, reads.get(0).getAlignment().getPosition().getPosition());
+    assertNull(reads.get(0).getAlignedSequence());
   }
 
 }
