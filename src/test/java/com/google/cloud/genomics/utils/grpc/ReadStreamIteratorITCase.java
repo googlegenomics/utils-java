@@ -90,7 +90,6 @@ public class ReadStreamIteratorITCase {
     assertEquals(2, reads.size());
     assertFalse(iter.hasNext());
     
-
     assertEquals("chr13", reads.get(0).getAlignment().getPosition().getReferenceName());
     assertEquals(33628134, reads.get(0).getAlignment().getPosition().getPosition());
     assertNull(reads.get(0).getAlignedSequence());
