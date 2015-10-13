@@ -18,12 +18,14 @@ import java.security.GeneralSecurityException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import com.google.api.services.genomics.model.Reference;
 import com.google.api.services.genomics.model.ReferenceBound;
 import com.google.api.services.genomics.model.SearchReadsRequest;
 import com.google.api.services.genomics.model.SearchVariantsRequest;
 import com.google.common.base.Function;
+import com.google.common.base.Strings;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
@@ -72,6 +74,7 @@ public class ShardUtils {
      */
     EXCLUDE_XY
     }
+  public static final Pattern SEX_CHROMOSOME_REGEXP = Pattern.compile("^(chr)?[XY]$", Pattern.CASE_INSENSITIVE);
 
   /**
    * Constructs sharded StreamVariantsRequests for the specified contiguous region(s) of the genome.
@@ -283,9 +286,8 @@ public class ShardUtils {
           throws IOException, GeneralSecurityException {
     List<Contig> contigs = Lists.newArrayList();
     for (ReferenceBound bound : GenomicsUtils.getReferenceBounds(variantSetId, auth)) {
-      String referenceName = bound.getReferenceName().toLowerCase();
       if (sexChromosomeFilter == SexChromosomeFilter.EXCLUDE_XY
-          && (referenceName.contains("x") || referenceName.contains("y"))) {
+          && SEX_CHROMOSOME_REGEXP.matcher(bound.getReferenceName()).matches()) {
         // X and Y can skew some analysis results
         continue;
       }
@@ -318,15 +320,14 @@ public class ShardUtils {
       SexChromosomeFilter sexChromosomeFilter, GenomicsFactory.OfflineAuth auth)
           throws IOException, GeneralSecurityException {
     String referenceSetId = GenomicsUtils.getReferenceSetId(readGroupSetId, auth);
-    if(null == referenceSetId) {
+    if (Strings.isNullOrEmpty(referenceSetId)) {
       throw new IllegalArgumentException("No referenceSetId associated with readGroupSetId "
           + readGroupSetId + ".");
     }
     List<Contig> contigs = Lists.newArrayList();
     for (Reference reference : GenomicsUtils.getReferences(referenceSetId, auth)) {
-      String referenceName = reference.getName().toLowerCase();
       if (sexChromosomeFilter == SexChromosomeFilter.EXCLUDE_XY
-          && (referenceName.contains("x") || referenceName.contains("y"))) {
+          && SEX_CHROMOSOME_REGEXP.matcher(reference.getName()).matches()) {
         // X and Y can skew some analysis results
         continue;
       }

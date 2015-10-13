@@ -88,9 +88,8 @@ public class GenomicsUtils {
   public static Iterable<Reference> getReferences(String referenceSetId, GenomicsFactory.OfflineAuth auth)
       throws IOException, GeneralSecurityException {
     Genomics genomics = auth.getGenomics(auth.getDefaultFactory());
-    Iterable<Reference> references = Paginator.References.create(
+    return Paginator.References.create(
         genomics).search(new SearchReferencesRequest().setReferenceSetId(referenceSetId));
-    return references;
   }
 
   /**
