@@ -87,16 +87,6 @@ public class ShardUtilsTest {
   }
 
   @Test
-  public void testGetReadRequestsListOfString() {
-    final StreamReadsRequest[] EXPECTED_RESULT = {
-        StreamReadsRequest.newBuilder().setReadGroupSetId("readset1").build(),
-        StreamReadsRequest.newBuilder().setReadGroupSetId("readset2").build(),
-    };
-    assertThat(ShardUtils.getReadRequests(Arrays.asList("readset1", "readset2")),
-        CoreMatchers.allOf(CoreMatchers.hasItems(EXPECTED_RESULT)));
-  }
-
-  @Test
   public void testVariantShardsAreShuffled() throws Exception {
     final StreamVariantsRequest[] EXPECTED_RESULT = {
       new Contig("chr1", 0, 50)

@@ -19,6 +19,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import com.google.api.services.genomics.model.Reference;
 import com.google.api.services.genomics.model.ReferenceBound;
 import com.google.api.services.genomics.model.SearchReadsRequest;
 import com.google.api.services.genomics.model.SearchVariantsRequest;
@@ -232,29 +233,37 @@ public class ShardUtils {
   }
 
   /**
-   * Constructs StreamReadsRequest for the readGroupSetIds, assuming that the user wants to
-   * include all references.
+   * Constructs sharded StreamReadsRequest for all references in the referenceSet associated
+   * with the readGroupSetId.
    * 
-   * TODO: Should this be sharded - by the referenceBounds for the associated referenceSet
-   *     and/or by read groups?
-   * 
-   * @param readGroupSetIds The readGroupSetIds.
+   * @param readGroupSetId The readGroupSetId.
+   * @param sexChromosomeFilter An enum value indicating how sex chromosomes should be
+   *        handled in the result.
+   * @param numberOfBasesPerShard The maximum number of bases to include per shard.
+   * @param auth The OfflineAuth to be used to get the reference bounds for the variantSet.
    * @return The shuffled list of sharded request objects.
+   * @throws IOException 
+   * @throws GeneralSecurityException 
    */
-  public static ImmutableList<StreamReadsRequest> getReadRequests(List<String> readGroupSetIds) {
-    // Work around lack of FluentIterable.shuffle() https://github.com/google/guava/issues/1358
-    List<StreamReadsRequest> requests =
-        Arrays.asList(FluentIterable.from(readGroupSetIds)
-        .transform(new Function<String, StreamReadsRequest>() {
+  public static ImmutableList<StreamReadsRequest> getReadRequests(final String readGroupSetId,
+      SexChromosomeFilter sexChromosomeFilter, long numberOfBasesPerShard,
+      GenomicsFactory.OfflineAuth auth) throws IOException, GeneralSecurityException {
+    Iterable<Contig> shards = getAllShardsInReadGroupSet(readGroupSetId, sexChromosomeFilter,
+        numberOfBasesPerShard, auth);
+    return FluentIterable.from(shards)
+        .transform(new Function<Contig, StreamReadsRequest>() {
           @Override
-          public StreamReadsRequest apply(String readGroupSetId) {
-            return StreamReadsRequest.newBuilder()
-                .setReadGroupSetId(readGroupSetId)
-                .build();
+          public StreamReadsRequest apply(Contig shard) {
+            return shard.getStreamReadsRequest(readGroupSetId);
           }
-        }).toArray(StreamReadsRequest.class));
-    Collections.shuffle(requests);
-    return FluentIterable.from(requests).toList();
+        }).toList();
+  }
+
+  private static List<Contig> getAllShardsInVariantSet(String variantSetId,
+      SexChromosomeFilter sexChromosomeFilter, long numberOfBasesPerShard,
+      GenomicsFactory.OfflineAuth auth) throws IOException, GeneralSecurityException {
+    List<Contig> contigs = getContigsInVariantSet(variantSetId, sexChromosomeFilter, auth);
+    return ShardUtils.getAllShardsForContigs(contigs, numberOfBasesPerShard);
   }
 
   /**
@@ -274,9 +283,9 @@ public class ShardUtils {
           throws IOException, GeneralSecurityException {
     List<Contig> contigs = Lists.newArrayList();
     for (ReferenceBound bound : GenomicsUtils.getReferenceBounds(variantSetId, auth)) {
-      String contig = bound.getReferenceName().toLowerCase();
+      String referenceName = bound.getReferenceName().toLowerCase();
       if (sexChromosomeFilter == SexChromosomeFilter.EXCLUDE_XY
-          && (contig.contains("x") || contig.contains("y"))) {
+          && (referenceName.contains("x") || referenceName.contains("y"))) {
         // X and Y can skew some analysis results
         continue;
       }
@@ -285,13 +294,47 @@ public class ShardUtils {
     return contigs;
   }
 
-  private static List<Contig> getAllShardsInVariantSet(String variantSetId,
+  private static List<Contig> getAllShardsInReadGroupSet(String readGroupSetId,
       SexChromosomeFilter sexChromosomeFilter, long numberOfBasesPerShard,
       GenomicsFactory.OfflineAuth auth) throws IOException, GeneralSecurityException {
-    List<Contig> contigs = getContigsInVariantSet(variantSetId, sexChromosomeFilter, auth);
+    List<Contig> contigs = getContigsInReadGroupSet(readGroupSetId, sexChromosomeFilter, auth);
     return ShardUtils.getAllShardsForContigs(contigs, numberOfBasesPerShard);
   }
-
+  
+  /**
+   * Retrieve the list of all the reference names and their start=0/end positions for the referenceSet
+   * associated with the readGroupSet.
+   * 
+   * Note that start is hardcoded to zero since references only specify their length. 
+   * 
+   * @param readGroupSetId - The id of the readGroupSet to query.
+   * @param sexChromosomeFilter - An enum value indicating how sex chromosomes should be
+   *        handled in the result.
+   * @return The list of all references in the readGroupSet.
+   * @throws IOException
+   * @throws GeneralSecurityException 
+   */
+  private static List<Contig> getContigsInReadGroupSet(String readGroupSetId,
+      SexChromosomeFilter sexChromosomeFilter, GenomicsFactory.OfflineAuth auth)
+          throws IOException, GeneralSecurityException {
+    String referenceSetId = GenomicsUtils.getReferenceSetId(readGroupSetId, auth);
+    if(null == referenceSetId) {
+      throw new IllegalArgumentException("No referenceSetId associated with readGroupSetId "
+          + readGroupSetId + ".");
+    }
+    List<Contig> contigs = Lists.newArrayList();
+    for (Reference reference : GenomicsUtils.getReferences(referenceSetId, auth)) {
+      String referenceName = reference.getName().toLowerCase();
+      if (sexChromosomeFilter == SexChromosomeFilter.EXCLUDE_XY
+          && (referenceName.contains("x") || referenceName.contains("y"))) {
+        // X and Y can skew some analysis results
+        continue;
+      }
+      contigs.add(new Contig(reference.getName(), 0, reference.getLength()));
+    }
+    return contigs;
+  }
+  
   private static List<Contig> getSpecifiedShards(String contigsArgument, long numberOfBasesPerShard) {
     Iterable<Contig> contigs = Contig.parseContigsFromCommandLine(contigsArgument);
     return ShardUtils.getAllShardsForContigs(contigs, numberOfBasesPerShard);
