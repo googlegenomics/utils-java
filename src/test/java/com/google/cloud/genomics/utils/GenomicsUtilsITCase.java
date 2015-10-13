@@ -16,6 +16,7 @@
 package com.google.cloud.genomics.utils;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
@@ -39,6 +40,12 @@ public class GenomicsUtilsITCase {
         CoreMatchers.allOf(CoreMatchers.hasItems(helper.PLATINUM_GENOMES_READGROUPSETS))); 
   }
 
+  @Test
+  public void testGetReferenceSetIdForReadGroupSet() throws IOException, GeneralSecurityException {
+    assertEquals(helper.PLATINUM_GENOMES_REFERENCE_SET_ID,
+        GenomicsUtils.getReferenceSetId(helper.PLATINUM_GENOMES_READGROUPSETS[0], helper.getAuth()));
+  }
+  
   @Test
   public void testGetVariantSetIds() throws IOException, GeneralSecurityException {
     assertThat(GenomicsUtils.getVariantSetIds(helper.PLATINUM_GENOMES_DATASET, helper.getAuth()),

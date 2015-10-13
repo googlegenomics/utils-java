@@ -16,6 +16,8 @@ package com.google.cloud.genomics.utils;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 import java.util.List;
@@ -83,16 +85,6 @@ public class ShardUtilsTest {
         .getSearchReadsRequest("readset2")
     };
     assertThat(ShardUtils.getPaginatedReadRequests(Arrays.asList("readset1", "readset2"), "chr17:41196311:41277499", 50000L),
-        CoreMatchers.allOf(CoreMatchers.hasItems(EXPECTED_RESULT)));
-  }
-
-  @Test
-  public void testGetReadRequestsListOfString() {
-    final StreamReadsRequest[] EXPECTED_RESULT = {
-        StreamReadsRequest.newBuilder().setReadGroupSetId("readset1").build(),
-        StreamReadsRequest.newBuilder().setReadGroupSetId("readset2").build(),
-    };
-    assertThat(ShardUtils.getReadRequests(Arrays.asList("readset1", "readset2")),
         CoreMatchers.allOf(CoreMatchers.hasItems(EXPECTED_RESULT)));
   }
 
@@ -176,5 +168,16 @@ public class ShardUtilsTest {
 
     // Lists have different orders for their elements.
     assertThat(requests, is(not(requests2)));
+  }
+  
+  @Test
+  public void testSexChromosomeRegexp() {
+    assertTrue(ShardUtils.SEX_CHROMOSOME_REGEXP.matcher("chrX").matches());
+    assertTrue(ShardUtils.SEX_CHROMOSOME_REGEXP.matcher("chrY").matches());
+    assertTrue(ShardUtils.SEX_CHROMOSOME_REGEXP.matcher("X").matches());
+    assertTrue(ShardUtils.SEX_CHROMOSOME_REGEXP.matcher("Y").matches());
+    assertTrue(ShardUtils.SEX_CHROMOSOME_REGEXP.matcher("x").matches());
+    assertTrue(ShardUtils.SEX_CHROMOSOME_REGEXP.matcher("y").matches());
+    assertFalse(ShardUtils.SEX_CHROMOSOME_REGEXP.matcher("chr6_cox_hap2").matches());
   }
 }

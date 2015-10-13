@@ -19,12 +19,17 @@ import java.util.List;
 
 import com.google.api.services.genomics.Genomics;
 import com.google.api.services.genomics.model.CallSet;
+import com.google.api.services.genomics.model.CoverageBucket;
+import com.google.api.services.genomics.model.ListCoverageBucketsResponse;
 import com.google.api.services.genomics.model.ReadGroupSet;
+import com.google.api.services.genomics.model.Reference;
 import com.google.api.services.genomics.model.ReferenceBound;
 import com.google.api.services.genomics.model.SearchCallSetsRequest;
 import com.google.api.services.genomics.model.SearchReadGroupSetsRequest;
+import com.google.api.services.genomics.model.SearchReferencesRequest;
 import com.google.api.services.genomics.model.SearchVariantSetsRequest;
 import com.google.api.services.genomics.model.VariantSet;
+import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 
 /**
@@ -56,7 +61,64 @@ public class GenomicsUtils {
     }
     return output;
   }
+
+  /**
+   * Gets the ReferenceSetId for a given readGroupSetId using the Genomics API.
+   *
+   * @param readGroupSetId The id of the readGroupSet to query.
+   * @param auth The OfflineAuth for the API request.
+   * @return The referenceSetId for the redGroupSet (which may be null).
+   * @throws IOException
+   * @throws GeneralSecurityException
+   */
+  public static String getReferenceSetId(String readGroupSetId, GenomicsFactory.OfflineAuth auth)
+      throws IOException, GeneralSecurityException {
+    Genomics genomics = auth.getGenomics(auth.getDefaultFactory());
+    ReadGroupSet readGroupSet = genomics.readgroupsets().get(readGroupSetId)
+        .setFields("referenceSetId").execute();
+    return readGroupSet.getReferenceSetId();
+  }
   
+  /**
+   * Gets the CoverageBuckets for a given readGroupSetId using the Genomics API.
+   *
+   * @param readGroupSetId The id of the readGroupSet to query.
+   * @param auth The OfflineAuth for the API request.
+   * @return The list of reference bounds in the variantSet.
+   * @throws IOException
+   * @throws GeneralSecurityException
+   */
+  public static List<CoverageBucket> getCoverageBuckets(String readGroupSetId, GenomicsFactory.OfflineAuth auth)
+      throws IOException, GeneralSecurityException {
+    Genomics genomics = auth.getGenomics(auth.getDefaultFactory());
+    ListCoverageBucketsResponse response =
+        genomics.readgroupsets().coveragebuckets().list(readGroupSetId).execute();
+    // Requests of this form return one result per reference name, so therefore many fewer than
+    // the default page size, but verify that the assumption holds true.
+    if (!Strings.isNullOrEmpty(response.getNextPageToken())) {
+      throw new IllegalArgumentException("Read group set " + readGroupSetId 
+          + " has more Coverage Buckets than the default page size for the CoverageBuckets list operation.");
+    }
+    return response.getCoverageBuckets();
+  }  
+
+
+  /**
+   * Gets the references for a given referenceSetId using the Genomics API.
+   *
+   * @param referenceSetId The id of the referenceSet to query.
+   * @param auth The OfflineAuth for the API request.
+   * @return The list of references in the referenceSet.
+   * @throws IOException
+   * @throws GeneralSecurityException
+   */
+  public static Iterable<Reference> getReferences(String referenceSetId, GenomicsFactory.OfflineAuth auth)
+      throws IOException, GeneralSecurityException {
+    Genomics genomics = auth.getGenomics(auth.getDefaultFactory());
+    return Paginator.References.create(
+        genomics).search(new SearchReferencesRequest().setReferenceSetId(referenceSetId));
+  }
+
   /**
    * Gets VariantSetIds from a given datasetId using the Genomics API.
    *
@@ -122,6 +184,5 @@ public class GenomicsUtils {
     Genomics genomics = auth.getGenomics(auth.getDefaultFactory());
     VariantSet variantSet = genomics.variantsets().get(variantSetId).execute();
     return variantSet.getReferenceBounds();
-  }
-
+  }  
 }

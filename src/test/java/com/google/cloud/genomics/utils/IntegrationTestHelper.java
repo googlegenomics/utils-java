@@ -69,6 +69,7 @@ public class IntegrationTestHelper {
     "CMvnhpKTFhCUpIDDveWE-r0B",
     "CMvnhpKTFhCrvIOEw4Ol__sB",
   };
+  public static final String PLATINUM_GENOMES_REFERENCE_SET_ID = "CNfS6aHAoved2AEQ6PnzkOzw15rqAQ";
   public static final String PLATINUM_GENOMES_BRCA1_REFERENCES = "chr17:41196311:41277499";
   public static final String PLATINUM_GENOMES_KLOTHO_REFERENCES = "chr13:33628137:33628138";
   public static final ReferenceBound[] PLATINUM_GENOMES_VARIANTSET_BOUNDS = {
