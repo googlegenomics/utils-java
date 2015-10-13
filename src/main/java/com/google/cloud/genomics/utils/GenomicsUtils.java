@@ -19,6 +19,8 @@ import java.util.List;
 
 import com.google.api.services.genomics.Genomics;
 import com.google.api.services.genomics.model.CallSet;
+import com.google.api.services.genomics.model.CoverageBucket;
+import com.google.api.services.genomics.model.ListCoverageBucketsResponse;
 import com.google.api.services.genomics.model.ReadGroupSet;
 import com.google.api.services.genomics.model.Reference;
 import com.google.api.services.genomics.model.ReferenceBound;
@@ -75,6 +77,26 @@ public class GenomicsUtils {
         .setFields("referenceSetId").execute();
     return readGroupSet.getReferenceSetId();
   }
+  
+  /**
+   * Gets the CoverageBuckets for a given readGroupSetId using the Genomics API.
+   *
+   * @param readGroupSetId The id of the readGroupSet to query.
+   * @param auth The OfflineAuth for the API request.
+   * @return The list of reference bounds in the variantSet.
+   * @throws IOException
+   * @throws GeneralSecurityException
+   */
+  public static List<CoverageBucket> getCoverageBuckets(String readGroupSetId, GenomicsFactory.OfflineAuth auth)
+      throws IOException, GeneralSecurityException {
+    Genomics genomics = auth.getGenomics(auth.getDefaultFactory());
+    // Not using a Paginator here because requests of this form return one result per
+    // reference name, so therefore many fewer than the default page size.
+    ListCoverageBucketsResponse response =
+        genomics.readgroupsets().coveragebuckets().list(readGroupSetId).execute();
+    return response.getCoverageBuckets();
+  }  
+
 
   /**
    * Gets the references for a given referenceSetId using the Genomics API.

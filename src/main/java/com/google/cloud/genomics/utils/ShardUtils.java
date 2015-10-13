@@ -20,12 +20,11 @@ import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import com.google.api.services.genomics.model.Reference;
+import com.google.api.services.genomics.model.CoverageBucket;
 import com.google.api.services.genomics.model.ReferenceBound;
 import com.google.api.services.genomics.model.SearchReadsRequest;
 import com.google.api.services.genomics.model.SearchVariantsRequest;
 import com.google.common.base.Function;
-import com.google.common.base.Strings;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
@@ -236,8 +235,7 @@ public class ShardUtils {
   }
 
   /**
-   * Constructs sharded StreamReadsRequest for all references in the referenceSet associated
-   * with the readGroupSetId.
+   * Constructs sharded StreamReadsRequest for the all references in the readGroupSet.
    * 
    * @param readGroupSetId The readGroupSetId.
    * @param sexChromosomeFilter An enum value indicating how sex chromosomes should be
@@ -304,10 +302,8 @@ public class ShardUtils {
   }
   
   /**
-   * Retrieve the list of all the reference names and their start=0/end positions for the referenceSet
-   * associated with the readGroupSet.
-   * 
-   * Note that start is hardcoded to zero since references only specify their length. 
+   * Retrieve the list of all the reference names and their start=0/end positions for the ranges of
+   * the coverage buckets computed for this readGroupSet.
    * 
    * @param readGroupSetId - The id of the readGroupSet to query.
    * @param sexChromosomeFilter - An enum value indicating how sex chromosomes should be
@@ -319,19 +315,16 @@ public class ShardUtils {
   private static List<Contig> getContigsInReadGroupSet(String readGroupSetId,
       SexChromosomeFilter sexChromosomeFilter, GenomicsFactory.OfflineAuth auth)
           throws IOException, GeneralSecurityException {
-    String referenceSetId = GenomicsUtils.getReferenceSetId(readGroupSetId, auth);
-    if (Strings.isNullOrEmpty(referenceSetId)) {
-      throw new IllegalArgumentException("No referenceSetId associated with readGroupSetId "
-          + readGroupSetId + ".");
-    }
     List<Contig> contigs = Lists.newArrayList();
-    for (Reference reference : GenomicsUtils.getReferences(referenceSetId, auth)) {
+    for (CoverageBucket bucket : GenomicsUtils.getCoverageBuckets(readGroupSetId, auth)) {
       if (sexChromosomeFilter == SexChromosomeFilter.EXCLUDE_XY
-          && SEX_CHROMOSOME_REGEXP.matcher(reference.getName()).matches()) {
+          && SEX_CHROMOSOME_REGEXP.matcher(bucket.getRange().getReferenceName()).matches()) {
         // X and Y can skew some analysis results
         continue;
       }
-      contigs.add(new Contig(reference.getName(), 0, reference.getLength()));
+      contigs.add(new Contig(bucket.getRange().getReferenceName(),
+          (null == bucket.getRange().getStart()) ? 0 : bucket.getRange().getStart(),
+              bucket.getRange().getEnd()));
     }
     return contigs;
   }
