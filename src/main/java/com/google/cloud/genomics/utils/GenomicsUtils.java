@@ -90,10 +90,14 @@ public class GenomicsUtils {
   public static List<CoverageBucket> getCoverageBuckets(String readGroupSetId, GenomicsFactory.OfflineAuth auth)
       throws IOException, GeneralSecurityException {
     Genomics genomics = auth.getGenomics(auth.getDefaultFactory());
-    // Not using a Paginator here because requests of this form return one result per
-    // reference name, so therefore many fewer than the default page size.
     ListCoverageBucketsResponse response =
         genomics.readgroupsets().coveragebuckets().list(readGroupSetId).execute();
+    // Requests of this form return one result per reference name, so therefore many fewer than
+    // the default page size, but verify that the assumption holds true.
+    if(null != response.getNextPageToken()) {
+      throw new IllegalArgumentException("Read group set " + readGroupSetId 
+          + " has more Coverage Buckets than the default page size for the CoverageBuckets list operation.");
+    }
     return response.getCoverageBuckets();
   }  
 
