@@ -29,6 +29,7 @@ import com.google.api.services.genomics.model.SearchReadGroupSetsRequest;
 import com.google.api.services.genomics.model.SearchReferencesRequest;
 import com.google.api.services.genomics.model.SearchVariantSetsRequest;
 import com.google.api.services.genomics.model.VariantSet;
+import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 
 /**
@@ -94,7 +95,7 @@ public class GenomicsUtils {
         genomics.readgroupsets().coveragebuckets().list(readGroupSetId).execute();
     // Requests of this form return one result per reference name, so therefore many fewer than
     // the default page size, but verify that the assumption holds true.
-    if(null != response.getNextPageToken()) {
+    if (!Strings.isNullOrEmpty(response.getNextPageToken())) {
       throw new IllegalArgumentException("Read group set " + readGroupSetId 
           + " has more Coverage Buckets than the default page size for the CoverageBuckets list operation.");
     }
