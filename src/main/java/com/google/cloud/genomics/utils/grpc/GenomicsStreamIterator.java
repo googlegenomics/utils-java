@@ -33,6 +33,8 @@ import com.google.common.collect.Lists;
  * Includes complex retry logic to upon failure resume the stream at the last known good start
  * position without returning duplicate data.
  * 
+ * TODO: refactor this further to simplify the generic signature. 
+ * 
  * @param <Request> Streaming request type.
  * @param <Response> Streaming response type.
  * @param <Item> Genomic data type returned by stream.
