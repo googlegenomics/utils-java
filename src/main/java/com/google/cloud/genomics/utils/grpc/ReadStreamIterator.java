@@ -21,6 +21,7 @@ import java.util.List;
 import com.google.cloud.genomics.utils.GenomicsFactory.OfflineAuth;
 import com.google.cloud.genomics.utils.ShardBoundary;
 import com.google.cloud.genomics.utils.ShardBoundary.Requirement;
+import com.google.common.base.Predicate;
 import com.google.genomics.v1.Read;
 import com.google.genomics.v1.StreamReadsRequest;
 import com.google.genomics.v1.StreamReadsResponse;
@@ -42,22 +43,39 @@ public class ReadStreamIterator
   /**
    * Create a stream iterator that can enforce shard boundary semantics.
    * 
-   * @param request The request for the shard of data.
-   * @param auth The OfflineAuth to use for the request.
-   * @param shardBoundary The shard boundary semantics to enforce.
-   * @param fields Which fields to include in a partial response or null for all. NOT YET
-   *        IMPLEMENTED.
+   * @param request
+   * @param auth
+   * @param shardBoundary
+   * @param fields
    * @throws IOException
    * @throws GeneralSecurityException
    */
-  public ReadStreamIterator(StreamReadsRequest request, OfflineAuth auth,
-      Requirement shardBoundary, String fields) throws IOException, GeneralSecurityException {
-    super(request, auth, shardBoundary, fields);
-    // TODO: Facilitate shard boundary predicate here by checking for minimum set of fields in
-    // partial request.
-    shardPredicate =
+  public static ReadStreamIterator enforceShardBoundary(StreamReadsRequest request,
+      OfflineAuth auth, Requirement shardBoundary, String fields) throws IOException,
+      GeneralSecurityException {
+    Predicate<Read> shardPredicate =
         (ShardBoundary.Requirement.STRICT == shardBoundary) ? ShardBoundary
             .getStrictReadPredicate(request.getStart()) : null;
+    // TODO: Facilitate shard boundary predicate here by checking for minimum set of fields in
+    // partial request.
+    return new ReadStreamIterator(request, auth, fields, shardPredicate);
+  }
+
+  /**
+   * Create a stream iterator.
+   * 
+   * @param request The request for the shard of data.
+   * @param auth The OfflineAuth to use for the request.
+   * @param fields Which fields to include in a partial response or null for all. NOT YET
+   *        IMPLEMENTED.
+   * @param shardPredicate A predicate used to client-side filter results returned (e.g., enforce
+   *             a shard boundary and/or limit to SNPs only) or null for no filtering.
+   * @throws IOException
+   * @throws GeneralSecurityException
+   */
+  public ReadStreamIterator(StreamReadsRequest request, OfflineAuth auth, String fields,
+      Predicate<Read> shardPredicate) throws IOException, GeneralSecurityException {
+    super(request, auth, fields, shardPredicate);
   }
 
   @Override
@@ -96,7 +114,7 @@ public class ReadStreamIterator
   }
 
   @Override
-  StreamReadsResponse setDataList(StreamReadsResponse response, Iterable<Read> dataList) {
+  StreamReadsResponse buildResponse(StreamReadsResponse response, Iterable<Read> dataList) {
     return StreamReadsResponse.newBuilder(response).clearAlignments()
         .addAllAlignments(dataList)
         .build();

@@ -23,53 +23,51 @@ import java.util.logging.Logger;
 import com.google.api.client.util.BackOff;
 import com.google.api.client.util.ExponentialBackOff;
 import com.google.cloud.genomics.utils.GenomicsFactory;
-import com.google.cloud.genomics.utils.ShardBoundary;
 import com.google.common.base.Predicate;
-import com.google.common.collect.ForwardingIterator;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 
 /**
- * An iterator for streaming genomic data via gRPC with shard boundary semantics.
+ * An iterator for streaming genomic data via gRPC with support for retries.
  * 
  * Includes complex retry logic to upon failure resume the stream at the last known good start
  * position without returning duplicate data.
  * 
- * @param <A> Streaming request type.
- * @param <B> Streaming response type.
- * @param <C> Genomic data type returned by stream.
- * @param <D> Blocking stub type.
+ * @param <Request> Streaming request type.
+ * @param <Response> Streaming response type.
+ * @param <Item> Genomic data type returned by stream.
+ * @param <Stub> Blocking stub type.
  */
-public abstract class GenomicsStreamIterator<A, B, C, D extends io.grpc.stub.AbstractStub<D>> extends ForwardingIterator<B> {
+public abstract class GenomicsStreamIterator<Request, Response, Item, Stub extends io.grpc.stub.AbstractStub<Stub>>
+    implements Iterator<Response> {
   private static final Logger LOG = Logger.getLogger(GenomicsStreamIterator.class.getName());
   private final ExponentialBackOff backoff;
-  protected final D stub;
-  protected final GenomicsChannel genomicsChannel;
-  protected final A originalRequest;
-
-  // For client-side enforcement of a strict shard boundary.
-  protected Predicate<C> shardPredicate;
+  private final GenomicsChannel genomicsChannel;
+  private final Predicate<Item> shardPredicate;
+  protected final Stub stub;
+  protected final Request originalRequest;
 
   // Stateful members used to facilitate complex retry behavior for gRPC streams.
-  private Iterator<B> delegate;
-  private C lastSuccessfulDataItem;
+  private Iterator<Response> delegate;
+  private Item lastSuccessfulDataItem;
   private String idSentinel;
 
   /**
-   * Create a stream iterator that can enforce shard boundary semantics and perform retries.
+   * Create a stream iterator that will filter shard data using the predicate, if supplied.
    * 
    * @param request The request for the shard of data.
    * @param auth The OfflineAuth to use for the request.
-   * @param shardBoundary The shard boundary semantics to enforce.
    * @param fields Which fields to include in a partial response or null for all. NOT YET
    *        IMPLEMENTED.
+   * @param shardPredicate A predicate used to client-side filter results returned (e.g., enforce
+   *             a shard boundary and/or limit to SNPs only) or null for no filtering.
    * @throws IOException
    * @throws GeneralSecurityException
    */
-  public GenomicsStreamIterator(A request, GenomicsFactory.OfflineAuth auth,
-      ShardBoundary.Requirement shardBoundary, String fields) throws IOException,
-      GeneralSecurityException {
+  public GenomicsStreamIterator(Request request, GenomicsFactory.OfflineAuth auth, String fields,
+      Predicate<Item> shardPredicate) throws IOException, GeneralSecurityException {
     this.originalRequest = request;
+    this.shardPredicate = shardPredicate;
     genomicsChannel = GenomicsChannel.fromOfflineAuth(auth);
     stub = createStub(genomicsChannel);
 
@@ -83,23 +81,23 @@ public abstract class GenomicsStreamIterator<A, B, C, D extends io.grpc.stub.Abs
     idSentinel = null;
   }
 
-  abstract D createStub(GenomicsChannel genomicsChannel);
+  abstract Stub createStub(GenomicsChannel genomicsChannel);
 
-  abstract Iterator<B> createIteratorFromStub(A request);
+  abstract Iterator<Response> createIteratorFromStub(Request request);
 
-  abstract long getRequestStart(A streamRequest);
+  abstract long getRequestStart(Request streamRequest);
 
-  abstract long getDataItemStart(C dataItem);
+  abstract long getDataItemStart(Item dataItem);
 
-  abstract String getDataItemId(C dataItem);
+  abstract String getDataItemId(Item dataItem);
 
-  abstract A getRevisedRequest(long updatedStart);
+  abstract Request getRevisedRequest(long updatedStart);
 
-  abstract List<C> getDataList(B response);
+  abstract List<Item> getDataList(Response response);
 
-  abstract B setDataList(B response, Iterable<C> dataList);
+  abstract Response buildResponse(Response response, Iterable<Item> dataList);
 
-  private Iterator<B> createIterator(A request) {
+  private Iterator<Response> createIterator(Request request) {
     while (true) {
       try {
         return createIteratorFromStub(request);
@@ -137,11 +135,6 @@ public abstract class GenomicsStreamIterator<A, B, C, D extends io.grpc.stub.Abs
     return true;
   }
 
-  @Override
-  protected Iterator<B> delegate() {
-    return delegate;
-  }
-
   /**
    * @see java.util.Iterator#hasNext()
    */
@@ -172,7 +165,7 @@ public abstract class GenomicsStreamIterator<A, B, C, D extends io.grpc.stub.Abs
     if (null == lastSuccessfulDataItem) {
       // We have never returned any data. No need to set up state needed to filter previously
       // returned results.
-      return;
+      delegate = createIterator(originalRequest);
     }
 
     if (getRequestStart(originalRequest) < getDataItemStart(lastSuccessfulDataItem)) {
@@ -191,23 +184,23 @@ public abstract class GenomicsStreamIterator<A, B, C, D extends io.grpc.stub.Abs
   /**
    * @see java.util.Iterator#next()
    */
-  public B next() {
-    B response = delegate.next();
+  public Response next() {
+    Response response = delegate.next();
     // TODO: Its more clean conceptually to do the same thing for all responses, but this could be a
     // place where we're wasting a lot of time rebuilding response objects when nothing has actually
     // changed.
-    return setDataList(response, enforceShardPredicate(removeRepeatedData(getDataList(response))));
+    return buildResponse(response, enforceShardPredicate(removeRepeatedData(getDataList(response))));
   }
 
-  private List<C> removeRepeatedData(List<C> dataList) {
-    List<C> filteredDataList = null;
+  private List<Item> removeRepeatedData(List<Item> dataList) {
+    List<Item> filteredDataList = null;
     if (null == idSentinel) {
       filteredDataList = dataList;
     } else {
       // Filter out previously returned data items.
       filteredDataList = Lists.newArrayList();
       boolean sentinelFound = false;
-      for (C dataItem : dataList) {
+      for (Item dataItem : dataList) {
         if (sentinelFound) {
           filteredDataList.add(dataItem);
         } else {
@@ -227,14 +220,18 @@ public abstract class GenomicsStreamIterator<A, B, C, D extends io.grpc.stub.Abs
     return filteredDataList;
   }
 
-  private Iterable<C> enforceShardPredicate(Iterable<C> dataList) {
+  private Iterable<Item> enforceShardPredicate(Iterable<Item> dataList) {
     if (null == shardPredicate) {
       return dataList;
     }
-    // DEV NOTE: right now there is only one possible predicate and it only matters for
-    // the beginning of the shard. An optimization would be to get rid of the predicate once
-    // we are beyond that boundary. BUT this predicate could be something more complicated in
-    // the future (e.g., enforce a shard boundary AND only return SNPs, etc...).
     return Iterables.filter(dataList, shardPredicate);
+  }
+
+  /**
+   * @see java.util.Iterator#remove()
+   */
+  @Override
+  public void remove() {
+    delegate.remove();
   }
 }
