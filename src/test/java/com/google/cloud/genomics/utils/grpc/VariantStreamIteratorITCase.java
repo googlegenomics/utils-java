@@ -51,8 +51,9 @@ public class VariantStreamIteratorITCase {
             helper.PLATINUM_GENOMES_KLOTHO_REFERENCES, 100L);
     assertEquals(1, requests.size());
 
-    Iterator<StreamVariantsResponse> iter = new VariantStreamIterator(requests.get(0),
-        helper.getAuth(), ShardBoundary.Requirement.OVERLAPS, null);
+    Iterator<StreamVariantsResponse> iter =
+        VariantStreamIterator.enforceShardBoundary(requests.get(0), helper.getAuth(),
+            ShardBoundary.Requirement.OVERLAPS, null);
 
     assertTrue(iter.hasNext());
     StreamVariantsResponse variantResponse = iter.next();
@@ -61,8 +62,9 @@ public class VariantStreamIteratorITCase {
     assertEquals(4, variants.size());
     assertFalse(iter.hasNext());
     
-    iter = new VariantStreamIterator(requests.get(0),
-        helper.getAuth(), ShardBoundary.Requirement.STRICT, null);
+    iter =
+        VariantStreamIterator.enforceShardBoundary(requests.get(0), helper.getAuth(),
+            ShardBoundary.Requirement.STRICT, null);
 
     assertTrue(iter.hasNext());
     variantResponse = iter.next();
@@ -80,8 +82,9 @@ public class VariantStreamIteratorITCase {
             helper.PLATINUM_GENOMES_KLOTHO_REFERENCES, 100L);
     assertEquals(1, requests.size());
 
-    Iterator<StreamVariantsResponse> iter = new VariantStreamIterator(requests.get(0),
-        helper.getAuth(), ShardBoundary.Requirement.STRICT, "variants(reference_name,start)");
+    Iterator<StreamVariantsResponse> iter =
+        VariantStreamIterator.enforceShardBoundary(requests.get(0), helper.getAuth(),
+            ShardBoundary.Requirement.STRICT, "variants(reference_name,start)");
 
     assertTrue(iter.hasNext());
     StreamVariantsResponse variantResponse = iter.next();
@@ -95,4 +98,18 @@ public class VariantStreamIteratorITCase {
     assertNull(variants.get(0).getReferenceBases());
   }
 
+  // TODO test a shard where the entire first result will be empty due to the strict shard boundary requirement.  Same for reads.
+  
+  /**
+   * TODO: Retry tests.  Same for reads.
+   * 
+   * Be sure to test retries that occur at:
+   * (1) the beginning of the stream
+   * (2) within records that overlap the start position
+   * (3) occur at the start position
+   * (4) beyond the start position
+   *
+   * Test should confirm that all records are returned only once upon successful completion of the retried stream.
+   */
+  
 }

@@ -18,94 +18,105 @@ import java.security.GeneralSecurityException;
 import java.util.Iterator;
 import java.util.List;
 
-import com.google.cloud.genomics.utils.GenomicsFactory;
+import com.google.cloud.genomics.utils.GenomicsFactory.OfflineAuth;
 import com.google.cloud.genomics.utils.ShardBoundary;
+import com.google.cloud.genomics.utils.ShardBoundary.Requirement;
 import com.google.common.base.Predicate;
-import com.google.common.collect.ForwardingIterator;
-import com.google.common.collect.Iterables;
 import com.google.genomics.v1.Read;
 import com.google.genomics.v1.StreamReadsRequest;
 import com.google.genomics.v1.StreamReadsResponse;
 import com.google.genomics.v1.StreamingReadServiceGrpc;
+import com.google.genomics.v1.StreamingReadServiceGrpc.StreamingReadServiceBlockingStub;
 
 /**
- * Class with tools for streaming reads via gRPC.
+ * An iterator for streaming genomic reads via gRPC with shard boundary semantics.
  * 
- * TODO:
- * - facilitate partial requests https://github.com/googlegenomics/utils-java/issues/48
+ * Includes complex retry logic to upon failure resume the stream at the last known good start
+ * position without returning duplicate data.
+ * 
+ * TODO: - facilitate partial requests https://github.com/googlegenomics/utils-java/issues/48
  */
-public class ReadStreamIterator extends ForwardingIterator<StreamReadsResponse> {
-  protected final Predicate<Read> shardPredicate;
-  protected final Iterator<StreamReadsResponse> delegate;
-  protected final GenomicsChannel genomicsChannel;
+public class ReadStreamIterator
+    extends
+    GenomicsStreamIterator<StreamReadsRequest, StreamReadsResponse, Read, StreamingReadServiceGrpc.StreamingReadServiceBlockingStub> {
 
   /**
    * Create a stream iterator that can enforce shard boundary semantics.
    * 
-   * @param request The request for the shard of data.
-   * @param auth The OfflineAuth to use for the request.
-   * @param shardBoundary The shard boundary semantics to enforce.
-   * @param fields Which fields to include in a partial response or null for all.  NOT YET IMPLEMENTED.
+   * @param request
+   * @param auth
+   * @param shardBoundary
+   * @param fields
    * @throws IOException
    * @throws GeneralSecurityException
    */
-  public ReadStreamIterator(StreamReadsRequest request, GenomicsFactory.OfflineAuth auth,
-      ShardBoundary.Requirement shardBoundary, String fields) throws IOException, GeneralSecurityException {
+  public static ReadStreamIterator enforceShardBoundary(StreamReadsRequest request,
+      OfflineAuth auth, Requirement shardBoundary, String fields) throws IOException,
+      GeneralSecurityException {
+    Predicate<Read> shardPredicate =
+        (ShardBoundary.Requirement.STRICT == shardBoundary) ? ShardBoundary
+            .getStrictReadPredicate(request.getStart()) : null;
     // TODO: Facilitate shard boundary predicate here by checking for minimum set of fields in
     // partial request.
-    shardPredicate = ShardBoundary.Requirement.STRICT == shardBoundary ?
-        ShardBoundary.getStrictReadPredicate(request.getStart()) :
-          null;
-
-    genomicsChannel = GenomicsChannel.fromOfflineAuth(auth);
-    StreamingReadServiceGrpc.StreamingReadServiceBlockingStub readStub =
-        StreamingReadServiceGrpc.newBlockingStub(genomicsChannel);
-    
-    delegate = readStub.streamReads(request);
+    return new ReadStreamIterator(request, auth, fields, shardPredicate);
   }
-  
+
+  /**
+   * Create a stream iterator.
+   * 
+   * @param request The request for the shard of data.
+   * @param auth The OfflineAuth to use for the request.
+   * @param fields Which fields to include in a partial response or null for all. NOT YET
+   *        IMPLEMENTED.
+   * @param shardPredicate A predicate used to client-side filter results returned (e.g., enforce
+   *             a shard boundary and/or limit to SNPs only) or null for no filtering.
+   * @throws IOException
+   * @throws GeneralSecurityException
+   */
+  public ReadStreamIterator(StreamReadsRequest request, OfflineAuth auth, String fields,
+      Predicate<Read> shardPredicate) throws IOException, GeneralSecurityException {
+    super(request, auth, fields, shardPredicate);
+  }
+
   @Override
-  protected Iterator<StreamReadsResponse> delegate() {
-    return delegate;
+  StreamingReadServiceBlockingStub createStub(GenomicsChannel genomicsChannel) {
+    return StreamingReadServiceGrpc.newBlockingStub(genomicsChannel);
   }
 
-  /**
-   * @see java.util.Iterator#hasNext()
-   */
-  public boolean hasNext() {
-    boolean hasNext;
-    try {
-      hasNext = delegate.hasNext();
-    } catch (Exception e) {
-      genomicsChannel.shutdownNow();
-      throw e;
-    }
-    if(!hasNext) {
-      genomicsChannel.shutdownNow();      
-    }
-    return hasNext;
+  @Override
+  Iterator<StreamReadsResponse> createIteratorFromStub(StreamReadsRequest request) {
+    return stub.streamReads(request);
   }
 
-  /**
-   * @see java.util.Iterator#next()
-   */
-  public StreamReadsResponse next() {
-    StreamReadsResponse response = null;
-    try {
-      response = delegate.next();
-    } catch (Exception e) {
-      genomicsChannel.shutdownNow();
-      throw e;
-    }
-    
-    if(null == shardPredicate) {
-      return response;
-    }
-    List<Read> reads = response.getAlignmentsList();
-    Iterable<Read> filteredReads = Iterables.filter(reads, shardPredicate);
-    return StreamReadsResponse.newBuilder(response)
-        .clearAlignments()
-        .addAllAlignments(filteredReads)
+  @Override
+  long getRequestStart(StreamReadsRequest request) {
+    return request.getStart();
+  }
+
+  @Override
+  long getDataItemStart(Read dataItem) {
+    return dataItem.getAlignment().getPosition().getPosition();
+  }
+
+  @Override
+  String getDataItemId(Read dataItem) {
+    return dataItem.getId();
+  }
+
+  @Override
+  StreamReadsRequest getRevisedRequest(long updatedStart) {
+    return StreamReadsRequest.newBuilder(originalRequest).setStart(updatedStart).build();
+  }
+
+  @Override
+  List<Read> getDataList(StreamReadsResponse response) {
+    return response.getAlignmentsList();
+  }
+
+  @Override
+  StreamReadsResponse buildResponse(StreamReadsResponse response, Iterable<Read> dataList) {
+    return StreamReadsResponse.newBuilder(response).clearAlignments()
+        .addAllAlignments(dataList)
         .build();
   }
 }
