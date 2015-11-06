@@ -168,6 +168,7 @@ public abstract class GenomicsStreamIterator<Request, Response, Item, Stub exten
       // We have never returned any data. No need to set up state needed to filter previously
       // returned results.
       delegate = createIterator(originalRequest);
+      return;
     }
 
     if (getRequestStart(originalRequest) < getDataItemStart(lastSuccessfulDataItem)) {
