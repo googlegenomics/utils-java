@@ -74,6 +74,26 @@ public class VariantStreamIteratorITCase {
   }
 
   @Test
+  public void testEmptyRegion() throws IOException, GeneralSecurityException {
+    ImmutableList<StreamVariantsRequest> requests =
+        ShardUtils.getVariantRequests(helper.PLATINUM_GENOMES_VARIANTSET,
+            "chrDoesNotExist:100:200", 100L);
+    assertEquals(1, requests.size());
+
+    Iterator<StreamVariantsResponse> iter =
+        VariantStreamIterator.enforceShardBoundary(requests.get(0), helper.getAuth(),
+            ShardBoundary.Requirement.OVERLAPS, null);
+    assertFalse(iter.hasNext());
+
+    iter =
+        VariantStreamIterator.enforceShardBoundary(requests.get(0), helper.getAuth(),
+            ShardBoundary.Requirement.STRICT, null);
+    assertFalse(iter.hasNext());
+  }
+
+  // TODO test a shard where the entire first result will be empty due to the strict shard boundary requirement.  Same for reads.
+   
+  @Test
   @Ignore
   // TODO https://github.com/googlegenomics/utils-java/issues/48
   public void testPartialResponses() throws IOException, GeneralSecurityException {
@@ -98,8 +118,6 @@ public class VariantStreamIteratorITCase {
     assertNull(variants.get(0).getReferenceBases());
   }
 
-  // TODO test a shard where the entire first result will be empty due to the strict shard boundary requirement.  Same for reads.
-  
   /**
    * TODO: Retry tests.  Same for reads.
    * 
