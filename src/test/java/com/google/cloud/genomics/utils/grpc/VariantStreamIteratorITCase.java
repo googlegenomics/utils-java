@@ -30,6 +30,7 @@ import org.junit.Test;
 import com.google.cloud.genomics.utils.IntegrationTestHelper;
 import com.google.cloud.genomics.utils.ShardBoundary;
 import com.google.cloud.genomics.utils.ShardUtils;
+import com.google.common.base.Function;
 import com.google.common.collect.ImmutableList;
 import com.google.genomics.v1.StreamVariantsRequest;
 import com.google.genomics.v1.StreamVariantsResponse;
@@ -38,6 +39,12 @@ import com.google.genomics.v1.Variant;
 public class VariantStreamIteratorITCase {
 
   static IntegrationTestHelper helper;
+  Function<Variant, String> getId = new Function<Variant, String>() {
+    @Override
+    public String apply(Variant v) {
+      return v.getId();
+    }
+  };
 
   @BeforeClass
   public static void setUpBeforeClass() throws Exception {
@@ -52,7 +59,7 @@ public class VariantStreamIteratorITCase {
     assertEquals(1, requests.size());
 
     Iterator<StreamVariantsResponse> iter =
-        VariantStreamIterator.enforceShardBoundary(requests.get(0), helper.getAuth(),
+        VariantStreamIterator.enforceShardBoundary(helper.getAuth(), requests.get(0), 
             ShardBoundary.Requirement.OVERLAPS, null);
 
     assertTrue(iter.hasNext());
@@ -63,7 +70,7 @@ public class VariantStreamIteratorITCase {
     assertFalse(iter.hasNext());
     
     iter =
-        VariantStreamIterator.enforceShardBoundary(requests.get(0), helper.getAuth(),
+        VariantStreamIterator.enforceShardBoundary(helper.getAuth(), requests.get(0), 
             ShardBoundary.Requirement.STRICT, null);
 
     assertTrue(iter.hasNext());
@@ -81,18 +88,16 @@ public class VariantStreamIteratorITCase {
     assertEquals(1, requests.size());
 
     Iterator<StreamVariantsResponse> iter =
-        VariantStreamIterator.enforceShardBoundary(requests.get(0), helper.getAuth(),
+        VariantStreamIterator.enforceShardBoundary(helper.getAuth(), requests.get(0), 
             ShardBoundary.Requirement.OVERLAPS, null);
     assertFalse(iter.hasNext());
 
     iter =
-        VariantStreamIterator.enforceShardBoundary(requests.get(0), helper.getAuth(),
+        VariantStreamIterator.enforceShardBoundary(helper.getAuth(), requests.get(0),
             ShardBoundary.Requirement.STRICT, null);
     assertFalse(iter.hasNext());
   }
 
-  // TODO test a shard where the entire first result will be empty due to the strict shard boundary requirement.  Same for reads.
-   
   @Test
   @Ignore
   // TODO https://github.com/googlegenomics/utils-java/issues/48
@@ -103,7 +108,7 @@ public class VariantStreamIteratorITCase {
     assertEquals(1, requests.size());
 
     Iterator<StreamVariantsResponse> iter =
-        VariantStreamIterator.enforceShardBoundary(requests.get(0), helper.getAuth(),
+        VariantStreamIterator.enforceShardBoundary(helper.getAuth(), requests.get(0),
             ShardBoundary.Requirement.STRICT, "variants(reference_name,start)");
 
     assertTrue(iter.hasNext());
@@ -117,17 +122,4 @@ public class VariantStreamIteratorITCase {
     assertEquals(33628137, variants.get(0).getStart());
     assertNull(variants.get(0).getReferenceBases());
   }
-
-  /**
-   * TODO: Retry tests.  Same for reads.
-   * 
-   * Be sure to test retries that occur at:
-   * (1) the beginning of the stream
-   * (2) within records that overlap the start position
-   * (3) occur at the start position
-   * (4) beyond the start position
-   *
-   * Test should confirm that all records are returned only once upon successful completion of the retried stream.
-   */
-  
 }

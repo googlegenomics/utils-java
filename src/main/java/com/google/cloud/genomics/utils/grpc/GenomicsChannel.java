@@ -1,13 +1,23 @@
+/*
+ * Copyright (C) 2015 Google Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
+ * in compliance with the License. You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed under the License
+ * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+ * or implied. See the License for the specific language governing permissions and limitations under
+ * the License.
+ */
 package com.google.cloud.genomics.utils.grpc;
-
-import com.google.auth.oauth2.GoogleCredentials;
-import com.google.cloud.genomics.utils.GenomicsFactory;
 
 import io.grpc.CallOptions;
 import io.grpc.Channel;
-import io.grpc.ManagedChannel;
 import io.grpc.ClientCall;
 import io.grpc.ClientInterceptors;
+import io.grpc.ManagedChannel;
 import io.grpc.Metadata;
 import io.grpc.MethodDescriptor;
 import io.grpc.auth.ClientAuthInterceptor;
@@ -26,10 +36,13 @@ import java.util.concurrent.TimeUnit;
 
 import javax.net.ssl.SSLException;
 
+import com.google.auth.oauth2.GoogleCredentials;
+import com.google.cloud.genomics.utils.GenomicsFactory;
+
 /**
  * A convenience class for creating gRPC channels to the Google Genomics API.
  */
-public class GenomicsChannel extends Channel {
+public class GenomicsChannel extends ManagedChannel {
   private static final String GENOMICS_ENDPOINT = "genomics.googleapis.com";
   private static final String GENOMICS_SCOPE = "https://www.googleapis.com/auth/genomics";
   private static final String API_KEY_HEADER = "X-Goog-Api-Key";
@@ -40,12 +53,11 @@ public class GenomicsChannel extends Channel {
   // the shutdown method and the ClientInterceptors do not return the ManagedChannel instance.
   private final ManagedChannel managedChannel;
   private final Channel delegate;
-  
+
   private ManagedChannel getGenomicsManagedChannel() throws SSLException {
     // Java 8's implementation of GCM ciphers is extremely slow. Therefore we disable
     // them here.
-    List<String> defaultCiphers =
-        GrpcSslContexts.forClient().ciphers(null).build().cipherSuites();
+    List<String> defaultCiphers = GrpcSslContexts.forClient().ciphers(null).build().cipherSuites();
     List<String> performantCiphers = new ArrayList<>();
     for (String cipher : defaultCiphers) {
       if (!cipher.contains("GCM")) {
@@ -55,29 +67,28 @@ public class GenomicsChannel extends Channel {
 
     return NettyChannelBuilder.forAddress(GENOMICS_ENDPOINT, 443)
         .negotiationType(NegotiationType.TLS)
-        .sslContext(GrpcSslContexts.forClient().ciphers(performantCiphers).build())
-        .build();
+        .sslContext(GrpcSslContexts.forClient().ciphers(performantCiphers).build()).build();
   }
-  
+
   private GenomicsChannel(String apiKey) throws SSLException {
     managedChannel = getGenomicsManagedChannel();
     Metadata headers = new Metadata();
     Metadata.Key<String> apiKeyHeader =
         Metadata.Key.of(API_KEY_HEADER, Metadata.ASCII_STRING_MARSHALLER);
     headers.put(apiKeyHeader, apiKey);
-    delegate = ClientInterceptors.intercept(managedChannel,
-        MetadataUtils.newAttachHeadersInterceptor(headers)); 
+    delegate =
+        ClientInterceptors.intercept(managedChannel,
+            MetadataUtils.newAttachHeadersInterceptor(headers));
   }
-  
+
   private GenomicsChannel(GoogleCredentials creds) throws SSLException {
     managedChannel = getGenomicsManagedChannel();
-    creds = creds.createScoped(
-        Arrays.asList(GENOMICS_SCOPE));
-    ClientAuthInterceptor interceptor = new ClientAuthInterceptor(creds,
-        Executors.newSingleThreadExecutor());
+    creds = creds.createScoped(Arrays.asList(GENOMICS_SCOPE));
+    ClientAuthInterceptor interceptor =
+        new ClientAuthInterceptor(creds, Executors.newSingleThreadExecutor());
     delegate = ClientInterceptors.intercept(managedChannel, interceptor);
   }
-  
+
   @Override
   public <RequestT, ResponseT> ClientCall<RequestT, ResponseT> newCall(
       MethodDescriptor<RequestT, ResponseT> arg0, CallOptions arg1) {
@@ -85,14 +96,7 @@ public class GenomicsChannel extends Channel {
   }
 
   /**
-   * @see io.grpc.ManagedChannel#shutdownNow()
-   */
-  public void shutdownNow() {
-    managedChannel.shutdownNow();
-  }
-  
-  /**
-   * @throws InterruptedException 
+   * @throws InterruptedException
    * @see io.grpc.ManagedChannel#shutdown()
    * @see io.grpc.ManagedChannel#awaitTermination(long, TimeUnit)
    */
@@ -100,30 +104,59 @@ public class GenomicsChannel extends Channel {
     managedChannel.shutdown().awaitTermination(timeout, unit);
   }
 
+
+  @Override
+  public boolean awaitTermination(long time, TimeUnit unit) throws InterruptedException {
+    return managedChannel.awaitTermination(time, unit);
+  }
+
+  @Override
+  public boolean isShutdown() {
+    return managedChannel.isShutdown();
+  }
+
+  @Override
+  public boolean isTerminated() {
+    return managedChannel.isTerminated();
+  }
+
+  @Override
+  public ManagedChannel shutdown() {
+    return managedChannel.shutdown();
+  }
+
+  @Override
+  public ManagedChannel shutdownNow() {
+    return managedChannel.shutdownNow();
+  }
+
+  @Override
+  public String authority() {
+    return managedChannel.authority();
+  }
+
   /**
-   * Creates a new gRPC channel to the Google Genomics API, using the application
-   * default credentials for auth.
+   * Creates a new gRPC channel to the Google Genomics API, using the application default
+   * credentials for auth.
    */
   public static GenomicsChannel fromDefaultCreds() throws IOException {
     return fromCreds(GoogleCredentials.getApplicationDefault());
   }
-  
+
   /**
-   * Creates a new gRPC channel to the Google Genomics API, using the provided
-   * api key for auth.
+   * Creates a new gRPC channel to the Google Genomics API, using the provided api key for auth.
    */
   public static GenomicsChannel fromApiKey(String apiKey) throws SSLException {
     return new GenomicsChannel(apiKey);
   }
-  
+
   /**
-   * Creates a new gRPC channel to the Google Genomics API, using the provided
-   * credentials for auth.
+   * Creates a new gRPC channel to the Google Genomics API, using the provided credentials for auth.
    */
   public static GenomicsChannel fromCreds(GoogleCredentials creds) throws IOException {
     return new GenomicsChannel(creds);
   }
-  
+
   /**
    * Initialize auth for a gRPC channel from OfflineAuth or the application default credentials.
    * 
@@ -132,23 +165,19 @@ public class GenomicsChannel extends Channel {
    * https://developers.google.com/identity/protocols/application-default-credentials
    * 
    * @param auth An OfflineAuth object.
-   * @return The gRPC channel authorized using either the information in the OfflineAuth or application default credentials.
+   * @return The gRPC channel authorized using either the information in the OfflineAuth or
+   *         application default credentials.
    * @throws IOException
    * @throws GeneralSecurityException
    */
-  public static GenomicsChannel fromOfflineAuth(GenomicsFactory.OfflineAuth auth) throws IOException, GeneralSecurityException {
-    if(auth.hasUserCredentials()) {
+  public static GenomicsChannel fromOfflineAuth(GenomicsFactory.OfflineAuth auth)
+      throws IOException, GeneralSecurityException {
+    if (auth.hasUserCredentials()) {
       return fromCreds(auth.getUserCredentials());
-    } else if(auth.hasApiKey()) {
+    } else if (auth.hasApiKey()) {
       return fromApiKey(auth.apiKey);
     }
     // Fall back to Default Credentials if the user did not specify user credentials or an api key.
     return fromDefaultCreds();
   }
-
-  @Override
-  public String authority() {
-    return delegate.authority();
-  }
 }
-

@@ -56,7 +56,7 @@ public class ReadStreamIteratorITCase {
     assertEquals(1, requests.size());
     
     Iterator<StreamReadsResponse> iter =
-        ReadStreamIterator.enforceShardBoundary(requests.get(0), helper.getAuth(),
+        ReadStreamIterator.enforceShardBoundary(helper.getAuth(), requests.get(0), 
             ShardBoundary.Requirement.OVERLAPS, null);
     
     assertTrue(iter.hasNext());
@@ -64,8 +64,8 @@ public class ReadStreamIteratorITCase {
     assertEquals(57, readResponse.getAlignmentsList().size());
     assertFalse(iter.hasNext());
 
-    iter = ReadStreamIterator.enforceShardBoundary(requests.get(0),
-        helper.getAuth(), ShardBoundary.Requirement.STRICT, null);
+    iter = ReadStreamIterator.enforceShardBoundary(helper.getAuth(), requests.get(0),
+        ShardBoundary.Requirement.STRICT, null);
     
     assertTrue(iter.hasNext());
     readResponse = iter.next();
@@ -83,7 +83,7 @@ public class ReadStreamIteratorITCase {
     assertEquals(1, requests.size());
     
     Iterator<StreamReadsResponse> iter =
-        ReadStreamIterator.enforceShardBoundary(requests.get(0), helper.getAuth(),
+        ReadStreamIterator.enforceShardBoundary(helper.getAuth(), requests.get(0), 
             ShardBoundary.Requirement.STRICT, "reads(alignments)");
     
     assertTrue(iter.hasNext());
