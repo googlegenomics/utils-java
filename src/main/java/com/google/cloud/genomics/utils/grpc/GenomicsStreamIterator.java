@@ -59,8 +59,8 @@ public abstract class GenomicsStreamIterator<Request, Response, Item, Stub exten
   /**
    * Create a stream iterator that will filter shard data using the predicate, if supplied.
    * 
+   * @param channel The channel.
    * @param request The request for the shard of data.
-   * @param auth The OfflineAuth to use for the request.
    * @param fields Which fields to include in a partial response or null for all. NOT YET
    *        IMPLEMENTED.
    * @param shardPredicate A predicate used to client-side filter results returned (e.g., enforce a
