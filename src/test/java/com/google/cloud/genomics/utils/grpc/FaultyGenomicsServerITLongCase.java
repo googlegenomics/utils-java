@@ -33,9 +33,9 @@ import com.google.genomics.v1.StreamVariantsRequest;
 public class FaultyGenomicsServerITLongCase extends FaultyGenomicsServerITCase {
 
   // Create one long stream.
-  ImmutableList<StreamVariantsRequest> requests = ShardUtils.getVariantRequests(
+  private static final ImmutableList<StreamVariantsRequest> requests = ShardUtils.getVariantRequests(
       helper.PLATINUM_GENOMES_VARIANTSET, "chrY:0:60032946", 1000000000L);
-  final int EXPECTED_CHRY_NUM_VARIANTS = 5971309;
+  private static final int EXPECTED_CHRY_NUM_VARIANTS = 5971309;
 
   @Test
   public void testOnePercentVariantFaults() throws IOException, GeneralSecurityException {

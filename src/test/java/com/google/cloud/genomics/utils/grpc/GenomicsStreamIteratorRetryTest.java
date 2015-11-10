@@ -43,12 +43,12 @@ import com.google.protobuf.Message;
 /**
  * Retry tests for reads and variants.
  * 
- * Test retries that occur at: 
+ * Test retries that occur at:
  * 
- *  (1) the beginning of the stream
- *  (2) within records that overlap the start position 
- *  (3) occur at the start position 
- *  (4) beyond the start position
+ * (1) the beginning of the stream
+ * (2) within records that overlap the start position
+ * (3) occur at the start position
+ * (4) beyond the start position
  *
  * Test should confirm that all records are returned only once upon successful completion of the
  * retried stream.
@@ -57,39 +57,31 @@ import com.google.protobuf.Message;
 public class GenomicsStreamIteratorRetryTest {
   public static final String SERVER_NAME = "unitTest";
   public static final StreamReadsResponse[] READ_RESPONSES = {
-    StreamReadsResponse.newBuilder()
-    .addAlignments(TestHelper.makeRead(400, 505))
-    .addAlignments(TestHelper.makeRead(400, 510))
-    .addAlignments(TestHelper.makeRead(450, 600)).build(),
-    StreamReadsResponse.newBuilder()
-    .addAlignments(TestHelper.makeRead(450, 610))
-    .addAlignments(TestHelper.makeRead(500, 505))
-    .addAlignments(TestHelper.makeRead(505, 511)).build(),
-    StreamReadsResponse.newBuilder()
-    .addAlignments(TestHelper.makeRead(505, 700))
-    .addAlignments(TestHelper.makeRead(511, 555))
-    .addAlignments(TestHelper.makeRead(511, 556)).build()
-  };
+      StreamReadsResponse.newBuilder().addAlignments(TestHelper.makeRead(400, 505))
+          .addAlignments(TestHelper.makeRead(400, 510))
+          .addAlignments(TestHelper.makeRead(450, 600)).build(),
+      StreamReadsResponse.newBuilder().addAlignments(TestHelper.makeRead(450, 610))
+          .addAlignments(TestHelper.makeRead(500, 505))
+          .addAlignments(TestHelper.makeRead(505, 511)).build(),
+      StreamReadsResponse.newBuilder().addAlignments(TestHelper.makeRead(505, 700))
+          .addAlignments(TestHelper.makeRead(511, 555))
+          .addAlignments(TestHelper.makeRead(511, 556)).build()};
   public static final StreamVariantsResponse[] VARIANT_RESPONSES = {
-    StreamVariantsResponse.newBuilder()
-    .addVariants(TestHelper.makeVariant(400, 505))
-    .addVariants(TestHelper.makeVariant(400, 510))
-    .addVariants(TestHelper.makeVariant(450, 600)).build(),
-    StreamVariantsResponse.newBuilder()
-    .addVariants(TestHelper.makeVariant(450, 610))
-    .addVariants(TestHelper.makeVariant(500, 505))
-    .addVariants(TestHelper.makeVariant(505, 511)).build(),
-    StreamVariantsResponse.newBuilder()
-    .addVariants(TestHelper.makeVariant(505, 700))
-    .addVariants(TestHelper.makeVariant(511, 555))
-    .addVariants(TestHelper.makeVariant(511, 556)).build()
-  };
+      StreamVariantsResponse.newBuilder().addVariants(TestHelper.makeVariant(400, 505))
+          .addVariants(TestHelper.makeVariant(400, 510))
+          .addVariants(TestHelper.makeVariant(450, 600)).build(),
+      StreamVariantsResponse.newBuilder().addVariants(TestHelper.makeVariant(450, 610))
+          .addVariants(TestHelper.makeVariant(500, 505))
+          .addVariants(TestHelper.makeVariant(505, 511)).build(),
+      StreamVariantsResponse.newBuilder().addVariants(TestHelper.makeVariant(505, 700))
+          .addVariants(TestHelper.makeVariant(511, 555))
+          .addVariants(TestHelper.makeVariant(511, 556)).build()};
   public static final long REQUEST_START_POSITION = 450;
   public static final StreamReadsRequest READS_REQUEST = StreamReadsRequest.newBuilder()
       .setStart(REQUEST_START_POSITION).build();
   public static final StreamVariantsRequest VARIANTS_REQUEST = StreamVariantsRequest.newBuilder()
       .setStart(REQUEST_START_POSITION).build();
-  
+
   enum InjectionSite {
     AT_BEGINNING, AFTER_FIRST_RESPONSE, AFTER_SECOND_RESPONSE, AT_END
   };
@@ -98,17 +90,18 @@ public class GenomicsStreamIteratorRetryTest {
   protected static boolean failNow;
   protected static long lastObservedRequestStartPosition;
   protected static Server server;
-  
+
   /**
-   * Starts the in-process server. 
+   * Starts the in-process server.
    */
   @BeforeClass
   public static void startServer() {
     try {
-      server = InProcessServerBuilder.forName(SERVER_NAME)
-          .addService(StreamingReadServiceGrpc.bindService(new UnitServerImpl()))
-          .addService(StreamingVariantServiceGrpc.bindService(new UnitServerImpl()))
-          .build().start();
+      server =
+          InProcessServerBuilder.forName(SERVER_NAME)
+              .addService(StreamingReadServiceGrpc.bindService(new UnitServerImpl()))
+              .addService(StreamingVariantServiceGrpc.bindService(new UnitServerImpl())).build()
+              .start();
     } catch (IOException ex) {
       throw new RuntimeException(ex);
     }
@@ -118,11 +111,10 @@ public class GenomicsStreamIteratorRetryTest {
   public static void stopServer() {
     server.shutdownNow();
   }
-  
-  protected static class UnitServerImpl implements
-  StreamingReadServiceGrpc.StreamingReadService,
+
+  protected static class UnitServerImpl implements StreamingReadServiceGrpc.StreamingReadService,
       StreamingVariantServiceGrpc.StreamingVariantService {
-    
+
     @Override
     public void streamReads(StreamReadsRequest request,
         StreamObserver<StreamReadsResponse> responseObserver) {
@@ -187,9 +179,9 @@ public class GenomicsStreamIteratorRetryTest {
   public void runTest(final GenomicsStreamIterator iter, InjectionSite site, int expectedNumItems) {
     injectionSite = site;
     failNow = true;
-    
+
     TestHelper.consumeStreamTest(iter, expectedNumItems);
-    
+
     if (InjectionSite.AFTER_SECOND_RESPONSE.equals(injectionSite)) {
       assertEquals(505L, lastObservedRequestStartPosition);
     } else if (InjectionSite.AT_END.equals(injectionSite)) {
@@ -198,7 +190,7 @@ public class GenomicsStreamIteratorRetryTest {
       assertEquals(REQUEST_START_POSITION, lastObservedRequestStartPosition);
     }
   }
-  
+
   // The following tests could be collapsed into a for loop upon the injection site enumeration,
   // but breaking them out separately makes it easier to understand failures if they happen.
 
@@ -286,7 +278,7 @@ public class GenomicsStreamIteratorRetryTest {
         VariantStreamIterator.enforceShardBoundary(createChannel(), VARIANTS_REQUEST,
             ShardBoundary.Requirement.OVERLAPS, null);
     runTest(iter, site, 9);
-    
+
     iter =
         ReadStreamIterator.enforceShardBoundary(createChannel(), READS_REQUEST,
             ShardBoundary.Requirement.STRICT, null);
