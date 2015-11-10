@@ -15,11 +15,11 @@
 package com.google.cloud.genomics.utils.grpc;
 
 import io.grpc.ManagedChannel;
+import io.grpc.Server;
 import io.grpc.Status;
 import io.grpc.inprocess.InProcessChannelBuilder;
 import io.grpc.inprocess.InProcessServerBuilder;
 import io.grpc.stub.StreamObserver;
-import io.grpc.testing.integration.AbstractTransportTest;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
@@ -40,12 +40,13 @@ import com.google.genomics.v1.StreamVariantsResponse;
 import com.google.genomics.v1.StreamingVariantServiceGrpc;
 
 @RunWith(JUnit4.class)
-public class FaultyGenomicsServerITCase extends AbstractTransportTest {
-  private static String serverName = "integrationTest";
+public class FaultyGenomicsServerITCase {
+  public static final String SERVER_NAME = "integrationTest";
   
-  static IntegrationTestHelper helper;
-  static GenomicsChannel genomicsChannel;
-  static double faultPercentage = 0.0;
+  protected static Server server;
+  protected static IntegrationTestHelper helper;
+  protected static GenomicsChannel genomicsChannel;
+  protected static double faultPercentage = 0.0;
 
   /**
    * Starts the in-process server that calls the real service.
@@ -55,23 +56,23 @@ public class FaultyGenomicsServerITCase extends AbstractTransportTest {
    */
   @BeforeClass
   public static void startServer() throws IOException, GeneralSecurityException {
-    startStaticServer(InProcessServerBuilder.forName(serverName)
-        .addService(StreamingVariantServiceGrpc.bindService(new VariantsIntegrationServerImpl())));
+    try {
+      server = InProcessServerBuilder.forName(SERVER_NAME)
+              .addService(StreamingVariantServiceGrpc.bindService(new VariantsIntegrationServerImpl()))
+              .build().start();
+    } catch (IOException ex) {
+      throw new RuntimeException(ex);
+    }
     helper = new IntegrationTestHelper();
     genomicsChannel = GenomicsChannel.fromOfflineAuth(helper.getAuth());
   }
 
   @AfterClass
   public static void stopServer() {
-    stopStaticServer();
+    server.shutdownNow();
   }
 
-  @Override
-  protected ManagedChannel createChannel() {
-    return InProcessChannelBuilder.forName(serverName).build();
-  }
-
-  static class VariantsIntegrationServerImpl implements
+  protected static class VariantsIntegrationServerImpl implements
       StreamingVariantServiceGrpc.StreamingVariantService {
     final Random random = new Random();
 
@@ -117,8 +118,12 @@ public class FaultyGenomicsServerITCase extends AbstractTransportTest {
           });
     }
   }
-  
-  void runRetryTest(final GenomicsStreamIterator iter, double faultPercentage, int expectedNumItems) {
+
+  public ManagedChannel createChannel() {
+    return InProcessChannelBuilder.forName(SERVER_NAME).build();
+  }
+
+  public void runRetryTest(final GenomicsStreamIterator iter, double faultPercentage, int expectedNumItems) {
     FaultyGenomicsServerITCase.faultPercentage = faultPercentage;
     TestHelper.consumeStreamTest(iter, expectedNumItems);
   }

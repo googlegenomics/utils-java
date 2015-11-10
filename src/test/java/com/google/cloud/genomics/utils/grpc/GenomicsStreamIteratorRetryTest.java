@@ -15,12 +15,15 @@
 package com.google.cloud.genomics.utils.grpc;
 
 import static org.junit.Assert.assertEquals;
+
+import java.io.IOException;
+
 import io.grpc.ManagedChannel;
+import io.grpc.Server;
 import io.grpc.Status;
 import io.grpc.inprocess.InProcessChannelBuilder;
 import io.grpc.inprocess.InProcessServerBuilder;
 import io.grpc.stub.StreamObserver;
-import io.grpc.testing.integration.AbstractTransportTest;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -51,10 +54,9 @@ import com.google.protobuf.Message;
  * retried stream.
  */
 @RunWith(JUnit4.class)
-public class GenomicsStreamIteratorRetryTest extends AbstractTransportTest {
-  private static String serverName = "unitTest";
-
-  final static StreamReadsResponse[] READ_RESPONSES = {
+public class GenomicsStreamIteratorRetryTest {
+  public static final String SERVER_NAME = "unitTest";
+  public static final StreamReadsResponse[] READ_RESPONSES = {
     StreamReadsResponse.newBuilder()
     .addAlignments(TestHelper.makeRead(400, 505))
     .addAlignments(TestHelper.makeRead(400, 510))
@@ -68,8 +70,7 @@ public class GenomicsStreamIteratorRetryTest extends AbstractTransportTest {
     .addAlignments(TestHelper.makeRead(511, 555))
     .addAlignments(TestHelper.makeRead(511, 556)).build()
   };
-  
-  final static StreamVariantsResponse[] VARIANT_RESPONSES = {
+  public static final StreamVariantsResponse[] VARIANT_RESPONSES = {
     StreamVariantsResponse.newBuilder()
     .addVariants(TestHelper.makeVariant(400, 505))
     .addVariants(TestHelper.makeVariant(400, 510))
@@ -83,41 +84,42 @@ public class GenomicsStreamIteratorRetryTest extends AbstractTransportTest {
     .addVariants(TestHelper.makeVariant(511, 555))
     .addVariants(TestHelper.makeVariant(511, 556)).build()
   };
-  
-  final static long REQUEST_START_POSITION = 450;
-  final static StreamReadsRequest READS_REQUEST = StreamReadsRequest.newBuilder()
+  public static final long REQUEST_START_POSITION = 450;
+  public static final StreamReadsRequest READS_REQUEST = StreamReadsRequest.newBuilder()
       .setStart(REQUEST_START_POSITION).build();
-  final static StreamVariantsRequest VARIANTS_REQUEST = StreamVariantsRequest.newBuilder()
+  public static final StreamVariantsRequest VARIANTS_REQUEST = StreamVariantsRequest.newBuilder()
       .setStart(REQUEST_START_POSITION).build();
   
   enum InjectionSite {
     AT_BEGINNING, AFTER_FIRST_RESPONSE, AFTER_SECOND_RESPONSE, AT_END
   };
-  static InjectionSite injectionSite;
-  static boolean failNow;
-  static long lastObservedRequestStartPosition;
 
+  protected static InjectionSite injectionSite;
+  protected static boolean failNow;
+  protected static long lastObservedRequestStartPosition;
+  protected static Server server;
+  
   /**
-   * Starts the in-process server.
+   * Starts the in-process server. 
    */
   @BeforeClass
   public static void startServer() {
-    startStaticServer(InProcessServerBuilder.forName(serverName)
-        .addService(StreamingReadServiceGrpc.bindService(new UnitServerImpl()))
-        .addService(StreamingVariantServiceGrpc.bindService(new UnitServerImpl())));
+    try {
+      server = InProcessServerBuilder.forName(SERVER_NAME)
+          .addService(StreamingReadServiceGrpc.bindService(new UnitServerImpl()))
+          .addService(StreamingVariantServiceGrpc.bindService(new UnitServerImpl()))
+          .build().start();
+    } catch (IOException ex) {
+      throw new RuntimeException(ex);
+    }
   }
 
   @AfterClass
   public static void stopServer() {
-    stopStaticServer();
+    server.shutdownNow();
   }
-
-  @Override
-  protected ManagedChannel createChannel() {
-    return InProcessChannelBuilder.forName(serverName).build();
-  }
-
-  private static class UnitServerImpl implements
+  
+  protected static class UnitServerImpl implements
   StreamingReadServiceGrpc.StreamingReadService,
       StreamingVariantServiceGrpc.StreamingVariantService {
     
@@ -139,7 +141,7 @@ public class GenomicsStreamIteratorRetryTest extends AbstractTransportTest {
       respondWithFaults(responseObserver, VARIANT_RESPONSES);
     }
 
-    private void respondWithFaults(StreamObserver responseObserver, Message[] responses) {
+    protected void respondWithFaults(StreamObserver responseObserver, Message[] responses) {
       if (failNow && InjectionSite.AT_BEGINNING.equals(injectionSite)) {
         failNow = !failNow;
         responseObserver.onError(Status.UNAVAILABLE.withDescription("injected fault")
@@ -178,7 +180,11 @@ public class GenomicsStreamIteratorRetryTest extends AbstractTransportTest {
     }
   }
 
-  void runTest(final GenomicsStreamIterator iter, InjectionSite site, int expectedNumItems) {
+  public ManagedChannel createChannel() {
+    return InProcessChannelBuilder.forName(SERVER_NAME).build();
+  }
+
+  public void runTest(final GenomicsStreamIterator iter, InjectionSite site, int expectedNumItems) {
     injectionSite = site;
     failNow = true;
     

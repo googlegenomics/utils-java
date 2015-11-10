@@ -140,12 +140,6 @@
       <artifactId>grpc-all</artifactId>
       <version>0.9.0</version>
     </dependency>
-    <dependency>
-      <groupId>io.grpc</groupId>
-      <artifactId>grpc-interop-testing</artifactId>
-      <version>0.9.0</version>
-      <scope>test</scope>
-    </dependency>
 
     <!-- Used to test the custom builder logic -->
     <dependency>

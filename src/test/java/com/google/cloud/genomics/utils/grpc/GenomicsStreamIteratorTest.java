@@ -15,10 +15,10 @@
 package com.google.cloud.genomics.utils.grpc;
 
 import io.grpc.ManagedChannel;
+import io.grpc.Server;
 import io.grpc.inprocess.InProcessChannelBuilder;
 import io.grpc.inprocess.InProcessServerBuilder;
 import io.grpc.stub.StreamObserver;
-import io.grpc.testing.integration.AbstractTransportTest;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
@@ -41,30 +41,32 @@ import com.google.genomics.v1.StreamingReadServiceGrpc;
 import com.google.genomics.v1.StreamingVariantServiceGrpc;
 
 @RunWith(JUnit4.class)
-public class GenomicsStreamIteratorTest extends AbstractTransportTest {
-  private static String serverName = "unitTest";
-    
-  /** Starts the in-process server. 
-   * @throws GeneralSecurityException 
-   * @throws IOException */
+public class GenomicsStreamIteratorTest {
+  public static final String SERVER_NAME = "unitTest";
+  
+  protected static Server server;
+  
+  /**
+   * Starts the in-process server. 
+   */
   @BeforeClass
-  public static void startServer() throws IOException, GeneralSecurityException {
-    startStaticServer(InProcessServerBuilder.forName(serverName)
+  public static void startServer() {
+    try {
+      server = InProcessServerBuilder.forName(SERVER_NAME)
         .addService(StreamingReadServiceGrpc.bindService(new ReadsUnitServerImpl()))
-        .addService(StreamingVariantServiceGrpc.bindService(new VariantsUnitServerImpl())));
+        .addService(StreamingVariantServiceGrpc.bindService(new VariantsUnitServerImpl()))
+        .build().start();
+    } catch (IOException ex) {
+      throw new RuntimeException(ex);
+    }
   }
 
   @AfterClass
   public static void stopServer() {
-    stopStaticServer();
-  }
-
-  @Override
-  protected ManagedChannel createChannel() {
-    return InProcessChannelBuilder.forName(serverName).build();
+    server.shutdownNow();
   }
   
-  private static class ReadsUnitServerImpl implements StreamingReadServiceGrpc.StreamingReadService {
+  protected static class ReadsUnitServerImpl implements StreamingReadServiceGrpc.StreamingReadService {
     @Override
     public void streamReads(StreamReadsRequest request,
         StreamObserver<StreamReadsResponse> responseObserver) {
@@ -78,7 +80,7 @@ public class GenomicsStreamIteratorTest extends AbstractTransportTest {
     }
   }
 
-  private static class VariantsUnitServerImpl implements StreamingVariantServiceGrpc.StreamingVariantService {
+  protected static class VariantsUnitServerImpl implements StreamingVariantServiceGrpc.StreamingVariantService {
     @Override
     public void streamVariants(StreamVariantsRequest request,
         StreamObserver<StreamVariantsResponse> responseObserver) {
@@ -92,6 +94,10 @@ public class GenomicsStreamIteratorTest extends AbstractTransportTest {
     }
   }
   
+  public ManagedChannel createChannel() {
+    return InProcessChannelBuilder.forName(SERVER_NAME).build();
+  }
+
   @Test
   public void testAllReadsOverlapsStart() throws IOException, GeneralSecurityException {
     ImmutableList<StreamReadsRequest> requests =
