@@ -30,7 +30,6 @@ import org.junit.Test;
 import com.google.cloud.genomics.utils.IntegrationTestHelper;
 import com.google.cloud.genomics.utils.ShardBoundary;
 import com.google.cloud.genomics.utils.ShardUtils;
-import com.google.common.base.Function;
 import com.google.common.collect.ImmutableList;
 import com.google.genomics.v1.StreamVariantsRequest;
 import com.google.genomics.v1.StreamVariantsResponse;
@@ -39,12 +38,6 @@ import com.google.genomics.v1.Variant;
 public class VariantStreamIteratorITCase {
 
   static IntegrationTestHelper helper;
-  Function<Variant, String> getId = new Function<Variant, String>() {
-    @Override
-    public String apply(Variant v) {
-      return v.getId();
-    }
-  };
 
   @BeforeClass
   public static void setUpBeforeClass() throws Exception {
