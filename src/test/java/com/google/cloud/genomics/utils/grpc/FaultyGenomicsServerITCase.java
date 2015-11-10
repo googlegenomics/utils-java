@@ -46,7 +46,9 @@ public class FaultyGenomicsServerITCase {
   protected static Server server;
   protected static IntegrationTestHelper helper;
   protected static GenomicsChannel genomicsChannel;
-  protected static double faultPercentage = 0.0;
+  
+  // Variable accessed by both the InProcess Server executor threads and the test thread.
+  protected static volatile double faultPercentage = 0.0;
 
   /**
    * Starts the in-process server that calls the real service.

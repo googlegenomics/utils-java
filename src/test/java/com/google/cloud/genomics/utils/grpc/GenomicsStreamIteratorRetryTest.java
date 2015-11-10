@@ -86,10 +86,12 @@ public class GenomicsStreamIteratorRetryTest {
     AT_BEGINNING, AFTER_FIRST_RESPONSE, AFTER_SECOND_RESPONSE, AT_END
   };
 
-  protected static InjectionSite injectionSite;
-  protected static boolean failNow;
-  protected static long lastObservedRequestStartPosition;
   protected static Server server;
+
+  // Variables accessed by both the InProcess Server executor threads and the test thread.
+  protected static volatile InjectionSite injectionSite;
+  protected static volatile boolean failNow;
+  protected static volatile long lastObservedRequestStartPosition;
 
   /**
    * Starts the in-process server.
