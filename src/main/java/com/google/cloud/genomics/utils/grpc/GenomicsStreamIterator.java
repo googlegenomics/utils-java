@@ -13,8 +13,9 @@
  */
 package com.google.cloud.genomics.utils.grpc;
 
+import io.grpc.ManagedChannel;
+
 import java.io.IOException;
-import java.security.GeneralSecurityException;
 import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
@@ -22,7 +23,6 @@ import java.util.logging.Logger;
 
 import com.google.api.client.util.BackOff;
 import com.google.api.client.util.ExponentialBackOff;
-import com.google.cloud.genomics.utils.GenomicsFactory;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
@@ -33,7 +33,7 @@ import com.google.common.collect.Lists;
  * Includes complex retry logic to upon failure resume the stream at the last known good start
  * position without returning duplicate data.
  * 
- * TODO: refactor this further to simplify the generic signature. 
+ * TODO: refactor this further to simplify the generic signature.
  * 
  * @param <Request> Streaming request type.
  * @param <Response> Streaming response type.
@@ -43,11 +43,13 @@ import com.google.common.collect.Lists;
 public abstract class GenomicsStreamIterator<Request, Response, Item, Stub extends io.grpc.stub.AbstractStub<Stub>>
     implements Iterator<Response> {
   private static final Logger LOG = Logger.getLogger(GenomicsStreamIterator.class.getName());
-  private final ExponentialBackOff backoff;
-  private final GenomicsChannel genomicsChannel;
-  private final Predicate<Item> shardPredicate;
+
+  protected final ManagedChannel genomicsChannel;
+  protected final Predicate<Item> shardPredicate;
   protected final Stub stub;
   protected final Request originalRequest;
+
+  protected ExponentialBackOff backoff;
 
   // Stateful members used to facilitate complex retry behavior for gRPC streams.
   private Iterator<Response> delegate;
@@ -57,20 +59,19 @@ public abstract class GenomicsStreamIterator<Request, Response, Item, Stub exten
   /**
    * Create a stream iterator that will filter shard data using the predicate, if supplied.
    * 
+   * @param channel The channel.
    * @param request The request for the shard of data.
-   * @param auth The OfflineAuth to use for the request.
    * @param fields Which fields to include in a partial response or null for all. NOT YET
    *        IMPLEMENTED.
-   * @param shardPredicate A predicate used to client-side filter results returned (e.g., enforce
-   *             a shard boundary and/or limit to SNPs only) or null for no filtering.
-   * @throws IOException
-   * @throws GeneralSecurityException
+   * @param shardPredicate A predicate used to client-side filter results returned (e.g., enforce a
+   *        shard boundary and/or limit to SNPs only) or null for no filtering.
    */
-  public GenomicsStreamIterator(Request request, GenomicsFactory.OfflineAuth auth, String fields,
-      Predicate<Item> shardPredicate) throws IOException, GeneralSecurityException {
+
+  protected GenomicsStreamIterator(ManagedChannel channel, Request request, String fields,
+      Predicate<Item> shardPredicate) {
     this.originalRequest = request;
     this.shardPredicate = shardPredicate;
-    genomicsChannel = GenomicsChannel.fromOfflineAuth(auth);
+    this.genomicsChannel = channel;
     stub = createStub(genomicsChannel);
 
     // Using default backoff settings. For details, see
@@ -83,7 +84,7 @@ public abstract class GenomicsStreamIterator<Request, Response, Item, Stub exten
     idSentinel = null;
   }
 
-  abstract Stub createStub(GenomicsChannel genomicsChannel);
+  abstract Stub createStub(ManagedChannel genomicsChannel);
 
   abstract Iterator<Response> createIteratorFromStub(Request request);
 
@@ -168,6 +169,7 @@ public abstract class GenomicsStreamIterator<Request, Response, Item, Stub exten
       // We have never returned any data. No need to set up state needed to filter previously
       // returned results.
       delegate = createIterator(originalRequest);
+      return;
     }
 
     if (getRequestStart(originalRequest) < getDataItemStart(lastSuccessfulDataItem)) {

@@ -21,7 +21,6 @@ import java.io.IOException;
 import java.security.GeneralSecurityException;
 
 import com.google.api.services.genomics.model.ReferenceBound;
-import com.google.cloud.genomics.utils.GenomicsFactory.Builder;
 import com.google.cloud.genomics.utils.GenomicsFactory.OfflineAuth;
 
 /**
@@ -71,6 +70,7 @@ public class IntegrationTestHelper {
   };
   public static final String PLATINUM_GENOMES_REFERENCE_SET_ID = "CNfS6aHAoved2AEQ6PnzkOzw15rqAQ";
   public static final String PLATINUM_GENOMES_BRCA1_REFERENCES = "chr17:41196311:41277499";
+  public static final int PLATINUM_GENOMES_BRCA1_EXPECTED_NUM_VARIANTS = 19517;
   public static final String PLATINUM_GENOMES_KLOTHO_REFERENCES = "chr13:33628137:33628138";
   public static final ReferenceBound[] PLATINUM_GENOMES_VARIANTSET_BOUNDS = {
     new ReferenceBound().setReferenceName("chr1").setUpperBound(250226910L),

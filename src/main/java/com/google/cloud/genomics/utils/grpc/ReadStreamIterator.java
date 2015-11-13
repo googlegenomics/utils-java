@@ -13,6 +13,8 @@
  */
 package com.google.cloud.genomics.utils.grpc;
 
+import io.grpc.ManagedChannel;
+
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Iterator;
@@ -43,43 +45,57 @@ public class ReadStreamIterator
   /**
    * Create a stream iterator that can enforce shard boundary semantics.
    * 
-   * @param request
-   * @param auth
-   * @param shardBoundary
-   * @param fields
+   * @param auth The OfflineAuth to use for the request.
+   * @param request The request for the shard of data.
+   * @param shardBoundary The shard boundary semantics to enforce.
+   * @param fields Which fields to include in a partial response or null for all. NOT YET
+   *        IMPLEMENTED.
    * @throws IOException
    * @throws GeneralSecurityException
    */
-  public static ReadStreamIterator enforceShardBoundary(StreamReadsRequest request,
-      OfflineAuth auth, Requirement shardBoundary, String fields) throws IOException,
+  public static ReadStreamIterator enforceShardBoundary(OfflineAuth auth,
+      StreamReadsRequest request, Requirement shardBoundary, String fields) throws IOException,
       GeneralSecurityException {
+    return ReadStreamIterator.enforceShardBoundary(GenomicsChannel.fromOfflineAuth(auth), request,
+        shardBoundary, fields);
+  }
+
+  /**
+   * Create a stream iterator that can enforce shard boundary semantics.
+   * 
+   * @param channel The ManagedChannel.
+   * @param request The request for the shard of data.
+   * @param shardBoundary The shard boundary semantics to enforce.
+   * @param fields Which fields to include in a partial response or null for all. NOT YET
+   *        IMPLEMENTED.
+   */
+  public static ReadStreamIterator enforceShardBoundary(ManagedChannel channel,
+      StreamReadsRequest request, Requirement shardBoundary, String fields) {
     Predicate<Read> shardPredicate =
         (ShardBoundary.Requirement.STRICT == shardBoundary) ? ShardBoundary
             .getStrictReadPredicate(request.getStart()) : null;
     // TODO: Facilitate shard boundary predicate here by checking for minimum set of fields in
     // partial request.
-    return new ReadStreamIterator(request, auth, fields, shardPredicate);
+    return new ReadStreamIterator(channel, request, fields, shardPredicate);
   }
 
   /**
    * Create a stream iterator.
    * 
+   * @param channel The ManagedChannel.
    * @param request The request for the shard of data.
-   * @param auth The OfflineAuth to use for the request.
    * @param fields Which fields to include in a partial response or null for all. NOT YET
    *        IMPLEMENTED.
-   * @param shardPredicate A predicate used to client-side filter results returned (e.g., enforce
-   *             a shard boundary and/or limit to SNPs only) or null for no filtering.
-   * @throws IOException
-   * @throws GeneralSecurityException
+   * @param shardPredicate A predicate used to client-side filter results returned (e.g., enforce a
+   *        shard boundary and/or limit to SNPs only) or null for no filtering.
    */
-  public ReadStreamIterator(StreamReadsRequest request, OfflineAuth auth, String fields,
-      Predicate<Read> shardPredicate) throws IOException, GeneralSecurityException {
-    super(request, auth, fields, shardPredicate);
+  public ReadStreamIterator(ManagedChannel channel, StreamReadsRequest request, String fields,
+      Predicate<Read> shardPredicate) {
+    super(channel, request, fields, shardPredicate);
   }
 
   @Override
-  StreamingReadServiceBlockingStub createStub(GenomicsChannel genomicsChannel) {
+  StreamingReadServiceBlockingStub createStub(ManagedChannel genomicsChannel) {
     return StreamingReadServiceGrpc.newBlockingStub(genomicsChannel);
   }
 
@@ -115,8 +131,7 @@ public class ReadStreamIterator
 
   @Override
   StreamReadsResponse buildResponse(StreamReadsResponse response, Iterable<Read> dataList) {
-    return StreamReadsResponse.newBuilder(response).clearAlignments()
-        .addAllAlignments(dataList)
+    return StreamReadsResponse.newBuilder(response).clearAlignments().addAllAlignments(dataList)
         .build();
   }
 }

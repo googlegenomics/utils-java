@@ -52,7 +52,7 @@ public class VariantStreamIteratorITCase {
     assertEquals(1, requests.size());
 
     Iterator<StreamVariantsResponse> iter =
-        VariantStreamIterator.enforceShardBoundary(requests.get(0), helper.getAuth(),
+        VariantStreamIterator.enforceShardBoundary(helper.getAuth(), requests.get(0), 
             ShardBoundary.Requirement.OVERLAPS, null);
 
     assertTrue(iter.hasNext());
@@ -63,13 +63,31 @@ public class VariantStreamIteratorITCase {
     assertFalse(iter.hasNext());
     
     iter =
-        VariantStreamIterator.enforceShardBoundary(requests.get(0), helper.getAuth(),
+        VariantStreamIterator.enforceShardBoundary(helper.getAuth(), requests.get(0), 
             ShardBoundary.Requirement.STRICT, null);
 
     assertTrue(iter.hasNext());
     variantResponse = iter.next();
     // This includes only the klotho SNP.
     assertEquals(1, variantResponse.getVariantsList().size());
+    assertFalse(iter.hasNext());
+  }
+
+  @Test
+  public void testEmptyRegion() throws IOException, GeneralSecurityException {
+    ImmutableList<StreamVariantsRequest> requests =
+        ShardUtils.getVariantRequests(helper.PLATINUM_GENOMES_VARIANTSET,
+            "chrDoesNotExist:100:200", 100L);
+    assertEquals(1, requests.size());
+
+    Iterator<StreamVariantsResponse> iter =
+        VariantStreamIterator.enforceShardBoundary(helper.getAuth(), requests.get(0), 
+            ShardBoundary.Requirement.OVERLAPS, null);
+    assertFalse(iter.hasNext());
+
+    iter =
+        VariantStreamIterator.enforceShardBoundary(helper.getAuth(), requests.get(0),
+            ShardBoundary.Requirement.STRICT, null);
     assertFalse(iter.hasNext());
   }
 
@@ -83,7 +101,7 @@ public class VariantStreamIteratorITCase {
     assertEquals(1, requests.size());
 
     Iterator<StreamVariantsResponse> iter =
-        VariantStreamIterator.enforceShardBoundary(requests.get(0), helper.getAuth(),
+        VariantStreamIterator.enforceShardBoundary(helper.getAuth(), requests.get(0),
             ShardBoundary.Requirement.STRICT, "variants(reference_name,start)");
 
     assertTrue(iter.hasNext());
@@ -97,19 +115,4 @@ public class VariantStreamIteratorITCase {
     assertEquals(33628137, variants.get(0).getStart());
     assertNull(variants.get(0).getReferenceBases());
   }
-
-  // TODO test a shard where the entire first result will be empty due to the strict shard boundary requirement.  Same for reads.
-  
-  /**
-   * TODO: Retry tests.  Same for reads.
-   * 
-   * Be sure to test retries that occur at:
-   * (1) the beginning of the stream
-   * (2) within records that overlap the start position
-   * (3) occur at the start position
-   * (4) beyond the start position
-   *
-   * Test should confirm that all records are returned only once upon successful completion of the retried stream.
-   */
-  
 }
