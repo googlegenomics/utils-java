@@ -14,10 +14,6 @@
 
 package com.google.cloud.genomics.utils.grpc;
 
-import static org.junit.Assert.assertEquals;
-
-import java.io.IOException;
-
 import io.grpc.ManagedChannel;
 import io.grpc.Server;
 import io.grpc.Status;
@@ -25,11 +21,15 @@ import io.grpc.inprocess.InProcessChannelBuilder;
 import io.grpc.inprocess.InProcessServerBuilder;
 import io.grpc.stub.StreamObserver;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import java.io.IOException;
+
+import org.junit.After;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import org.mockito.Mockito;
 
 import com.google.cloud.genomics.utils.ShardBoundary;
 import com.google.genomics.v1.StreamReadsRequest;
@@ -55,7 +55,6 @@ import com.google.protobuf.Message;
  */
 @RunWith(JUnit4.class)
 public class GenomicsStreamIteratorRetryTest {
-  public static final String SERVER_NAME = "unitTest";
   public static final StreamReadsResponse[] READ_RESPONSES = {
       StreamReadsResponse.newBuilder().addAlignments(TestHelper.makeRead(400, 505))
           .addAlignments(TestHelper.makeRead(400, 510))
@@ -85,59 +84,45 @@ public class GenomicsStreamIteratorRetryTest {
   enum InjectionSite {
     AT_BEGINNING, AFTER_FIRST_RESPONSE, AFTER_SECOND_RESPONSE, AT_END
   };
-
-  protected static Server server;
-
-  // Variables accessed by both the InProcess Server executor threads and the test thread.
-  protected static volatile InjectionSite injectionSite;
-  protected static volatile boolean failNow;
-  protected static volatile long lastObservedRequestStartPosition;
-
-  /**
-   * Starts the in-process server.
-   */
-  @BeforeClass
-  public static void startServer() {
-    try {
-      server =
-          InProcessServerBuilder.forName(SERVER_NAME)
-              .addService(StreamingReadServiceGrpc.bindService(new UnitServerImpl()))
-              .addService(StreamingVariantServiceGrpc.bindService(new UnitServerImpl())).build()
-              .start();
-    } catch (IOException ex) {
-      throw new RuntimeException(ex);
-    }
-  }
-
-  @AfterClass
-  public static void stopServer() {
-    server.shutdownNow();
-  }
+  
+  @Rule
+  public TestName testName = new TestName();
+  
+  protected Server server;
 
   protected static class UnitServerImpl implements StreamingReadServiceGrpc.StreamingReadService,
       StreamingVariantServiceGrpc.StreamingVariantService {
 
+    protected final InjectionSite injectionSite;
+    protected volatile boolean failNow;  // Accessed by the InProcess Server executor threads.
+
+    protected UnitServerImpl(InjectionSite targetSite) {
+      injectionSite = targetSite;
+      failNow = true;
+    }
+    
+    protected synchronized boolean shouldInjectNow(InjectionSite currentSite) {
+        if (failNow && injectionSite.equals(currentSite)) {
+          failNow = false;
+          return true;
+        }
+        return false;
+    }
+    
     @Override
     public void streamReads(StreamReadsRequest request,
         StreamObserver<StreamReadsResponse> responseObserver) {
-      // Set this to later confirm that the request start position is updated
-      // for retrying data beyond the start position.
-      lastObservedRequestStartPosition = request.getStart();
       respondWithFaults(responseObserver, READ_RESPONSES);
     }
 
     @Override
     public void streamVariants(StreamVariantsRequest request,
         StreamObserver<StreamVariantsResponse> responseObserver) {
-      // Set this to later confirm that the request start position is updated
-      // for retrying data beyond the start position.
-      lastObservedRequestStartPosition = request.getStart();
       respondWithFaults(responseObserver, VARIANT_RESPONSES);
     }
 
-    protected void respondWithFaults(StreamObserver responseObserver, Message[] responses) {
-      if (failNow && InjectionSite.AT_BEGINNING.equals(injectionSite)) {
-        failNow = !failNow;
+    protected synchronized void respondWithFaults(StreamObserver responseObserver, Message[] responses) {
+      if (shouldInjectNow(InjectionSite.AT_BEGINNING)) {
         responseObserver.onError(Status.UNAVAILABLE.withDescription("injected fault")
             .asRuntimeException());
         return;
@@ -145,8 +130,7 @@ public class GenomicsStreamIteratorRetryTest {
         responseObserver.onNext(responses[0]);
       }
 
-      if (failNow && InjectionSite.AFTER_FIRST_RESPONSE.equals(injectionSite)) {
-        failNow = !failNow;
+      if (shouldInjectNow(InjectionSite.AFTER_FIRST_RESPONSE)) {
         responseObserver.onError(Status.UNAVAILABLE.withDescription("injected fault")
             .asRuntimeException());
         return;
@@ -154,8 +138,7 @@ public class GenomicsStreamIteratorRetryTest {
         responseObserver.onNext(responses[1]);
       }
 
-      if (failNow && InjectionSite.AFTER_SECOND_RESPONSE.equals(injectionSite)) {
-        failNow = !failNow;
+      if (shouldInjectNow(InjectionSite.AFTER_SECOND_RESPONSE)) {
         responseObserver.onError(Status.UNAVAILABLE.withDescription("injected fault")
             .asRuntimeException());
         return;
@@ -163,8 +146,7 @@ public class GenomicsStreamIteratorRetryTest {
         responseObserver.onNext(responses[2]);
       }
 
-      if (failNow && InjectionSite.AT_END.equals(injectionSite)) {
-        failNow = !failNow;
+      if (shouldInjectNow(InjectionSite.AT_END)) {
         responseObserver.onError(Status.UNAVAILABLE.withDescription("injected fault")
             .asRuntimeException());
         return;
@@ -174,22 +156,51 @@ public class GenomicsStreamIteratorRetryTest {
     }
   }
 
-  public ManagedChannel createChannel() {
-    return InProcessChannelBuilder.forName(SERVER_NAME).build();
+  /**
+   * Starts the in-process server configured to inject one fault at the specified target site.
+   *
+   * @param targetSite
+   */
+  public void startServer(InjectionSite targetSite) {
+    try {
+      server =
+          InProcessServerBuilder.forName(testName.getMethodName())
+              .addService(StreamingReadServiceGrpc.bindService(new UnitServerImpl(targetSite)))
+              .addService(StreamingVariantServiceGrpc.bindService(new UnitServerImpl(targetSite)))
+              .build()
+              .start();
+    } catch (IOException ex) {
+      throw new RuntimeException(ex);
+    }
   }
 
-  public void runTest(final GenomicsStreamIterator iter, InjectionSite site, int expectedNumItems) {
-    injectionSite = site;
-    failNow = true;
+  @After
+  public void stopServer() {
+    server.shutdownNow();
+  }
 
-    TestHelper.consumeStreamTest(iter, expectedNumItems);
+  public ManagedChannel createChannel() {
+    return InProcessChannelBuilder.forName(testName.getMethodName()).build();
+  }
 
-    if (InjectionSite.AFTER_SECOND_RESPONSE.equals(injectionSite)) {
-      assertEquals(505L, lastObservedRequestStartPosition);
-    } else if (InjectionSite.AT_END.equals(injectionSite)) {
-      assertEquals(511L, lastObservedRequestStartPosition);
+  public void runTest(Message request, ShardBoundary.Requirement requirement,
+      InjectionSite targetSite, int expectedNumItems) {
+    startServer(targetSite);
+    GenomicsStreamIterator rawIterator =
+        (request instanceof StreamVariantsRequest) 
+        ? VariantStreamIterator.enforceShardBoundary(createChannel(), (StreamVariantsRequest) request, requirement, null)
+            : ReadStreamIterator.enforceShardBoundary(createChannel(), (StreamReadsRequest) request, requirement, null);
+    GenomicsStreamIterator iteratorSpy = Mockito.spy(rawIterator);
+    TestHelper.consumeStreamTest(iteratorSpy, expectedNumItems);
+
+    // Confirm that the client retried the failed stream at an updated start position to avoid
+    // pulling an excessive amount of duplicate data.
+    if (InjectionSite.AFTER_SECOND_RESPONSE.equals(targetSite)) {
+      Mockito.verify(iteratorSpy, Mockito.times(1)).getRevisedRequest(505L);
+    } else if (InjectionSite.AT_END.equals(targetSite)) {
+      Mockito.verify(iteratorSpy, Mockito.times(1)).getRevisedRequest(511L);
     } else {
-      assertEquals(REQUEST_START_POSITION, lastObservedRequestStartPosition);
+      Mockito.verify(iteratorSpy, Mockito.times(0)).getRevisedRequest(REQUEST_START_POSITION);
     }
   }
 
@@ -197,98 +208,98 @@ public class GenomicsStreamIteratorRetryTest {
   // but breaking them out separately makes it easier to understand failures if they happen.
 
   @Test
-  public void testRetriesAfterFirstResponse() {
-    InjectionSite site = InjectionSite.AFTER_FIRST_RESPONSE;
-    GenomicsStreamIterator iter =
-        VariantStreamIterator.enforceShardBoundary(createChannel(), VARIANTS_REQUEST,
-            ShardBoundary.Requirement.STRICT, null);
-    runTest(iter, site, 7);
-
-    iter =
-        VariantStreamIterator.enforceShardBoundary(createChannel(), VARIANTS_REQUEST,
-            ShardBoundary.Requirement.OVERLAPS, null);
-    runTest(iter, site, 9);
-
-    iter =
-        ReadStreamIterator.enforceShardBoundary(createChannel(), READS_REQUEST,
-            ShardBoundary.Requirement.STRICT, null);
-    runTest(iter, site, 7);
-
-    iter =
-        ReadStreamIterator.enforceShardBoundary(createChannel(), READS_REQUEST,
-            ShardBoundary.Requirement.OVERLAPS, null);
-    runTest(iter, site, 9);
+  public void testVariantStrictRetriesAfterFirstResponse() {
+    runTest(VARIANTS_REQUEST, ShardBoundary.Requirement.STRICT,
+        InjectionSite.AFTER_FIRST_RESPONSE, 7);
   }
 
   @Test
-  public void testRetriesAfterSecondResponse() {
-    InjectionSite site = InjectionSite.AFTER_SECOND_RESPONSE;
-    GenomicsStreamIterator iter =
-        VariantStreamIterator.enforceShardBoundary(createChannel(), VARIANTS_REQUEST,
-            ShardBoundary.Requirement.STRICT, null);
-    runTest(iter, site, 7);
-
-    iter =
-        VariantStreamIterator.enforceShardBoundary(createChannel(), VARIANTS_REQUEST,
-            ShardBoundary.Requirement.OVERLAPS, null);
-    runTest(iter, site, 9);
-
-    iter =
-        ReadStreamIterator.enforceShardBoundary(createChannel(), READS_REQUEST,
-            ShardBoundary.Requirement.STRICT, null);
-    runTest(iter, site, 7);
-
-    iter =
-        ReadStreamIterator.enforceShardBoundary(createChannel(), READS_REQUEST,
-            ShardBoundary.Requirement.OVERLAPS, null);
-    runTest(iter, site, 9);
+  public void testVariantOverlappingRetriesAfterFirstResponse() {
+    runTest(VARIANTS_REQUEST, ShardBoundary.Requirement.OVERLAPS,
+        InjectionSite.AFTER_FIRST_RESPONSE, 9);
   }
 
   @Test
-  public void testRetriesAtBeginning() {
-    InjectionSite site = InjectionSite.AT_BEGINNING;
-    GenomicsStreamIterator iter =
-        VariantStreamIterator.enforceShardBoundary(createChannel(), VARIANTS_REQUEST,
-            ShardBoundary.Requirement.STRICT, null);
-    runTest(iter, site, 7);
-
-    iter =
-        VariantStreamIterator.enforceShardBoundary(createChannel(), VARIANTS_REQUEST,
-            ShardBoundary.Requirement.OVERLAPS, null);
-    runTest(iter, site, 9);
-
-    iter =
-        ReadStreamIterator.enforceShardBoundary(createChannel(), READS_REQUEST,
-            ShardBoundary.Requirement.STRICT, null);
-    runTest(iter, site, 7);
-
-    iter =
-        ReadStreamIterator.enforceShardBoundary(createChannel(), READS_REQUEST,
-            ShardBoundary.Requirement.OVERLAPS, null);
-    runTest(iter, site, 9);
+  public void testReadStrictRetriesAfterFirstResponse() {
+    runTest(READS_REQUEST, ShardBoundary.Requirement.STRICT,
+        InjectionSite.AFTER_FIRST_RESPONSE, 7);
   }
 
   @Test
-  public void testRetriesAtEnd() {
-    InjectionSite site = InjectionSite.AT_END;
-    GenomicsStreamIterator iter =
-        VariantStreamIterator.enforceShardBoundary(createChannel(), VARIANTS_REQUEST,
-            ShardBoundary.Requirement.STRICT, null);
-    runTest(iter, site, 7);
+  public void testReadOverlappingRetriesAfterFirstResponse() {
+    runTest(READS_REQUEST, ShardBoundary.Requirement.OVERLAPS,
+        InjectionSite.AFTER_FIRST_RESPONSE, 9);
+  }
 
-    iter =
-        VariantStreamIterator.enforceShardBoundary(createChannel(), VARIANTS_REQUEST,
-            ShardBoundary.Requirement.OVERLAPS, null);
-    runTest(iter, site, 9);
+  @Test
+  public void testVariantStrictRetriesAfterSecondResponse() {
+    runTest(VARIANTS_REQUEST, ShardBoundary.Requirement.STRICT,
+        InjectionSite.AFTER_SECOND_RESPONSE, 7);
+  }
 
-    iter =
-        ReadStreamIterator.enforceShardBoundary(createChannel(), READS_REQUEST,
-            ShardBoundary.Requirement.STRICT, null);
-    runTest(iter, site, 7);
+  @Test
+  public void testVariantOverlappingRetriesAfterSecondResponse() {
+    runTest(VARIANTS_REQUEST, ShardBoundary.Requirement.OVERLAPS,
+        InjectionSite.AFTER_SECOND_RESPONSE, 9);
+  }
 
-    iter =
-        ReadStreamIterator.enforceShardBoundary(createChannel(), READS_REQUEST,
-            ShardBoundary.Requirement.OVERLAPS, null);
-    runTest(iter, site, 9);
+  @Test
+  public void testReadStrictRetriesAfterSecondResponse() {
+    runTest(READS_REQUEST, ShardBoundary.Requirement.STRICT,
+        InjectionSite.AFTER_SECOND_RESPONSE, 7);
+  }
+
+  @Test
+  public void testReadOverlappingRetriesAfterSecondResponse() {
+    runTest(READS_REQUEST, ShardBoundary.Requirement.OVERLAPS,
+        InjectionSite.AFTER_SECOND_RESPONSE, 9);
+  }
+
+  @Test
+  public void testVariantStrictRetriesAtBeginning() {
+    runTest(VARIANTS_REQUEST, ShardBoundary.Requirement.STRICT,
+        InjectionSite.AT_BEGINNING, 7);
+  }
+
+  @Test
+  public void testVariantOverlappingRetriesAtBeginning() {
+    runTest(VARIANTS_REQUEST, ShardBoundary.Requirement.OVERLAPS,
+        InjectionSite.AT_BEGINNING, 9);
+  }
+
+  @Test
+  public void testReadStrictRetriesAtBeginning() {
+    runTest(READS_REQUEST, ShardBoundary.Requirement.STRICT,
+        InjectionSite.AT_BEGINNING, 7);
+  }
+
+  @Test
+  public void testReadOverlappingRetriesAtBeginning() {
+    runTest(READS_REQUEST, ShardBoundary.Requirement.OVERLAPS,
+        InjectionSite.AT_BEGINNING, 9);
+  }
+
+  @Test
+  public void testVariantStrictRetriesAtEnd() {
+    runTest(VARIANTS_REQUEST, ShardBoundary.Requirement.STRICT,
+        InjectionSite.AT_END, 7);
+  }
+
+  @Test
+  public void testVariantOverlappingRetriesAtEnd() {
+    runTest(VARIANTS_REQUEST, ShardBoundary.Requirement.OVERLAPS,
+        InjectionSite.AT_END, 9);
+  }
+
+  @Test
+  public void testReadStrictRetriesAtEnd() {
+    runTest(READS_REQUEST, ShardBoundary.Requirement.STRICT,
+        InjectionSite.AT_END, 7);
+  }
+
+  @Test
+  public void testReadOverlappingRetriesAtEnd() {
+    runTest(READS_REQUEST, ShardBoundary.Requirement.OVERLAPS,
+        InjectionSite.AT_END, 9);
   }
 }
