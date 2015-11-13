@@ -1,5 +1,7 @@
 package com.google.cloud.genomics.utils.grpc;
 
+import io.grpc.ManagedChannel;
+
 import java.io.FileNotFoundException;
 import java.util.Iterator;
 
@@ -34,7 +36,7 @@ public class Example {
       return;
     }
     
-    GenomicsChannel channel = GenomicsChannel.fromOfflineAuth(auth);
+    ManagedChannel channel = GenomicsChannel.fromOfflineAuth(auth);
 
     // Regular RPC example: list all reference set assembly ids.
     ReferenceServiceV1BlockingStub refStub =

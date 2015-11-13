@@ -55,16 +55,17 @@ public class ReadStreamIteratorITCase {
         REFERENCES, 100L);
     assertEquals(1, requests.size());
     
-    Iterator<StreamReadsResponse> iter = new ReadStreamIterator(requests.get(0),
-        helper.getAuth(), ShardBoundary.Requirement.OVERLAPS, null);
+    Iterator<StreamReadsResponse> iter =
+        ReadStreamIterator.enforceShardBoundary(helper.getAuth(), requests.get(0), 
+            ShardBoundary.Requirement.OVERLAPS, null);
     
     assertTrue(iter.hasNext());
     StreamReadsResponse readResponse = iter.next();
     assertEquals(57, readResponse.getAlignmentsList().size());
     assertFalse(iter.hasNext());
 
-    iter = new ReadStreamIterator(requests.get(0),
-        helper.getAuth(), ShardBoundary.Requirement.STRICT, null);
+    iter = ReadStreamIterator.enforceShardBoundary(helper.getAuth(), requests.get(0),
+        ShardBoundary.Requirement.STRICT, null);
     
     assertTrue(iter.hasNext());
     readResponse = iter.next();
@@ -81,8 +82,9 @@ public class ReadStreamIteratorITCase {
         REFERENCES, 100L);
     assertEquals(1, requests.size());
     
-    Iterator<StreamReadsResponse> iter = new ReadStreamIterator(requests.get(0),
-        helper.getAuth(), ShardBoundary.Requirement.STRICT, "reads(alignments)");
+    Iterator<StreamReadsResponse> iter =
+        ReadStreamIterator.enforceShardBoundary(helper.getAuth(), requests.get(0), 
+            ShardBoundary.Requirement.STRICT, "reads(alignments)");
     
     assertTrue(iter.hasNext());
     StreamReadsResponse readResponse = iter.next();

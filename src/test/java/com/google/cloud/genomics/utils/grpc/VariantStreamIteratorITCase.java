@@ -51,8 +51,9 @@ public class VariantStreamIteratorITCase {
             helper.PLATINUM_GENOMES_KLOTHO_REFERENCES, 100L);
     assertEquals(1, requests.size());
 
-    Iterator<StreamVariantsResponse> iter = new VariantStreamIterator(requests.get(0),
-        helper.getAuth(), ShardBoundary.Requirement.OVERLAPS, null);
+    Iterator<StreamVariantsResponse> iter =
+        VariantStreamIterator.enforceShardBoundary(helper.getAuth(), requests.get(0), 
+            ShardBoundary.Requirement.OVERLAPS, null);
 
     assertTrue(iter.hasNext());
     StreamVariantsResponse variantResponse = iter.next();
@@ -61,13 +62,32 @@ public class VariantStreamIteratorITCase {
     assertEquals(4, variants.size());
     assertFalse(iter.hasNext());
     
-    iter = new VariantStreamIterator(requests.get(0),
-        helper.getAuth(), ShardBoundary.Requirement.STRICT, null);
+    iter =
+        VariantStreamIterator.enforceShardBoundary(helper.getAuth(), requests.get(0), 
+            ShardBoundary.Requirement.STRICT, null);
 
     assertTrue(iter.hasNext());
     variantResponse = iter.next();
     // This includes only the klotho SNP.
     assertEquals(1, variantResponse.getVariantsList().size());
+    assertFalse(iter.hasNext());
+  }
+
+  @Test
+  public void testEmptyRegion() throws IOException, GeneralSecurityException {
+    ImmutableList<StreamVariantsRequest> requests =
+        ShardUtils.getVariantRequests(helper.PLATINUM_GENOMES_VARIANTSET,
+            "chrDoesNotExist:100:200", 100L);
+    assertEquals(1, requests.size());
+
+    Iterator<StreamVariantsResponse> iter =
+        VariantStreamIterator.enforceShardBoundary(helper.getAuth(), requests.get(0), 
+            ShardBoundary.Requirement.OVERLAPS, null);
+    assertFalse(iter.hasNext());
+
+    iter =
+        VariantStreamIterator.enforceShardBoundary(helper.getAuth(), requests.get(0),
+            ShardBoundary.Requirement.STRICT, null);
     assertFalse(iter.hasNext());
   }
 
@@ -80,8 +100,9 @@ public class VariantStreamIteratorITCase {
             helper.PLATINUM_GENOMES_KLOTHO_REFERENCES, 100L);
     assertEquals(1, requests.size());
 
-    Iterator<StreamVariantsResponse> iter = new VariantStreamIterator(requests.get(0),
-        helper.getAuth(), ShardBoundary.Requirement.STRICT, "variants(reference_name,start)");
+    Iterator<StreamVariantsResponse> iter =
+        VariantStreamIterator.enforceShardBoundary(helper.getAuth(), requests.get(0),
+            ShardBoundary.Requirement.STRICT, "variants(reference_name,start)");
 
     assertTrue(iter.hasNext());
     StreamVariantsResponse variantResponse = iter.next();
@@ -94,5 +115,4 @@ public class VariantStreamIteratorITCase {
     assertEquals(33628137, variants.get(0).getStart());
     assertNull(variants.get(0).getReferenceBases());
   }
-
 }
