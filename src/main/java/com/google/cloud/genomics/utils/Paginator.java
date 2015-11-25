@@ -100,13 +100,13 @@ import com.google.common.collect.Maps;
  *}
  *</pre>
  *
- * @param <A> The API type.
- * @param <B> The request type.
- * @param <C> The {@link GenomicsRequest} subtype.
- * @param <D> The response type.
- * @param <E> The type of object being streamed back to the user.
+ * @param <ApiT> The API type.
+ * @param <RequestT> The request type.
+ * @param <RequestSubT> The {@link GenomicsRequest} subtype.
+ * @param <ResponseT> The response type.
+ * @param <EntityT> The type of object being streamed back to the user.
  */
-public abstract class Paginator<A, B, C extends GenomicsRequest<D>, D, E> {
+public abstract class Paginator<ApiT, RequestT, RequestSubT extends GenomicsRequest<ResponseT>, ResponseT, EntityT> {
   
   /**
    * A callback object for
@@ -115,10 +115,10 @@ public abstract class Paginator<A, B, C extends GenomicsRequest<D>, D, E> {
    * the value returned from the
    * {@link #search(Object, GenomicsRequestInitializer, Callback, RetryPolicy)} method.
    *
-   * @param <E> The type of objects returned from a search
-   * @param <F> The type of object to accumulate when consuming search results.
+   * @param <EntityT> The type of objects returned from a search
+   * @param <AccumulatedT> The type of object to accumulate when consuming search results.
    */
-  public interface Callback<E, F> {
+  public interface Callback<EntityT, AccumulatedT> {
 
     /**
      * Consume the search results and accumulate an object to return.
@@ -127,7 +127,7 @@ public abstract class Paginator<A, B, C extends GenomicsRequest<D>, D, E> {
      * @return the accumulated summary value.
      * @throws IOException
      */
-    F consumeResponses(Iterable<E> responses) throws IOException;
+    AccumulatedT consumeResponses(Iterable<EntityT> responses) throws IOException;
   }
 
   /**
@@ -303,10 +303,10 @@ public abstract class Paginator<A, B, C extends GenomicsRequest<D>, D, E> {
 
   private class Pair {
 
-    final C request;
-    final D response;
+    final RequestSubT request;
+    final ResponseT response;
 
-    Pair(C request, D response) {
+    Pair(RequestSubT request, ResponseT response) {
       this.request = request;
       this.response = response;
     }
@@ -998,13 +998,13 @@ public abstract class Paginator<A, B, C extends GenomicsRequest<D>, D, E> {
     this.genomics = genomics;
   }
 
-  abstract C createSearch(A api, B request, Optional<String> pageToken) throws IOException;
+  abstract RequestSubT createSearch(ApiT api, RequestT request, Optional<String> pageToken) throws IOException;
 
-  abstract A getApi(Genomics genomics);
+  abstract ApiT getApi(Genomics genomics);
 
-  abstract String getNextPageToken(D response);
+  abstract String getNextPageToken(ResponseT response);
 
-  abstract Iterable<E> getResponses(D response);
+  abstract Iterable<EntityT> getResponses(ResponseT response);
 
   /**
    * Search for objects.
@@ -1012,11 +1012,11 @@ public abstract class Paginator<A, B, C extends GenomicsRequest<D>, D, E> {
    * @param request The search request.
    * @return the stream of search results.
    */
-  public final Iterable<E> search(final B request) {
+  public final Iterable<EntityT> search(final RequestT request) {
     return search(request, DEFAULT_INITIALIZER, RetryPolicy.defaultPolicy());
   }
 
-  public final <F> F search(B request, Callback<E, ? extends F> callback) throws IOException {
+  public final <AccumulatedT> AccumulatedT search(RequestT request, Callback<EntityT, ? extends AccumulatedT> callback) throws IOException {
     return search(request, DEFAULT_INITIALIZER, callback, RetryPolicy.defaultPolicy());
   }
 
@@ -1031,11 +1031,11 @@ public abstract class Paginator<A, B, C extends GenomicsRequest<D>, D, E> {
    *     (usually due to SocketTimeoutExceptions)
    * @return A lazy stream of search results.
    */
-  public final Iterable<E> search(
-      final B request,
-      final GenomicsRequestInitializer<? super C> initializer,
+  public final Iterable<EntityT> search(
+      final RequestT request,
+      final GenomicsRequestInitializer<? super RequestSubT> initializer,
       final RetryPolicy retryPolicy) {
-    final A api = getApi(genomics);
+    final ApiT api = getApi(genomics);
     return FluentIterable
         .from(
             new Iterable<Pair>() {
@@ -1046,11 +1046,11 @@ public abstract class Paginator<A, B, C extends GenomicsRequest<D>, D, E> {
                         @Override protected Pair computeNext(Pair pair) {
                           return Optional.fromNullable(pair.request)
                               .transform(
-                                  new Function<C, Pair>() {
-                                    @Override public Pair apply(C search) {
+                                  new Function<RequestSubT, Pair>() {
+                                    @Override public Pair apply(RequestSubT search) {
                                       try {
                                         initializer.initialize(search);
-                                        D response = retryPolicy.execute(search);
+                                        ResponseT response = retryPolicy.execute(search);
                                         Optional<String> pageToken =
                                             Optional.fromNullable(getNextPageToken(response));
                                         return new Pair(
@@ -1073,15 +1073,15 @@ public abstract class Paginator<A, B, C extends GenomicsRequest<D>, D, E> {
             })
         .skip(1)
         .transform(
-            new Function<Pair, D>() {
-              @Override public D apply(Pair pair) {
+            new Function<Pair, ResponseT>() {
+              @Override public ResponseT apply(Pair pair) {
                 return pair.response;
               }
             })
         .transformAndConcat(
-            new Function<D, Iterable<E>>() {
-              @Override public Iterable<E> apply(D response) {
-                return Optional.fromNullable(getResponses(response)).or(Collections.<E>emptyList());
+            new Function<ResponseT, Iterable<EntityT>>() {
+              @Override public Iterable<EntityT> apply(ResponseT response) {
+                return Optional.fromNullable(getResponses(response)).or(Collections.<EntityT>emptyList());
               }
             });
   }
@@ -1100,9 +1100,9 @@ public abstract class Paginator<A, B, C extends GenomicsRequest<D>, D, E> {
    * @throws IOException if an IOException occurred while consuming search results.
    */
   public final <F> F search(
-      B request,
-      GenomicsRequestInitializer<? super C> initializer,
-      Callback<E, ? extends F> callback,
+      RequestT request,
+      GenomicsRequestInitializer<? super RequestSubT> initializer,
+      Callback<EntityT, ? extends F> callback,
       RetryPolicy retryPolicy) throws IOException {
     try {
       return callback.consumeResponses(search(request, initializer, retryPolicy));
@@ -1121,11 +1121,11 @@ public abstract class Paginator<A, B, C extends GenomicsRequest<D>, D, E> {
    * @param fields The fields to set.
    * @return the stream of search results.
    */
-  public final Iterable<E> search(final B request, final String fields) {
+  public final Iterable<EntityT> search(final RequestT request, final String fields) {
     return search(request, setFieldsInitializer(fields), RetryPolicy.defaultPolicy());
   }
 
-  public final <F> F search(B request, final String fields, Callback<E, ? extends F> callback)
+  public final <F> F search(RequestT request, final String fields, Callback<EntityT, ? extends F> callback)
       throws IOException {
     return search(request, setFieldsInitializer(fields), callback, RetryPolicy.defaultPolicy());
   }
