@@ -35,25 +35,25 @@ import com.google.common.collect.Lists;
  * 
  * TODO: refactor this further to simplify the generic signature.
  * 
- * @param <Request> Streaming request type.
- * @param <Response> Streaming response type.
- * @param <Item> Genomic data type returned by stream.
- * @param <Stub> Blocking stub type.
+ * @param <RequestT> Streaming request type.
+ * @param <ResponseT> Streaming response type.
+ * @param <ItemT> Genomic data type returned by stream.
+ * @param <StubT> Blocking stub type.
  */
-public abstract class GenomicsStreamIterator<Request, Response, Item, Stub extends io.grpc.stub.AbstractStub<Stub>>
-    implements Iterator<Response> {
+public abstract class GenomicsStreamIterator<RequestT, ResponseT, ItemT, StubT extends io.grpc.stub.AbstractStub<StubT>>
+    implements Iterator<ResponseT> {
   private static final Logger LOG = Logger.getLogger(GenomicsStreamIterator.class.getName());
 
   protected final ManagedChannel genomicsChannel;
-  protected final Predicate<Item> shardPredicate;
-  protected final Stub stub;
-  protected final Request originalRequest;
+  protected final Predicate<ItemT> shardPredicate;
+  protected final StubT stub;
+  protected final RequestT originalRequest;
 
   protected ExponentialBackOff backoff;
 
   // Stateful members used to facilitate complex retry behavior for gRPC streams.
-  private Iterator<Response> delegate;
-  private Item lastSuccessfulDataItem;
+  private Iterator<ResponseT> delegate;
+  private ItemT lastSuccessfulDataItem;
   private String idSentinel;
 
   /**
@@ -67,8 +67,8 @@ public abstract class GenomicsStreamIterator<Request, Response, Item, Stub exten
    *        shard boundary and/or limit to SNPs only) or null for no filtering.
    */
 
-  protected GenomicsStreamIterator(ManagedChannel channel, Request request, String fields,
-      Predicate<Item> shardPredicate) {
+  protected GenomicsStreamIterator(ManagedChannel channel, RequestT request, String fields,
+      Predicate<ItemT> shardPredicate) {
     this.originalRequest = request;
     this.shardPredicate = shardPredicate;
     this.genomicsChannel = channel;
@@ -84,23 +84,23 @@ public abstract class GenomicsStreamIterator<Request, Response, Item, Stub exten
     idSentinel = null;
   }
 
-  abstract Stub createStub(ManagedChannel genomicsChannel);
+  abstract StubT createStub(ManagedChannel genomicsChannel);
 
-  abstract Iterator<Response> createIteratorFromStub(Request request);
+  abstract Iterator<ResponseT> createIteratorFromStub(RequestT request);
 
-  abstract long getRequestStart(Request streamRequest);
+  abstract long getRequestStart(RequestT streamRequest);
 
-  abstract long getDataItemStart(Item dataItem);
+  abstract long getDataItemStart(ItemT dataItem);
 
-  abstract String getDataItemId(Item dataItem);
+  abstract String getDataItemId(ItemT dataItem);
 
-  abstract Request getRevisedRequest(long updatedStart);
+  abstract RequestT getRevisedRequest(long updatedStart);
 
-  abstract List<Item> getDataList(Response response);
+  abstract List<ItemT> getDataList(ResponseT response);
 
-  abstract Response buildResponse(Response response, Iterable<Item> dataList);
+  abstract ResponseT buildResponse(ResponseT response, Iterable<ItemT> dataList);
 
-  private Iterator<Response> createIterator(Request request) {
+  private Iterator<ResponseT> createIterator(RequestT request) {
     while (true) {
       try {
         return createIteratorFromStub(request);
@@ -188,23 +188,23 @@ public abstract class GenomicsStreamIterator<Request, Response, Item, Stub exten
   /**
    * @see java.util.Iterator#next()
    */
-  public Response next() {
-    Response response = delegate.next();
+  public ResponseT next() {
+    ResponseT response = delegate.next();
     // TODO: Its more clean conceptually to do the same thing for all responses, but this could be a
     // place where we're wasting a lot of time rebuilding response objects when nothing has actually
     // changed.
     return buildResponse(response, enforceShardPredicate(removeRepeatedData(getDataList(response))));
   }
 
-  private List<Item> removeRepeatedData(List<Item> dataList) {
-    List<Item> filteredDataList = null;
+  private List<ItemT> removeRepeatedData(List<ItemT> dataList) {
+    List<ItemT> filteredDataList = null;
     if (null == idSentinel) {
       filteredDataList = dataList;
     } else {
       // Filter out previously returned data items.
       filteredDataList = Lists.newArrayList();
       boolean sentinelFound = false;
-      for (Item dataItem : dataList) {
+      for (ItemT dataItem : dataList) {
         if (sentinelFound) {
           filteredDataList.add(dataItem);
         } else {
@@ -224,7 +224,7 @@ public abstract class GenomicsStreamIterator<Request, Response, Item, Stub exten
     return filteredDataList;
   }
 
-  private Iterable<Item> enforceShardPredicate(Iterable<Item> dataList) {
+  private Iterable<ItemT> enforceShardPredicate(Iterable<ItemT> dataList) {
     if (null == shardPredicate) {
       return dataList;
     }

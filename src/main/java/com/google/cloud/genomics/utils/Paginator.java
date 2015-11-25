@@ -104,9 +104,9 @@ import com.google.common.collect.Maps;
  * @param <RequestT> The request type.
  * @param <RequestSubT> The {@link GenomicsRequest} subtype.
  * @param <ResponseT> The response type.
- * @param <EntityT> The type of object being streamed back to the user.
+ * @param <ItemT> The type of object being streamed back to the user.
  */
-public abstract class Paginator<ApiT, RequestT, RequestSubT extends GenomicsRequest<ResponseT>, ResponseT, EntityT> {
+public abstract class Paginator<ApiT, RequestT, RequestSubT extends GenomicsRequest<ResponseT>, ResponseT, ItemT> {
   
   /**
    * A callback object for
@@ -1004,7 +1004,7 @@ public abstract class Paginator<ApiT, RequestT, RequestSubT extends GenomicsRequ
 
   abstract String getNextPageToken(ResponseT response);
 
-  abstract Iterable<EntityT> getResponses(ResponseT response);
+  abstract Iterable<ItemT> getResponses(ResponseT response);
 
   /**
    * Search for objects.
@@ -1012,11 +1012,11 @@ public abstract class Paginator<ApiT, RequestT, RequestSubT extends GenomicsRequ
    * @param request The search request.
    * @return the stream of search results.
    */
-  public final Iterable<EntityT> search(final RequestT request) {
+  public final Iterable<ItemT> search(final RequestT request) {
     return search(request, DEFAULT_INITIALIZER, RetryPolicy.defaultPolicy());
   }
 
-  public final <AccumulatedT> AccumulatedT search(RequestT request, Callback<EntityT, ? extends AccumulatedT> callback) throws IOException {
+  public final <AccumulatedT> AccumulatedT search(RequestT request, Callback<ItemT, ? extends AccumulatedT> callback) throws IOException {
     return search(request, DEFAULT_INITIALIZER, callback, RetryPolicy.defaultPolicy());
   }
 
@@ -1031,7 +1031,7 @@ public abstract class Paginator<ApiT, RequestT, RequestSubT extends GenomicsRequ
    *     (usually due to SocketTimeoutExceptions)
    * @return A lazy stream of search results.
    */
-  public final Iterable<EntityT> search(
+  public final Iterable<ItemT> search(
       final RequestT request,
       final GenomicsRequestInitializer<? super RequestSubT> initializer,
       final RetryPolicy retryPolicy) {
@@ -1079,9 +1079,9 @@ public abstract class Paginator<ApiT, RequestT, RequestSubT extends GenomicsRequ
               }
             })
         .transformAndConcat(
-            new Function<ResponseT, Iterable<EntityT>>() {
-              @Override public Iterable<EntityT> apply(ResponseT response) {
-                return Optional.fromNullable(getResponses(response)).or(Collections.<EntityT>emptyList());
+            new Function<ResponseT, Iterable<ItemT>>() {
+              @Override public Iterable<ItemT> apply(ResponseT response) {
+                return Optional.fromNullable(getResponses(response)).or(Collections.<ItemT>emptyList());
               }
             });
   }
@@ -1102,7 +1102,7 @@ public abstract class Paginator<ApiT, RequestT, RequestSubT extends GenomicsRequ
   public final <F> F search(
       RequestT request,
       GenomicsRequestInitializer<? super RequestSubT> initializer,
-      Callback<EntityT, ? extends F> callback,
+      Callback<ItemT, ? extends F> callback,
       RetryPolicy retryPolicy) throws IOException {
     try {
       return callback.consumeResponses(search(request, initializer, retryPolicy));
@@ -1121,11 +1121,11 @@ public abstract class Paginator<ApiT, RequestT, RequestSubT extends GenomicsRequ
    * @param fields The fields to set.
    * @return the stream of search results.
    */
-  public final Iterable<EntityT> search(final RequestT request, final String fields) {
+  public final Iterable<ItemT> search(final RequestT request, final String fields) {
     return search(request, setFieldsInitializer(fields), RetryPolicy.defaultPolicy());
   }
 
-  public final <F> F search(RequestT request, final String fields, Callback<EntityT, ? extends F> callback)
+  public final <F> F search(RequestT request, final String fields, Callback<ItemT, ? extends F> callback)
       throws IOException {
     return search(request, setFieldsInitializer(fields), callback, RetryPolicy.defaultPolicy());
   }
