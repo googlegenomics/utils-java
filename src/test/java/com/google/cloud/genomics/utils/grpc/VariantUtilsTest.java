@@ -19,6 +19,7 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 import com.google.genomics.v1.Variant;
+import com.google.genomics.v1.VariantCall;
 
 public class VariantUtilsTest {
 
@@ -81,5 +82,20 @@ public class VariantUtilsTest {
     assertTrue(VariantUtils.IS_NON_VARIANT_SEGMENT.apply(Variant.newBuilder()
         .setReferenceName("chr7").setStart(200000).setEnd(200001).setReferenceBases("A")
         .addAlternateBases(VariantUtils.GATK_NON_VARIANT_SEGMENT_ALT).build()));
+  }
+  
+  @Test
+  public void testCallComparator() {
+    assertTrue(0 == VariantUtils.CALL_COMPARATOR.compare(
+        VariantCall.newBuilder().setCallSetName("NA12883").build(),
+        VariantCall.newBuilder().setCallSetName("NA12883").build()));
+    
+    assertTrue(0 > VariantUtils.CALL_COMPARATOR.compare(
+        VariantCall.newBuilder().setCallSetName("NA12883").build(),
+        VariantCall.newBuilder().setCallSetName("NA12884").build()));
+
+    assertTrue(0 < VariantUtils.CALL_COMPARATOR.compare(
+        VariantCall.newBuilder().setCallSetName("NA12884").build(),
+        VariantCall.newBuilder().setCallSetName("NA12883").build()));
   }
 }

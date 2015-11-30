@@ -13,13 +13,16 @@
  */
 package com.google.cloud.genomics.utils.grpc;
 
+import java.util.Comparator;
 import java.util.List;
 
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
 import com.google.common.collect.Iterables;
+import com.google.common.collect.Ordering;
 import com.google.genomics.v1.Variant;
+import com.google.genomics.v1.VariantCall;
 
 public class VariantUtils {
 
@@ -93,5 +96,16 @@ public class VariantUtils {
    */
   public static final Predicate<Variant> IS_NON_VARIANT_SEGMENT = Predicates.or(
       IS_NON_VARIANT_SEGMENT_WITH_MISSING_ALT, IS_NON_VARIANT_SEGMENT_WITH_GATK_ALT);
+  
+  /**
+   * Comparator for sorting calls by call set name.
+   */
+  public static final Comparator<VariantCall> CALL_COMPARATOR = Ordering.natural().onResultOf(
+      new Function<VariantCall, String>() {
+        @Override
+        public String apply(VariantCall call) {
+          return call.getCallSetName();
+        }
+      });
 
 }
