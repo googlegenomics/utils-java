@@ -23,7 +23,6 @@ import java.security.GeneralSecurityException;
 import java.util.Iterator;
 import java.util.List;
 
-import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -37,22 +36,16 @@ import com.google.genomics.v1.Variant;
 
 public class VariantStreamIteratorITCase {
 
-  static IntegrationTestHelper helper;
-
-  @BeforeClass
-  public static void setUpBeforeClass() throws Exception {
-    helper = new IntegrationTestHelper();
-  }
-
   @Test
   public void testBasic() throws IOException, GeneralSecurityException {
     ImmutableList<StreamVariantsRequest> requests =
-        ShardUtils.getVariantRequests(helper.PLATINUM_GENOMES_VARIANTSET,
-            helper.PLATINUM_GENOMES_KLOTHO_REFERENCES, 100L);
+        ShardUtils.getVariantRequests(IntegrationTestHelper.PLATINUM_GENOMES_VARIANTSET,
+            IntegrationTestHelper.PLATINUM_GENOMES_KLOTHO_REFERENCES, 100L);
     assertEquals(1, requests.size());
 
     Iterator<StreamVariantsResponse> iter =
-        VariantStreamIterator.enforceShardBoundary(helper.getAuth(), requests.get(0), 
+        VariantStreamIterator.enforceShardBoundary(IntegrationTestHelper.getAuthFromApplicationDefaultCredential(),
+            requests.get(0), 
             ShardBoundary.Requirement.OVERLAPS, null);
 
     assertTrue(iter.hasNext());
@@ -63,7 +56,8 @@ public class VariantStreamIteratorITCase {
     assertFalse(iter.hasNext());
     
     iter =
-        VariantStreamIterator.enforceShardBoundary(helper.getAuth(), requests.get(0), 
+        VariantStreamIterator.enforceShardBoundary(IntegrationTestHelper.getAuthFromApplicationDefaultCredential(),
+            requests.get(0), 
             ShardBoundary.Requirement.STRICT, null);
 
     assertTrue(iter.hasNext());
@@ -76,17 +70,19 @@ public class VariantStreamIteratorITCase {
   @Test
   public void testEmptyRegion() throws IOException, GeneralSecurityException {
     ImmutableList<StreamVariantsRequest> requests =
-        ShardUtils.getVariantRequests(helper.PLATINUM_GENOMES_VARIANTSET,
+        ShardUtils.getVariantRequests(IntegrationTestHelper.PLATINUM_GENOMES_VARIANTSET,
             "chrDoesNotExist:100:200", 100L);
     assertEquals(1, requests.size());
 
     Iterator<StreamVariantsResponse> iter =
-        VariantStreamIterator.enforceShardBoundary(helper.getAuth(), requests.get(0), 
+        VariantStreamIterator.enforceShardBoundary(IntegrationTestHelper.getAuthFromApplicationDefaultCredential(),
+            requests.get(0), 
             ShardBoundary.Requirement.OVERLAPS, null);
     assertFalse(iter.hasNext());
 
     iter =
-        VariantStreamIterator.enforceShardBoundary(helper.getAuth(), requests.get(0),
+        VariantStreamIterator.enforceShardBoundary(IntegrationTestHelper.getAuthFromApplicationDefaultCredential(),
+            requests.get(0),
             ShardBoundary.Requirement.STRICT, null);
     assertFalse(iter.hasNext());
   }
@@ -96,12 +92,13 @@ public class VariantStreamIteratorITCase {
   // TODO https://github.com/googlegenomics/utils-java/issues/48
   public void testPartialResponses() throws IOException, GeneralSecurityException {
     ImmutableList<StreamVariantsRequest> requests =
-        ShardUtils.getVariantRequests(helper.PLATINUM_GENOMES_VARIANTSET,
-            helper.PLATINUM_GENOMES_KLOTHO_REFERENCES, 100L);
+        ShardUtils.getVariantRequests(IntegrationTestHelper.PLATINUM_GENOMES_VARIANTSET,
+            IntegrationTestHelper.PLATINUM_GENOMES_KLOTHO_REFERENCES, 100L);
     assertEquals(1, requests.size());
 
     Iterator<StreamVariantsResponse> iter =
-        VariantStreamIterator.enforceShardBoundary(helper.getAuth(), requests.get(0),
+        VariantStreamIterator.enforceShardBoundary(IntegrationTestHelper.getAuthFromApplicationDefaultCredential(),
+            requests.get(0),
             ShardBoundary.Requirement.STRICT, "variants(reference_name,start)");
 
     assertTrue(iter.hasNext());

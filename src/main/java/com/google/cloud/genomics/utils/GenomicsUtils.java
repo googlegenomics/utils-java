@@ -14,7 +14,6 @@
 package com.google.cloud.genomics.utils;
 
 import java.io.IOException;
-import java.security.GeneralSecurityException;
 import java.util.List;
 
 import com.google.api.services.genomics.Genomics;
@@ -44,13 +43,11 @@ public class GenomicsUtils {
    * @param auth The OfflineAuth for the API request.
    * @return The list of readGroupSetIds in the dataset.
    * @throws IOException If dataset does not contain any readGroupSets.
-   * @throws GeneralSecurityException
    */
-  public static List<String> getReadGroupSetIds(String datasetId, GenomicsFactory.OfflineAuth auth)
-      throws IOException, GeneralSecurityException {
+  public static List<String> getReadGroupSetIds(String datasetId, OfflineAuth auth) throws IOException {
     List<String> output = Lists.newArrayList();
-    Iterable<ReadGroupSet> rgs = Paginator.ReadGroupSets.create(
-        auth.getGenomics(auth.getDefaultFactory()))
+    Genomics genomics = GenomicsFactory.builder().build().fromOfflineAuth(auth);
+    Iterable<ReadGroupSet> rgs = Paginator.ReadGroupSets.create(genomics)
         .search(new SearchReadGroupSetsRequest().setDatasetIds(Lists.newArrayList(datasetId)),
             "readGroupSets/id,nextPageToken");
     for (ReadGroupSet r : rgs) {
@@ -68,12 +65,11 @@ public class GenomicsUtils {
    * @param readGroupSetId The id of the readGroupSet to query.
    * @param auth The OfflineAuth for the API request.
    * @return The referenceSetId for the redGroupSet (which may be null).
-   * @throws IOException
-   * @throws GeneralSecurityException
+   * @throws IOException 
    */
-  public static String getReferenceSetId(String readGroupSetId, GenomicsFactory.OfflineAuth auth)
-      throws IOException, GeneralSecurityException {
-    Genomics genomics = auth.getGenomics(auth.getDefaultFactory());
+  public static String getReferenceSetId(String readGroupSetId, OfflineAuth auth)
+      throws IOException {
+    Genomics genomics = GenomicsFactory.builder().build().fromOfflineAuth(auth);
     ReadGroupSet readGroupSet = genomics.readgroupsets().get(readGroupSetId)
         .setFields("referenceSetId").execute();
     return readGroupSet.getReferenceSetId();
@@ -85,12 +81,11 @@ public class GenomicsUtils {
    * @param readGroupSetId The id of the readGroupSet to query.
    * @param auth The OfflineAuth for the API request.
    * @return The list of reference bounds in the variantSet.
-   * @throws IOException
-   * @throws GeneralSecurityException
+   * @throws IOException 
    */
-  public static List<CoverageBucket> getCoverageBuckets(String readGroupSetId, GenomicsFactory.OfflineAuth auth)
-      throws IOException, GeneralSecurityException {
-    Genomics genomics = auth.getGenomics(auth.getDefaultFactory());
+  public static List<CoverageBucket> getCoverageBuckets(String readGroupSetId, OfflineAuth auth)
+      throws IOException {
+    Genomics genomics = GenomicsFactory.builder().build().fromOfflineAuth(auth);
     ListCoverageBucketsResponse response =
         genomics.readgroupsets().coveragebuckets().list(readGroupSetId).execute();
     // Requests of this form return one result per reference name, so therefore many fewer than
@@ -110,11 +105,10 @@ public class GenomicsUtils {
    * @param auth The OfflineAuth for the API request.
    * @return The list of references in the referenceSet.
    * @throws IOException
-   * @throws GeneralSecurityException
    */
-  public static Iterable<Reference> getReferences(String referenceSetId, GenomicsFactory.OfflineAuth auth)
-      throws IOException, GeneralSecurityException {
-    Genomics genomics = auth.getGenomics(auth.getDefaultFactory());
+  public static Iterable<Reference> getReferences(String referenceSetId, OfflineAuth auth)
+      throws IOException {
+    Genomics genomics = GenomicsFactory.builder().build().fromOfflineAuth(auth);
     return Paginator.References.create(
         genomics).search(new SearchReferencesRequest().setReferenceSetId(referenceSetId));
   }
@@ -126,13 +120,12 @@ public class GenomicsUtils {
    * @param auth The OfflineAuth for the API request.
    * @return The list of variantSetIds in the dataset.
    * @throws IOException If dataset does not contain any variantSets.
-   * @throws GeneralSecurityException
    */
-  public static List<String> getVariantSetIds(String datasetId, GenomicsFactory.OfflineAuth auth)
-      throws IOException, GeneralSecurityException {
+  public static List<String> getVariantSetIds(String datasetId, OfflineAuth auth)
+      throws IOException {
     List<String> output = Lists.newArrayList();
-    Iterable<VariantSet> vs = Paginator.Variantsets.create(
-        auth.getGenomics(auth.getDefaultFactory()))
+    Genomics genomics = GenomicsFactory.builder().build().fromOfflineAuth(auth);
+    Iterable<VariantSet> vs = Paginator.Variantsets.create(genomics)
         .search(new SearchVariantSetsRequest().setDatasetIds(Lists.newArrayList(datasetId)),
             "variantSets/id,nextPageToken");
     for (VariantSet v : vs) {
@@ -151,14 +144,12 @@ public class GenomicsUtils {
    * @param auth The OfflineAuth for the API request.
    * @return The list of callSet names in the variantSet.
    * @throws IOException If variantSet does not contain any CallSets.
-   * @throws GeneralSecurityException
-
    */
-  public static List<String> getCallSetsNames(String variantSetId, GenomicsFactory.OfflineAuth auth)
-      throws IOException, GeneralSecurityException {
+  public static List<String> getCallSetsNames(String variantSetId, OfflineAuth auth)
+      throws IOException {
     List<String> output = Lists.newArrayList();
-    Iterable<CallSet> cs = Paginator.Callsets.create(
-        auth.getGenomics(auth.getDefaultFactory()))
+    Genomics genomics = GenomicsFactory.builder().build().fromOfflineAuth(auth);
+    Iterable<CallSet> cs = Paginator.Callsets.create(genomics)
         .search(new SearchCallSetsRequest().setVariantSetIds(Lists.newArrayList(variantSetId)),
             "callSets/name,nextPageToken");
     for (CallSet c : cs) {
@@ -177,11 +168,10 @@ public class GenomicsUtils {
    * @param auth The OfflineAuth for the API request.
    * @return The list of reference bounds in the variantSet.
    * @throws IOException
-   * @throws GeneralSecurityException
    */
-  public static List<ReferenceBound> getReferenceBounds(String variantSetId, GenomicsFactory.OfflineAuth auth)
-      throws IOException, GeneralSecurityException {
-    Genomics genomics = auth.getGenomics(auth.getDefaultFactory());
+  public static List<ReferenceBound> getReferenceBounds(String variantSetId, OfflineAuth auth)
+      throws IOException {
+    Genomics genomics = GenomicsFactory.builder().build().fromOfflineAuth(auth);
     VariantSet variantSet = genomics.variantsets().get(variantSetId).execute();
     return variantSet.getReferenceBounds();
   }  

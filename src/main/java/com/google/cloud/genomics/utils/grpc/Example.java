@@ -17,12 +17,7 @@ import com.google.genomics.v1.StreamingVariantServiceGrpc.StreamingVariantServic
 public class Example {
   
   public static void main(String[] args) throws Exception {
-    ManagedChannel channel;
-    if(args.length == 1) {
-      channel = GenomicsChannel.fromApiKey(args[0]);
-    } else {
-      channel = GenomicsChannel.fromDefaultCreds();
-    }
+    ManagedChannel channel = GenomicsChannel.fromDefaultCreds();
 
     // Regular RPC example: list all reference set assembly ids.
     ReferenceServiceV1BlockingStub refStub =

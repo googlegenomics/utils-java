@@ -130,7 +130,7 @@ public class ShardUtils {
    */
   public static ImmutableList<StreamVariantsRequest> getVariantRequests(final String variantSetId,
       SexChromosomeFilter sexChromosomeFilter, long numberOfBasesPerShard,
-      GenomicsFactory.OfflineAuth auth) throws IOException, GeneralSecurityException {
+      OfflineAuth auth) throws IOException, GeneralSecurityException {
     Iterable<Contig> shards = getAllShardsInVariantSet(variantSetId,
         sexChromosomeFilter, numberOfBasesPerShard, auth);
     return FluentIterable.from(shards)
@@ -157,7 +157,7 @@ public class ShardUtils {
   @Deprecated // Remove this when fully migrated to gRPC.
   public static ImmutableList<SearchVariantsRequest> getPaginatedVariantRequests(final String variantSetId,
       SexChromosomeFilter sexChromosomeFilter, long numberOfBasesPerShard,
-      GenomicsFactory.OfflineAuth auth) throws IOException, GeneralSecurityException {
+      OfflineAuth auth) throws IOException, GeneralSecurityException {
     Iterable<Contig> shards = getAllShardsInVariantSet(variantSetId,
         sexChromosomeFilter, numberOfBasesPerShard, auth);
     return FluentIterable.from(shards)
@@ -248,7 +248,7 @@ public class ShardUtils {
    */
   public static ImmutableList<StreamReadsRequest> getReadRequests(final String readGroupSetId,
       SexChromosomeFilter sexChromosomeFilter, long numberOfBasesPerShard,
-      GenomicsFactory.OfflineAuth auth) throws IOException, GeneralSecurityException {
+      OfflineAuth auth) throws IOException, GeneralSecurityException {
     Iterable<Contig> shards = getAllShardsInReadGroupSet(readGroupSetId, sexChromosomeFilter,
         numberOfBasesPerShard, auth);
     return FluentIterable.from(shards)
@@ -262,7 +262,7 @@ public class ShardUtils {
 
   private static List<Contig> getAllShardsInVariantSet(String variantSetId,
       SexChromosomeFilter sexChromosomeFilter, long numberOfBasesPerShard,
-      GenomicsFactory.OfflineAuth auth) throws IOException, GeneralSecurityException {
+      OfflineAuth auth) throws IOException, GeneralSecurityException {
     List<Contig> contigs = getContigsInVariantSet(variantSetId, sexChromosomeFilter, auth);
     return ShardUtils.getAllShardsForContigs(contigs, numberOfBasesPerShard);
   }
@@ -280,7 +280,7 @@ public class ShardUtils {
    * @throws GeneralSecurityException 
    */
   private static List<Contig> getContigsInVariantSet(String variantSetId,
-      SexChromosomeFilter sexChromosomeFilter, GenomicsFactory.OfflineAuth auth)
+      SexChromosomeFilter sexChromosomeFilter, OfflineAuth auth)
           throws IOException, GeneralSecurityException {
     List<Contig> contigs = Lists.newArrayList();
     for (ReferenceBound bound : GenomicsUtils.getReferenceBounds(variantSetId, auth)) {
@@ -296,7 +296,7 @@ public class ShardUtils {
 
   private static List<Contig> getAllShardsInReadGroupSet(String readGroupSetId,
       SexChromosomeFilter sexChromosomeFilter, long numberOfBasesPerShard,
-      GenomicsFactory.OfflineAuth auth) throws IOException, GeneralSecurityException {
+      OfflineAuth auth) throws IOException, GeneralSecurityException {
     List<Contig> contigs = getContigsInReadGroupSet(readGroupSetId, sexChromosomeFilter, auth);
     return ShardUtils.getAllShardsForContigs(contigs, numberOfBasesPerShard);
   }
@@ -313,7 +313,7 @@ public class ShardUtils {
    * @throws GeneralSecurityException 
    */
   private static List<Contig> getContigsInReadGroupSet(String readGroupSetId,
-      SexChromosomeFilter sexChromosomeFilter, GenomicsFactory.OfflineAuth auth)
+      SexChromosomeFilter sexChromosomeFilter, OfflineAuth auth)
           throws IOException, GeneralSecurityException {
     List<Contig> contigs = Lists.newArrayList();
     for (CoverageBucket bucket : GenomicsUtils.getCoverageBuckets(readGroupSetId, auth)) {

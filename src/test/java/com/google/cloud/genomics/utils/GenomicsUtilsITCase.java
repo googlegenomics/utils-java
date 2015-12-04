@@ -18,50 +18,51 @@ package com.google.cloud.genomics.utils;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 
-import java.io.IOException;
-import java.security.GeneralSecurityException;
-
 import org.hamcrest.CoreMatchers;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class GenomicsUtilsITCase {
   
-  static IntegrationTestHelper helper;
+  @Test
+  public void testGetReadGroupSetIds() throws Exception {
+    assertThat(GenomicsUtils.getReadGroupSetIds(IntegrationTestHelper.PLATINUM_GENOMES_DATASET,
+        IntegrationTestHelper.getAuthFromApiKey()),
+        CoreMatchers.allOf(CoreMatchers.hasItems(IntegrationTestHelper.PLATINUM_GENOMES_READGROUPSETS))); 
+  }
 
-  @BeforeClass
-  public static void setUpBeforeClass() throws Exception {
-    helper = new IntegrationTestHelper();
+  @Test
+  public void testGetReferenceSetIdForReadGroupSet() throws Exception {
+    assertEquals(IntegrationTestHelper.PLATINUM_GENOMES_REFERENCE_SET_ID,
+        GenomicsUtils.getReferenceSetId(IntegrationTestHelper.PLATINUM_GENOMES_READGROUPSETS[0],
+            IntegrationTestHelper.getAuthFromApiKey()));
   }
   
   @Test
-  public void testGetReadGroupSetIds() throws IOException, GeneralSecurityException {
-    assertThat(GenomicsUtils.getReadGroupSetIds(helper.PLATINUM_GENOMES_DATASET, helper.getAuth()),
-        CoreMatchers.allOf(CoreMatchers.hasItems(helper.PLATINUM_GENOMES_READGROUPSETS))); 
+  public void testGetVariantSetIds() throws Exception {
+    assertThat(GenomicsUtils.getVariantSetIds(IntegrationTestHelper.PLATINUM_GENOMES_DATASET,
+        IntegrationTestHelper.getAuthFromApiKey()),
+        CoreMatchers.allOf(CoreMatchers.hasItems(IntegrationTestHelper.PLATINUM_GENOMES_VARIANTSET))); 
   }
 
   @Test
-  public void testGetReferenceSetIdForReadGroupSet() throws IOException, GeneralSecurityException {
-    assertEquals(helper.PLATINUM_GENOMES_REFERENCE_SET_ID,
-        GenomicsUtils.getReferenceSetId(helper.PLATINUM_GENOMES_READGROUPSETS[0], helper.getAuth()));
+  public void testGetCallSetsNames() throws Exception {
+    assertThat(GenomicsUtils.getCallSetsNames(IntegrationTestHelper.PLATINUM_GENOMES_VARIANTSET,
+        IntegrationTestHelper.getAuthFromApiKey()),
+        CoreMatchers.allOf(CoreMatchers.hasItems(IntegrationTestHelper.PLATINUM_GENOMES_CALLSET_NAMES))); 
+  }
+
+  @Test
+  public void testGetReferenceBounds() throws Exception {
+    assertThat(GenomicsUtils.getReferenceBounds(IntegrationTestHelper.PLATINUM_GENOMES_VARIANTSET,
+        IntegrationTestHelper.getAuthFromApiKey()),
+        CoreMatchers.allOf(CoreMatchers.hasItems(IntegrationTestHelper.PLATINUM_GENOMES_VARIANTSET_BOUNDS))); 
+  }
+
+  @Test
+  public void testGetReferenceBoundsApplicationDefaultCredential() throws Exception {
+    assertThat(GenomicsUtils.getReferenceBounds(IntegrationTestHelper.PLATINUM_GENOMES_VARIANTSET,
+        IntegrationTestHelper.getAuthFromApplicationDefaultCredential()),
+        CoreMatchers.allOf(CoreMatchers.hasItems(IntegrationTestHelper.PLATINUM_GENOMES_VARIANTSET_BOUNDS))); 
   }
   
-  @Test
-  public void testGetVariantSetIds() throws IOException, GeneralSecurityException {
-    assertThat(GenomicsUtils.getVariantSetIds(helper.PLATINUM_GENOMES_DATASET, helper.getAuth()),
-        CoreMatchers.allOf(CoreMatchers.hasItems(helper.PLATINUM_GENOMES_VARIANTSET))); 
-  }
-
-  @Test
-  public void testGetCallSetsNames() throws IOException, GeneralSecurityException {
-    assertThat(GenomicsUtils.getCallSetsNames(helper.PLATINUM_GENOMES_VARIANTSET, helper.getAuth()),
-        CoreMatchers.allOf(CoreMatchers.hasItems(helper.PLATINUM_GENOMES_CALLSET_NAMES))); 
-  }
-
-  @Test
-  public void testGetReferenceBounds() throws IOException, GeneralSecurityException {
-    assertThat(GenomicsUtils.getReferenceBounds(helper.PLATINUM_GENOMES_VARIANTSET, helper.getAuth()),
-        CoreMatchers.allOf(CoreMatchers.hasItems(helper.PLATINUM_GENOMES_VARIANTSET_BOUNDS))); 
-  }
-
 }

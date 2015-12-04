@@ -21,7 +21,6 @@ import java.io.IOException;
 import java.security.GeneralSecurityException;
 
 import com.google.api.services.genomics.model.ReferenceBound;
-import com.google.cloud.genomics.utils.GenomicsFactory.OfflineAuth;
 
 /**
  * Helpers for common tasks involved in integration tests against the Genomics API.
@@ -100,25 +99,21 @@ public class IntegrationTestHelper {
     new ReferenceBound().setReferenceName("chrY").setUpperBound(60032946L)
   };
 
-  private final String API_KEY = System.getenv("GOOGLE_API_KEY");
-  private final OfflineAuth auth;
+  private static final String API_KEY = System.getenv("GOOGLE_API_KEY");
   
-  public IntegrationTestHelper() throws IOException, GeneralSecurityException {
-    assertNotNull("You must set the GOOGLE_API_KEY environment variable for this test.", API_KEY);
-     auth = GenomicsFactory.builder("integration test").build().getOfflineAuthFromApiKey(API_KEY);
-  }
-
   /**
    * @return the API_KEY
    */
-  public String getAPI_KEY() {
+  public static String getAPI_KEY() {
     return API_KEY;
   }
 
-  /**
-   * @return the auth
-   */
-  public OfflineAuth getAuth() {
-    return auth;
+  public static OfflineAuth getAuthFromApiKey() {
+    assertNotNull("You must set the GOOGLE_API_KEY environment variable for this test.", API_KEY);
+    return new OfflineAuth(API_KEY);
+  }
+  
+  public static OfflineAuth getAuthFromApplicationDefaultCredential() {
+    return new OfflineAuth();
   }
 }
