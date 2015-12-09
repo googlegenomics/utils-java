@@ -53,8 +53,7 @@ If you wish to modify this code while also modifying a project that depends upon
     * Import the project via File > Open and then double-click on the pom.xml file.
 
 ##gRPC
-This project now includes code for calling the Genomics API using <a href="http://www.grpc.io">gRPC</a>.
-Calling the API with gRPC should greatly improve performance but is still experimental (alpha). To use
+This project now includes code for calling the Genomics API using <a href="http://www.grpc.io">gRPC</a>.  To use
 gRPC, you'll need a version of ALPN that matches your JRE version. See the
 <a href="http://www.eclipse.org/jetty/documentation/9.2.10.v20150310/alpn-chapter.html">ALPN documentation</a>
 for a table of which ALPN JAR to use. The latest version (as of June 2015) is provided in the lib/
@@ -65,9 +64,6 @@ java -Xbootclasspath/p:lib/alpn-boot-8.1.3.v20150130.jar
 ```
 
 See [Example.java](src/main/java/com/google/cloud/genomics/utils/grpc/Example.java) for some example code that uses gRPC. The protocol buffer schema for the API can be found in [src/main/proto/google/genomics/v1](src/main/proto/google/genomics/v1).
-
-At the moment your project must be whitelisted to use gRPC. Please
-<a href="mailto:google-genomics-contact@googlegroups.com">contact us</a> if you are interested in testing gRPC.
 
 ###Generating gRPC code
 Users should typically **not** need to generate gRPC code themselves, as pre-generated code can be found
@@ -93,7 +89,6 @@ in [src/main/java/com/google/genomics/v1](src/main/java/com/google/genomics/v1).
     MAVEN_OPTS="-Xbootclasspath/p:./lib/alpn-boot-8.1.3.v20150130.jar" \
     mvn exec:java -Dexec.mainClass=com.google.cloud.genomics.utils.grpc.Example
     ```
-    * If you see error `Caused by: io.grpc.StatusRuntimeException: NOT_FOUND: Method not found.` your project has not been whitelisted.  See the above [grpc](#grpc) section for more detail.
 * [proto](src/main/proto)
   * [Protocol Buffer](http://www.grpc.io/docs/#working-with-protocol-buffers
 ) files defing the gRPC interface to the Genomics API.
