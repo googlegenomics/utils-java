@@ -2,11 +2,8 @@ package com.google.cloud.genomics.utils.grpc;
 
 import io.grpc.ManagedChannel;
 
-import java.io.FileNotFoundException;
 import java.util.Iterator;
 
-import com.google.cloud.genomics.utils.GenomicsFactory;
-import com.google.cloud.genomics.utils.GenomicsFactory.Builder;
 import com.google.genomics.v1.ReferenceServiceV1Grpc;
 import com.google.genomics.v1.ReferenceServiceV1Grpc.ReferenceServiceV1BlockingStub;
 import com.google.genomics.v1.ReferenceSet;
@@ -20,23 +17,12 @@ import com.google.genomics.v1.StreamingVariantServiceGrpc.StreamingVariantServic
 public class Example {
   
   public static void main(String[] args) throws Exception {
-    final String clientSecretsJson = "client_secrets.json";
-    GenomicsFactory.OfflineAuth auth = null;
-    try {
-      Builder builder =
-          GenomicsFactory.builder("gRPCExample");
-      auth = builder.build().getOfflineAuthFromClientSecretsFile(clientSecretsJson);
-    } catch (FileNotFoundException fex) {
-      System.out.println("Expecting to find " + clientSecretsJson +
-          " file in " + 
-          "this directory and use it for authentication.\n" +
-          "Please make sure your project is whitelisted for gRPC access and\n" +
-          "generate and download JSON key for your service account.\n" +
-          "You can do that in API & Auth section of the Developer Console.");
-      return;
+    ManagedChannel channel;
+    if(args.length == 1) {
+      channel = GenomicsChannel.fromApiKey(args[0]);
+    } else {
+      channel = GenomicsChannel.fromDefaultCreds();
     }
-    
-    ManagedChannel channel = GenomicsChannel.fromOfflineAuth(auth);
 
     // Regular RPC example: list all reference set assembly ids.
     ReferenceServiceV1BlockingStub refStub =
