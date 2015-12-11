@@ -18,11 +18,13 @@ package com.google.cloud.genomics.utils;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectOutputStream;
 
+import org.hamcrest.CoreMatchers;
 import org.junit.Test;
 
 import com.google.api.client.auth.oauth2.Credential;
@@ -37,11 +39,20 @@ public class OfflineAuthTest {
     OfflineAuth auth = new OfflineAuth("xyz");
     assertTrue(auth.hasApiKey());
     assertFalse(auth.hasStoredCredential());
-    assertNotNull(auth.getCredential());
-    assertNotNull(auth.getCredentials());
     assertNull(auth.getClientId());
     assertNull(auth.getClientSecret());
     assertNull(auth.getRefreshToken());
+
+    // Depending upon the environment in which these unit tests are run, the
+    // Application Default Credentials may or may not be available.
+    try {
+      Credential cred = auth.getCredential();
+      assertNotNull(cred);
+      assertNotNull(auth.getCredentials());
+    } catch (Exception e) {
+      assertThat(e.getMessage(),
+          CoreMatchers.containsString("Unable to get application default credentials."));
+    }
   }
 
   @Test
