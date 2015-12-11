@@ -44,7 +44,6 @@ public class FaultyGenomicsServerITCase {
   public static final String SERVER_NAME = "integrationTest";
   
   protected static Server server;
-  protected static IntegrationTestHelper helper;
   protected static ManagedChannel genomicsChannel;
   
   // Variable accessed by both the InProcess Server executor threads and the test thread.
@@ -65,8 +64,7 @@ public class FaultyGenomicsServerITCase {
     } catch (IOException ex) {
       throw new RuntimeException(ex);
     }
-    helper = new IntegrationTestHelper();
-    genomicsChannel = GenomicsChannel.fromOfflineAuth(helper.getAuth());
+    genomicsChannel = GenomicsChannel.fromOfflineAuth(IntegrationTestHelper.getAuthFromApplicationDefaultCredential());
   }
 
   @AfterClass
@@ -133,13 +131,13 @@ public class FaultyGenomicsServerITCase {
   @Test
   public void testVariantRetries() {
     ImmutableList<StreamVariantsRequest> requests =
-        ShardUtils.getVariantRequests(helper.PLATINUM_GENOMES_VARIANTSET,
-            helper.PLATINUM_GENOMES_BRCA1_REFERENCES, 1000000000L);
+        ShardUtils.getVariantRequests(IntegrationTestHelper.PLATINUM_GENOMES_VARIANTSET,
+            IntegrationTestHelper.PLATINUM_GENOMES_BRCA1_REFERENCES, 1000000000L);
     VariantStreamIterator iter = VariantStreamIterator.enforceShardBoundary(createChannel(), requests.get(0), 
         ShardBoundary.Requirement.STRICT, null);
     // Dev Note: this data currently comes back as 20 separate lists but this is controlled server-side.
     // We're using a pretty high fault rate here (25%) to ensure we see a few faults during each test run.
-    runRetryTest(iter, 0.25, helper.PLATINUM_GENOMES_BRCA1_EXPECTED_NUM_VARIANTS);
+    runRetryTest(iter, 0.25, IntegrationTestHelper.PLATINUM_GENOMES_BRCA1_EXPECTED_NUM_VARIANTS);
   }
   
 }

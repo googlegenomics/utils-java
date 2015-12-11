@@ -20,7 +20,7 @@ import java.security.GeneralSecurityException;
 import java.util.Iterator;
 import java.util.List;
 
-import com.google.cloud.genomics.utils.GenomicsFactory.OfflineAuth;
+import com.google.cloud.genomics.utils.OfflineAuth;
 import com.google.cloud.genomics.utils.ShardBoundary;
 import com.google.cloud.genomics.utils.ShardBoundary.Requirement;
 import com.google.common.base.Predicate;

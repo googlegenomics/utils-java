@@ -24,7 +24,6 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -35,28 +34,22 @@ import com.google.common.collect.ImmutableList;
 import com.google.genomics.v1.Read;
 import com.google.genomics.v1.StreamReadsRequest;
 import com.google.genomics.v1.StreamReadsResponse;
-import com.google.genomics.v1.Variant;
 
 
 public class ReadStreamIteratorITCase {
   // This small interval overlaps the Klotho SNP.
   static final String REFERENCES = "chr13:33628134:33628138";
-  static IntegrationTestHelper helper;
-  
-  @BeforeClass
-  public static void setUpBeforeClass() throws Exception {
-    helper = new IntegrationTestHelper();
-  }
   
   @Test
   public void testBasic() throws IOException, GeneralSecurityException {
     ImmutableList<StreamReadsRequest> requests =
-        ShardUtils.getReadRequests(Collections.singletonList(helper.PLATINUM_GENOMES_READGROUPSETS[0]),
+        ShardUtils.getReadRequests(Collections.singletonList(IntegrationTestHelper.PLATINUM_GENOMES_READGROUPSETS[0]),
         REFERENCES, 100L);
     assertEquals(1, requests.size());
     
     Iterator<StreamReadsResponse> iter =
-        ReadStreamIterator.enforceShardBoundary(helper.getAuth(), requests.get(0), 
+        ReadStreamIterator.enforceShardBoundary(IntegrationTestHelper.getAuthFromApplicationDefaultCredential(),
+            requests.get(0), 
             ShardBoundary.Requirement.OVERLAPS, null);
     
     assertTrue(iter.hasNext());
@@ -64,7 +57,8 @@ public class ReadStreamIteratorITCase {
     assertEquals(57, readResponse.getAlignmentsList().size());
     assertFalse(iter.hasNext());
 
-    iter = ReadStreamIterator.enforceShardBoundary(helper.getAuth(), requests.get(0),
+    iter = ReadStreamIterator.enforceShardBoundary(IntegrationTestHelper.getAuthFromApplicationDefaultCredential(),
+        requests.get(0),
         ShardBoundary.Requirement.STRICT, null);
     
     assertTrue(iter.hasNext());
@@ -78,12 +72,13 @@ public class ReadStreamIteratorITCase {
   // TODO https://github.com/googlegenomics/utils-java/issues/48
   public void testPartialResponses() throws IOException, GeneralSecurityException {
     ImmutableList<StreamReadsRequest> requests =
-        ShardUtils.getReadRequests(Collections.singletonList(helper.PLATINUM_GENOMES_READGROUPSETS[0]),
+        ShardUtils.getReadRequests(Collections.singletonList(IntegrationTestHelper.PLATINUM_GENOMES_READGROUPSETS[0]),
         REFERENCES, 100L);
     assertEquals(1, requests.size());
     
     Iterator<StreamReadsResponse> iter =
-        ReadStreamIterator.enforceShardBoundary(helper.getAuth(), requests.get(0), 
+        ReadStreamIterator.enforceShardBoundary(IntegrationTestHelper.getAuthFromApplicationDefaultCredential(),
+            requests.get(0), 
             ShardBoundary.Requirement.STRICT, "reads(alignments)");
     
     assertTrue(iter.hasNext());

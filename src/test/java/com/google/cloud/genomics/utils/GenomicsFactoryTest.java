@@ -16,13 +16,6 @@
 package com.google.cloud.genomics.utils;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -30,15 +23,7 @@ import org.junit.runners.JUnit4;
 
 import com.google.api.client.googleapis.json.GoogleJsonResponseException;
 import com.google.api.client.http.HttpRequest;
-import com.google.api.client.http.HttpResponseException;
-import com.google.api.client.http.HttpTransport;
-import com.google.api.client.http.LowLevelHttpRequest;
-import com.google.api.client.http.LowLevelHttpResponse;
 import com.google.api.client.testing.http.HttpTesting;
-import com.google.api.client.testing.http.MockHttpTransport;
-import com.google.api.client.testing.http.MockLowLevelHttpRequest;
-import com.google.api.client.testing.http.MockLowLevelHttpResponse;
-import com.google.api.client.util.store.FileDataStoreFactory;
 import com.google.api.services.genomics.Genomics;
 import com.google.api.services.genomics.GenomicsScopes;
 import com.google.api.services.storage.Storage;
@@ -76,37 +61,26 @@ public class GenomicsFactoryTest {
   }
 
   @Test
-  public void testOfflineAuth() throws Exception {
+  public void testFromOfflineAuth() throws Exception {
     GenomicsFactory genomicsFactory = GenomicsFactory.builder("test_client").build();
-    GenomicsFactory.OfflineAuth auth = genomicsFactory.getOfflineAuthFromApiKey("xyz");
+    OfflineAuth auth = new OfflineAuth("xyz");
+    Genomics genomics = genomicsFactory.fromOfflineAuth(auth);
 
-    GenomicsFactory authFactory = auth.getDefaultFactory();
-    assertEquals(0, authFactory.initializedRequestsCount());
+    assertEquals(0, genomicsFactory.initializedRequestsCount());
 
     try {
-      auth.getGenomics(authFactory).jobs().get("123").execute();
+      genomics.jobs().get("123").execute();
     } catch (GoogleJsonResponseException e) {
       // Expected
     }
-    assertEquals(1, authFactory.initializedRequestsCount());
+    assertEquals(1, genomicsFactory.initializedRequestsCount());
 
     try {
-      auth.getGenomics(authFactory).jobs().get("123").execute();
+      genomics.jobs().get("123").execute();
     } catch (GoogleJsonResponseException e) {
       // Expected
     }
-    assertEquals(2, authFactory.initializedRequestsCount());
-  }
-
-  @Test
-  public void testOfflineAuth_isSerializable() throws Exception {
-    GenomicsFactory genomicsFactory = GenomicsFactory.builder("test_client").build();
-    GenomicsFactory.OfflineAuth auth = genomicsFactory.getOfflineAuthFromApiKey("xyz");
-
-    // This mimics the serialization flow used by pipelines
-    auth.getGenomics(auth.getDefaultFactory());
-    ObjectOutputStream oos = new ObjectOutputStream(new ByteArrayOutputStream());
-    oos.writeObject(auth);
+    assertEquals(2, genomicsFactory.initializedRequestsCount());
   }
 
   @Test
@@ -136,30 +110,6 @@ public class GenomicsFactoryTest {
   }
 
   @Test
-  public void testDataStoreFactoryExceptionRetries() throws Exception {
-
-    GenomicsFactory.Builder builder = new GenomicsFactory.Builder("test") {
-      int calls = 0;
-
-      @Override
-      FileDataStoreFactory makeFileDataStoreFactory() throws IOException {
-        // Throw an exception during the first two calls
-        // And succeed the third time
-        calls++;
-        if (calls < 3) {
-          throw new IOException();
-        } else {
-          return super.makeFileDataStoreFactory();
-        }
-      }
-    };
-
-    assertNotNull(builder.dataStoreFactory);
-    assertEquals("test", builder.applicationName);
-    assertTrue(builder.userDir.getAbsolutePath().contains(".store/test"));
-  }
-
-  @Test
   public void testDefaultTimeoutConfiguration() throws Exception {
     GenomicsFactory genomicsFactory = GenomicsFactory.builder("test_client").build();
 
@@ -184,18 +134,4 @@ public class GenomicsFactoryTest {
     assertEquals(7, request.getReadTimeout());
     assertEquals(9, request.getNumberOfRetries());
   }
-
-  @Test
-  public void testOfflineAuthGetUserCredential() throws Exception {
-    GenomicsFactory genomicsFactory = GenomicsFactory.builder("test_client").build();
-    GenomicsFactory.OfflineAuth auth = genomicsFactory.getOfflineAuthFromApiKey("xyz");
-    try {
-      auth.getUserCredentials();
-      fail("getUserCredentials did not throw expected exception");
-    } catch(IllegalStateException e) {
-      // The exception message shoud say something about the API key at a minimum.
-      assertTrue(e.getMessage().contains("API key"));
-    }
-  }
-  
 }

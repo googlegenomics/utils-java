@@ -15,12 +15,10 @@ package com.google.cloud.genomics.utils.grpc;
 
 import io.grpc.ClientInterceptor;
 import io.grpc.ManagedChannel;
-import io.grpc.Metadata;
 import io.grpc.auth.ClientAuthInterceptor;
 import io.grpc.netty.GrpcSslContexts;
 import io.grpc.netty.NegotiationType;
 import io.grpc.netty.NettyChannelBuilder;
-import io.grpc.stub.MetadataUtils;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
@@ -33,7 +31,8 @@ import java.util.concurrent.Executors;
 import javax.net.ssl.SSLException;
 
 import com.google.auth.oauth2.GoogleCredentials;
-import com.google.cloud.genomics.utils.GenomicsFactory;
+import com.google.cloud.genomics.utils.CredentialFactory;
+import com.google.cloud.genomics.utils.OfflineAuth;
 
 /**
  * A convenience class for creating gRPC channels to the Google Genomics API.
@@ -41,7 +40,6 @@ import com.google.cloud.genomics.utils.GenomicsFactory;
 public class GenomicsChannel {
   private static final String GENOMICS_ENDPOINT = "genomics.googleapis.com";
   private static final String GENOMICS_SCOPE = "https://www.googleapis.com/auth/genomics";
-  private static final String API_KEY_HEADER = "X-Goog-Api-Key";
   // TODO https://github.com/googlegenomics/utils-java/issues/48
   private static final String PARTIAL_RESPONSE_HEADER = "X-Goog-FieldMask";
 
@@ -61,23 +59,6 @@ public class GenomicsChannel {
         .negotiationType(NegotiationType.TLS)
         .sslContext(GrpcSslContexts.forClient().ciphers(performantCiphers).build())
         .intercept(interceptors).build();
-  }
-
-  /**
-   * Create a new gRPC channel to the Google Genomics API, using the provided api key for auth.
-   *
-   * @param apiKey the api key
-   * @return the ManagedChannel
-   * @throws SSLException
-   */
-  public static ManagedChannel fromApiKey(String apiKey) throws SSLException {
-    Metadata headers = new Metadata();
-    Metadata.Key<String> apiKeyHeader =
-        Metadata.Key.of(API_KEY_HEADER, Metadata.ASCII_STRING_MARSHALLER);
-    headers.put(apiKeyHeader, apiKey);
-    // TODO https://github.com/googlegenomics/utils-java/issues/48
-    return getGenomicsManagedChannel(Collections.singletonList(MetadataUtils
-        .newAttachHeadersInterceptor(headers)));
   }
 
   /**
@@ -104,7 +85,7 @@ public class GenomicsChannel {
    * @throws IOException
    */
   public static ManagedChannel fromDefaultCreds() throws SSLException, IOException {
-    return fromCreds(GoogleCredentials.getApplicationDefault());
+    return fromCreds(CredentialFactory.getApplicationDefaultCredentials());
   }
 
   /**
@@ -120,14 +101,8 @@ public class GenomicsChannel {
    * @throws IOException
    * @throws GeneralSecurityException
    */
-  public static ManagedChannel fromOfflineAuth(GenomicsFactory.OfflineAuth auth)
+  public static ManagedChannel fromOfflineAuth(OfflineAuth auth)
       throws IOException, GeneralSecurityException {
-    if (auth.hasUserCredentials()) {
-      return fromCreds(auth.getUserCredentials());
-    } else if (auth.hasApiKey()) {
-      return fromApiKey(auth.apiKey);
-    }
-    // Fall back to Default Credentials if the user did not specify user credentials or an api key.
-    return fromDefaultCreds();
+    return fromCreds(auth.getCredentials());
   }
 }
