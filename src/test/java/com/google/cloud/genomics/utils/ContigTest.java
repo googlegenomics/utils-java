@@ -16,11 +16,14 @@
 package com.google.cloud.genomics.utils;
 
 import static com.google.common.collect.Lists.newArrayList;
+import static org.hamcrest.Matchers.containsString;
 import static org.junit.Assert.assertEquals;
 
 import java.util.List;
 
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
@@ -30,7 +33,10 @@ import com.google.common.base.Joiner;
 
 @RunWith(JUnit4.class)
 public class ContigTest {
-  
+
+  @Rule
+  public ExpectedException thrown = ExpectedException.none();
+
   @Test
   public void testGetShards() throws Exception {
     Contig contig = new Contig("1", 0, 9);
@@ -87,6 +93,15 @@ public class ContigTest {
     assertEquals(newArrayList(brca1Contig, klothoContig),
         newArrayList(Contig.parseContigsFromCommandLine((Joiner.on(",").join(
             brca1ContigString, klothoContigString)))));
+  }
+
+  @Test
+  public void testParseContigsValidation() {
+    String contigEndBeforeStart = "17:41277499:41196311";
+    thrown.expect(IllegalArgumentException.class);
+    thrown.expectMessage(containsString("Contig coordinates are incorrectly specified"));
+    Iterable<Contig> contigs = Contig.parseContigsFromCommandLine(contigEndBeforeStart);
+    contigs.toString();  // The operation is lazy, force it here.
   }
 
 }
