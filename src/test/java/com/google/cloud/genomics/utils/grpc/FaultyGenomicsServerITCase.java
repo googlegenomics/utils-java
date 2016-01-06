@@ -123,8 +123,8 @@ public class FaultyGenomicsServerITCase {
     return InProcessChannelBuilder.forName(SERVER_NAME).build();
   }
 
-  public void runRetryTest(final GenomicsStreamIterator iter, double faultPercentage, int expectedNumItems) {
-    FaultyGenomicsServerITCase.faultPercentage = faultPercentage;
+  public void runRetryTest(final GenomicsStreamIterator iter, double percentage, int expectedNumItems) {
+    FaultyGenomicsServerITCase.faultPercentage = percentage;
     TestHelper.consumeStreamTest(iter, expectedNumItems);
   }
   

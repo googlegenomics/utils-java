@@ -95,8 +95,8 @@ public class VariantStreamIterator
   }
 
   @Override
-  StreamingVariantServiceBlockingStub createStub(ManagedChannel genomicsChannel) {
-    return StreamingVariantServiceGrpc.newBlockingStub(genomicsChannel);
+  StreamingVariantServiceBlockingStub createStub(ManagedChannel channel) {
+    return StreamingVariantServiceGrpc.newBlockingStub(channel);
   }
 
   @Override

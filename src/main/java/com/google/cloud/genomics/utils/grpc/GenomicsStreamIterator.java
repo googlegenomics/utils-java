@@ -84,7 +84,7 @@ public abstract class GenomicsStreamIterator<RequestT, ResponseT, ItemT, StubT e
     idSentinel = null;
   }
 
-  abstract StubT createStub(ManagedChannel genomicsChannel);
+  abstract StubT createStub(ManagedChannel channel);
 
   abstract Iterator<ResponseT> createIteratorFromStub(RequestT request);
 

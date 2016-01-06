@@ -159,8 +159,8 @@ public abstract class Paginator<ApiT, RequestT, RequestSubT extends GenomicsRequ
       return api.search(pageToken
           .transform(
               new Function<String, SearchCallSetsRequest>() {
-                @Override public SearchCallSetsRequest apply(String pageToken) {
-                  return request.setPageToken(pageToken);
+                @Override public SearchCallSetsRequest apply(String token) {
+                  return request.setPageToken(token);
                 }
               })
           .or(request));
@@ -209,8 +209,8 @@ public abstract class Paginator<ApiT, RequestT, RequestSubT extends GenomicsRequ
       return pageToken
           .transform(
               new Function<String, Genomics.Datasets.List>() {
-                @Override public Genomics.Datasets.List apply(String pageToken) {
-                  return list.setPageToken(pageToken);
+                @Override public Genomics.Datasets.List apply(String token) {
+                  return list.setPageToken(token);
                 }
               })
           .or(list);
@@ -281,8 +281,8 @@ public abstract class Paginator<ApiT, RequestT, RequestSubT extends GenomicsRequ
       return api.search(pageToken
           .transform(
               new Function<String, SearchJobsRequest>() {
-                @Override public SearchJobsRequest apply(String pageToken) {
-                  return request.setPageToken(pageToken);
+                @Override public SearchJobsRequest apply(String token) {
+                  return request.setPageToken(token);
                 }
               })
           .or(request));
@@ -372,8 +372,8 @@ public abstract class Paginator<ApiT, RequestT, RequestSubT extends GenomicsRequ
       return api.search(pageToken
           .transform(
               new Function<String, SearchReadsRequest>() {
-                @Override public SearchReadsRequest apply(String pageToken) {
-                  return request.setPageToken(pageToken);
+                @Override public SearchReadsRequest apply(String token) {
+                  return request.setPageToken(token);
                 }
               })
           .or(request));
@@ -463,8 +463,8 @@ public abstract class Paginator<ApiT, RequestT, RequestSubT extends GenomicsRequ
       return api.search(pageToken
           .transform(
               new Function<String, SearchAnnotationsRequest>() {
-                @Override public SearchAnnotationsRequest apply(String pageToken) {
-                  return request.setPageToken(pageToken);
+                @Override public SearchAnnotationsRequest apply(String token) {
+                  return request.setPageToken(token);
                 }
               })
           .or(request));
@@ -522,8 +522,8 @@ public abstract class Paginator<ApiT, RequestT, RequestSubT extends GenomicsRequ
       return api.search(pageToken
           .transform(
               new Function<String, SearchAnnotationSetsRequest>() {
-                @Override public SearchAnnotationSetsRequest apply(String pageToken) {
-                  return request.setPageToken(pageToken);
+                @Override public SearchAnnotationSetsRequest apply(String token) {
+                  return request.setPageToken(token);
                 }
               })
           .or(request));
@@ -581,8 +581,8 @@ public abstract class Paginator<ApiT, RequestT, RequestSubT extends GenomicsRequ
             .transform(
                 new Function<String, Genomics.Readgroupsets.Coveragebuckets.List>() {
                   @Override public Genomics.Readgroupsets.Coveragebuckets.List apply(
-                      String pageToken) {
-                    return list.setPageToken(pageToken);
+                      String token) {
+                    return list.setPageToken(token);
                   }
                 })
             .or(list);
@@ -620,8 +620,8 @@ public abstract class Paginator<ApiT, RequestT, RequestSubT extends GenomicsRequ
       return api.search(pageToken
           .transform(
               new Function<String, SearchReadGroupSetsRequest>() {
-                @Override public SearchReadGroupSetsRequest apply(String pageToken) {
-                  return request.setPageToken(pageToken);
+                @Override public SearchReadGroupSetsRequest apply(String token) {
+                  return request.setPageToken(token);
                 }
               })
           .or(request));
@@ -669,8 +669,8 @@ public abstract class Paginator<ApiT, RequestT, RequestSubT extends GenomicsRequ
       return api.search(pageToken
           .transform(
               new Function<String, SearchReferenceSetsRequest>() {
-                @Override public SearchReferenceSetsRequest apply(String pageToken) {
-                  return request.setPageToken(pageToken);
+                @Override public SearchReferenceSetsRequest apply(String token) {
+                  return request.setPageToken(token);
                 }
               })
           .or(request));
@@ -731,8 +731,8 @@ public abstract class Paginator<ApiT, RequestT, RequestSubT extends GenomicsRequ
             .transform(
                 new Function<String, Genomics.References.Bases.List>() {
                   @Override public Genomics.References.Bases.List apply(
-                      String pageToken) {
-                    return list.setPageToken(pageToken);
+                      String token) {
+                    return list.setPageToken(token);
                   }
                 })
             .or(list);
@@ -770,8 +770,8 @@ public abstract class Paginator<ApiT, RequestT, RequestSubT extends GenomicsRequ
       return api.search(pageToken
           .transform(
               new Function<String, SearchReferencesRequest>() {
-                @Override public SearchReferencesRequest apply(String pageToken) {
-                  return request.setPageToken(pageToken);
+                @Override public SearchReferencesRequest apply(String token) {
+                  return request.setPageToken(token);
                 }
               })
           .or(request));
@@ -866,8 +866,8 @@ public abstract class Paginator<ApiT, RequestT, RequestSubT extends GenomicsRequ
       return api.search(pageToken
           .transform(
               new Function<String, SearchVariantsRequest>() {
-                @Override public SearchVariantsRequest apply(String pageToken) {
-                  return request.setPageToken(pageToken);
+                @Override public SearchVariantsRequest apply(String token) {
+                  return request.setPageToken(token);
                 }
               })
           .or(request));
@@ -927,8 +927,8 @@ public abstract class Paginator<ApiT, RequestT, RequestSubT extends GenomicsRequ
       return api.search(pageToken
           .transform(
               new Function<String, SearchVariantSetsRequest>() {
-                @Override public SearchVariantSetsRequest apply(String pageToken) {
-                  return request.setPageToken(pageToken);
+                @Override public SearchVariantSetsRequest apply(String token) {
+                  return request.setPageToken(token);
                 }
               })
           .or(request));
@@ -1000,7 +1000,7 @@ public abstract class Paginator<ApiT, RequestT, RequestSubT extends GenomicsRequ
 
   abstract RequestSubT createSearch(ApiT api, RequestT request, Optional<String> pageToken) throws IOException;
 
-  abstract ApiT getApi(Genomics genomics);
+  abstract ApiT getApi(Genomics genomicsInstance);
 
   abstract String getNextPageToken(ResponseT response);
 
