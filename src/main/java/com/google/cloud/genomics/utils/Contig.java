@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import com.google.api.client.util.Preconditions;
 import com.google.api.services.genomics.model.SearchReadsRequest;
 import com.google.api.services.genomics.model.SearchVariantsRequest;
 import com.google.common.base.Function;
@@ -85,8 +86,11 @@ public class Contig implements Serializable {
           @Override
           public Contig apply(String contigString) {
             ArrayList<String> contigInfo = newArrayList(Splitter.on(":").split(contigString));
-            return new Contig(contigInfo.get(0), Long.valueOf(contigInfo.get(1)), Long
-                .valueOf(contigInfo.get(2)));
+            Long start = Long.valueOf(contigInfo.get(1));
+            Long end = Long.valueOf(contigInfo.get(2));
+            Preconditions.checkArgument(start <= end,
+                "Contig coordinates are incorrectly specified: start " + start + " is greater than end " + end);
+            return new Contig(contigInfo.get(0), start, end);
           }
         });
   }

@@ -95,8 +95,8 @@ public class ReadStreamIterator
   }
 
   @Override
-  StreamingReadServiceBlockingStub createStub(ManagedChannel genomicsChannel) {
-    return StreamingReadServiceGrpc.newBlockingStub(genomicsChannel);
+  StreamingReadServiceBlockingStub createStub(ManagedChannel channel) {
+    return StreamingReadServiceGrpc.newBlockingStub(channel);
   }
 
   @Override

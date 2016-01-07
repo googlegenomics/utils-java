@@ -281,14 +281,14 @@ public class GenomicsFactory {
                   @Nullable private final HttpUnsuccessfulResponseHandler
                       delegate = request.getUnsuccessfulResponseHandler();
 
-                  @Override public boolean handleResponse(HttpRequest request,
+                  @Override public boolean handleResponse(HttpRequest req,
                       HttpResponse response, boolean supportsRetry) throws IOException {
                     unsuccessfulResponsesCount.incrementAndGet();
                     
                     return (null != delegate
-                        && delegate.handleResponse(request, response, supportsRetry))
+                        && delegate.handleResponse(req, response, supportsRetry))
                         || unsuccessfulResponseHandler.handleResponse(
-                            request, response, supportsRetry);
+                            req, response, supportsRetry);
                   }
                 })
             .setIOExceptionHandler(
@@ -297,13 +297,13 @@ public class GenomicsFactory {
                   @Nullable private final HttpIOExceptionHandler
                       delegate = request.getIOExceptionHandler();
 
-                  @Override public boolean handleIOException(HttpRequest request,
+                  @Override public boolean handleIOException(HttpRequest req,
                       boolean supportsRetry) throws IOException {
                     ioExceptionsCount.incrementAndGet();
                     
                     return (null != delegate
-                        && delegate.handleIOException(request, supportsRetry))
-                        || ioExceptionHandler.handleIOException(request, supportsRetry);
+                        && delegate.handleIOException(req, supportsRetry))
+                        || ioExceptionHandler.handleIOException(req, supportsRetry);
                   }
                 });
       }
