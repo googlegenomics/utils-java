@@ -14,7 +14,9 @@
 package com.google.cloud.genomics.utils;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 import java.util.List;
@@ -29,6 +31,8 @@ import com.google.genomics.v1.LinearAlignment;
 import com.google.genomics.v1.Position;
 import com.google.genomics.v1.Read;
 import com.google.genomics.v1.Variant;
+
+import com.google.cloud.genomics.utils.grpc.VariantUtils;
 
 
 public class ShardBoundaryTest {
@@ -79,6 +83,19 @@ public class ShardBoundaryTest {
       assertEquals(4, filteredReads.size());
       assertThat(filteredReads, CoreMatchers.allOf(CoreMatchers.hasItems(atStartWithinExtent,
           atStartOverlapExtent, beyondStartWithinExtent, beyondOverlapExtent)));
+  }
+
+  @Test
+  public void testGetNonVariantOverlapsPredicate() {
+    long start = 1000L;
+
+    Variant overlapStart = Variant.newBuilder().setReferenceBases("T").addAlternateBases("A").setStart(900L).build();
+    Variant overlapStartNonVariant = Variant.newBuilder().setReferenceBases("T").setStart(900L).setEnd(1005L).build();
+    
+    Predicate<Variant> shardPredicate = ShardBoundary.getNonVariantOverlapsPredicate(start);
+    
+    assertFalse(shardPredicate.apply(overlapStart));
+    assertTrue(shardPredicate.apply(overlapStartNonVariant));
   }
 
 }
