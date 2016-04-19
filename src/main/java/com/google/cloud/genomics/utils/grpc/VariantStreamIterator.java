@@ -71,9 +71,15 @@ public class VariantStreamIterator
    */
   public static VariantStreamIterator enforceShardBoundary(ManagedChannel channel,
       StreamVariantsRequest request, Requirement shardBoundary, String fields) {
-    Predicate<Variant> shardPredicate =
-        (ShardBoundary.Requirement.STRICT == shardBoundary) ? ShardBoundary
-            .getStrictVariantPredicate(request.getStart()) : null;
+    Predicate<Variant> shardPredicate;
+    if(ShardBoundary.Requirement.STRICT == shardBoundary) {
+      shardPredicate = ShardBoundary.getStrictVariantPredicate(request.getStart());
+    } else if(ShardBoundary.Requirement.NON_VARIANT_OVERLAPS == shardBoundary) {
+      shardPredicate = ShardBoundary.getNonVariantOverlapsPredicate(request.getStart());
+    } else {
+      shardPredicate = null;
+    }
+    
     // TODO: Facilitate shard boundary predicate here by checking for minimum set of fields in
     // partial request.
     return new VariantStreamIterator(channel, request, fields, shardPredicate);

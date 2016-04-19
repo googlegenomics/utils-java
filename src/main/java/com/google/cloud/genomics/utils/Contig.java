@@ -73,9 +73,9 @@ public class Contig implements Serializable {
 
   /**
    * Parse the list of Contigs expressed in the string argument.
-   * 
+   *
    * The common use case is to parse the value of a command line parameter.
-   * 
+   *
    * @param contigsArgument - a string expressing the specified contiguous region(s) of the genome.
    *                          The format is chromosome:start:end[,chromosome:start:end]
    * @return a list of Contig objects
@@ -94,12 +94,12 @@ public class Contig implements Serializable {
           }
         });
   }
-  
+
   // The following methods have package scope and are helpers for ShardUtils. For sharded Contigs,
   // the ShardUtils methods should be used to ensure that shards are shuffled all together before
   // being returned to clients.
   List<Contig> getShards(long numberOfBasesPerShard) {
-    double shardCount = Math.ceil(end - start) / (double) numberOfBasesPerShard;
+    double shardCount = Math.ceil(end - start) / numberOfBasesPerShard;
     List<Contig> shards = Lists.newArrayList();
     for (int i = 0; i < shardCount; i++) {
       long shardStart = start + (i * numberOfBasesPerShard);
@@ -109,7 +109,7 @@ public class Contig implements Serializable {
     }
     return shards;
   }
-  
+
   @Deprecated // Remove this when fully migrated to gRPC.
   SearchVariantsRequest getSearchVariantsRequest(String variantSetId) {
     return new SearchVariantsRequest()
@@ -119,7 +119,12 @@ public class Contig implements Serializable {
         .setEnd(end);
   }
 
-  StreamVariantsRequest getStreamVariantsRequest(String variantSetId) {
+  /**
+   * Construct a StreamVariantsRequest for the Contig.
+   * @param variantSetId
+   * @return the request object
+   */
+  public StreamVariantsRequest getStreamVariantsRequest(String variantSetId) {
     return StreamVariantsRequest.newBuilder()
         .setVariantSetId(variantSetId)
         .setReferenceName(referenceName)
@@ -137,7 +142,12 @@ public class Contig implements Serializable {
         .setEnd(end);
   }
 
-  StreamReadsRequest getStreamReadsRequest(String readGroupSetId) {
+  /**
+   * Construct a StreamReadsRequest for the Contig.
+   * @param readGroupSetId
+   * @return the request object
+   */
+  public StreamReadsRequest getStreamReadsRequest(String readGroupSetId) {
     return StreamReadsRequest.newBuilder()
         .setReadGroupSetId(readGroupSetId)
         .setReferenceName(referenceName)
