@@ -99,7 +99,7 @@ public class Contig implements Serializable {
   // the ShardUtils methods should be used to ensure that shards are shuffled all together before
   // being returned to clients.
   List<Contig> getShards(long numberOfBasesPerShard) {
-    double shardCount = Math.ceil(end - start) / numberOfBasesPerShard;
+    double shardCount = (end - start) / (double) numberOfBasesPerShard;
     List<Contig> shards = Lists.newArrayList();
     for (int i = 0; i < shardCount; i++) {
       long shardStart = start + (i * numberOfBasesPerShard);
