@@ -17,11 +17,7 @@ package com.google.cloud.genomics.utils;
 
 import static org.junit.Assert.assertNotNull;
 
-import java.io.IOException;
-import java.security.GeneralSecurityException;
-
 import com.google.api.services.genomics.model.ReferenceBound;
-
 /**
  * Helpers for common tasks involved in integration tests against the Genomics API.
  */
@@ -100,7 +96,7 @@ public class IntegrationTestHelper {
   };
 
   private static final String API_KEY = System.getenv("GOOGLE_API_KEY");
-  
+
   /**
    * @return the API_KEY
    */
@@ -112,7 +108,7 @@ public class IntegrationTestHelper {
     assertNotNull("You must set the GOOGLE_API_KEY environment variable for this test.", API_KEY);
     return new OfflineAuth(API_KEY);
   }
-  
+
   public static OfflineAuth getAuthFromApplicationDefaultCredential() {
     return new OfflineAuth();
   }

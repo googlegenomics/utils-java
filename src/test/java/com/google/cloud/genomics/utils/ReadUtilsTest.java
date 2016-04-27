@@ -15,24 +15,25 @@
  */
 package com.google.cloud.genomics.utils;
 
-import com.google.api.services.genomics.model.CigarUnit;
-import com.google.api.services.genomics.model.LinearAlignment;
-import com.google.api.services.genomics.model.Position;
-import com.google.api.services.genomics.model.Read;
-import com.google.common.collect.Lists;
+import static org.junit.Assert.assertEquals;
 import htsjdk.samtools.SAMFileHeader;
 import htsjdk.samtools.SAMRecord;
 import htsjdk.samtools.SamReader;
 import htsjdk.samtools.SamReaderFactory;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
+
+import com.google.api.services.genomics.model.CigarUnit;
+import com.google.api.services.genomics.model.LinearAlignment;
+import com.google.api.services.genomics.model.Position;
+import com.google.api.services.genomics.model.Read;
+import com.google.common.collect.Lists;
 
 @RunWith(JUnit4.class)
 public class ReadUtilsTest {
@@ -88,12 +89,12 @@ public class ReadUtilsTest {
 
     Read read = ReadUtils.makeRead(record);
     assertEquals((long)0, (long)read.getAlignment().getPosition().getPosition());
-    assertEquals((long)1, (long)read.getAlignment().getCigar().size());
+    assertEquals(1, read.getAlignment().getCigar().size());
     assertEquals("chr20", read.getAlignment().getPosition().getReferenceName());
-    assertEquals((int)0, (int)read.getReadNumber());
+    assertEquals(0, (int)read.getReadNumber());
     assertEquals((long)99, (long)read.getNextMatePosition().getPosition());
     assertEquals("chr20", read.getNextMatePosition().getReferenceName());
-    assertEquals((Boolean)true, read.getNextMatePosition().getReverseStrand());
+    assertEquals(true, read.getNextMatePosition().getReverseStrand());
   }
   @Test
   public void testByteArrayAttributes() {
@@ -109,7 +110,7 @@ public class ReadUtilsTest {
 
     Read read = ReadUtils.makeRead(record);
     assertEquals((long)0, (long)read.getAlignment().getPosition().getPosition());
-    assertEquals((long)1, (long)read.getAlignment().getCigar().size());
+    assertEquals(1, read.getAlignment().getCigar().size());
     assertEquals("chr20", read.getAlignment().getPosition().getReferenceName());
     assertEquals(s, read.getInfo().get("FZ").get(0));
   }

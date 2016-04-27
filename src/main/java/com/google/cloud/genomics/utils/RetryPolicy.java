@@ -13,10 +13,10 @@
  */
 package com.google.cloud.genomics.utils;
 
-import com.google.api.services.genomics.GenomicsRequest;
-
 import java.io.IOException;
 import java.io.Serializable;
+
+import com.google.api.services.genomics.GenomicsRequest;
 
 /**
  * An object describing when to retry if a request fails.

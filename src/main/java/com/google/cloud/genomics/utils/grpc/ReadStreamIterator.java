@@ -32,10 +32,10 @@ import com.google.genomics.v1.StreamingReadServiceGrpc.StreamingReadServiceBlock
 
 /**
  * An iterator for streaming genomic reads via gRPC with shard boundary semantics.
- * 
+ *
  * Includes complex retry logic to upon failure resume the stream at the last known good start
  * position without returning duplicate data.
- * 
+ *
  * TODO: - facilitate partial requests https://github.com/googlegenomics/utils-java/issues/48
  */
 public class ReadStreamIterator
@@ -44,7 +44,7 @@ public class ReadStreamIterator
 
   /**
    * Create a stream iterator that can enforce shard boundary semantics.
-   * 
+   *
    * @param auth The OfflineAuth to use for the request.
    * @param request The request for the shard of data.
    * @param shardBoundary The shard boundary semantics to enforce.
@@ -62,7 +62,7 @@ public class ReadStreamIterator
 
   /**
    * Create a stream iterator that can enforce shard boundary semantics.
-   * 
+   *
    * @param channel The ManagedChannel.
    * @param request The request for the shard of data.
    * @param shardBoundary The shard boundary semantics to enforce.
@@ -81,7 +81,7 @@ public class ReadStreamIterator
 
   /**
    * Create a stream iterator.
-   * 
+   *
    * @param channel The ManagedChannel.
    * @param request The request for the shard of data.
    * @param fields Which fields to include in a partial response or null for all. NOT YET

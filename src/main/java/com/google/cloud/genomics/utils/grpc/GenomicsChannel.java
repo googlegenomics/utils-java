@@ -91,11 +91,11 @@ public class GenomicsChannel {
   /**
    * Create a new gRPC channel to the Google Genomics API, using OfflineAuth or the application
    * default credentials.
-   * 
+   *
    * This library works with both the older and newer support for OAuth2 clients.
-   * 
+   *
    * https://developers.google.com/identity/protocols/application-default-credentials
-   * 
+   *
    * @param auth the OfflineAuth object
    * @return the ManagedChannel
    * @throws IOException

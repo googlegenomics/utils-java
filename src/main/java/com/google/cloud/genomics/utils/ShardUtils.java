@@ -33,7 +33,7 @@ import com.google.genomics.v1.StreamVariantsRequest;
 /**
  * Utility methods for creating sharded reads or variants request objects from contiguous
  * region of the genome for use in parallel processing pipelines.
- * 
+ *
  * DEV NOTE: Sharding can be tricky to get right.
  *  - Shuffling of shards is important for good request distribution.
  *  - The actual amount of data within each API shard can vary greatly per dataset.
@@ -49,11 +49,11 @@ import com.google.genomics.v1.StreamVariantsRequest;
  *  --- If we have too many, depending on the algorithm, the amount of data to
  *      be shuffled for the next step could be quite large, if a combiner is not used.
  *  - Shard strategies can also differ based on paginated vs. streaming APIs.
- *  
+ *
  * This is clearly a work in progress, many of the issues described above are not addressed
  * in the code below.  But let's consolidate the tribal knowledge here for best practices
  * in manual sharding for reuse by Spark or any other systems processing data in parallel.
- * 
+ *
  * For Dataflow, custom sources should be preferred over this manual sharding approach.
  *
  */
@@ -62,7 +62,7 @@ public class ShardUtils {
   /**
    * Some analyses should not include data from the sex chromosomes.
    */
-  public enum SexChromosomeFilter { 
+  public enum SexChromosomeFilter {
     /**
      * Include data from the sex chromosomes in the shards.
      */
@@ -76,7 +76,7 @@ public class ShardUtils {
 
   /**
    * Constructs sharded StreamVariantsRequests for the specified contiguous region(s) of the genome.
-   * 
+   *
    * @param variantSetId The variantSetId.
    * @param references The specified contiguous region(s) of the genome.
    * @param numberOfBasesPerShard The maximum number of bases to include per shard.
@@ -96,7 +96,7 @@ public class ShardUtils {
 
   /**
    * Constructs sharded SearchVariantsRequests for the specified contiguous region(s) of the genome.
-   * 
+   *
    * @param variantSetId The variantSetId.
    * @param references The specified contiguous region(s) of the genome.
    * @param numberOfBasesPerShard The maximum number of bases to include per shard.
@@ -114,17 +114,17 @@ public class ShardUtils {
           }
         }).toList();
   }
-  
+
   /**
    * Constructs sharded StreamVariantsRequests for the all references in the variantSet.
-   * 
+   *
    * @param variantSetId The variantSetId.
    * @param sexChromosomeFilter An enum value indicating how sex chromosomes should be
    *        handled in the result.
    * @param numberOfBasesPerShard The maximum number of bases to include per shard.
    * @param auth The OfflineAuth to be used to get the reference bounds for the variantSet.
    * @return The shuffled list of sharded request objects.
-   * @throws IOException 
+   * @throws IOException
    */
   public static ImmutableList<StreamVariantsRequest> getVariantRequests(final String variantSetId,
       SexChromosomeFilter sexChromosomeFilter, long numberOfBasesPerShard,
@@ -142,14 +142,14 @@ public class ShardUtils {
 
   /**
    * Constructs sharded SearchVariantsRequests for the all references in the variantSet.
-   * 
+   *
    * @param variantSetId The variantSetId.
    * @param sexChromosomeFilter An enum value indicating how sex chromosomes should be
    *        handled in the result.
    * @param numberOfBasesPerShard The maximum number of bases to include per shard.
    * @param auth The OfflineAuth to be used to get the reference bounds for the variantSet.
    * @return The shuffled list of sharded request objects.
-   * @throws IOException 
+   * @throws IOException
    */
   @Deprecated // Remove this when fully migrated to gRPC.
   public static ImmutableList<SearchVariantsRequest> getPaginatedVariantRequests(final String variantSetId,
@@ -165,10 +165,10 @@ public class ShardUtils {
           }
         }).toList();
   }
-  
+
   /**
    * Constructs sharded StreamReadsRequests for the specified contiguous region(s) of the genome.
-   * 
+   *
    * @param readGroupSetIds The list of readGroupSetIds.
    * @param references The specified contiguous region(s) of the genome.
    * @param numberOfBasesPerShard The maximum number of bases to include per shard.
@@ -200,7 +200,7 @@ public class ShardUtils {
 
   /**
    * Constructs sharded SearchReadsRequests for the specified contiguous region(s) of the genome.
-   * 
+   *
    * @param readGroupSetIds The list of readGroupSetIds.
    * @param references The specified contiguous region(s) of the genome.
    * @param numberOfBasesPerShard The maximum number of bases to include per shard.
@@ -233,14 +233,14 @@ public class ShardUtils {
 
   /**
    * Constructs sharded StreamReadsRequest for the all references in the readGroupSet.
-   * 
+   *
    * @param readGroupSetId The readGroupSetId.
    * @param sexChromosomeFilter An enum value indicating how sex chromosomes should be
    *        handled in the result.
    * @param numberOfBasesPerShard The maximum number of bases to include per shard.
    * @param auth The OfflineAuth to be used to get the reference bounds for the variantSet.
    * @return The shuffled list of sharded request objects.
-   * @throws IOException 
+   * @throws IOException
    */
   public static ImmutableList<StreamReadsRequest> getReadRequests(final String readGroupSetId,
       SexChromosomeFilter sexChromosomeFilter, long numberOfBasesPerShard,
@@ -265,9 +265,9 @@ public class ShardUtils {
 
   /**
    * Retrieve the list of all the reference names and their start=0/end positions for the variantSet.
-   * 
-   * Note that start is hardcoded to zero since the referenceBounds only include the upper bound. 
-   * 
+   *
+   * Note that start is hardcoded to zero since the referenceBounds only include the upper bound.
+   *
    * @param variantSetId - The id of the variantSet to query.
    * @param sexChromosomeFilter - An enum value indicating how sex chromosomes should be
    *        handled in the result.
@@ -294,11 +294,11 @@ public class ShardUtils {
     List<Contig> contigs = getContigsInReadGroupSet(readGroupSetId, sexChromosomeFilter, auth);
     return ShardUtils.getAllShardsForContigs(contigs, numberOfBasesPerShard);
   }
-  
+
   /**
    * Retrieve the list of all the reference names and their start=0/end positions for the ranges of
    * the coverage buckets computed for this readGroupSet.
-   * 
+   *
    * @param readGroupSetId - The id of the readGroupSet to query.
    * @param sexChromosomeFilter - An enum value indicating how sex chromosomes should be
    *        handled in the result.
@@ -320,7 +320,7 @@ public class ShardUtils {
     }
     return contigs;
   }
-  
+
   private static List<Contig> getSpecifiedShards(String contigsArgument, long numberOfBasesPerShard) {
     Iterable<Contig> contigs = Contig.parseContigsFromCommandLine(contigsArgument);
     return ShardUtils.getAllShardsForContigs(contigs, numberOfBasesPerShard);

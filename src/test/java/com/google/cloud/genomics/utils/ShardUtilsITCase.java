@@ -38,7 +38,7 @@ public class ShardUtilsITCase {
         new Contig("chrY", 0L, 60032946L)
         .getStreamVariantsRequest(IntegrationTestHelper.PLATINUM_GENOMES_VARIANTSET)
     };
-    
+
     StreamVariantsRequest[] EXPECTED_RESULT = {
         new Contig("chr1", 0L, 150000000L)
         .getStreamVariantsRequest(IntegrationTestHelper.PLATINUM_GENOMES_VARIANTSET),
@@ -101,20 +101,20 @@ public class ShardUtilsITCase {
         new Contig("chrM", 0L, 1000001L)
         .getStreamVariantsRequest(IntegrationTestHelper.PLATINUM_GENOMES_VARIANTSET)
     };
-    
+
     // These shards are "too big" to use in practice but for this test it keeps the
     // expected result from getting crazy long.
     assertThat(ShardUtils.getVariantRequests(IntegrationTestHelper.PLATINUM_GENOMES_VARIANTSET,
         SexChromosomeFilter.EXCLUDE_XY, 150000000L, IntegrationTestHelper.getAuthFromApiKey()),
         CoreMatchers.allOf(CoreMatchers.hasItems(EXPECTED_RESULT)));
-    
+
     // Include sex chromosomes this time.
     assertThat(ShardUtils.getVariantRequests(IntegrationTestHelper.PLATINUM_GENOMES_VARIANTSET,
         SexChromosomeFilter.INCLUDE_XY, 150000000L, IntegrationTestHelper.getAuthFromApiKey()),
         CoreMatchers.allOf(CoreMatchers.hasItems(EXPECTED_RESULT),
             CoreMatchers.hasItems(EXPECTED_RESULT_XY)));
   }
-  
+
   @Test
   public void testGetReadRequestsStringSexChromosomeFilterLongOfflineAuth() throws IOException, GeneralSecurityException {
 
@@ -126,7 +126,7 @@ public class ShardUtilsITCase {
         new Contig("chrY", 0L, 59373566L)
         .getStreamReadsRequest(IntegrationTestHelper.PLATINUM_GENOMES_READGROUPSETS[0])
     };
-    
+
     StreamReadsRequest[] EXPECTED_RESULT = {
         new Contig("chr1", 0L, 150000000L)
         .getStreamReadsRequest(IntegrationTestHelper.PLATINUM_GENOMES_READGROUPSETS[0]),
@@ -189,13 +189,13 @@ public class ShardUtilsITCase {
         new Contig("chrM", 0L, 16571L)
         .getStreamReadsRequest(IntegrationTestHelper.PLATINUM_GENOMES_READGROUPSETS[0])
     };
-    
+
     // These shards are "too big" to use in practice but for this test it keeps the
     // expected result from getting crazy long.
     assertThat(ShardUtils.getReadRequests(IntegrationTestHelper.PLATINUM_GENOMES_READGROUPSETS[0],
         SexChromosomeFilter.EXCLUDE_XY, 150000000L, IntegrationTestHelper.getAuthFromApiKey()),
         CoreMatchers.allOf(CoreMatchers.hasItems(EXPECTED_RESULT)));
-    
+
     // Include sex chromosomes this time.
     assertThat(ShardUtils.getReadRequests(IntegrationTestHelper.PLATINUM_GENOMES_READGROUPSETS[0],
         SexChromosomeFilter.INCLUDE_XY, 150000000L, IntegrationTestHelper.getAuthFromApiKey()),

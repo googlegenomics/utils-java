@@ -39,7 +39,7 @@ import com.google.common.base.Preconditions;
 
 /**
  * Convenience routines for obtaining credentials.
- * 
+ *
  * For more information about auth, please see:
  * <ul>
  *    <li>https://developers.google.com/identity/protocols/application-default-credentials
@@ -50,7 +50,7 @@ import com.google.common.base.Preconditions;
  * </ul>
  */
 public class CredentialFactory {
-  
+
   private static final String MISSING_ADC_EXCEPTION_MESSAGE =
       "Unable to get application default credentials. Please see "
       + "https://developers.google.com/identity/protocols/application-default-credentials "
@@ -63,17 +63,17 @@ public class CredentialFactory {
 
   private static final File CREDENTIAL_STORE = new File(
       System.getProperty("user.home"), ".store");
-  
+
   private static class PromptReceiver extends AbstractPromptReceiver {
     @Override
     public String getRedirectUri() {
       return GoogleOAuthConstants.OOB_REDIRECT_URI;
     }
   }
-  
+
   /**
    * Obtain the Application Default com.google.api.client.auth.oauth2.Credential
-   * 
+   *
    * @return the Application Default Credential
    */
   public static GoogleCredential getApplicationDefaultCredential() {
@@ -83,13 +83,13 @@ public class CredentialFactory {
       throw new RuntimeException(MISSING_ADC_EXCEPTION_MESSAGE, e);
     }
   }
-  
+
   /**
    * Obtain the Application Default com.google.auth.oauth2.GoogleCredentials
-   * 
+   *
    * This is from the newer OAuth library https://github.com/google/google-auth-library-java
    * which is used by gRPC.
-   * 
+   *
    * @return the Application Default Credentials
    */
   public static GoogleCredentials getApplicationDefaultCredentials() {

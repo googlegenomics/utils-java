@@ -15,7 +15,7 @@ import com.google.genomics.v1.StreamingVariantServiceGrpc;
 import com.google.genomics.v1.StreamingVariantServiceGrpc.StreamingVariantServiceBlockingStub;
 
 public class Example {
-  
+
   public static void main(String[] args) throws Exception {
     ManagedChannel channel = GenomicsChannel.fromDefaultCreds();
 
