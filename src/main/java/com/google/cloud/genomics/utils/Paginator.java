@@ -204,9 +204,9 @@ public abstract class Paginator<ApiT, RequestT, RequestSubT extends GenomicsRequ
       super(genomics);
     }
 
-    @Override Genomics.Datasets.List createSearch(Genomics.Datasets api, String request,
+    @Override Genomics.Datasets.List createSearch(Genomics.Datasets api, String projectId,
         Optional<String> pageToken) throws IOException {
-      final Genomics.Datasets.List list = api.list().setProjectId(request);
+      final Genomics.Datasets.List list = api.list().setProjectId(projectId);
       return pageToken
           .transform(
               new Function<String, Genomics.Datasets.List>() {
