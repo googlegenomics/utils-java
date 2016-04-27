@@ -277,10 +277,17 @@ public abstract class Paginator<ApiT, RequestT, RequestSubT extends GenomicsRequ
       super(genomics);
     }
 
-    @Override Genomics.Operations.List createSearch(Genomics.Operations api, final String request,
+    @Override
+    Genomics.Operations.List createSearch(Genomics.Operations api, final String filter,
         Optional<String> pageToken) throws IOException {
-      return pageToken.isPresent() ? api.list(request).setPageToken(pageToken.get())
-          : api.list(request);
+      Genomics.Operations.List genomicsRequest = api.list("unused argument");
+      if (!Strings.isNullOrEmpty(filter)) {
+        genomicsRequest.setFilter(filter);
+      }
+      if (pageToken.isPresent()) {
+        genomicsRequest.setPageToken(pageToken.get());
+      }
+      return genomicsRequest;
     }
 
     @Override Genomics.Operations getApi(Genomics genomics) {
