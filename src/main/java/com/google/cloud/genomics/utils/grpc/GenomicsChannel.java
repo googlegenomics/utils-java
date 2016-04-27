@@ -13,6 +13,10 @@
  */
 package com.google.cloud.genomics.utils.grpc;
 
+import com.google.auth.oauth2.GoogleCredentials;
+import com.google.cloud.genomics.utils.CredentialFactory;
+import com.google.cloud.genomics.utils.OfflineAuth;
+
 import io.grpc.ClientInterceptor;
 import io.grpc.ManagedChannel;
 import io.grpc.auth.ClientAuthInterceptor;
@@ -29,10 +33,6 @@ import java.util.List;
 import java.util.concurrent.Executors;
 
 import javax.net.ssl.SSLException;
-
-import com.google.auth.oauth2.GoogleCredentials;
-import com.google.cloud.genomics.utils.CredentialFactory;
-import com.google.cloud.genomics.utils.OfflineAuth;
 
 /**
  * A convenience class for creating gRPC channels to the Google Genomics API.
@@ -91,11 +91,11 @@ public class GenomicsChannel {
   /**
    * Create a new gRPC channel to the Google Genomics API, using OfflineAuth or the application
    * default credentials.
-   * 
+   *
    * This library works with both the older and newer support for OAuth2 clients.
-   * 
+   *
    * https://developers.google.com/identity/protocols/application-default-credentials
-   * 
+   *
    * @param auth the OfflineAuth object
    * @return the ManagedChannel
    * @throws IOException

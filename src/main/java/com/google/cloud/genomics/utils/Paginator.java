@@ -13,12 +13,6 @@
  */
 package com.google.cloud.genomics.utils;
 
-import java.io.IOException;
-import java.io.Serializable;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.Map;
-
 import com.google.api.services.genomics.Genomics;
 import com.google.api.services.genomics.GenomicsRequest;
 import com.google.api.services.genomics.model.Annotation;
@@ -68,6 +62,12 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
+import java.io.IOException;
+import java.io.Serializable;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.Map;
+
 /**
  * An abstraction that understands the {@code pageToken} / {@code nextPageToken} protocol for paging
  * results back to the user.
@@ -107,7 +107,7 @@ import com.google.common.collect.Maps;
  * @param <ItemT> The type of object being streamed back to the user.
  */
 public abstract class Paginator<ApiT, RequestT, RequestSubT extends GenomicsRequest<ResponseT>, ResponseT, ItemT> {
-  
+
   /**
    * A callback object for
    * {@link #search(Object, GenomicsRequestInitializer, Callback, RetryPolicy)} that can
@@ -321,12 +321,12 @@ public abstract class Paginator<ApiT, RequestT, RequestSubT extends GenomicsRequ
       Genomics.Reads.Search,
       SearchReadsResponse,
       Read> {
-    
+
     // TODO: When this is supported server-side, these additional fields are no longer required
     private static ImmutableMap<String,String> REQUIRED_STRICT_SHARD_FIELDS =
         ImmutableMap.<String, String>builder()
         .putAll(REQUIRED_FIELDS)
-        .put("alignment", ".*\\p{Punct}alignment\\p{Punct}.*") 
+        .put("alignment", ".*\\p{Punct}alignment\\p{Punct}.*")
         .put("position", ".*\\p{Punct}position\\p{Punct}.*")
         .build();
     private final ShardBoundary.Requirement shardBoundary;
@@ -340,7 +340,7 @@ public abstract class Paginator<ApiT, RequestT, RequestSubT extends GenomicsRequ
      *
      * Cluster compute jobs attempting to shard the data will see any records that span a shard
      * boundary in both shards. In some cases this might be okay, in others it is not.
-     * 
+     *
      * @param genomics The {@link Genomics} stub.
      * @param shardBoundary Use ShardBoundary.OVERLAPS for the default behavior or use
      *        ShardBoundary.STRICT to ensure that a record does not appear in more than one shard.
@@ -382,11 +382,11 @@ public abstract class Paginator<ApiT, RequestT, RequestSubT extends GenomicsRequ
     @Override
     public GenomicsRequestInitializer<GenomicsRequest<?>> setFieldsInitializer(final String fields) {
       if(shardBoundary == ShardBoundary.Requirement.STRICT) {
-        return new GenomicsSearchFieldRequestInitializer(fields, REQUIRED_STRICT_SHARD_FIELDS);        
+        return new GenomicsSearchFieldRequestInitializer(fields, REQUIRED_STRICT_SHARD_FIELDS);
       }
       return new GenomicsSearchFieldRequestInitializer(fields, REQUIRED_FIELDS);
     }
-    
+
     @Override Genomics.Reads getApi(Genomics genomics) {
       return genomics.reads();
     }
@@ -419,7 +419,7 @@ public abstract class Paginator<ApiT, RequestT, RequestSubT extends GenomicsRequ
         ImmutableMap.<String, String>builder()
         .putAll(REQUIRED_FIELDS)
         .put("position", ".*\\p{Punct}position\\p{Punct}.*")
-        .put("start", ".*\\p{Punct}start\\p{Punct}.*") 
+        .put("start", ".*\\p{Punct}start\\p{Punct}.*")
         .build();
     private final ShardBoundary.Requirement shardBoundary;
     private Predicate<Annotation> shardPredicate = null;
@@ -473,7 +473,7 @@ public abstract class Paginator<ApiT, RequestT, RequestSubT extends GenomicsRequ
     @Override
     public GenomicsRequestInitializer<GenomicsRequest<?>> setFieldsInitializer(final String fields) {
       if(shardBoundary == ShardBoundary.Requirement.STRICT) {
-        return new GenomicsSearchFieldRequestInitializer(fields, REQUIRED_STRICT_SHARD_FIELDS);        
+        return new GenomicsSearchFieldRequestInitializer(fields, REQUIRED_STRICT_SHARD_FIELDS);
       }
       return new GenomicsSearchFieldRequestInitializer(fields, REQUIRED_FIELDS);
     }
@@ -821,11 +821,11 @@ public abstract class Paginator<ApiT, RequestT, RequestSubT extends GenomicsRequ
     private static ImmutableMap<String,String> REQUIRED_STRICT_SHARD_FIELDS =
         ImmutableMap.<String, String>builder()
         .putAll(REQUIRED_FIELDS)
-        .put("start", ".*\\p{Punct}start\\p{Punct}.*") 
+        .put("start", ".*\\p{Punct}start\\p{Punct}.*")
         .build();
     private final ShardBoundary.Requirement shardBoundary;
     private Predicate<Variant> shardPredicate = null;
-    
+
     /**
      * Static factory method.
      *
@@ -834,7 +834,7 @@ public abstract class Paginator<ApiT, RequestT, RequestSubT extends GenomicsRequ
      *
      * Cluster compute jobs attempting to shard the data will see any records that span a shard
      * boundary in both shards. In some cases this might be okay, in others it is not.
-     * 
+     *
      * @param genomics The {@link Genomics} stub.
      * @param shardBoundary Use ShardBoundary.OVERLAPS for the default behavior or use
      *        ShardBoundary.STRICT to ensure that a record does not appear in more than one shard.
@@ -851,7 +851,7 @@ public abstract class Paginator<ApiT, RequestT, RequestSubT extends GenomicsRequ
 
     @Override Genomics.Variants.Search createSearch(Genomics.Variants api,
         final SearchVariantsRequest request, Optional<String> pageToken) throws IOException {
-      
+
       if(shardBoundary == ShardBoundary.Requirement.STRICT) {
         // TODO: When this is supported server-side, instead verify that request.getIntersectionType
         // will yield a strict shard.
@@ -862,7 +862,7 @@ public abstract class Paginator<ApiT, RequestT, RequestSubT extends GenomicsRequ
           }
         };
       }
-      
+
       return api.search(pageToken
           .transform(
               new Function<String, SearchVariantsRequest>() {
@@ -876,11 +876,11 @@ public abstract class Paginator<ApiT, RequestT, RequestSubT extends GenomicsRequ
     @Override
     public GenomicsRequestInitializer<GenomicsRequest<?>> setFieldsInitializer(final String fields) {
       if(shardBoundary == ShardBoundary.Requirement.STRICT) {
-        return new GenomicsSearchFieldRequestInitializer(fields, REQUIRED_STRICT_SHARD_FIELDS);        
+        return new GenomicsSearchFieldRequestInitializer(fields, REQUIRED_STRICT_SHARD_FIELDS);
       }
       return new GenomicsSearchFieldRequestInitializer(fields, REQUIRED_FIELDS);
     }
-    
+
     @Override Genomics.Variants getApi(Genomics genomics) {
       return genomics.variants();
     }
@@ -991,7 +991,7 @@ public abstract class Paginator<ApiT, RequestT, RequestSubT extends GenomicsRequ
       }
     }
   }
-  
+
   private final Genomics genomics;
 
   public Paginator(Genomics genomics) {

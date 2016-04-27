@@ -13,6 +13,12 @@
  */
 package com.google.cloud.genomics.utils.grpc;
 
+import com.google.api.client.util.BackOff;
+import com.google.api.client.util.ExponentialBackOff;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
+
 import io.grpc.ManagedChannel;
 
 import java.io.IOException;
@@ -21,20 +27,14 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.google.api.client.util.BackOff;
-import com.google.api.client.util.ExponentialBackOff;
-import com.google.common.base.Predicate;
-import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
-
 /**
  * An iterator for streaming genomic data via gRPC with support for retries.
- * 
+ *
  * Includes complex retry logic to upon failure resume the stream at the last known good start
  * position without returning duplicate data.
- * 
+ *
  * TODO: refactor this further to simplify the generic signature.
- * 
+ *
  * @param <RequestT> Streaming request type.
  * @param <ResponseT> Streaming response type.
  * @param <ItemT> Genomic data type returned by stream.
@@ -58,7 +58,7 @@ public abstract class GenomicsStreamIterator<RequestT, ResponseT, ItemT, StubT e
 
   /**
    * Create a stream iterator that will filter shard data using the predicate, if supplied.
-   * 
+   *
    * @param channel The channel.
    * @param request The request for the shard of data.
    * @param fields Which fields to include in a partial response or null for all. NOT YET
@@ -141,6 +141,7 @@ public abstract class GenomicsStreamIterator<RequestT, ResponseT, ItemT, StubT e
   /**
    * @see java.util.Iterator#hasNext()
    */
+  @Override
   public boolean hasNext() {
     boolean hasNext;
     while (true) {
@@ -188,6 +189,7 @@ public abstract class GenomicsStreamIterator<RequestT, ResponseT, ItemT, StubT e
   /**
    * @see java.util.Iterator#next()
    */
+  @Override
   public ResponseT next() {
     ResponseT response = delegate.next();
     // TODO: Its more clean conceptually to do the same thing for all responses, but this could be a

@@ -20,11 +20,6 @@ import static com.google.common.collect.Lists.newArrayList;
 import static java.util.Objects.hash;
 import static java.util.Objects.requireNonNull;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import com.google.api.client.util.Preconditions;
 import com.google.api.services.genomics.model.SearchReadsRequest;
 import com.google.api.services.genomics.model.SearchVariantsRequest;
@@ -34,6 +29,11 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.genomics.v1.StreamReadsRequest;
 import com.google.genomics.v1.StreamVariantsRequest;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * A Contig is a contiguous region of the genome.

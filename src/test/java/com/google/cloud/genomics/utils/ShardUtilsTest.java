@@ -19,16 +19,16 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import java.util.Arrays;
-import java.util.List;
-
-import org.hamcrest.CoreMatchers;
-import org.junit.Test;
-
 import com.google.api.services.genomics.model.SearchReadsRequest;
 import com.google.api.services.genomics.model.SearchVariantsRequest;
 import com.google.genomics.v1.StreamReadsRequest;
 import com.google.genomics.v1.StreamVariantsRequest;
+
+import org.hamcrest.CoreMatchers;
+import org.junit.Test;
+
+import java.util.Arrays;
+import java.util.List;
 
 public class ShardUtilsTest {
 
@@ -111,7 +111,7 @@ public class ShardUtilsTest {
 
     List<StreamVariantsRequest> requests = ShardUtils.getVariantRequests("variantset1", "chr1:0:150,chr2:25:250", 50);
     assertThat(requests, CoreMatchers.allOf(CoreMatchers.hasItems(EXPECTED_RESULT)));
-    
+
     // Call it a second time, expect the same set of shards but in a different order.
     List<StreamVariantsRequest> requests2 = ShardUtils.getVariantRequests("variantset1", "chr1:0:150,chr2:25:250", 50);
     assertThat(requests2, CoreMatchers.allOf(CoreMatchers.hasItems(EXPECTED_RESULT)));
@@ -160,7 +160,7 @@ public class ShardUtilsTest {
     List<StreamReadsRequest> requests = ShardUtils.getReadRequests(Arrays.asList("readset1", "readset2"),
         "chr1:0:150,chr2:25:250", 50);
     assertThat(requests, CoreMatchers.allOf(CoreMatchers.hasItems(EXPECTED_RESULT)));
-    
+
     // Call it a second time, expect the same set of shards but in a different order.
     List<StreamReadsRequest> requests2 = ShardUtils.getReadRequests(Arrays.asList("readset1", "readset2"),
         "chr1:0:150,chr2:25:250", 50);
@@ -169,7 +169,7 @@ public class ShardUtilsTest {
     // Lists have different orders for their elements.
     assertThat(requests, is(not(requests2)));
   }
-  
+
   @Test
   public void testSexChromosomeRegexp() {
     assertTrue(ShardUtils.SEX_CHROMOSOME_REGEXP.matcher("chrX").matches());

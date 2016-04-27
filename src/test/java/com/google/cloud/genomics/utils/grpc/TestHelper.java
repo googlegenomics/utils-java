@@ -1,11 +1,11 @@
 /*
  * Copyright (C) 2014 Google Inc.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software distributed under the License
  * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
  * or implied. See the License for the specific language governing permissions and limitations under
@@ -15,11 +15,6 @@ package com.google.cloud.genomics.utils.grpc;
 
 import static org.junit.Assert.assertEquals;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
-
 import com.google.api.client.util.ExponentialBackOff;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
@@ -28,6 +23,11 @@ import com.google.genomics.v1.Position;
 import com.google.genomics.v1.Read;
 import com.google.genomics.v1.Variant;
 import com.google.protobuf.Message;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 
 public class TestHelper {
 
@@ -57,7 +57,7 @@ public class TestHelper {
     assertEquals("confirm that all data received is unique", uniqueReceivedIds.size(),
         numItemsReceived);
   }
-  
+
   public static Read makeRead(long start, long end) {
     Position position = Position.newBuilder().setPosition(start).build();
     LinearAlignment alignment = LinearAlignment.newBuilder().setPosition(position).build();

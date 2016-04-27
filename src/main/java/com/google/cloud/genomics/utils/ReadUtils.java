@@ -16,12 +16,33 @@
 package com.google.cloud.genomics.utils;
 
 import com.google.api.client.util.Maps;
-import com.google.api.services.genomics.model.*;
+import com.google.api.services.genomics.model.CigarUnit;
+import com.google.api.services.genomics.model.LinearAlignment;
+import com.google.api.services.genomics.model.Position;
+import com.google.api.services.genomics.model.Read;
+import com.google.api.services.genomics.model.ReadGroup;
+import com.google.api.services.genomics.model.ReadGroupProgram;
+import com.google.api.services.genomics.model.ReadGroupSet;
+import com.google.api.services.genomics.model.Reference;
 import com.google.common.base.Function;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.google.common.collect.Lists;
-import htsjdk.samtools.*;
+
+import htsjdk.samtools.CigarElement;
+import htsjdk.samtools.CigarOperator;
+import htsjdk.samtools.SAMException;
+import htsjdk.samtools.SAMFileHeader;
+import htsjdk.samtools.SAMProgramRecord;
+import htsjdk.samtools.SAMReadGroupRecord;
+import htsjdk.samtools.SAMRecord;
+import htsjdk.samtools.SAMSequenceDictionary;
+import htsjdk.samtools.SAMSequenceRecord;
+import htsjdk.samtools.SAMTextHeaderCodec;
+import htsjdk.samtools.SamFileHeaderMerger;
+import htsjdk.samtools.TagValueAndUnsignedArrayFlag;
+import htsjdk.samtools.TextTagCodec;
+import htsjdk.samtools.ValidationStringency;
 import htsjdk.samtools.util.SequenceUtil;
 import htsjdk.samtools.util.StringLineReader;
 

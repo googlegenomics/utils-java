@@ -13,9 +13,6 @@
  */
 package com.google.cloud.genomics.utils;
 
-import java.io.IOException;
-import java.util.List;
-
 import com.google.api.services.genomics.Genomics;
 import com.google.api.services.genomics.model.CallSet;
 import com.google.api.services.genomics.model.CoverageBucket;
@@ -31,11 +28,14 @@ import com.google.api.services.genomics.model.VariantSet;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 
+import java.io.IOException;
+import java.util.List;
+
 /**
  * Convenience routines for fetching ids in the hierarchy of data within the Genomics API and other data lookups.
  */
 public class GenomicsUtils {
-  
+
   /**
    * Gets ReadGroupSetIds from a given datasetId using the Genomics API.
    *
@@ -65,7 +65,7 @@ public class GenomicsUtils {
    * @param readGroupSetId The id of the readGroupSet to query.
    * @param auth The OfflineAuth for the API request.
    * @return The referenceSetId for the redGroupSet (which may be null).
-   * @throws IOException 
+   * @throws IOException
    */
   public static String getReferenceSetId(String readGroupSetId, OfflineAuth auth)
       throws IOException {
@@ -74,14 +74,14 @@ public class GenomicsUtils {
         .setFields("referenceSetId").execute();
     return readGroupSet.getReferenceSetId();
   }
-  
+
   /**
    * Gets the CoverageBuckets for a given readGroupSetId using the Genomics API.
    *
    * @param readGroupSetId The id of the readGroupSet to query.
    * @param auth The OfflineAuth for the API request.
    * @return The list of reference bounds in the variantSet.
-   * @throws IOException 
+   * @throws IOException
    */
   public static List<CoverageBucket> getCoverageBuckets(String readGroupSetId, OfflineAuth auth)
       throws IOException {
@@ -91,11 +91,11 @@ public class GenomicsUtils {
     // Requests of this form return one result per reference name, so therefore many fewer than
     // the default page size, but verify that the assumption holds true.
     if (!Strings.isNullOrEmpty(response.getNextPageToken())) {
-      throw new IllegalArgumentException("Read group set " + readGroupSetId 
+      throw new IllegalArgumentException("Read group set " + readGroupSetId
           + " has more Coverage Buckets than the default page size for the CoverageBuckets list operation.");
     }
     return response.getCoverageBuckets();
-  }  
+  }
 
 
   /**
@@ -136,10 +136,10 @@ public class GenomicsUtils {
     }
     return output;
   }
-  
+
   /**
    * Gets CallSets Names for a given variantSetId using the Genomics API.
-   * 
+   *
    * @param variantSetId The id of the variantSet to query.
    * @param auth The OfflineAuth for the API request.
    * @return The list of callSet names in the variantSet.
@@ -174,5 +174,5 @@ public class GenomicsUtils {
     Genomics genomics = GenomicsFactory.builder().build().fromOfflineAuth(auth);
     VariantSet variantSet = genomics.variantsets().get(variantSetId).execute();
     return variantSet.getReferenceBounds();
-  }  
+  }
 }
