@@ -16,10 +16,13 @@
 package com.google.cloud.genomics.utils;
 
 import static com.google.common.collect.Lists.newArrayList;
+
 import static org.hamcrest.Matchers.containsString;
 import static org.junit.Assert.assertEquals;
 
-import java.util.List;
+import com.google.api.services.genomics.model.SearchReadsRequest;
+import com.google.api.services.genomics.model.SearchVariantsRequest;
+import com.google.common.base.Joiner;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -27,9 +30,7 @@ import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-import com.google.api.services.genomics.model.SearchReadsRequest;
-import com.google.api.services.genomics.model.SearchVariantsRequest;
-import com.google.common.base.Joiner;
+import java.util.List;
 
 @RunWith(JUnit4.class)
 public class ContigTest {
@@ -60,7 +61,7 @@ public class ContigTest {
     assertEquals(5, shard2.start);
     assertEquals(9, shard2.end);
   }
-  
+
   @Test
   public void testGetVariantsRequest() throws Exception {
     SearchVariantsRequest request = new Contig("1", 0, 9).getSearchVariantsRequest("vs");

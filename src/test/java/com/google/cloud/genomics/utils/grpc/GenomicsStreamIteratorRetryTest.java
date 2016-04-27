@@ -1,11 +1,11 @@
 /*
  * Copyright (C) 2015 Google Inc.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software distributed under the License
  * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
  * or implied. See the License for the specific language governing permissions and limitations under
@@ -13,23 +13,6 @@
  */
 
 package com.google.cloud.genomics.utils.grpc;
-
-import io.grpc.ManagedChannel;
-import io.grpc.Server;
-import io.grpc.Status;
-import io.grpc.inprocess.InProcessChannelBuilder;
-import io.grpc.inprocess.InProcessServerBuilder;
-import io.grpc.stub.StreamObserver;
-
-import java.io.IOException;
-
-import org.junit.After;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TestName;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
-import org.mockito.Mockito;
 
 import com.google.cloud.genomics.utils.ShardBoundary;
 import com.google.genomics.v1.StreamReadsRequest;
@@ -40,11 +23,28 @@ import com.google.genomics.v1.StreamingReadServiceGrpc;
 import com.google.genomics.v1.StreamingVariantServiceGrpc;
 import com.google.protobuf.Message;
 
+import org.junit.After;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.TestName;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
+import org.mockito.Mockito;
+
+import io.grpc.ManagedChannel;
+import io.grpc.Server;
+import io.grpc.Status;
+import io.grpc.inprocess.InProcessChannelBuilder;
+import io.grpc.inprocess.InProcessServerBuilder;
+import io.grpc.stub.StreamObserver;
+
+import java.io.IOException;
+
 /**
  * Retry tests for reads and variants.
- * 
+ *
  * Test retries that occur at:
- * 
+ *
  * (1) the beginning of the stream
  * (2) within records that overlap the start position
  * (3) occur at the start position
@@ -84,10 +84,10 @@ public class GenomicsStreamIteratorRetryTest {
   enum InjectionSite {
     AT_BEGINNING, AFTER_FIRST_RESPONSE, AFTER_SECOND_RESPONSE, AT_END
   };
-  
+
   @Rule
   public TestName testName = new TestName();
-  
+
   protected Server server;
 
   protected static class UnitServerImpl implements StreamingReadServiceGrpc.StreamingReadService,
@@ -100,7 +100,7 @@ public class GenomicsStreamIteratorRetryTest {
       injectionSite = targetSite;
       failNow = true;
     }
-    
+
     protected synchronized boolean shouldInjectNow(InjectionSite currentSite) {
         if (failNow && injectionSite.equals(currentSite)) {
           failNow = false;
@@ -108,7 +108,7 @@ public class GenomicsStreamIteratorRetryTest {
         }
         return false;
     }
-    
+
     @Override
     public void streamReads(StreamReadsRequest request,
         StreamObserver<StreamReadsResponse> responseObserver) {
@@ -187,7 +187,7 @@ public class GenomicsStreamIteratorRetryTest {
       InjectionSite targetSite, int expectedNumItems) {
     startServer(targetSite);
     GenomicsStreamIterator rawIterator =
-        (request instanceof StreamVariantsRequest) 
+        (request instanceof StreamVariantsRequest)
         ? VariantStreamIterator.enforceShardBoundary(createChannel(), (StreamVariantsRequest) request, requirement, null)
             : ReadStreamIterator.enforceShardBoundary(createChannel(), (StreamReadsRequest) request, requirement, null);
     GenomicsStreamIterator iteratorSpy = Mockito.spy(rawIterator);

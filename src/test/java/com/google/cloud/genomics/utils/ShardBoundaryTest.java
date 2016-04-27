@@ -18,12 +18,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
-import java.util.Arrays;
-import java.util.List;
-
-import org.hamcrest.CoreMatchers;
-import org.junit.Test;
-
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
@@ -32,8 +26,11 @@ import com.google.genomics.v1.Position;
 import com.google.genomics.v1.Read;
 import com.google.genomics.v1.Variant;
 
-import com.google.cloud.genomics.utils.grpc.VariantUtils;
+import org.hamcrest.CoreMatchers;
+import org.junit.Test;
 
+import java.util.Arrays;
+import java.util.List;
 
 public class ShardBoundaryTest {
 
@@ -51,7 +48,7 @@ public class ShardBoundaryTest {
     Variant[] variants = new Variant[] { overlapStartWithinExtent, overlapStartExtent, atStartWithinExtent,
         atStartOverlapExtent, beyondStartWithinExtent, beyondOverlapExtent };
 
-    Predicate<Variant> shardPredicate = ShardBoundary.getStrictVariantPredicate(start); 
+    Predicate<Variant> shardPredicate = ShardBoundary.getStrictVariantPredicate(start);
     List<Variant> filteredVariants = Lists.newArrayList(Iterables.filter(Arrays.asList(variants), shardPredicate));
     assertEquals(4, filteredVariants.size());
     assertThat(filteredVariants, CoreMatchers.allOf(CoreMatchers.hasItems(atStartWithinExtent,
@@ -59,7 +56,7 @@ public class ShardBoundaryTest {
   }
 
   static Read readHelper(int start, int end) {
-    Position position = Position.newBuilder().setPosition((long) start).build();
+    Position position = Position.newBuilder().setPosition(start).build();
     LinearAlignment alignment = LinearAlignment.newBuilder().setPosition(position).build();
     return Read.newBuilder().setAlignment(alignment).setFragmentLength(end-start).build();
   }
@@ -78,7 +75,7 @@ public class ShardBoundaryTest {
       Read[] reads = new Read[] { overlapStartWithinExtent, overlapStartExtent, atStartWithinExtent,
               atStartOverlapExtent, beyondStartWithinExtent, beyondOverlapExtent };
 
-      Predicate<Read> shardPredicate = ShardBoundary.getStrictReadPredicate(start); 
+      Predicate<Read> shardPredicate = ShardBoundary.getStrictReadPredicate(start);
       List<Read> filteredReads = Lists.newArrayList(Iterables.filter(Arrays.asList(reads), shardPredicate));
       assertEquals(4, filteredReads.size());
       assertThat(filteredReads, CoreMatchers.allOf(CoreMatchers.hasItems(atStartWithinExtent,
@@ -91,9 +88,9 @@ public class ShardBoundaryTest {
 
     Variant overlapStart = Variant.newBuilder().setReferenceBases("T").addAlternateBases("A").setStart(900L).build();
     Variant overlapStartNonVariant = Variant.newBuilder().setReferenceBases("T").setStart(900L).setEnd(1005L).build();
-    
+
     Predicate<Variant> shardPredicate = ShardBoundary.getNonVariantOverlapsPredicate(start);
-    
+
     assertFalse(shardPredicate.apply(overlapStart));
     assertTrue(shardPredicate.apply(overlapStartNonVariant));
   }

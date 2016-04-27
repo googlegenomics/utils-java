@@ -15,14 +15,6 @@
  */
 package com.google.cloud.genomics.utils;
 
-import java.io.File;
-import java.io.IOException;
-import java.security.GeneralSecurityException;
-import java.util.Collection;
-import java.util.concurrent.atomic.AtomicInteger;
-
-import javax.annotation.Nullable;
-
 import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.services.CommonGoogleClientRequestInitializer;
@@ -45,9 +37,17 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 
+import java.io.File;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.Collection;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import javax.annotation.Nullable;
+
 /**
  * Code required to manufacture instances of a {@link Genomics} stub.
- * 
+ *
  * Several authentication mechanisms are supported.  For more detail, see
  * https://developers.google.com/api-client-library/java/google-api-java-client/oauth2
  */
@@ -57,7 +57,7 @@ public class GenomicsFactory {
   private static final int DEFAULT_READ_TIMEOUT = 20000;
   private static final int DEFAULT_NUMBER_OF_RETRIES = 5;
   private static final String DEFAULT_APPLICATION_NAME = "genomics";
-  
+
   /**
    * A builder class for {@link GenomicsFactory} objects.
    */
@@ -110,6 +110,7 @@ public class GenomicsFactory {
     /**
      * @deprecated
      */
+    @Deprecated
     public Builder setConnectTimeout(int connectTimeout) {
       this.connectTimeout = connectTimeout;
       return this;
@@ -118,6 +119,7 @@ public class GenomicsFactory {
     /**
      * @deprecated
      */
+    @Deprecated
     public Builder setReadTimeout(int readTimeout) {
       this.readTimeout = readTimeout;
       return this;
@@ -125,7 +127,7 @@ public class GenomicsFactory {
 
     /**
      * The number of times to retry a failed request to the Genomics API.
-     *  
+     *
      * @param numRetries
      * @return this
      */
@@ -173,7 +175,7 @@ public class GenomicsFactory {
     /**
      * The OAuth scopes to attach to outgoing requests. Most code will not have to call this method.
      *
-     * @param scopes The OAuth scopes to attach to outgoing requests 
+     * @param scopes The OAuth scopes to attach to outgoing requests
      * @return this builder
      */
     public Builder setScopes(Collection<String> scopes) {
@@ -219,7 +221,7 @@ public class GenomicsFactory {
   private GenomicsFactory(
       String applicationName,
       HttpTransport httpTransport,
-      int connectTimeout, 
+      int connectTimeout,
       int readTimeout,
       int numRetries,
       JsonFactory jsonFactory,
@@ -228,7 +230,7 @@ public class GenomicsFactory {
       Optional<String> servicePath) {
     this.applicationName = applicationName;
     this.httpTransport = httpTransport;
-    this.connectTimeout = connectTimeout; 
+    this.connectTimeout = connectTimeout;
     this.readTimeout = readTimeout;
     this.numRetries = numRetries;
     this.jsonFactory = jsonFactory;
@@ -284,7 +286,7 @@ public class GenomicsFactory {
                   @Override public boolean handleResponse(HttpRequest req,
                       HttpResponse response, boolean supportsRetry) throws IOException {
                     unsuccessfulResponsesCount.incrementAndGet();
-                    
+
                     return (null != delegate
                         && delegate.handleResponse(req, response, supportsRetry))
                         || unsuccessfulResponseHandler.handleResponse(
@@ -300,7 +302,7 @@ public class GenomicsFactory {
                   @Override public boolean handleIOException(HttpRequest req,
                       boolean supportsRetry) throws IOException {
                     ioExceptionsCount.incrementAndGet();
-                    
+
                     return (null != delegate
                         && delegate.handleIOException(req, supportsRetry))
                         || ioExceptionHandler.handleIOException(req, supportsRetry);
@@ -405,7 +407,7 @@ public class GenomicsFactory {
     Preconditions.checkNotNull(credential);
     return prepareBuilder(builder, credential, null);
   }
-  
+
   /**
    * Create a {@link Genomics} stub using the Application Default Credential.
    *
@@ -466,10 +468,10 @@ public class GenomicsFactory {
     creds.refreshToken();
     return prepareBuilder(builder, creds, null);
   }
-  
+
   /**
    * Create a new genomics stub from the given OfflineAuth object.
-   * 
+   *
    * @param auth The OfflineAuth
    * @return The new {@code Genomics} stub
    */

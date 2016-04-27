@@ -21,16 +21,16 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
-import java.io.ByteArrayOutputStream;
-import java.io.ObjectOutputStream;
-
-import org.hamcrest.CoreMatchers;
-import org.junit.Test;
-
 import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.json.jackson2.JacksonFactory;
+
+import org.hamcrest.CoreMatchers;
+import org.junit.Test;
+
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectOutputStream;
 
 public class OfflineAuthTest {
 

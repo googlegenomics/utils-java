@@ -1,9 +1,5 @@
 package com.google.cloud.genomics.utils.grpc;
 
-import io.grpc.ManagedChannel;
-
-import java.util.Iterator;
-
 import com.google.genomics.v1.ReferenceServiceV1Grpc;
 import com.google.genomics.v1.ReferenceServiceV1Grpc.ReferenceServiceV1BlockingStub;
 import com.google.genomics.v1.ReferenceSet;
@@ -14,8 +10,12 @@ import com.google.genomics.v1.StreamVariantsResponse;
 import com.google.genomics.v1.StreamingVariantServiceGrpc;
 import com.google.genomics.v1.StreamingVariantServiceGrpc.StreamingVariantServiceBlockingStub;
 
+import io.grpc.ManagedChannel;
+
+import java.util.Iterator;
+
 public class Example {
-  
+
   public static void main(String[] args) throws Exception {
     ManagedChannel channel = GenomicsChannel.fromDefaultCreds();
 

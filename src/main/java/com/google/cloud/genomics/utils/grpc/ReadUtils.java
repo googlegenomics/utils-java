@@ -55,7 +55,7 @@ import java.util.regex.Pattern;
 
 public class ReadUtils extends com.google.cloud.genomics.utils.ReadUtils {
   protected static BiMap<String, CigarUnit.Operation> CIGAR_OPERATIONS_INV_GRPC;
-  
+
   static {
     CIGAR_OPERATIONS_INV_GRPC = HashBiMap.create();
     CIGAR_OPERATIONS_INV_GRPC.put("M", CigarUnit.Operation.ALIGNMENT_MATCH);
@@ -91,7 +91,7 @@ public class ReadUtils extends com.google.cloud.genomics.utils.ReadUtils {
   }
 
   public static int getFlags(Read read) {
-    Position position = !read.hasAlignment() || !read.getAlignment().hasPosition() ? 
+    Position position = !read.hasAlignment() || !read.getAlignment().hasPosition() ?
         null : read.getAlignment().getPosition();
     Position nextMatePosition = !read.hasNextMatePosition() ? null : read.getNextMatePosition();
 
@@ -119,7 +119,7 @@ public class ReadUtils extends com.google.cloud.genomics.utils.ReadUtils {
     }
     return s;
   }
-  
+
   /**
    * Generates a Read from a SAMRecord.
    */
@@ -209,13 +209,13 @@ public class ReadUtils extends com.google.cloud.genomics.utils.ReadUtils {
       }
 
       ListValue listValue = attributes.get(tag);
-      ListValue.Builder listValueBuilder = listValue == null ? 
-          ListValue.newBuilder() : 
+      ListValue.Builder listValueBuilder = listValue == null ?
+          ListValue.newBuilder() :
           ListValue.newBuilder(listValue);
       listValueBuilder.addValues(Value.newBuilder().setStringValue(value));
       attributes.put(tag, listValueBuilder.build());
     }
-   
+
 
     return read.build();
   }
@@ -267,7 +267,7 @@ public class ReadUtils extends com.google.cloud.genomics.utils.ReadUtils {
       if (mappingQuality != null) {
         record.setMappingQuality(mappingQuality);
       }
-      
+
       List<CigarUnit> cigar = read.getAlignment().getCigarList();
       if (cigar != null && cigar.size() > 0) {
         StringBuffer cigarString = new StringBuffer(cigar.size());
@@ -290,10 +290,10 @@ public class ReadUtils extends com.google.cloud.genomics.utils.ReadUtils {
         // API positions are 0-based and SAMRecord is 1-based.
         record.setMateAlignmentStart(matePosition.intValue() + 1);
       }
-    } 
-    
+    }
+
     record.setInferredInsertSize(read.getFragmentLength());
-    
+
     if (read.getAlignedSequence() != null) {
       record.setReadString(read.getAlignedSequence());
     }
@@ -318,7 +318,7 @@ public class ReadUtils extends com.google.cloud.genomics.utils.ReadUtils {
                   tag + ":" + getTagType(tag) + ":" + value.getStringValue())
                   .getValue();
                   if (attrValue instanceof TagValueAndUnsignedArrayFlag) {
-                    record.setUnsignedArrayAttribute(tag, 
+                    record.setUnsignedArrayAttribute(tag,
                         ((TagValueAndUnsignedArrayFlag)attrValue).value);
                   } else {
                     record.setAttribute(tag, attrValue);
@@ -350,22 +350,22 @@ public class ReadUtils extends com.google.cloud.genomics.utils.ReadUtils {
     List<SAMFileHeader> samHeaders = new ArrayList<SAMFileHeader>(2);
     SAMFileHeader samHeader = new SAMFileHeader();
     samHeaders.add(samHeader);
-    
+
     // Reads are always returned in coordinate order form the API.
     samHeader.setSortOrder(SAMFileHeader.SortOrder.coordinate);
-    
+
     if (references != null && references.size() > 0) {
       SAMSequenceDictionary dict = new SAMSequenceDictionary();
       for (Reference reference : references) {
         if (reference.getName() != null && reference.getLength() != 0) {
-          SAMSequenceRecord sequence = new SAMSequenceRecord(reference.getName(), 
+          SAMSequenceRecord sequence = new SAMSequenceRecord(reference.getName(),
               (int)reference.getLength());
           dict.addSequence(sequence);
         }
       }
       samHeader.setSequenceDictionary(dict);
     }
-    
+
     List<SAMProgramRecord> programs = null;
     if (readGroupSet.getReadGroupsCount() != 0) {
       List<SAMReadGroupRecord> readgroups = Lists.newArrayList();
@@ -381,9 +381,9 @@ public class ReadUtils extends com.google.cloud.genomics.utils.ReadUtils {
           if (RG.getDescription() != null && !RG.getDescription().isEmpty()) {
             readgroup.setDescription(RG.getDescription());
           }
-   
+
           readgroup.setPredictedMedianInsertSize(RG.getPredictedInsertSize());
-          
+
           if (RG.getSampleId() != null) {
             readgroup.setSample(RG.getSampleId());
           }
@@ -430,7 +430,7 @@ public class ReadUtils extends com.google.cloud.genomics.utils.ReadUtils {
         samHeader.setProgramRecords(programs);
       }
     }
-    
+
     // If BAM file is imported with non standard reference, the SQ tags
     // are preserved in the info key/value array.
     // Attempt to read them form there.
@@ -464,15 +464,15 @@ public class ReadUtils extends com.google.cloud.genomics.utils.ReadUtils {
         }
       }
     }
-    
-    final SAMFileHeader finalHeader = 
+
+    final SAMFileHeader finalHeader =
         (new SamFileHeaderMerger(
             SAMFileHeader.SortOrder.coordinate, samHeaders, true))
         .getMergedHeader();
-    
+
     return finalHeader;
-  }  
-  
+  }
+
   /*
    * Regular expression for MD tag.
    *

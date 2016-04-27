@@ -20,11 +20,6 @@ import static com.google.common.collect.Lists.newArrayList;
 import static java.util.Objects.hash;
 import static java.util.Objects.requireNonNull;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import com.google.api.client.util.Preconditions;
 import com.google.api.services.genomics.model.SearchReadsRequest;
 import com.google.api.services.genomics.model.SearchVariantsRequest;
@@ -34,6 +29,11 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.genomics.v1.StreamReadsRequest;
 import com.google.genomics.v1.StreamVariantsRequest;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * A Contig is a contiguous region of the genome.
@@ -99,7 +99,7 @@ public class Contig implements Serializable {
   // the ShardUtils methods should be used to ensure that shards are shuffled all together before
   // being returned to clients.
   List<Contig> getShards(long numberOfBasesPerShard) {
-    double shardCount = Math.ceil(end - start) / numberOfBasesPerShard;
+    double shardCount = (end - start) / (double) numberOfBasesPerShard;
     List<Contig> shards = Lists.newArrayList();
     for (int i = 0; i < shardCount; i++) {
       long shardStart = start + (i * numberOfBasesPerShard);

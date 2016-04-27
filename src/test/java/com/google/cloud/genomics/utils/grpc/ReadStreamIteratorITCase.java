@@ -18,15 +18,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import java.io.IOException;
-import java.security.GeneralSecurityException;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-
-import org.junit.Ignore;
-import org.junit.Test;
-
 import com.google.cloud.genomics.utils.IntegrationTestHelper;
 import com.google.cloud.genomics.utils.ShardBoundary;
 import com.google.cloud.genomics.utils.ShardUtils;
@@ -35,23 +26,31 @@ import com.google.genomics.v1.Read;
 import com.google.genomics.v1.StreamReadsRequest;
 import com.google.genomics.v1.StreamReadsResponse;
 
+import org.junit.Ignore;
+import org.junit.Test;
+
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
 
 public class ReadStreamIteratorITCase {
   // This small interval overlaps the Klotho SNP.
   static final String REFERENCES = "chr13:33628134:33628138";
-  
+
   @Test
   public void testBasic() throws IOException, GeneralSecurityException {
     ImmutableList<StreamReadsRequest> requests =
         ShardUtils.getReadRequests(Collections.singletonList(IntegrationTestHelper.PLATINUM_GENOMES_READGROUPSETS[0]),
         REFERENCES, 100L);
     assertEquals(1, requests.size());
-    
+
     Iterator<StreamReadsResponse> iter =
         ReadStreamIterator.enforceShardBoundary(IntegrationTestHelper.getAuthFromApplicationDefaultCredential(),
-            requests.get(0), 
+            requests.get(0),
             ShardBoundary.Requirement.OVERLAPS, null);
-    
+
     assertTrue(iter.hasNext());
     StreamReadsResponse readResponse = iter.next();
     assertEquals(57, readResponse.getAlignmentsList().size());
@@ -60,7 +59,7 @@ public class ReadStreamIteratorITCase {
     iter = ReadStreamIterator.enforceShardBoundary(IntegrationTestHelper.getAuthFromApplicationDefaultCredential(),
         requests.get(0),
         ShardBoundary.Requirement.STRICT, null);
-    
+
     assertTrue(iter.hasNext());
     readResponse = iter.next();
     assertEquals(2, readResponse.getAlignmentsList().size());
@@ -75,18 +74,18 @@ public class ReadStreamIteratorITCase {
         ShardUtils.getReadRequests(Collections.singletonList(IntegrationTestHelper.PLATINUM_GENOMES_READGROUPSETS[0]),
         REFERENCES, 100L);
     assertEquals(1, requests.size());
-    
+
     Iterator<StreamReadsResponse> iter =
         ReadStreamIterator.enforceShardBoundary(IntegrationTestHelper.getAuthFromApplicationDefaultCredential(),
-            requests.get(0), 
+            requests.get(0),
             ShardBoundary.Requirement.STRICT, "reads(alignments)");
-    
+
     assertTrue(iter.hasNext());
     StreamReadsResponse readResponse = iter.next();
     List<Read> reads = readResponse.getAlignmentsList();
     assertEquals(2, reads.size());
     assertFalse(iter.hasNext());
-    
+
     assertEquals("chr13", reads.get(0).getAlignment().getPosition().getReferenceName());
     assertEquals(33628134, reads.get(0).getAlignment().getPosition().getPosition());
     assertNull(reads.get(0).getAlignedSequence());

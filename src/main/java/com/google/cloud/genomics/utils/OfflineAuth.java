@@ -15,10 +15,6 @@
  */
 package com.google.cloud.genomics.utils;
 
-import java.io.IOException;
-import java.io.Serializable;
-import java.security.GeneralSecurityException;
-
 import com.google.api.client.auth.oauth2.ClientParametersAuthentication;
 import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
@@ -29,13 +25,17 @@ import com.google.auth.oauth2.GoogleCredentials;
 import com.google.auth.oauth2.UserCredentials;
 import com.google.common.base.Preconditions;
 
+import java.io.IOException;
+import java.io.Serializable;
+import java.security.GeneralSecurityException;
+
 /**
  * The purpose of the OfflineAuth class is to encapsulate an apiKey or stored user credential
  * for offline use in pipeline systems such as Dataflow or Spark.
- * 
- * If the OfflineAuth object contains neither an apiKey or user credential, it will fall back to 
+ *
+ * If the OfflineAuth object contains neither an apiKey or user credential, it will fall back to
  * the Application Default Credential.
- * 
+ *
  * For more information about auth, please see:
  * <ul>
  *    <li>https://developers.google.com/identity/protocols/application-default-credentials
@@ -51,7 +51,7 @@ public class OfflineAuth implements Serializable {
   private String clientId;
   private String clientSecret;
   private String refreshToken;
-  
+
   /**
    * Creates an empty offline-friendly auth object.
    *
@@ -67,7 +67,7 @@ public class OfflineAuth implements Serializable {
    * Use this method when your application has already performed the oauth
    * flow and needs to store and use the credential later in an offline
    * manner (e.g., via Google Cloud Dataflow).
-   * 
+   *
    * @param credential The credential to be used for requests.
    */
   public OfflineAuth(Credential credential) {
@@ -97,7 +97,7 @@ public class OfflineAuth implements Serializable {
   public boolean hasApiKey() {
     return null != apiKey;
   }
-  
+
   /**
    * @return the apiKey
    */
@@ -132,10 +132,10 @@ public class OfflineAuth implements Serializable {
   public String getRefreshToken() {
     return refreshToken;
   }
-  
+
   /**
    * Return the stored user credential, if applicable, or fall back to the Application Default Credential.
-   * 
+   *
    * @return The com.google.api.client.auth.oauth2.Credential object.
    */
   public Credential getCredential() {
@@ -156,12 +156,12 @@ public class OfflineAuth implements Serializable {
     }
     return CredentialFactory.getApplicationDefaultCredential();
   }
-  
+
   /**
    * Return the stored user credentials, if applicable, or fall back to the Application Default Credentials.
-   * 
+   *
    * Specifically, gRPC uses the new Google OAuth library.  See https://github.com/google/google-auth-library-java
-   * 
+   *
    * @return The com.google.auth.Credentials object.
    */
   public GoogleCredentials getCredentials() {

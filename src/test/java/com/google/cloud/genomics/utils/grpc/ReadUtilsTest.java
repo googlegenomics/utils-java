@@ -20,11 +20,11 @@ import static org.junit.Assert.assertEquals;
 import com.google.common.collect.Lists;
 import com.google.genomics.v1.CigarUnit;
 import com.google.genomics.v1.CigarUnit.Operation;
-import com.google.protobuf.ListValue;
-import com.google.protobuf.Value;
 import com.google.genomics.v1.LinearAlignment;
 import com.google.genomics.v1.Position;
 import com.google.genomics.v1.Read;
+import com.google.protobuf.ListValue;
+import com.google.protobuf.Value;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -140,7 +140,7 @@ public class ReadUtilsTest {
     }
     assertEquals(19, numReads);//sanity check to make sure we actually read the file
   }
-  
+
   private void testGetReferenceSequenceHelper(final String seq, final String cigar, final String md,
       final String expectedReference) throws IOException {
     LinearAlignment.Builder alignment = LinearAlignment.newBuilder();
