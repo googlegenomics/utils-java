@@ -13,8 +13,8 @@
  */
 package com.google.cloud.genomics.utils;
 
-import com.google.api.services.genomics.model.Call;
 import com.google.api.services.genomics.model.Variant;
+import com.google.api.services.genomics.model.VariantCall;
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
@@ -101,10 +101,10 @@ public class VariantUtils {
   /**
    * Comparator for sorting calls by call set name.
    */
-  public static final Comparator<Call> CALL_COMPARATOR = Ordering.natural().onResultOf(
-      new Function<Call, String>() {
+  public static final Comparator<VariantCall> CALL_COMPARATOR = Ordering.natural().onResultOf(
+      new Function<VariantCall, String>() {
         @Override
-        public String apply(Call call) {
+        public String apply(VariantCall call) {
           return call.getCallSetName();
         }
       });

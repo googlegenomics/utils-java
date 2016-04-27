@@ -49,7 +49,7 @@ public class GenomicsUtils {
     Genomics genomics = GenomicsFactory.builder().build().fromOfflineAuth(auth);
     Iterable<ReadGroupSet> rgs = Paginator.ReadGroupSets.create(genomics)
         .search(new SearchReadGroupSetsRequest().setDatasetIds(Lists.newArrayList(datasetId)),
-            "readGroupSets/id,nextPageToken");
+            "readGroupSets(id),nextPageToken");
     for (ReadGroupSet r : rgs) {
       output.add(r.getId());
     }
@@ -127,7 +127,7 @@ public class GenomicsUtils {
     Genomics genomics = GenomicsFactory.builder().build().fromOfflineAuth(auth);
     Iterable<VariantSet> vs = Paginator.Variantsets.create(genomics)
         .search(new SearchVariantSetsRequest().setDatasetIds(Lists.newArrayList(datasetId)),
-            "variantSets/id,nextPageToken");
+            "variantSets(id),nextPageToken");
     for (VariantSet v : vs) {
       output.add(v.getId());
     }
@@ -151,7 +151,7 @@ public class GenomicsUtils {
     Genomics genomics = GenomicsFactory.builder().build().fromOfflineAuth(auth);
     Iterable<CallSet> cs = Paginator.Callsets.create(genomics)
         .search(new SearchCallSetsRequest().setVariantSetIds(Lists.newArrayList(variantSetId)),
-            "callSets/name,nextPageToken");
+            "callSets(name),nextPageToken");
     for (CallSet c : cs) {
       output.add(c.getName());
     }

@@ -14,16 +14,18 @@
 package com.google.cloud.genomics.utils;
 
 import com.google.api.services.genomics.Genomics;
+import com.google.api.services.genomics.Genomics.Annotationsets;
 import com.google.api.services.genomics.GenomicsRequest;
 import com.google.api.services.genomics.model.Annotation;
 import com.google.api.services.genomics.model.AnnotationSet;
 import com.google.api.services.genomics.model.CallSet;
 import com.google.api.services.genomics.model.CoverageBucket;
 import com.google.api.services.genomics.model.Dataset;
-import com.google.api.services.genomics.model.Job;
 import com.google.api.services.genomics.model.ListBasesResponse;
 import com.google.api.services.genomics.model.ListCoverageBucketsResponse;
 import com.google.api.services.genomics.model.ListDatasetsResponse;
+import com.google.api.services.genomics.model.ListOperationsResponse;
+import com.google.api.services.genomics.model.Operation;
 import com.google.api.services.genomics.model.Read;
 import com.google.api.services.genomics.model.ReadGroupSet;
 import com.google.api.services.genomics.model.Reference;
@@ -34,8 +36,6 @@ import com.google.api.services.genomics.model.SearchAnnotationsRequest;
 import com.google.api.services.genomics.model.SearchAnnotationsResponse;
 import com.google.api.services.genomics.model.SearchCallSetsRequest;
 import com.google.api.services.genomics.model.SearchCallSetsResponse;
-import com.google.api.services.genomics.model.SearchJobsRequest;
-import com.google.api.services.genomics.model.SearchJobsResponse;
 import com.google.api.services.genomics.model.SearchReadGroupSetsRequest;
 import com.google.api.services.genomics.model.SearchReadGroupSetsResponse;
 import com.google.api.services.genomics.model.SearchReadsRequest;
@@ -55,6 +55,7 @@ import com.google.common.base.Joiner;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;
+import com.google.common.base.Strings;
 import com.google.common.collect.AbstractSequentialIterator;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableMap;
@@ -184,7 +185,7 @@ public abstract class Paginator<ApiT, RequestT, RequestSubT extends GenomicsRequ
    */
   public static class Datasets extends Paginator<
       Genomics.Datasets,
-      Long,
+      String,
       Genomics.Datasets.List,
       ListDatasetsResponse,
       Dataset> {
@@ -203,9 +204,9 @@ public abstract class Paginator<ApiT, RequestT, RequestSubT extends GenomicsRequ
       super(genomics);
     }
 
-    @Override Genomics.Datasets.List createSearch(Genomics.Datasets api, Long request,
+    @Override Genomics.Datasets.List createSearch(Genomics.Datasets api, String request,
         Optional<String> pageToken) throws IOException {
-      final Genomics.Datasets.List list = api.list().setProjectNumber(request);
+      final Genomics.Datasets.List list = api.list().setProjectId(request);
       return pageToken
           .transform(
               new Function<String, Genomics.Datasets.List>() {
@@ -253,14 +254,14 @@ public abstract class Paginator<ApiT, RequestT, RequestSubT extends GenomicsRequ
   }
 
   /**
-   * A {@link Paginator} for the {@code searchJobs()} API.
+   * A {@link Paginator} for the {@code Genomics.Operations.List()} API.
    */
-  public static class Jobs extends Paginator<
-      Genomics.Jobs,
-      SearchJobsRequest,
-      Genomics.Jobs.Search,
-      SearchJobsResponse,
-      Job> {
+  public static class Operations extends Paginator<
+      Genomics.Operations,
+      String,
+      Genomics.Operations.List,
+      ListOperationsResponse,
+      Operation> {
 
     /**
      * Static factory method.
@@ -268,36 +269,30 @@ public abstract class Paginator<ApiT, RequestT, RequestSubT extends GenomicsRequ
      * @param genomics The {@link Genomics} stub.
      * @return the new paginator.
      */
-    public static Jobs create(Genomics genomics) {
-      return new Jobs(genomics);
+    public static Operations create(Genomics genomics) {
+      return new Operations(genomics);
     }
 
-    private Jobs(Genomics genomics) {
+    private Operations(Genomics genomics) {
       super(genomics);
     }
 
-    @Override Genomics.Jobs.Search createSearch(Genomics.Jobs api, final SearchJobsRequest request,
+    @Override Genomics.Operations.List createSearch(Genomics.Operations api, final String request,
         Optional<String> pageToken) throws IOException {
-      return api.search(pageToken
-          .transform(
-              new Function<String, SearchJobsRequest>() {
-                @Override public SearchJobsRequest apply(String token) {
-                  return request.setPageToken(token);
-                }
-              })
-          .or(request));
+      return pageToken.isPresent() ? api.list(request).setPageToken(pageToken.get())
+          : api.list(request);
     }
 
-    @Override Genomics.Jobs getApi(Genomics genomics) {
-      return genomics.jobs();
+    @Override Genomics.Operations getApi(Genomics genomics) {
+      return genomics.operations();
     }
 
-    @Override String getNextPageToken(SearchJobsResponse response) {
+    @Override String getNextPageToken(ListOperationsResponse response) {
       return response.getNextPageToken();
     }
 
-    @Override Iterable<Job> getResponses(SearchJobsResponse response) {
-      return response.getJobs();
+    @Override Iterable<Operation> getResponses(ListOperationsResponse response) {
+      return response.getOperations();
     }
   }
 
@@ -456,7 +451,7 @@ public abstract class Paginator<ApiT, RequestT, RequestSubT extends GenomicsRequ
         shardPredicate = new Predicate<Annotation>() {
           @Override
           public boolean apply(Annotation anno) {
-            return anno.getPosition().getStart() >= request.getRange().getStart();
+            return anno.getStart() >= request.getStart();
           }
         };
       }
@@ -499,9 +494,9 @@ public abstract class Paginator<ApiT, RequestT, RequestSubT extends GenomicsRequ
    * A {@link Paginator} for the {@code searchAnnotationSets()} API.
    */
   public static class AnnotationSets extends Paginator<
-      Genomics.AnnotationSets,
+      Annotationsets,
       SearchAnnotationSetsRequest,
-      Genomics.AnnotationSets.Search,
+      Annotationsets.Search,
       SearchAnnotationSetsResponse,
       AnnotationSet> {
 
@@ -517,7 +512,7 @@ public abstract class Paginator<ApiT, RequestT, RequestSubT extends GenomicsRequ
       super(genomics);
     }
 
-    @Override Genomics.AnnotationSets.Search createSearch(Genomics.AnnotationSets api,
+    @Override Annotationsets.Search createSearch(Annotationsets api,
         final SearchAnnotationSetsRequest request, Optional<String> pageToken) throws IOException {
       return api.search(pageToken
           .transform(
@@ -529,8 +524,8 @@ public abstract class Paginator<ApiT, RequestT, RequestSubT extends GenomicsRequ
           .or(request));
     }
 
-    @Override Genomics.AnnotationSets getApi(Genomics genomics) {
-      return genomics.annotationSets();
+    @Override Annotationsets getApi(Genomics genomics) {
+      return genomics.annotationsets();
     }
 
     @Override String getNextPageToken(SearchAnnotationSetsResponse response) {
@@ -1052,7 +1047,7 @@ public abstract class Paginator<ApiT, RequestT, RequestSubT extends GenomicsRequ
                                         initializer.initialize(search);
                                         ResponseT response = retryPolicy.execute(search);
                                         Optional<String> pageToken =
-                                            Optional.fromNullable(getNextPageToken(response));
+                                            Optional.fromNullable(Strings.emptyToNull(getNextPageToken(response)));
                                         return new Pair(
                                             pageToken.isPresent()
                                                 ? createSearch(api, request, pageToken)

@@ -19,9 +19,9 @@ import com.google.api.client.util.Maps;
 import com.google.api.services.genomics.model.CigarUnit;
 import com.google.api.services.genomics.model.LinearAlignment;
 import com.google.api.services.genomics.model.Position;
+import com.google.api.services.genomics.model.Program;
 import com.google.api.services.genomics.model.Read;
 import com.google.api.services.genomics.model.ReadGroup;
-import com.google.api.services.genomics.model.ReadGroupProgram;
 import com.google.api.services.genomics.model.ReadGroupSet;
 import com.google.api.services.genomics.model.Reference;
 import com.google.common.base.Function;
@@ -242,7 +242,7 @@ public class ReadUtils {
       read.setAlignedQuality(readBaseQualities);
     }
 
-    Map<String, List<String>> attributes = Maps.newHashMap();
+    Map<String, List<Object>> attributes = Maps.newHashMap();
     for( SAMRecord.SAMTagAndValue tagAndValue: record.getAttributes()) {
       String s = tagAndValue.value.toString();
       if (tagAndValue.value instanceof byte[]) {
@@ -251,7 +251,7 @@ public class ReadUtils {
         // it produces garbage. The solution to create a string directly.
         s = new String(((byte[]) tagAndValue.value));
       }
-      attributes.put(tagAndValue.tag, Lists.newArrayList(s));
+      attributes.put(tagAndValue.tag, Lists.newArrayList((Object) s));
     }
     read.setInfo(attributes);
 
@@ -347,12 +347,12 @@ public class ReadUtils {
       record.setBaseQualities(qualityArray);
     }
 
-    Map<String, List<String>> tags = read.getInfo();
+    Map<String, List<Object>> tags = read.getInfo();
     if (tags != null) {
       for (String tag : tags.keySet()) {
-        List<String> values = tags.get(tag);
+        List<Object> values = tags.get(tag);
         if (values != null) {
-          for (String value : values) {
+          for (Object value : values) {
             Object attrValue = textTagCodec.decode(
                     tag + ":" + getTagType(tag) + ":" + value)
                     .getValue();
@@ -446,7 +446,7 @@ public class ReadUtils {
           if (programs == null) {
             programs = Lists.newArrayList();
           }
-          for (ReadGroupProgram PG : RG.getPrograms()) {
+          for (Program PG : RG.getPrograms()) {
             SAMProgramRecord program = new SAMProgramRecord(PG.getId());
             if (PG.getCommandLine() != null) {
               program.setCommandLine(PG.getCommandLine());

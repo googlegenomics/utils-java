@@ -42,7 +42,7 @@ public class GenomicsFactoryTest {
 
     // TODO: Mock out more of this test if it becomes a problem
     try {
-      genomics.jobs().get("123").execute();
+      genomics.operations().get("operations/123").execute();
     } catch (GoogleJsonResponseException e) {
       // Expected
     }
@@ -69,14 +69,14 @@ public class GenomicsFactoryTest {
     assertEquals(0, genomicsFactory.initializedRequestsCount());
 
     try {
-      genomics.jobs().get("123").execute();
+      genomics.operations().get("operations/123").execute();
     } catch (GoogleJsonResponseException e) {
       // Expected
     }
     assertEquals(1, genomicsFactory.initializedRequestsCount());
 
     try {
-      genomics.jobs().get("123").execute();
+      genomics.operations().get("operations/123").execute();
     } catch (GoogleJsonResponseException e) {
       // Expected
     }
@@ -102,7 +102,7 @@ public class GenomicsFactoryTest {
 
     Genomics genomics = factory.fromApiKey("abc");
     try {
-      genomics.jobs().get("123").execute();
+      genomics.operations().get("operations/123").execute();
     } catch (GoogleJsonResponseException e) {
       // Expected
     }
