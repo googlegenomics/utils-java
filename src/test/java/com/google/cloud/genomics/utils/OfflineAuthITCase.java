@@ -15,12 +15,14 @@
  */
 package com.google.cloud.genomics.utils;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 import org.junit.Test;
 
 public class OfflineAuthITCase {
-  
+
   @Test
   public void testOfflineAuthFromApplicationDefaultCredential() throws Exception {
     OfflineAuth auth = new OfflineAuth();

@@ -60,7 +60,7 @@ public class ContigTest {
     assertEquals(5, shard2.start);
     assertEquals(9, shard2.end);
   }
-  
+
   @Test
   public void testGetVariantsRequest() throws Exception {
     SearchVariantsRequest request = new Contig("1", 0, 9).getSearchVariantsRequest("vs");

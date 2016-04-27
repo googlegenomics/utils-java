@@ -16,20 +16,6 @@
 package com.google.cloud.genomics.utils.grpc;
 
 import static org.junit.Assert.assertEquals;
-
-import com.google.common.collect.Lists;
-import com.google.genomics.v1.CigarUnit;
-import com.google.genomics.v1.CigarUnit.Operation;
-import com.google.protobuf.ListValue;
-import com.google.protobuf.Value;
-import com.google.genomics.v1.LinearAlignment;
-import com.google.genomics.v1.Position;
-import com.google.genomics.v1.Read;
-
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
-
 import htsjdk.samtools.Cigar;
 import htsjdk.samtools.CigarElement;
 import htsjdk.samtools.SAMFileHeader;
@@ -41,6 +27,19 @@ import htsjdk.samtools.TextCigarCodec;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
+
+import com.google.common.collect.Lists;
+import com.google.genomics.v1.CigarUnit;
+import com.google.genomics.v1.CigarUnit.Operation;
+import com.google.genomics.v1.LinearAlignment;
+import com.google.genomics.v1.Position;
+import com.google.genomics.v1.Read;
+import com.google.protobuf.ListValue;
+import com.google.protobuf.Value;
 
 @RunWith(JUnit4.class)
 public class ReadUtilsTest {
@@ -140,7 +139,7 @@ public class ReadUtilsTest {
     }
     assertEquals(19, numReads);//sanity check to make sure we actually read the file
   }
-  
+
   private void testGetReferenceSequenceHelper(final String seq, final String cigar, final String md,
       final String expectedReference) throws IOException {
     LinearAlignment.Builder alignment = LinearAlignment.newBuilder();

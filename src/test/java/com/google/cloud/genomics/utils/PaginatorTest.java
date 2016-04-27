@@ -15,6 +15,26 @@
  */
 package com.google.cloud.genomics.utils;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
+import java.util.Arrays;
+import java.util.List;
+
+import org.hamcrest.CoreMatchers;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.ExpectedException;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
+
 import com.google.api.services.genomics.Genomics;
 import com.google.api.services.genomics.model.LinearAlignment;
 import com.google.api.services.genomics.model.Position;
@@ -27,25 +47,7 @@ import com.google.api.services.genomics.model.SearchReadsResponse;
 import com.google.api.services.genomics.model.SearchVariantsRequest;
 import com.google.api.services.genomics.model.SearchVariantsResponse;
 import com.google.api.services.genomics.model.Variant;
-import com.google.cloud.genomics.utils.ShardBoundary.Requirement;
 import com.google.common.collect.Lists;
-
-import org.hamcrest.CoreMatchers;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
-
-import java.util.Arrays;
-import java.util.List;
-
-import static org.junit.Assert.*;
 
 @RunWith(JUnit4.class)
 public class PaginatorTest {
@@ -60,7 +62,7 @@ public class PaginatorTest {
 
   @Rule
   public ExpectedException thrown = ExpectedException.none();
-  
+
   @Before
   public void initMocks() {
     MockitoAnnotations.initMocks(this);
@@ -145,7 +147,7 @@ public class PaginatorTest {
     thrown.expect(IllegalArgumentException.class);
     paginator.search(new SearchReadGroupSetsRequest().setName("HG"), "readGroupSets(id,name)").iterator().next();
   }
-  
+
   @Test
   public void testVariantPagination() throws Exception {
 
@@ -182,7 +184,7 @@ public class PaginatorTest {
     try {
       filteredPaginator.search(request, "nextPageToken,variants(id,calls(genotype,callSetName))").iterator().next();
       fail("should have thrown an IllegalArgumentxception");
-    } catch (IllegalArgumentException e) {} 
+    } catch (IllegalArgumentException e) {}
 
     Paginator.Variants overlappingPaginator = Paginator.Variants.create(genomics, ShardBoundary.Requirement.OVERLAPS);
     List<Variant> overlappingVariants = Lists.newArrayList();
@@ -199,7 +201,7 @@ public class PaginatorTest {
     assertNotNull(overlappingPaginator.search(request, "id,nextPageToken,variants(start,id,calls(genotype,callSetName))").iterator().next());
     assertNotNull(overlappingPaginator.search(request, "variants(id,calls(genotype,callSetName)),nextPageToken").iterator().next());
   }
-    
+
   @Test
   public void testVariantPaginationEmptyShard() throws Exception {
 
@@ -212,13 +214,13 @@ public class PaginatorTest {
     Paginator.Variants filteredPaginator = Paginator.Variants.create(genomics, ShardBoundary.Requirement.STRICT);
     assertNotNull(filteredPaginator.search(request));
   }
-    
+
   static Read readHelper(int start, int end) {
     Position position = new Position().setPosition((long) start);
     LinearAlignment alignment = new LinearAlignment().setPosition(position);
     return new Read().setAlignment(alignment).setFragmentLength(end-start);
   }
-  
+
   @Test
   public void testReadPagination() throws Exception {
 
@@ -254,7 +256,7 @@ public class PaginatorTest {
     assertEquals(6, overlappingReads.size());
     assertThat(overlappingReads, CoreMatchers.hasItems(input));
   }
-  
+
   @Test
   public void testReadPaginationStrictShardPrecondition() throws Exception {
     SearchReadsRequest request = new SearchReadsRequest().setStart(1000L).setEnd(2000L);
@@ -264,7 +266,7 @@ public class PaginatorTest {
     thrown.expect(IllegalArgumentException.class);
     filteredPaginator.search(request, "nextPageToken,reads(id,alignment(cigar))").iterator().next();
   }
-  
+
   @Test
   public void testStrictReadPaginationNextPageTokenPrecondition() throws Exception {
     SearchReadsRequest request = new SearchReadsRequest().setStart(1000L).setEnd(2000L);

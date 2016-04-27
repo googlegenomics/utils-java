@@ -111,7 +111,7 @@ public class ShardUtilsTest {
 
     List<StreamVariantsRequest> requests = ShardUtils.getVariantRequests("variantset1", "chr1:0:150,chr2:25:250", 50);
     assertThat(requests, CoreMatchers.allOf(CoreMatchers.hasItems(EXPECTED_RESULT)));
-    
+
     // Call it a second time, expect the same set of shards but in a different order.
     List<StreamVariantsRequest> requests2 = ShardUtils.getVariantRequests("variantset1", "chr1:0:150,chr2:25:250", 50);
     assertThat(requests2, CoreMatchers.allOf(CoreMatchers.hasItems(EXPECTED_RESULT)));
@@ -160,7 +160,7 @@ public class ShardUtilsTest {
     List<StreamReadsRequest> requests = ShardUtils.getReadRequests(Arrays.asList("readset1", "readset2"),
         "chr1:0:150,chr2:25:250", 50);
     assertThat(requests, CoreMatchers.allOf(CoreMatchers.hasItems(EXPECTED_RESULT)));
-    
+
     // Call it a second time, expect the same set of shards but in a different order.
     List<StreamReadsRequest> requests2 = ShardUtils.getReadRequests(Arrays.asList("readset1", "readset2"),
         "chr1:0:150,chr2:25:250", 50);
@@ -169,7 +169,7 @@ public class ShardUtilsTest {
     // Lists have different orders for their elements.
     assertThat(requests, is(not(requests2)));
   }
-  
+
   @Test
   public void testSexChromosomeRegexp() {
     assertTrue(ShardUtils.SEX_CHROMOSOME_REGEXP.matcher("chrX").matches());

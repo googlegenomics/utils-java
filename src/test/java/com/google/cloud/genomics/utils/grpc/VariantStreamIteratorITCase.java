@@ -45,7 +45,7 @@ public class VariantStreamIteratorITCase {
 
     Iterator<StreamVariantsResponse> iter =
         VariantStreamIterator.enforceShardBoundary(IntegrationTestHelper.getAuthFromApplicationDefaultCredential(),
-            requests.get(0), 
+            requests.get(0),
             ShardBoundary.Requirement.OVERLAPS, null);
 
     assertTrue(iter.hasNext());
@@ -54,10 +54,10 @@ public class VariantStreamIteratorITCase {
     // This includes the klotho SNP and three non-variant segments which overlap it.
     assertEquals(4, variants.size());
     assertFalse(iter.hasNext());
-    
+
     iter =
         VariantStreamIterator.enforceShardBoundary(IntegrationTestHelper.getAuthFromApplicationDefaultCredential(),
-            requests.get(0), 
+            requests.get(0),
             ShardBoundary.Requirement.STRICT, null);
 
     assertTrue(iter.hasNext());
@@ -76,7 +76,7 @@ public class VariantStreamIteratorITCase {
 
     Iterator<StreamVariantsResponse> iter =
         VariantStreamIterator.enforceShardBoundary(IntegrationTestHelper.getAuthFromApplicationDefaultCredential(),
-            requests.get(0), 
+            requests.get(0),
             ShardBoundary.Requirement.OVERLAPS, null);
     assertFalse(iter.hasNext());
 
@@ -107,7 +107,7 @@ public class VariantStreamIteratorITCase {
     // This includes only the klotho SNP.
     assertEquals(1, variants.size());
     assertFalse(iter.hasNext());
-    
+
     assertEquals("chr13", variants.get(0).getReferenceName());
     assertEquals(33628137, variants.get(0).getStart());
     assertNull(variants.get(0).getReferenceBases());

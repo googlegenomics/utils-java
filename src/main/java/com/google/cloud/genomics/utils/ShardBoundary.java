@@ -13,11 +13,11 @@
  */
 package com.google.cloud.genomics.utils;
 
+import com.google.cloud.genomics.utils.grpc.VariantUtils;
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
 import com.google.genomics.v1.Read;
 import com.google.genomics.v1.Variant;
-import com.google.cloud.genomics.utils.grpc.VariantUtils;
 
 /**
  * By default cluster compute jobs working with sharded data from the Genomics API will
@@ -44,10 +44,10 @@ public class ShardBoundary {
    */
   NON_VARIANT_OVERLAPS
   }
- 
+
   /**
    * Predicate expressing the logic for which variants should and should not be included in the shard.
-   * 
+   *
    * @param start The start position of the shard.
    * @return Whether the variant would be included in a strict shard boundary.
    */
@@ -59,10 +59,10 @@ public class ShardBoundary {
       }
     };
   }
-  
+
   /**
    * Predicate expressing the logic for which reads should and should not be included in the shard.
-   * 
+   *
    * @param start The start position of the shard.
    * @return Whether the read would be included in a strict shard boundary.
    */
@@ -74,11 +74,11 @@ public class ShardBoundary {
       }
     };
   }
-  
+
   /**
    * Predicate expressing the logic for which variants and non-variant segments should and should
    * not be included in the shard.
-   * 
+   *
    * @param start The start position of the shard.
    * @return Whether the variant would be included in a non-variant overlaps shard boundary.
    */
