@@ -8,7 +8,7 @@
   <groupId>com.google.cloud.genomics</groupId>
   <artifactId>google-genomics-utils</artifactId>
   <packaging>jar</packaging>
-  <version>v1beta2-0.45-SNAPSHOT</version>
+  <version>v1-0.1-SNAPSHOT</version>
 
   <organization>
     <name>Google</name>
@@ -295,7 +295,7 @@
   <properties>
     <junit.version>4.11</junit.version>
     <google.api.version>1.19.0</google.api.version>
-    <google.api.genomics.version>v1beta2-rev25-1.19.1</google.api.genomics.version>
+    <google.api.genomics.version>v1-rev73-1.21.0</google.api.genomics.version>
     <io.grpc.version>0.13.2</io.grpc.version>
     <mockito.version>1.10.8</mockito.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

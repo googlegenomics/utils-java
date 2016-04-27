@@ -13,24 +13,24 @@
  */
 package com.google.cloud.genomics.utils;
 
-import com.google.api.services.genomics.model.Call;
 import com.google.api.services.genomics.model.Variant;
+import com.google.api.services.genomics.model.VariantCall;
 
 import java.util.Arrays;
 import java.util.List;
 
 public class TestHelper {
 
-  public static Call makeCall(String name, Integer... alleles) {
-    return new Call().setCallSetName(name).setGenotype(Arrays.asList(alleles));
+  public static VariantCall makeCall(String name, Integer... alleles) {
+    return new VariantCall().setCallSetName(name).setGenotype(Arrays.asList(alleles));
   }
 
-  public static Variant makeSimpleVariant(Call... calls) {
+  public static Variant makeSimpleVariant(VariantCall... calls) {
     return new Variant().setCalls(Arrays.asList(calls));
   }
 
   public static Variant makeVariant(String referenceName, long start, long end,
-      String referenceBases, List<String> alternateBases, Call... calls) {
+      String referenceBases, List<String> alternateBases, VariantCall... calls) {
     Variant variant =
         new Variant().setReferenceName(referenceName).setStart(start).setEnd(end)
             .setReferenceBases(referenceBases).setAlternateBases(alternateBases);
