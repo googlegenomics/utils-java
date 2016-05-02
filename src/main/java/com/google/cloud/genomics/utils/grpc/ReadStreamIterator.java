@@ -35,8 +35,6 @@ import java.util.List;
  *
  * Includes complex retry logic to upon failure resume the stream at the last known good start
  * position without returning duplicate data.
- *
- * TODO: - facilitate partial requests https://github.com/googlegenomics/utils-java/issues/48
  */
 public class ReadStreamIterator
     extends
@@ -48,15 +46,14 @@ public class ReadStreamIterator
    * @param auth The OfflineAuth to use for the request.
    * @param request The request for the shard of data.
    * @param shardBoundary The shard boundary semantics to enforce.
-   * @param fields Which fields to include in a partial response or null for all. NOT YET
-   *        IMPLEMENTED.
+   * @param fields Which fields to include in a partial response or null for all.
    * @throws IOException
    * @throws GeneralSecurityException
    */
   public static ReadStreamIterator enforceShardBoundary(OfflineAuth auth,
       StreamReadsRequest request, Requirement shardBoundary, String fields) throws IOException,
       GeneralSecurityException {
-    return ReadStreamIterator.enforceShardBoundary(GenomicsChannel.fromOfflineAuth(auth), request,
+    return ReadStreamIterator.enforceShardBoundary(GenomicsChannel.fromOfflineAuth(auth, fields), request,
         shardBoundary, fields);
   }
 
@@ -66,17 +63,15 @@ public class ReadStreamIterator
    * @param channel The ManagedChannel.
    * @param request The request for the shard of data.
    * @param shardBoundary The shard boundary semantics to enforce.
-   * @param fields Which fields to include in a partial response or null for all. NOT YET
-   *        IMPLEMENTED.
+   * @param fields Used to check whether the specified fields would meet the minimum required
+   *    fields for the shard boundary predicate, if applicable.
    */
   public static ReadStreamIterator enforceShardBoundary(ManagedChannel channel,
       StreamReadsRequest request, Requirement shardBoundary, String fields) {
     Predicate<Read> shardPredicate =
         (ShardBoundary.Requirement.STRICT == shardBoundary) ? ShardBoundary
-            .getStrictReadPredicate(request.getStart()) : null;
-    // TODO: Facilitate shard boundary predicate here by checking for minimum set of fields in
-    // partial request.
-    return new ReadStreamIterator(channel, request, fields, shardPredicate);
+            .getStrictReadPredicate(request.getStart(), fields) : null;
+    return new ReadStreamIterator(channel, request, shardPredicate);
   }
 
   /**
@@ -84,14 +79,12 @@ public class ReadStreamIterator
    *
    * @param channel The ManagedChannel.
    * @param request The request for the shard of data.
-   * @param fields Which fields to include in a partial response or null for all. NOT YET
-   *        IMPLEMENTED.
    * @param shardPredicate A predicate used to client-side filter results returned (e.g., enforce a
    *        shard boundary and/or limit to SNPs only) or null for no filtering.
    */
-  public ReadStreamIterator(ManagedChannel channel, StreamReadsRequest request, String fields,
+  public ReadStreamIterator(ManagedChannel channel, StreamReadsRequest request,
       Predicate<Read> shardPredicate) {
-    super(channel, request, fields, shardPredicate);
+    super(channel, request, shardPredicate);
   }
 
   @Override

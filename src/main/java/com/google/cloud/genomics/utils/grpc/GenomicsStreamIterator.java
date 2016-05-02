@@ -61,13 +61,11 @@ public abstract class GenomicsStreamIterator<RequestT, ResponseT, ItemT, StubT e
    *
    * @param channel The channel.
    * @param request The request for the shard of data.
-   * @param fields Which fields to include in a partial response or null for all. NOT YET
-   *        IMPLEMENTED.
    * @param shardPredicate A predicate used to client-side filter results returned (e.g., enforce a
    *        shard boundary and/or limit to SNPs only) or null for no filtering.
    */
 
-  protected GenomicsStreamIterator(ManagedChannel channel, RequestT request, String fields,
+  protected GenomicsStreamIterator(ManagedChannel channel, RequestT request,
       Predicate<ItemT> shardPredicate) {
     this.originalRequest = request;
     this.shardPredicate = shardPredicate;

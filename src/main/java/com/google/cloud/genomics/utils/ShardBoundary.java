@@ -13,11 +13,15 @@
  */
 package com.google.cloud.genomics.utils;
 
+import com.google.api.client.util.Strings;
 import com.google.cloud.genomics.utils.grpc.VariantUtils;
+import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
 import com.google.genomics.v1.Read;
 import com.google.genomics.v1.Variant;
+
+import java.util.regex.Pattern;
 
 /**
  * By default cluster compute jobs working with sharded data from the Genomics API will
@@ -45,13 +49,21 @@ public class ShardBoundary {
   NON_VARIANT_OVERLAPS
   }
 
+  private static final Pattern READ_FIELD_PATTERN = Pattern.compile(".*\\p{Punct}alignment\\p{Punct}.*");
+  private static final Pattern VARIANT_FIELD_PATTERN = Pattern.compile(".*\\p{Punct}start\\p{Punct}.*");
+
   /**
    * Predicate expressing the logic for which variants should and should not be included in the shard.
    *
    * @param start The start position of the shard.
    * @return Whether the variant would be included in a strict shard boundary.
    */
-  public static Predicate<Variant> getStrictVariantPredicate(final long start) {
+  public static Predicate<Variant> getStrictVariantPredicate(final long start, String fields) {
+    Preconditions
+    .checkArgument(Strings.isNullOrEmpty(fields)
+        || VARIANT_FIELD_PATTERN.matcher(fields).matches(),
+        "Insufficient fields requested in partial response. At a minimum "
+            + "include 'variants(start)' to enforce a strict shard boundary.");
     return new Predicate<Variant>() {
       @Override
       public boolean apply(Variant variant) {
@@ -66,7 +78,12 @@ public class ShardBoundary {
    * @param start The start position of the shard.
    * @return Whether the read would be included in a strict shard boundary.
    */
-  public static Predicate<Read> getStrictReadPredicate(final long start) {
+  public static Predicate<Read> getStrictReadPredicate(final long start, final String fields) {
+    Preconditions
+    .checkArgument(Strings.isNullOrEmpty(fields)
+        || READ_FIELD_PATTERN.matcher(fields).matches(),
+        "Insufficient fields requested in partial response. At a minimum "
+            + "include 'alignments(alignment)' to enforce a strict shard boundary.");
     return new Predicate<Read>() {
       @Override
       public boolean apply(Read read) {
@@ -82,7 +99,7 @@ public class ShardBoundary {
    * @param start The start position of the shard.
    * @return Whether the variant would be included in a non-variant overlaps shard boundary.
    */
-  public static Predicate<Variant> getNonVariantOverlapsPredicate(final long start) {
-    return Predicates.or(VariantUtils.IS_NON_VARIANT_SEGMENT, getStrictVariantPredicate(start));
+  public static Predicate<Variant> getNonVariantOverlapsPredicate(final long start, final String fields) {
+    return Predicates.or(VariantUtils.IS_NON_VARIANT_SEGMENT, getStrictVariantPredicate(start, fields));
   }
 }
