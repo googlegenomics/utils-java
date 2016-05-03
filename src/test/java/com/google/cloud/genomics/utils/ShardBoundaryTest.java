@@ -109,11 +109,15 @@ public class ShardBoundaryTest {
 
     Variant overlapStart = Variant.newBuilder().setReferenceBases("T").addAlternateBases("A").setStart(900L).build();
     Variant overlapStartNonVariant = Variant.newBuilder().setReferenceBases("T").setStart(900L).setEnd(1005L).build();
+    Variant overlapStartGatkNonVariant = Variant.newBuilder().setReferenceBases("T")
+        .addAlternateBases("A").addAlternateBases(VariantUtils.GATK_NON_VARIANT_SEGMENT_ALT)
+        .setStart(900L).setEnd(1005L).build();
 
     Predicate<Variant> shardPredicate = ShardBoundary.getNonVariantOverlapsPredicate(start, null);
 
     assertFalse(shardPredicate.apply(overlapStart));
     assertTrue(shardPredicate.apply(overlapStartNonVariant));
+    assertTrue(shardPredicate.apply(overlapStartGatkNonVariant));
   }
 
 }
