@@ -124,6 +124,16 @@
       <version>${google.api.version}</version>
     </dependency>
     <dependency>
+      <groupId>com.google.auth</groupId>
+      <artifactId>google-auth-library-credentials</artifactId>
+      <version>${google.auth.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.google.auth</groupId>
+      <artifactId>google-auth-library-oauth2-http</artifactId>
+      <version>${google.auth.version}</version>
+    </dependency>
+    <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <version>4.11</version>
@@ -294,7 +304,8 @@
 
   <properties>
     <junit.version>4.11</junit.version>
-    <google.api.version>1.19.0</google.api.version>
+    <google.api.version>1.22.0</google.api.version>
+    <google.auth.version>0.4.0</google.auth.version>
     <google.api.genomics.version>v1-rev73-1.21.0</google.api.genomics.version>
     <io.grpc.version>0.14.0</io.grpc.version>
     <mockito.version>1.10.8</mockito.version>
