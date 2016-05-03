@@ -66,9 +66,9 @@ public class GenomicsChannel {
   /**
    * Create a new gRPC channel to the Google Genomics API, using the provided credentials for auth.
    *
-   * @param creds the credential
-   * @param fields which fields to return in the partial response, or null for none.
-   * @return the ManagedChannel
+   * @param creds The credential.
+   * @param fields Which fields to return in the partial response, or null for none.
+   * @return The ManagedChannel.
    * @throws SSLException
    */
   public static ManagedChannel fromCreds(GoogleCredentials creds, String fields) throws SSLException {
@@ -78,8 +78,8 @@ public class GenomicsChannel {
     if (!Strings.isNullOrEmpty(fields)) {
       Metadata headers = new Metadata();
       Metadata.Key<String> partialResponseHeader =
-      Metadata.Key.of(PARTIAL_RESPONSE_HEADER, Metadata.ASCII_STRING_MARSHALLER);
-       headers.put(partialResponseHeader, fields);
+          Metadata.Key.of(PARTIAL_RESPONSE_HEADER, Metadata.ASCII_STRING_MARSHALLER);
+      headers.put(partialResponseHeader, fields);
       interceptors.add(MetadataUtils.newAttachHeadersInterceptor(headers));
     }
     return getGenomicsManagedChannel(interceptors);
@@ -89,7 +89,7 @@ public class GenomicsChannel {
    * Create a new gRPC channel to the Google Genomics API, using the application default credentials
    * for auth.
    *
-   * @return the ManagedChannel
+   * @return The ManagedChannel.
    * @throws SSLException
    * @throws IOException
    */
@@ -101,8 +101,8 @@ public class GenomicsChannel {
    * Create a new gRPC channel to the Google Genomics API, using the application default credentials
    * for auth.
    *
-   * @param fields which fields to return in the partial response, or null for none.
-   * @return the ManagedChannel
+   * @param fields Which fields to return in the partial response, or null for none.
+   * @return The ManagedChannel.
    * @throws SSLException
    * @throws IOException
    */
@@ -118,8 +118,8 @@ public class GenomicsChannel {
    *
    * https://developers.google.com/identity/protocols/application-default-credentials
    *
-   * @param auth the OfflineAuth object
-   * @return the ManagedChannel
+   * @param auth The OfflineAuth object.
+   * @return The ManagedChannel.
    * @throws IOException
    * @throws GeneralSecurityException
    */
@@ -129,16 +129,16 @@ public class GenomicsChannel {
   }
 
   /**
-   * Create a new gRPC channel to the Google Genomics API, using OfflineAuth or the application
-   * default credentials.
+   * Create a new gRPC channel to the Google Genomics API, using either OfflineAuth
+   *  or the application default credentials.
    *
-   * This library works with both the older and newer support for OAuth2 clients.
+   * This library will work with both the newer and older versions of OAuth2 client-side support.
    *
    * https://developers.google.com/identity/protocols/application-default-credentials
    *
-   * @param auth the OfflineAuth object
-   * @param fields which fields to return in the partial response, or null for none.
-   * @return the ManagedChannel
+   * @param auth The OfflineAuth object.
+   * @param fields Which fields to return in the partial response, or null for none.
+   * @return The ManagedChannel.
    * @throws IOException
    * @throws GeneralSecurityException
    */

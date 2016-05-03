@@ -33,8 +33,9 @@ import java.util.List;
 /**
  * An iterator for streaming genomic reads via gRPC with shard boundary semantics.
  *
- * Includes complex retry logic to upon failure resume the stream at the last known good start
- * position without returning duplicate data.
+ * This function integrates complex retry logic, which upon encountering a failure
+ * will resume the stream at the last known valid start position, skipping over any
+ * data that was already returned to the client prior to the failure.
  */
 public class ReadStreamIterator
     extends
