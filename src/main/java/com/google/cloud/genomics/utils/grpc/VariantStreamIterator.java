@@ -33,10 +33,9 @@ import java.util.List;
 /**
  * An iterator for streaming genomic variants via gRPC with shard boundary semantics.
  *
- * Includes complex retry logic to upon failure resume the stream at the last known good start
- * position without returning duplicate data.
- *
- * TODO: - facilitate partial requests https://github.com/googlegenomics/utils-java/issues/48
+ * This function integrates complex retry logic, which upon encountering a failure
+ * will resume the stream at the last known valid start position, skipping over any
+ * data that was already returned to the client prior to the failure.
  */
 public class VariantStreamIterator
     extends
@@ -48,15 +47,14 @@ public class VariantStreamIterator
    * @param auth The OfflineAuth to use for the request.
    * @param request The request for the shard of data.
    * @param shardBoundary The shard boundary semantics to enforce.
-   * @param fields Which fields to include in a partial response or null for all. NOT YET
-   *        IMPLEMENTED.
+   * @param fields Which fields to include in a partial response or null for all.
    * @throws IOException
    * @throws GeneralSecurityException
    */
   public static VariantStreamIterator enforceShardBoundary(OfflineAuth auth,
       StreamVariantsRequest request, Requirement shardBoundary, String fields) throws IOException,
       GeneralSecurityException {
-    return VariantStreamIterator.enforceShardBoundary(GenomicsChannel.fromOfflineAuth(auth),
+    return VariantStreamIterator.enforceShardBoundary(GenomicsChannel.fromOfflineAuth(auth, fields),
         request, shardBoundary, fields);
   }
 
@@ -66,23 +64,21 @@ public class VariantStreamIterator
    * @param channel The ManagedChannel.
    * @param request The request for the shard of data.
    * @param shardBoundary The shard boundary semantics to enforce.
-   * @param fields Which fields to include in a partial response or null for all. NOT YET
-   *        IMPLEMENTED.
+   * @param fields Used to check whether the specified fields would meet the minimum required
+   *    fields for the shard boundary predicate, if applicable.
    */
   public static VariantStreamIterator enforceShardBoundary(ManagedChannel channel,
       StreamVariantsRequest request, Requirement shardBoundary, String fields) {
     Predicate<Variant> shardPredicate;
     if(ShardBoundary.Requirement.STRICT == shardBoundary) {
-      shardPredicate = ShardBoundary.getStrictVariantPredicate(request.getStart());
+      shardPredicate = ShardBoundary.getStrictVariantPredicate(request.getStart(), fields);
     } else if(ShardBoundary.Requirement.NON_VARIANT_OVERLAPS == shardBoundary) {
-      shardPredicate = ShardBoundary.getNonVariantOverlapsPredicate(request.getStart());
+      shardPredicate = ShardBoundary.getNonVariantOverlapsPredicate(request.getStart(), fields);
     } else {
       shardPredicate = null;
     }
 
-    // TODO: Facilitate shard boundary predicate here by checking for minimum set of fields in
-    // partial request.
-    return new VariantStreamIterator(channel, request, fields, shardPredicate);
+    return new VariantStreamIterator(channel, request, shardPredicate);
   }
 
   /**
@@ -90,14 +86,12 @@ public class VariantStreamIterator
    *
    * @param channel The ManagedChannel.
    * @param request The request for the shard of data.
-   * @param fields Which fields to include in a partial response or null for all. NOT YET
-   *        IMPLEMENTED.
    * @param shardPredicate A predicate used to client-side filter results returned (e.g., enforce a
    *        shard boundary and/or limit to SNPs only) or null for no filtering.
    */
   public VariantStreamIterator(ManagedChannel channel, StreamVariantsRequest request,
-      String fields, Predicate<Variant> shardPredicate) {
-    super(channel, request, fields, shardPredicate);
+      Predicate<Variant> shardPredicate) {
+    super(channel, request, shardPredicate);
   }
 
   @Override

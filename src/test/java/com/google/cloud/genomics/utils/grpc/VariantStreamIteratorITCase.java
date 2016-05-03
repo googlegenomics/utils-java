@@ -13,21 +13,23 @@
  */
 package com.google.cloud.genomics.utils.grpc;
 
+import static org.hamcrest.Matchers.containsString;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import com.google.cloud.genomics.utils.IntegrationTestHelper;
 import com.google.cloud.genomics.utils.ShardBoundary;
 import com.google.cloud.genomics.utils.ShardUtils;
+import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.genomics.v1.StreamVariantsRequest;
 import com.google.genomics.v1.StreamVariantsResponse;
 import com.google.genomics.v1.Variant;
 
-import org.junit.Ignore;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
@@ -35,6 +37,8 @@ import java.util.Iterator;
 import java.util.List;
 
 public class VariantStreamIteratorITCase {
+  @Rule
+  public ExpectedException thrown = ExpectedException.none();
 
   @Test
   public void testBasic() throws IOException, GeneralSecurityException {
@@ -88,8 +92,6 @@ public class VariantStreamIteratorITCase {
   }
 
   @Test
-  @Ignore
-  // TODO https://github.com/googlegenomics/utils-java/issues/48
   public void testPartialResponses() throws IOException, GeneralSecurityException {
     ImmutableList<StreamVariantsRequest> requests =
         ShardUtils.getVariantRequests(IntegrationTestHelper.PLATINUM_GENOMES_VARIANTSET,
@@ -110,6 +112,23 @@ public class VariantStreamIteratorITCase {
 
     assertEquals("chr13", variants.get(0).getReferenceName());
     assertEquals(33628137, variants.get(0).getStart());
-    assertNull(variants.get(0).getReferenceBases());
+    assertTrue(Strings.isNullOrEmpty(variants.get(0).getReferenceBases()));
+  }
+
+  @Test
+  public void testPartialResponsesInsufficientFields() throws IOException, GeneralSecurityException {
+    thrown.expect(IllegalArgumentException.class);
+    thrown.expectMessage(containsString("Insufficient fields requested in partial response. "
+        + "At a minimum include 'variants(start)' to enforce a strict shard boundary."));
+
+    ImmutableList<StreamVariantsRequest> requests =
+        ShardUtils.getVariantRequests(IntegrationTestHelper.PLATINUM_GENOMES_VARIANTSET,
+            IntegrationTestHelper.PLATINUM_GENOMES_KLOTHO_REFERENCES, 100L);
+    assertEquals(1, requests.size());
+
+    Iterator<StreamVariantsResponse> iter =
+        VariantStreamIterator.enforceShardBoundary(IntegrationTestHelper.getAuthFromApplicationDefaultCredential(),
+            requests.get(0),
+            ShardBoundary.Requirement.STRICT, "variants(reference_bases)");
   }
 }

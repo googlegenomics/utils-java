@@ -13,6 +13,7 @@
  */
 package com.google.cloud.genomics.utils;
 
+import static org.hamcrest.Matchers.containsString;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
@@ -27,12 +28,16 @@ import com.google.genomics.v1.Read;
 import com.google.genomics.v1.Variant;
 
 import org.hamcrest.CoreMatchers;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 import java.util.Arrays;
 import java.util.List;
 
 public class ShardBoundaryTest {
+  @Rule
+  public ExpectedException thrown = ExpectedException.none();
 
   @Test
   public void testGetStrictVariantPredicate() {
@@ -48,11 +53,19 @@ public class ShardBoundaryTest {
     Variant[] variants = new Variant[] { overlapStartWithinExtent, overlapStartExtent, atStartWithinExtent,
         atStartOverlapExtent, beyondStartWithinExtent, beyondOverlapExtent };
 
-    Predicate<Variant> shardPredicate = ShardBoundary.getStrictVariantPredicate(start);
+    Predicate<Variant> shardPredicate = ShardBoundary.getStrictVariantPredicate(start, null);
     List<Variant> filteredVariants = Lists.newArrayList(Iterables.filter(Arrays.asList(variants), shardPredicate));
     assertEquals(4, filteredVariants.size());
     assertThat(filteredVariants, CoreMatchers.allOf(CoreMatchers.hasItems(atStartWithinExtent,
         atStartOverlapExtent, beyondStartWithinExtent, beyondOverlapExtent)));
+  }
+
+  @Test
+  public void testGetStrictVariantPredicateInsufficientFields() {
+    thrown.expect(IllegalArgumentException.class);
+    thrown.expectMessage(containsString("Insufficient fields requested in partial response. "
+        + "At a minimum include 'variants(start)' to enforce a strict shard boundary."));
+    ShardBoundary.getStrictVariantPredicate(123, "variants(alternate_bases)");
   }
 
   static Read readHelper(int start, int end) {
@@ -75,11 +88,19 @@ public class ShardBoundaryTest {
       Read[] reads = new Read[] { overlapStartWithinExtent, overlapStartExtent, atStartWithinExtent,
               atStartOverlapExtent, beyondStartWithinExtent, beyondOverlapExtent };
 
-      Predicate<Read> shardPredicate = ShardBoundary.getStrictReadPredicate(start);
+      Predicate<Read> shardPredicate = ShardBoundary.getStrictReadPredicate(start, null);
       List<Read> filteredReads = Lists.newArrayList(Iterables.filter(Arrays.asList(reads), shardPredicate));
       assertEquals(4, filteredReads.size());
       assertThat(filteredReads, CoreMatchers.allOf(CoreMatchers.hasItems(atStartWithinExtent,
           atStartOverlapExtent, beyondStartWithinExtent, beyondOverlapExtent)));
+  }
+
+  @Test
+  public void testGetStrictReadPredicateInsufficientFields() {
+    thrown.expect(IllegalArgumentException.class);
+    thrown.expectMessage(containsString("Insufficient fields requested in partial response. "
+        + "At a minimum include 'alignments(alignment)' to enforce a strict shard boundary."));
+    ShardBoundary.getStrictReadPredicate(123, "alignments(alignedSequence)");
   }
 
   @Test
@@ -88,11 +109,15 @@ public class ShardBoundaryTest {
 
     Variant overlapStart = Variant.newBuilder().setReferenceBases("T").addAlternateBases("A").setStart(900L).build();
     Variant overlapStartNonVariant = Variant.newBuilder().setReferenceBases("T").setStart(900L).setEnd(1005L).build();
+    Variant overlapStartGatkNonVariant = Variant.newBuilder().setReferenceBases("T")
+        .addAlternateBases("A").addAlternateBases(VariantUtils.GATK_NON_VARIANT_SEGMENT_ALT)
+        .setStart(900L).setEnd(1005L).build();
 
-    Predicate<Variant> shardPredicate = ShardBoundary.getNonVariantOverlapsPredicate(start);
+    Predicate<Variant> shardPredicate = ShardBoundary.getNonVariantOverlapsPredicate(start, null);
 
     assertFalse(shardPredicate.apply(overlapStart));
     assertTrue(shardPredicate.apply(overlapStartNonVariant));
+    assertTrue(shardPredicate.apply(overlapStartGatkNonVariant));
   }
 
 }

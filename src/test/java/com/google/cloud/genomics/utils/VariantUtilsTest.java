@@ -58,6 +58,8 @@ public class VariantUtilsTest {
         200001, "A", null, (VariantCall[]) null)));
     assertTrue(VariantUtils.IS_NON_VARIANT_SEGMENT.apply(TestHelper.makeVariant("chr7", 200000,
         200001, "A", Arrays.asList(VariantUtils.GATK_NON_VARIANT_SEGMENT_ALT), (VariantCall[]) null)));
+    assertTrue(VariantUtils.IS_NON_VARIANT_SEGMENT.apply(TestHelper.makeVariant("chr7", 200000,
+        200001, "A", Arrays.asList("T", VariantUtils.GATK_NON_VARIANT_SEGMENT_ALT), (VariantCall[]) null)));
   }
 
   @Test

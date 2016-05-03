@@ -82,6 +82,11 @@ public class VariantUtilsTest {
     assertTrue(VariantUtils.IS_NON_VARIANT_SEGMENT.apply(Variant.newBuilder()
         .setReferenceName("chr7").setStart(200000).setEnd(200001).setReferenceBases("A")
         .addAlternateBases(VariantUtils.GATK_NON_VARIANT_SEGMENT_ALT).build()));
+    assertTrue(VariantUtils.IS_NON_VARIANT_SEGMENT.apply(Variant.newBuilder()
+        .setReferenceName("chr7").setStart(200000).setEnd(200001).setReferenceBases("A")
+        .addAlternateBases("T")
+        .addAlternateBases(VariantUtils.GATK_NON_VARIANT_SEGMENT_ALT)
+        .build()));
   }
 
   @Test

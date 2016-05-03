@@ -13,21 +13,23 @@
  */
 package com.google.cloud.genomics.utils.grpc;
 
+import static org.hamcrest.Matchers.containsString;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import com.google.cloud.genomics.utils.IntegrationTestHelper;
 import com.google.cloud.genomics.utils.ShardBoundary;
 import com.google.cloud.genomics.utils.ShardUtils;
+import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.genomics.v1.Read;
 import com.google.genomics.v1.StreamReadsRequest;
 import com.google.genomics.v1.StreamReadsResponse;
 
-import org.junit.Ignore;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
@@ -38,6 +40,9 @@ import java.util.List;
 public class ReadStreamIteratorITCase {
   // This small interval overlaps the Klotho SNP.
   static final String REFERENCES = "chr13:33628134:33628138";
+
+  @Rule
+  public ExpectedException thrown = ExpectedException.none();
 
   @Test
   public void testBasic() throws IOException, GeneralSecurityException {
@@ -67,8 +72,6 @@ public class ReadStreamIteratorITCase {
   }
 
   @Test
-  @Ignore
-  // TODO https://github.com/googlegenomics/utils-java/issues/48
   public void testPartialResponses() throws IOException, GeneralSecurityException {
     ImmutableList<StreamReadsRequest> requests =
         ShardUtils.getReadRequests(Collections.singletonList(IntegrationTestHelper.PLATINUM_GENOMES_READGROUPSETS[0]),
@@ -78,7 +81,7 @@ public class ReadStreamIteratorITCase {
     Iterator<StreamReadsResponse> iter =
         ReadStreamIterator.enforceShardBoundary(IntegrationTestHelper.getAuthFromApplicationDefaultCredential(),
             requests.get(0),
-            ShardBoundary.Requirement.STRICT, "reads(alignments)");
+            ShardBoundary.Requirement.STRICT, "alignments(alignment)");
 
     assertTrue(iter.hasNext());
     StreamReadsResponse readResponse = iter.next();
@@ -88,7 +91,24 @@ public class ReadStreamIteratorITCase {
 
     assertEquals("chr13", reads.get(0).getAlignment().getPosition().getReferenceName());
     assertEquals(33628134, reads.get(0).getAlignment().getPosition().getPosition());
-    assertNull(reads.get(0).getAlignedSequence());
+    assertTrue(Strings.isNullOrEmpty(reads.get(0).getAlignedSequence()));
   }
 
+  @Test
+  public void testPartialResponsesInsufficientFields() throws IOException, GeneralSecurityException {
+    thrown.expect(IllegalArgumentException.class);
+    thrown.expectMessage(containsString("Insufficient fields requested in partial response. "
+        + "At a minimum include 'alignments(alignment)' to enforce a strict shard boundary."));
+
+    ImmutableList<StreamReadsRequest> requests =
+        ShardUtils.getReadRequests(Collections.singletonList(IntegrationTestHelper.PLATINUM_GENOMES_READGROUPSETS[0]),
+        REFERENCES, 100L);
+    assertEquals(1, requests.size());
+
+    Iterator<StreamReadsResponse> iter =
+        ReadStreamIterator.enforceShardBoundary(IntegrationTestHelper.getAuthFromApplicationDefaultCredential(),
+            requests.get(0),
+            ShardBoundary.Requirement.STRICT, "alignments(alignedSequence)");
+  }
 }
+

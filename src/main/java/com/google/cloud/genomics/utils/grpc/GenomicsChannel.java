@@ -16,19 +16,21 @@ package com.google.cloud.genomics.utils.grpc;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.genomics.utils.CredentialFactory;
 import com.google.cloud.genomics.utils.OfflineAuth;
+import com.google.common.base.Strings;
 
 import io.grpc.ClientInterceptor;
 import io.grpc.ManagedChannel;
+import io.grpc.Metadata;
 import io.grpc.auth.ClientAuthInterceptor;
 import io.grpc.netty.GrpcSslContexts;
 import io.grpc.netty.NegotiationType;
 import io.grpc.netty.NettyChannelBuilder;
+import io.grpc.stub.MetadataUtils;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Executors;
 
@@ -40,7 +42,6 @@ import javax.net.ssl.SSLException;
 public class GenomicsChannel {
   private static final String GENOMICS_ENDPOINT = "genomics.googleapis.com";
   private static final String GENOMICS_SCOPE = "https://www.googleapis.com/auth/genomics";
-  // TODO https://github.com/googlegenomics/utils-java/issues/48
   private static final String PARTIAL_RESPONSE_HEADER = "X-Goog-FieldMask";
 
   private static ManagedChannel getGenomicsManagedChannel(List<ClientInterceptor> interceptors)
@@ -58,34 +59,55 @@ public class GenomicsChannel {
     return NettyChannelBuilder.forAddress(GENOMICS_ENDPOINT, 443)
         .negotiationType(NegotiationType.TLS)
         .sslContext(GrpcSslContexts.forClient().ciphers(performantCiphers).build())
-        .intercept(interceptors).build();
+        .intercept(interceptors)
+        .build();
   }
 
   /**
    * Create a new gRPC channel to the Google Genomics API, using the provided credentials for auth.
    *
-   * @param creds the credential
-   * @return the ManagedChannel
+   * @param creds The credential.
+   * @param fields Which fields to return in the partial response, or null for none.
+   * @return The ManagedChannel.
    * @throws SSLException
    */
-  public static ManagedChannel fromCreds(GoogleCredentials creds) throws SSLException {
-    ClientInterceptor interceptor =
-        new ClientAuthInterceptor(creds.createScoped(Arrays.asList(GENOMICS_SCOPE)),
-            Executors.newSingleThreadExecutor());
-    // TODO https://github.com/googlegenomics/utils-java/issues/48
-    return getGenomicsManagedChannel(Collections.singletonList(interceptor));
+  public static ManagedChannel fromCreds(GoogleCredentials creds, String fields) throws SSLException {
+    List<ClientInterceptor> interceptors = new ArrayList();
+    interceptors.add(new ClientAuthInterceptor(creds.createScoped(Arrays.asList(GENOMICS_SCOPE)),
+        Executors.newSingleThreadExecutor()));
+    if (!Strings.isNullOrEmpty(fields)) {
+      Metadata headers = new Metadata();
+      Metadata.Key<String> partialResponseHeader =
+          Metadata.Key.of(PARTIAL_RESPONSE_HEADER, Metadata.ASCII_STRING_MARSHALLER);
+      headers.put(partialResponseHeader, fields);
+      interceptors.add(MetadataUtils.newAttachHeadersInterceptor(headers));
+    }
+    return getGenomicsManagedChannel(interceptors);
   }
 
   /**
    * Create a new gRPC channel to the Google Genomics API, using the application default credentials
    * for auth.
    *
-   * @return the ManagedChannel
+   * @return The ManagedChannel.
    * @throws SSLException
    * @throws IOException
    */
   public static ManagedChannel fromDefaultCreds() throws SSLException, IOException {
-    return fromCreds(CredentialFactory.getApplicationDefaultCredentials());
+    return fromDefaultCreds(null);
+  }
+
+  /**
+   * Create a new gRPC channel to the Google Genomics API, using the application default credentials
+   * for auth.
+   *
+   * @param fields Which fields to return in the partial response, or null for none.
+   * @return The ManagedChannel.
+   * @throws SSLException
+   * @throws IOException
+   */
+  public static ManagedChannel fromDefaultCreds(String fields) throws SSLException, IOException {
+    return fromCreds(CredentialFactory.getApplicationDefaultCredentials(), fields);
   }
 
   /**
@@ -96,13 +118,32 @@ public class GenomicsChannel {
    *
    * https://developers.google.com/identity/protocols/application-default-credentials
    *
-   * @param auth the OfflineAuth object
-   * @return the ManagedChannel
+   * @param auth The OfflineAuth object.
+   * @return The ManagedChannel.
    * @throws IOException
    * @throws GeneralSecurityException
    */
   public static ManagedChannel fromOfflineAuth(OfflineAuth auth)
       throws IOException, GeneralSecurityException {
-    return fromCreds(auth.getCredentials());
+    return fromOfflineAuth(auth, null);
+  }
+
+  /**
+   * Create a new gRPC channel to the Google Genomics API, using either OfflineAuth
+   *  or the application default credentials.
+   *
+   * This library will work with both the newer and older versions of OAuth2 client-side support.
+   *
+   * https://developers.google.com/identity/protocols/application-default-credentials
+   *
+   * @param auth The OfflineAuth object.
+   * @param fields Which fields to return in the partial response, or null for none.
+   * @return The ManagedChannel.
+   * @throws IOException
+   * @throws GeneralSecurityException
+   */
+  public static ManagedChannel fromOfflineAuth(OfflineAuth auth, String fields)
+      throws IOException, GeneralSecurityException {
+    return fromCreds(auth.getCredentials(), fields);
   }
 }

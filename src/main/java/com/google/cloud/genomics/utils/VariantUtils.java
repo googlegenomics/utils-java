@@ -86,7 +86,7 @@ public class VariantUtils {
       HAS_ALTERNATE, new Predicate<Variant>() {
         @Override
         public boolean apply(Variant variant) {
-          return Iterables.all(variant.getAlternateBases(),
+          return Iterables.any(variant.getAlternateBases(),
               Predicates.equalTo(GATK_NON_VARIANT_SEGMENT_ALT));
         }
       });
