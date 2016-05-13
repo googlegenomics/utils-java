@@ -20,7 +20,10 @@ import com.google.genomics.v1.Variant;
 import com.google.genomics.v1.VariantCall;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
+@RunWith(JUnit4.class)
 public class VariantUtilsTest {
 
   @Test

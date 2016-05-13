@@ -19,10 +19,13 @@ import static org.junit.Assert.assertTrue;
 import com.google.api.services.genomics.model.VariantCall;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
 import java.util.Arrays;
 import java.util.List;
 
+@RunWith(JUnit4.class)
 public class VariantUtilsTest {
 
   private List<String> emptyAlt = Arrays.asList();

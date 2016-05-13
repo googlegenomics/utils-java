@@ -26,10 +26,13 @@ import com.google.genomics.v1.StreamVariantsRequest;
 
 import org.hamcrest.CoreMatchers;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
 import java.util.Arrays;
 import java.util.List;
 
+@RunWith(JUnit4.class)
 public class ShardUtilsTest {
 
   @Test
