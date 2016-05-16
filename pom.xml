@@ -101,7 +101,7 @@
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
-      <version>18.0</version>
+      <version>${google.guava.version}</version>
     </dependency>
     <dependency>
       <groupId>com.google.api-client</groupId>
@@ -304,6 +304,18 @@
           </execution>
         </executions>
       </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>test-jar</id>
+              <goals>
+                <goal>test-jar</goal>
+              </goals>
+           </execution>
+        </executions>
+      </plugin>
     </plugins>
   </pluginManagement>
 
@@ -313,7 +325,8 @@
     <junit.version>4.11</junit.version>
     <google.api.version>1.22.0</google.api.version>
     <google.auth.version>0.4.0</google.auth.version>
-    <google.api.genomics.version>v1-rev73-1.21.0</google.api.genomics.version>
+    <google.api.genomics.version>v1-rev79-1.22.0</google.api.genomics.version>
+    <google.guava.version>19.0</google.guava.version>
     <io.grpc.version>0.14.0</io.grpc.version>
     <mockito.version>1.10.8</mockito.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
