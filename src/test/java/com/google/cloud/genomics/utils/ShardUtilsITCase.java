@@ -21,10 +21,13 @@ import com.google.genomics.v1.StreamVariantsRequest;
 
 import org.hamcrest.CoreMatchers;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 
+@RunWith(JUnit4.class)
 public class ShardUtilsITCase {
 
   @Test

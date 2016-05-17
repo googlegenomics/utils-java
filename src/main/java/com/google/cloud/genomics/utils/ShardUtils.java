@@ -15,8 +15,6 @@ package com.google.cloud.genomics.utils;
 
 import com.google.api.services.genomics.model.CoverageBucket;
 import com.google.api.services.genomics.model.ReferenceBound;
-import com.google.api.services.genomics.model.SearchReadsRequest;
-import com.google.api.services.genomics.model.SearchVariantsRequest;
 import com.google.common.base.Function;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
@@ -95,27 +93,6 @@ public class ShardUtils {
   }
 
   /**
-   * Constructs sharded SearchVariantsRequests for the specified contiguous region(s) of the genome.
-   *
-   * @param variantSetId The variantSetId.
-   * @param references The specified contiguous region(s) of the genome.
-   * @param numberOfBasesPerShard The maximum number of bases to include per shard.
-   * @return The shuffled list of sharded request objects.
-   */
-  @Deprecated // Remove this when fully migrated to gRPC.
-  public static ImmutableList<SearchVariantsRequest> getPaginatedVariantRequests(final String variantSetId,
-      String references, long numberOfBasesPerShard) {
-    Iterable<Contig> shards = getSpecifiedShards(references, numberOfBasesPerShard);
-    return FluentIterable.from(shards)
-        .transform(new Function<Contig, SearchVariantsRequest>() {
-          @Override
-          public SearchVariantsRequest apply(Contig shard) {
-            return shard.getSearchVariantsRequest(variantSetId);
-          }
-        }).toList();
-  }
-
-  /**
    * Constructs sharded StreamVariantsRequests for the all references in the variantSet.
    *
    * @param variantSetId The variantSetId.
@@ -136,32 +113,6 @@ public class ShardUtils {
           @Override
           public StreamVariantsRequest apply(Contig shard) {
             return shard.getStreamVariantsRequest(variantSetId);
-          }
-        }).toList();
-  }
-
-  /**
-   * Constructs sharded SearchVariantsRequests for the all references in the variantSet.
-   *
-   * @param variantSetId The variantSetId.
-   * @param sexChromosomeFilter An enum value indicating how sex chromosomes should be
-   *        handled in the result.
-   * @param numberOfBasesPerShard The maximum number of bases to include per shard.
-   * @param auth The OfflineAuth to be used to get the reference bounds for the variantSet.
-   * @return The shuffled list of sharded request objects.
-   * @throws IOException
-   */
-  @Deprecated // Remove this when fully migrated to gRPC.
-  public static ImmutableList<SearchVariantsRequest> getPaginatedVariantRequests(final String variantSetId,
-      SexChromosomeFilter sexChromosomeFilter, long numberOfBasesPerShard,
-      OfflineAuth auth) throws IOException {
-    Iterable<Contig> shards = getAllShardsInVariantSet(variantSetId,
-        sexChromosomeFilter, numberOfBasesPerShard, auth);
-    return FluentIterable.from(shards)
-        .transform(new Function<Contig, SearchVariantsRequest>() {
-          @Override
-          public SearchVariantsRequest apply(Contig shard) {
-            return shard.getSearchVariantsRequest(variantSetId);
           }
         }).toList();
   }
@@ -193,39 +144,6 @@ public class ShardUtils {
                 });
           }
         }).toArray(StreamReadsRequest.class));
-    // The shards were already shuffled, but now lets shuffle this list of concatenated shuffled requests.
-    Collections.shuffle(requests);
-    return FluentIterable.from(requests).toList();
-  }
-
-  /**
-   * Constructs sharded SearchReadsRequests for the specified contiguous region(s) of the genome.
-   *
-   * @param readGroupSetIds The list of readGroupSetIds.
-   * @param references The specified contiguous region(s) of the genome.
-   * @param numberOfBasesPerShard The maximum number of bases to include per shard.
-   * @return The shuffled list of sharded request objects.
-   */
-  @Deprecated // Remove this when fully migrated to gRPC.
-  public static ImmutableList<SearchReadsRequest> getPaginatedReadRequests(List<String> readGroupSetIds,
-      String references, long numberOfBasesPerShard) {
-    final Iterable<Contig> shards = getSpecifiedShards(references, numberOfBasesPerShard);
-
-    // Work around lack of FluentIterable.shuffle() https://github.com/google/guava/issues/1358
-   List<SearchReadsRequest> requests =
-        Arrays.asList(FluentIterable.from(readGroupSetIds)
-        .transformAndConcat(new Function<String, Iterable<SearchReadsRequest>>() {
-          @Override
-          public Iterable<SearchReadsRequest> apply(final String readGroupSetId) {
-            return FluentIterable.from(shards)
-                .transform(new Function<Contig, SearchReadsRequest>() {
-                  @Override
-                  public SearchReadsRequest apply(Contig shard) {
-                    return shard.getSearchReadsRequest(readGroupSetId);
-                  }
-                });
-          }
-        }).toArray(SearchReadsRequest.class));
     // The shards were already shuffled, but now lets shuffle this list of concatenated shuffled requests.
     Collections.shuffle(requests);
     return FluentIterable.from(requests).toList();

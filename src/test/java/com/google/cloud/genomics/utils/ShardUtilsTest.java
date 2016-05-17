@@ -19,17 +19,18 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import com.google.api.services.genomics.model.SearchReadsRequest;
-import com.google.api.services.genomics.model.SearchVariantsRequest;
 import com.google.genomics.v1.StreamReadsRequest;
 import com.google.genomics.v1.StreamVariantsRequest;
 
 import org.hamcrest.CoreMatchers;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
 import java.util.Arrays;
 import java.util.List;
 
+@RunWith(JUnit4.class)
 public class ShardUtilsTest {
 
   @Test
@@ -41,18 +42,6 @@ public class ShardUtilsTest {
           .getStreamVariantsRequest("variantset1")
     };
     assertThat(ShardUtils.getVariantRequests("variantset1", "chr17:41196311:41277499", 50000L),
-        CoreMatchers.allOf(CoreMatchers.hasItems(EXPECTED_RESULT)));
-  }
-
-  @Test
-  public void testGetPaginatedVariantRequestsStringStringLong() {
-    final SearchVariantsRequest[] EXPECTED_RESULT = {
-        new Contig("chr17", 41196311, 41246311)
-          .getSearchVariantsRequest("variantset1"),
-        new Contig("chr17", 41246311, 41277499)
-          .getSearchVariantsRequest("variantset1")
-    };
-    assertThat(ShardUtils.getPaginatedVariantRequests("variantset1", "chr17:41196311:41277499", 50000L),
         CoreMatchers.allOf(CoreMatchers.hasItems(EXPECTED_RESULT)));
   }
 
@@ -69,22 +58,6 @@ public class ShardUtilsTest {
         .getStreamReadsRequest("readset2")
     };
     assertThat(ShardUtils.getReadRequests(Arrays.asList("readset1", "readset2"), "chr17:41196311:41277499", 50000L),
-        CoreMatchers.allOf(CoreMatchers.hasItems(EXPECTED_RESULT)));
-  }
-
-  @Test
-  public void testGetPaginatedReadRequests() {
-    final SearchReadsRequest[] EXPECTED_RESULT = {
-        new Contig("chr17", 41196311, 41246311)
-          .getSearchReadsRequest("readset1"),
-        new Contig("chr17", 41246311, 41277499)
-          .getSearchReadsRequest("readset1"),
-          new Contig("chr17", 41196311, 41246311)
-        .getSearchReadsRequest("readset2"),
-      new Contig("chr17", 41246311, 41277499)
-        .getSearchReadsRequest("readset2")
-    };
-    assertThat(ShardUtils.getPaginatedReadRequests(Arrays.asList("readset1", "readset2"), "chr17:41196311:41277499", 50000L),
         CoreMatchers.allOf(CoreMatchers.hasItems(EXPECTED_RESULT)));
   }
 

@@ -30,6 +30,8 @@ import com.google.genomics.v1.StreamReadsResponse;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
@@ -37,6 +39,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
+@RunWith(JUnit4.class)
 public class ReadStreamIteratorITCase {
   // This small interval overlaps the Klotho SNP.
   static final String REFERENCES = "chr13:33628134:33628138";

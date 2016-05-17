@@ -30,12 +30,15 @@ import com.google.genomics.v1.Variant;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Iterator;
 import java.util.List;
 
+@RunWith(JUnit4.class)
 public class VariantStreamIteratorITCase {
   @Rule
   public ExpectedException thrown = ExpectedException.none();

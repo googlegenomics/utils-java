@@ -20,6 +20,8 @@ import com.google.common.collect.ImmutableList;
 import com.google.genomics.v1.StreamVariantsRequest;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
@@ -31,6 +33,7 @@ import java.security.GeneralSecurityException;
  * To run it: mvn -Dit.test=FaultyGenomicsServerITLongCase verify
  *
  */
+@RunWith(JUnit4.class)
 public class FaultyGenomicsServerITLongCase extends FaultyGenomicsServerITCase {
 
   // Create one long stream.
