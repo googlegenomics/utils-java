@@ -259,15 +259,15 @@
         <artifactId>coveralls-maven-plugin</artifactId>
         <version>2.2.0</version>
       </plugin>
-    <plugin>
-      <groupId>com.google.protobuf.tools</groupId>
-      <artifactId>maven-protoc-plugin</artifactId>
-      <version>0.4.2</version>
-      <configuration>
-        <!--
-          The version of protoc must match protobuf-java. If you don't depend on
-          protobuf-java directly, you will be transitively depending on the
-          protobuf-java version that grpc depends on.
+      <plugin>
+        <groupId>com.google.protobuf.tools</groupId>
+        <artifactId>maven-protoc-plugin</artifactId>
+        <version>0.4.2</version>
+        <configuration>
+          <!--
+              The version of protoc must match protobuf-java. If you don't depend on
+              protobuf-java directly, you will be transitively depending on the
+              protobuf-java version that grpc depends on.
         -->
         <protocArtifact>com.google.protobuf:protoc:3.0.0-beta-2:exe:${os.detected.classifier}</protocArtifact>
         <pluginId>grpc-java</pluginId>
@@ -283,15 +283,23 @@
         </execution>
       </executions>
     </plugin>
-    </plugins>
-
-  <pluginManagement>
-    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>test-jar</id>
+            <goals>
+              <goal>test-jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
       <!--
-      Use a newer version of the plugin to avoid long build times on
-      machines with slow Unix group lookups
-      https://www.mail-archive.com/issues@maven.apache.org/msg95302.html
-      -->
+          Use a newer version of the plugin to avoid long build times on
+          machines with slow Unix group lookups
+          https://www.mail-archive.com/issues@maven.apache.org/msg95302.html
+        -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
@@ -304,21 +312,7 @@
           </execution>
         </executions>
       </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-source-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>test-jar</id>
-              <goals>
-                <goal>test-jar</goal>
-              </goals>
-           </execution>
-        </executions>
-      </plugin>
-    </plugins>
-  </pluginManagement>
-
+  </plugins>
   </build>
 
   <properties>
