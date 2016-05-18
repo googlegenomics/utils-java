@@ -18,7 +18,10 @@ package com.google.cloud.genomics.utils;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 
+import com.google.common.collect.Iterables;
+
 import org.hamcrest.CoreMatchers;
+import org.hamcrest.collection.IsIterableContainingInOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -45,6 +48,13 @@ public class GenomicsUtilsITCase {
     assertThat(GenomicsUtils.getVariantSetIds(IntegrationTestHelper.PLATINUM_GENOMES_DATASET,
         IntegrationTestHelper.getAuthFromApiKey()),
         CoreMatchers.allOf(CoreMatchers.hasItems(IntegrationTestHelper.PLATINUM_GENOMES_VARIANTSET)));
+  }
+
+  @Test
+  public void testGetCallSets() throws Exception {
+    assertThat(Iterables.transform(GenomicsUtils.getCallSets(IntegrationTestHelper.PLATINUM_GENOMES_VARIANTSET,
+        IntegrationTestHelper.getAuthFromApiKey()), CallSetUtils.GET_NAMES),
+        IsIterableContainingInOrder.contains(IntegrationTestHelper.PLATINUM_GENOMES_CALLSET_NAMES));
   }
 
   @Test

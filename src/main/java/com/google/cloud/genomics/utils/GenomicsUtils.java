@@ -138,6 +138,22 @@ public class GenomicsUtils {
   }
 
   /**
+   * Gets CallSets for a given variantSetId using the Genomics API.
+   *
+   * @param variantSetId The id of the variantSet to query.
+   * @param auth The OfflineAuth for the API request.
+   * @return The list of callSet names in the variantSet.
+   * @throws IOException If variantSet does not contain any CallSets.
+   */
+  public static Iterable<CallSet> getCallSets(String variantSetId, OfflineAuth auth)
+      throws IOException {
+    Genomics genomics = GenomicsFactory.builder().build().fromOfflineAuth(auth);
+    return Paginator.Callsets.create(genomics)
+        .search(new SearchCallSetsRequest().setVariantSetIds(Lists.newArrayList(variantSetId)),
+            "callSets,nextPageToken");
+  }
+
+  /**
    * Gets CallSets Names for a given variantSetId using the Genomics API.
    *
    * @param variantSetId The id of the variantSet to query.
