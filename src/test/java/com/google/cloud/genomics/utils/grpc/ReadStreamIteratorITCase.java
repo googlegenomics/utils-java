@@ -43,6 +43,10 @@ import java.util.List;
 public class ReadStreamIteratorITCase {
   // This small interval overlaps the Klotho SNP.
   static final String REFERENCES = "chr13:33628134:33628138";
+  static final StreamReadsRequest PROTOTYPE = StreamReadsRequest.newBuilder()
+      .setReadGroupSetId(IntegrationTestHelper.PLATINUM_GENOMES_READGROUPSETS[0])
+      .setProjectId(IntegrationTestHelper.getTEST_PROJECT())
+      .build();
 
   @Rule
   public ExpectedException thrown = ExpectedException.none();
@@ -50,8 +54,8 @@ public class ReadStreamIteratorITCase {
   @Test
   public void testBasic() throws IOException, GeneralSecurityException {
     ImmutableList<StreamReadsRequest> requests =
-        ShardUtils.getReadRequests(Collections.singletonList(IntegrationTestHelper.PLATINUM_GENOMES_READGROUPSETS[0]),
-        REFERENCES, 100L);
+        ShardUtils.getReadRequests(Collections.singletonList(PROTOTYPE),
+        100L, REFERENCES);
     assertEquals(1, requests.size());
 
     Iterator<StreamReadsResponse> iter =
@@ -77,8 +81,8 @@ public class ReadStreamIteratorITCase {
   @Test
   public void testPartialResponses() throws IOException, GeneralSecurityException {
     ImmutableList<StreamReadsRequest> requests =
-        ShardUtils.getReadRequests(Collections.singletonList(IntegrationTestHelper.PLATINUM_GENOMES_READGROUPSETS[0]),
-        REFERENCES, 100L);
+        ShardUtils.getReadRequests(Collections.singletonList(PROTOTYPE),
+        100L, REFERENCES);
     assertEquals(1, requests.size());
 
     Iterator<StreamReadsResponse> iter =
@@ -104,8 +108,8 @@ public class ReadStreamIteratorITCase {
         + "At a minimum include 'alignments(alignment)' to enforce a strict shard boundary."));
 
     ImmutableList<StreamReadsRequest> requests =
-        ShardUtils.getReadRequests(Collections.singletonList(IntegrationTestHelper.PLATINUM_GENOMES_READGROUPSETS[0]),
-        REFERENCES, 100L);
+        ShardUtils.getReadRequests(Collections.singletonList(PROTOTYPE),
+        100L, REFERENCES);
     assertEquals(1, requests.size());
 
     Iterator<StreamReadsResponse> iter =

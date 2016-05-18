@@ -21,8 +21,6 @@ import static java.util.Objects.hash;
 import static java.util.Objects.requireNonNull;
 
 import com.google.api.client.util.Preconditions;
-import com.google.api.services.genomics.model.SearchReadsRequest;
-import com.google.api.services.genomics.model.SearchVariantsRequest;
 import com.google.common.base.Function;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Iterables;
@@ -32,7 +30,6 @@ import com.google.genomics.v1.StreamVariantsRequest;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -110,20 +107,12 @@ public class Contig implements Serializable {
     return shards;
   }
 
-  @Deprecated // Remove this when fully migrated to gRPC.
-  SearchVariantsRequest getSearchVariantsRequest(String variantSetId) {
-    return new SearchVariantsRequest()
-        .setVariantSetIds(Collections.singletonList(variantSetId))
-        .setReferenceName(referenceName)
-        .setStart(start)
-        .setEnd(end);
-  }
-
   /**
    * Construct a StreamVariantsRequest for the Contig.
    * @param variantSetId
    * @return the request object
    */
+  @Deprecated
   public StreamVariantsRequest getStreamVariantsRequest(String variantSetId) {
     return StreamVariantsRequest.newBuilder()
         .setVariantSetId(variantSetId)
@@ -133,20 +122,12 @@ public class Contig implements Serializable {
         .build();
   }
 
-  @Deprecated // Remove this when fully migrated to gRPC.
-  SearchReadsRequest getSearchReadsRequest(String readGroupSetId) {
-    return new SearchReadsRequest()
-        .setReadGroupSetIds(Collections.singletonList(readGroupSetId))
-        .setReferenceName(referenceName)
-        .setStart(start)
-        .setEnd(end);
-  }
-
   /**
    * Construct a StreamReadsRequest for the Contig.
    * @param readGroupSetId
    * @return the request object
    */
+  @Deprecated
   public StreamReadsRequest getStreamReadsRequest(String readGroupSetId) {
     return StreamReadsRequest.newBuilder()
         .setReadGroupSetId(readGroupSetId)
@@ -156,5 +137,32 @@ public class Contig implements Serializable {
         .build();
   }
 
+  /**
+   * Construct a StreamVariantsRequest for the Contig using a prototype using a prototype request.
+   *
+   * @param prototype A partially filled in request object.
+   * @return the request object
+   */
+  public StreamVariantsRequest getStreamVariantsRequest(StreamVariantsRequest prototype) {
+    return StreamVariantsRequest.newBuilder(prototype)
+        .setReferenceName(referenceName)
+        .setStart(start)
+        .setEnd(end)
+        .build();
+  }
+
+  /**
+   * Construct a StreamReadsRequest for the Contig using a prototype request.
+   *
+   * @param prototype A partially filled in request object.
+   * @return the request object
+   */
+  public StreamReadsRequest getStreamReadsRequest(StreamReadsRequest prototype) {
+    return StreamReadsRequest.newBuilder(prototype)
+        .setReferenceName(referenceName)
+        .setStart(start)
+        .setEnd(end)
+        .build();
+  }
 }
 

@@ -13,7 +13,6 @@
  */
 package com.google.cloud.genomics.utils.grpc;
 
-import com.google.cloud.genomics.utils.IntegrationTestHelper;
 import com.google.cloud.genomics.utils.ShardBoundary;
 import com.google.cloud.genomics.utils.ShardUtils;
 import com.google.common.collect.ImmutableList;
@@ -38,7 +37,7 @@ public class FaultyGenomicsServerITLongCase extends FaultyGenomicsServerITCase {
 
   // Create one long stream.
   private static final ImmutableList<StreamVariantsRequest> requests = ShardUtils.getVariantRequests(
-      IntegrationTestHelper.PLATINUM_GENOMES_VARIANTSET, "chrY:0:60032946", 1000000000L);
+      PROTOTYPE, 1000000000L, "chrY:0:60032946");
   private static final int EXPECTED_CHRY_NUM_VARIANTS = 5971309;
 
   @Test

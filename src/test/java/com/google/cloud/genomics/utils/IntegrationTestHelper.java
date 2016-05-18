@@ -96,7 +96,14 @@ public class IntegrationTestHelper {
     new ReferenceBound().setReferenceName("chrY").setUpperBound(60032946L)
   };
 
+  // Test configuration constants
+  private static final String TEST_PROJECT = System.getenv("TEST_PROJECT");
   private static final String API_KEY = System.getenv("GOOGLE_API_KEY");
+
+  public static String getTEST_PROJECT() {
+    assertNotNull("You must set the TEST_PROJECT environment variable for this test.", TEST_PROJECT);
+    return TEST_PROJECT;
+  }
 
   /**
    * @return the API_KEY

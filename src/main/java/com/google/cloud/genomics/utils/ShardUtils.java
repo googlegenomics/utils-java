@@ -75,11 +75,114 @@ public class ShardUtils {
   /**
    * Constructs sharded StreamVariantsRequests for the specified contiguous region(s) of the genome.
    *
+   * @param prototype The prototype request.
+   * @param references The specified contiguous region(s) of the genome.
+   * @param numberOfBasesPerShard The maximum number of bases to include per shard.
+   * @return The shuffled list of sharded request objects.
+   */
+  public static ImmutableList<StreamVariantsRequest> getVariantRequests(final StreamVariantsRequest prototype,
+      long numberOfBasesPerShard, String references) {
+    Iterable<Contig> shards = getSpecifiedShards(references, numberOfBasesPerShard);
+    return FluentIterable.from(shards)
+        .transform(new Function<Contig, StreamVariantsRequest>() {
+          @Override
+          public StreamVariantsRequest apply(Contig shard) {
+            return shard.getStreamVariantsRequest(prototype);
+          }
+        }).toList();
+  }
+
+  /**
+   * Constructs sharded StreamVariantsRequests for the all references in the variantSet.
+   *
+   * @param prototype The prototype request.
+   * @param sexChromosomeFilter An enum value indicating how sex chromosomes should be
+   *        handled in the result.
+   * @param numberOfBasesPerShard The maximum number of bases to include per shard.
+   * @param auth The OfflineAuth to be used to get the reference bounds for the variantSet.
+   * @return The shuffled list of sharded request objects.
+   * @throws IOException
+   */
+  public static ImmutableList<StreamVariantsRequest> getVariantRequests(final StreamVariantsRequest prototype,
+      SexChromosomeFilter sexChromosomeFilter, long numberOfBasesPerShard,
+      OfflineAuth auth) throws IOException {
+    Iterable<Contig> shards = getAllShardsInVariantSet(prototype.getVariantSetId(),
+        sexChromosomeFilter, numberOfBasesPerShard, auth);
+    return FluentIterable.from(shards)
+        .transform(new Function<Contig, StreamVariantsRequest>() {
+          @Override
+          public StreamVariantsRequest apply(Contig shard) {
+            return shard.getStreamVariantsRequest(prototype);
+          }
+        }).toList();
+  }
+
+  /**
+   * Constructs sharded StreamReadsRequests for the specified contiguous region(s) of the genome.
+   *
+   * @param prototypes The list of prototype requests.
+   * @param references The specified contiguous region(s) of the genome.
+   * @param numberOfBasesPerShard The maximum number of bases to include per shard.
+   * @return The shuffled list of sharded request objects.
+   */
+  public static ImmutableList<StreamReadsRequest> getReadRequests(List<StreamReadsRequest> prototypes,
+      long numberOfBasesPerShard, String references) {
+    final Iterable<Contig> shards = getSpecifiedShards(references, numberOfBasesPerShard);
+
+    // Work around lack of FluentIterable.shuffle() https://github.com/google/guava/issues/1358
+    List<StreamReadsRequest> requests =
+        Arrays.asList(FluentIterable.from(prototypes)
+        .transformAndConcat(new Function<StreamReadsRequest, Iterable<StreamReadsRequest>>() {
+          @Override
+          public Iterable<StreamReadsRequest> apply(final StreamReadsRequest prototype) {
+            return FluentIterable.from(shards)
+                .transform(new Function<Contig, StreamReadsRequest>() {
+                  @Override
+                  public StreamReadsRequest apply(Contig shard) {
+                    return shard.getStreamReadsRequest(prototype);
+                  }
+                });
+          }
+        }).toArray(StreamReadsRequest.class));
+    // The shards were already shuffled, but now lets shuffle this list of concatenated shuffled requests.
+    Collections.shuffle(requests);
+    return FluentIterable.from(requests).toList();
+  }
+
+  /**
+   * Constructs sharded StreamReadsRequest for the all references in the readGroupSet.
+   *
+   * @param prototype The prototype request.
+   * @param sexChromosomeFilter An enum value indicating how sex chromosomes should be
+   *        handled in the result.
+   * @param numberOfBasesPerShard The maximum number of bases to include per shard.
+   * @param auth The OfflineAuth to be used to get the reference bounds for the variantSet.
+   * @return The shuffled list of sharded request objects.
+   * @throws IOException
+   */
+  public static ImmutableList<StreamReadsRequest> getReadRequests(final StreamReadsRequest prototype,
+      SexChromosomeFilter sexChromosomeFilter, long numberOfBasesPerShard,
+      OfflineAuth auth) throws IOException {
+    Iterable<Contig> shards = getAllShardsInReadGroupSet(prototype.getReadGroupSetId(), sexChromosomeFilter,
+        numberOfBasesPerShard, auth);
+    return FluentIterable.from(shards)
+        .transform(new Function<Contig, StreamReadsRequest>() {
+          @Override
+          public StreamReadsRequest apply(Contig shard) {
+            return shard.getStreamReadsRequest(prototype);
+          }
+        }).toList();
+  }
+
+  /**
+   * Constructs sharded StreamVariantsRequests for the specified contiguous region(s) of the genome.
+   *
    * @param variantSetId The variantSetId.
    * @param references The specified contiguous region(s) of the genome.
    * @param numberOfBasesPerShard The maximum number of bases to include per shard.
    * @return The shuffled list of sharded request objects.
    */
+  @Deprecated
   public static ImmutableList<StreamVariantsRequest> getVariantRequests(final String variantSetId,
       String references, long numberOfBasesPerShard) {
     Iterable<Contig> shards = getSpecifiedShards(references, numberOfBasesPerShard);
@@ -103,6 +206,7 @@ public class ShardUtils {
    * @return The shuffled list of sharded request objects.
    * @throws IOException
    */
+  @Deprecated
   public static ImmutableList<StreamVariantsRequest> getVariantRequests(final String variantSetId,
       SexChromosomeFilter sexChromosomeFilter, long numberOfBasesPerShard,
       OfflineAuth auth) throws IOException {
@@ -125,6 +229,7 @@ public class ShardUtils {
    * @param numberOfBasesPerShard The maximum number of bases to include per shard.
    * @return The shuffled list of sharded request objects.
    */
+  @Deprecated
   public static ImmutableList<StreamReadsRequest> getReadRequests(List<String> readGroupSetIds,
       String references, long numberOfBasesPerShard) {
     final Iterable<Contig> shards = getSpecifiedShards(references, numberOfBasesPerShard);
@@ -160,6 +265,7 @@ public class ShardUtils {
    * @return The shuffled list of sharded request objects.
    * @throws IOException
    */
+  @Deprecated
   public static ImmutableList<StreamReadsRequest> getReadRequests(final String readGroupSetId,
       SexChromosomeFilter sexChromosomeFilter, long numberOfBasesPerShard,
       OfflineAuth auth) throws IOException {
