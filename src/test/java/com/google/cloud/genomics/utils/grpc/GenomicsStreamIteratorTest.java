@@ -43,6 +43,14 @@ import java.util.Collections;
 @RunWith(JUnit4.class)
 public class GenomicsStreamIteratorTest {
   public static final String SERVER_NAME = "unitTest";
+  public static final StreamReadsRequest PROTOTYPE_READ_REQUEST = StreamReadsRequest.newBuilder()
+      .setReadGroupSetId("theReadGroupSetId")
+      .setProjectId("theProjectId")
+      .build();
+  public static final StreamVariantsRequest PROTOTYPE_VARIANT_REQUEST = StreamVariantsRequest.newBuilder()
+      .setVariantSetId("theVariantSetId")
+      .setProjectId("theProjectId")
+      .build();
 
   protected static Server server;
 
@@ -101,7 +109,7 @@ public class GenomicsStreamIteratorTest {
   @Test
   public void testAllReadsOverlapsStart() throws IOException, GeneralSecurityException {
     ImmutableList<StreamReadsRequest> requests =
-        ShardUtils.getReadRequests(Collections.singletonList("fake readgroup set"), "chr7:500:600", 1000000L);
+        ShardUtils.getReadRequests(Collections.singletonList(PROTOTYPE_READ_REQUEST), 1000000L, "chr7:500:600");
 
     ReadStreamIterator iter = ReadStreamIterator.enforceShardBoundary(createChannel(), requests.get(0),
         ShardBoundary.Requirement.STRICT, null);
@@ -115,7 +123,7 @@ public class GenomicsStreamIteratorTest {
   @Test
   public void testAllVariantsOverlapsStart() throws IOException, GeneralSecurityException {
     ImmutableList<StreamVariantsRequest> requests =
-        ShardUtils.getVariantRequests("fake variant set", "chr7:500:600", 1000000L);
+        ShardUtils.getVariantRequests(PROTOTYPE_VARIANT_REQUEST, 1000000L, "chr7:500:600");
 
     VariantStreamIterator iter = VariantStreamIterator.enforceShardBoundary(createChannel(), requests.get(0),
         ShardBoundary.Requirement.STRICT, null);
@@ -129,7 +137,7 @@ public class GenomicsStreamIteratorTest {
   @Test
   public void testSomeReadsOverlapsStart() throws IOException, GeneralSecurityException {
     ImmutableList<StreamReadsRequest> requests =
-        ShardUtils.getReadRequests(Collections.singletonList("fake readgroup set"), "chr7:499:600", 1000000L);
+        ShardUtils.getReadRequests(Collections.singletonList(PROTOTYPE_READ_REQUEST), 1000000L, "chr7:499:600");
 
     ReadStreamIterator iter = ReadStreamIterator.enforceShardBoundary(createChannel(), requests.get(0),
         ShardBoundary.Requirement.STRICT, null);
@@ -143,7 +151,7 @@ public class GenomicsStreamIteratorTest {
   @Test
   public void testSomeVariantsOverlapsStart() throws IOException, GeneralSecurityException {
     ImmutableList<StreamVariantsRequest> requests =
-        ShardUtils.getVariantRequests("fake variant set", "chr7:499:600", 1000000L);
+        ShardUtils.getVariantRequests(PROTOTYPE_VARIANT_REQUEST, 1000000L, "chr7:499:600");
 
     VariantStreamIterator iter = VariantStreamIterator.enforceShardBoundary(createChannel(), requests.get(0),
         ShardBoundary.Requirement.STRICT, null);
@@ -157,7 +165,7 @@ public class GenomicsStreamIteratorTest {
   @Test
   public void testNoReadsOverlapsStart() throws IOException, GeneralSecurityException {
     ImmutableList<StreamReadsRequest> requests =
-        ShardUtils.getReadRequests(Collections.singletonList("fake readgroup set"), "chr7:300:600", 1000000L);
+        ShardUtils.getReadRequests(Collections.singletonList(PROTOTYPE_READ_REQUEST), 1000000L, "chr7:300:600");
 
     ReadStreamIterator iter = ReadStreamIterator.enforceShardBoundary(createChannel(), requests.get(0),
         ShardBoundary.Requirement.STRICT, null);
@@ -171,7 +179,7 @@ public class GenomicsStreamIteratorTest {
   @Test
   public void testNoVariantsOverlapsStart() throws IOException, GeneralSecurityException {
     ImmutableList<StreamVariantsRequest> requests =
-        ShardUtils.getVariantRequests("fake variant set", "chr7:300:600", 1000000L);
+        ShardUtils.getVariantRequests(PROTOTYPE_VARIANT_REQUEST, 1000000L, "chr7:300:600");
 
     VariantStreamIterator iter = VariantStreamIterator.enforceShardBoundary(createChannel(), requests.get(0),
         ShardBoundary.Requirement.STRICT, null);

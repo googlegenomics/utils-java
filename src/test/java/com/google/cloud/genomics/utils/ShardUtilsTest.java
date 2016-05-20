@@ -34,6 +34,138 @@ import java.util.List;
 public class ShardUtilsTest {
 
   @Test
+  public void testGetVariantRequests() {
+    StreamVariantsRequest prototype = StreamVariantsRequest.newBuilder()
+        .setVariantSetId("theVariantSetId")
+        .build();
+    final StreamVariantsRequest[] EXPECTED_RESULT = {
+        new Contig("chr17", 41196311, 41246311)
+          .getStreamVariantsRequest(prototype),
+        new Contig("chr17", 41246311, 41277499)
+          .getStreamVariantsRequest(prototype)
+    };
+    assertThat(ShardUtils.getVariantRequests(prototype, 50000L, "chr17:41196311:41277499"),
+        CoreMatchers.allOf(CoreMatchers.hasItems(EXPECTED_RESULT)));
+  }
+
+  @Test
+  public void testGetReadRequests() {
+    StreamReadsRequest prototype1 = StreamReadsRequest.newBuilder()
+        .setReadGroupSetId("readGroupSetId1")
+        .build();
+    StreamReadsRequest prototype2 = StreamReadsRequest.newBuilder()
+        .setReadGroupSetId("readGroupSetId1")
+        .build();
+
+    final StreamReadsRequest[] EXPECTED_RESULT = {
+        new Contig("chr17", 41196311, 41246311)
+          .getStreamReadsRequest(prototype1),
+        new Contig("chr17", 41246311, 41277499)
+          .getStreamReadsRequest(prototype1),
+          new Contig("chr17", 41196311, 41246311)
+        .getStreamReadsRequest(prototype2),
+      new Contig("chr17", 41246311, 41277499)
+        .getStreamReadsRequest(prototype2)
+    };
+    assertThat(ShardUtils.getReadRequests(Arrays.asList(prototype1, prototype2), 50000L, "chr17:41196311:41277499"),
+        CoreMatchers.allOf(CoreMatchers.hasItems(EXPECTED_RESULT)));
+  }
+
+  @Test
+  public void testVariantShardsAreShuffled() throws Exception {
+    StreamVariantsRequest prototype = StreamVariantsRequest.newBuilder()
+        .setVariantSetId("theVariantSetId")
+        .build();
+
+    final StreamVariantsRequest[] EXPECTED_RESULT = {
+      new Contig("chr1", 0, 50)
+      .getStreamVariantsRequest(prototype),
+      new Contig("chr1", 50, 100)
+      .getStreamVariantsRequest(prototype),
+      new Contig("chr1", 100, 150)
+      .getStreamVariantsRequest(prototype),
+      new Contig("chr2", 25, 75)
+      .getStreamVariantsRequest(prototype),
+      new Contig("chr2", 75, 125)
+      .getStreamVariantsRequest(prototype),
+      new Contig("chr2", 125, 175)
+      .getStreamVariantsRequest(prototype),
+      new Contig("chr2", 175, 225)
+      .getStreamVariantsRequest(prototype),
+      new Contig("chr2", 225, 250)
+      .getStreamVariantsRequest(prototype),
+    };
+
+    List<StreamVariantsRequest> requests = ShardUtils.getVariantRequests(prototype, 50, "chr1:0:150,chr2:25:250");
+    assertThat(requests, CoreMatchers.allOf(CoreMatchers.hasItems(EXPECTED_RESULT)));
+
+    // Call it a second time, expect the same set of shards but in a different order.
+    List<StreamVariantsRequest> requests2 = ShardUtils.getVariantRequests(prototype, 50, "chr1:0:150,chr2:25:250");
+    assertThat(requests2, CoreMatchers.allOf(CoreMatchers.hasItems(EXPECTED_RESULT)));
+
+    // Lists have different orders for their elements.
+    assertThat(requests, is(not(requests2)));
+  }
+
+  @Test
+  public void testReadShardsAreShuffled() throws Exception {
+    StreamReadsRequest prototype1 = StreamReadsRequest.newBuilder()
+        .setReadGroupSetId("readGroupSetId1")
+        .build();
+    StreamReadsRequest prototype2 = StreamReadsRequest.newBuilder()
+        .setReadGroupSetId("readGroupSetId1")
+        .build();
+
+    final StreamReadsRequest[] EXPECTED_RESULT = {
+      new Contig("chr1", 0, 50)
+      .getStreamReadsRequest(prototype1),
+      new Contig("chr1", 50, 100)
+      .getStreamReadsRequest(prototype1),
+      new Contig("chr1", 100, 150)
+      .getStreamReadsRequest(prototype1),
+      new Contig("chr2", 25, 75)
+      .getStreamReadsRequest(prototype1),
+      new Contig("chr2", 75, 125)
+      .getStreamReadsRequest(prototype1),
+      new Contig("chr2", 125, 175)
+      .getStreamReadsRequest(prototype1),
+      new Contig("chr2", 175, 225)
+      .getStreamReadsRequest(prototype1),
+      new Contig("chr2", 225, 250)
+      .getStreamReadsRequest(prototype1),
+      new Contig("chr1", 0, 50)
+      .getStreamReadsRequest(prototype2),
+      new Contig("chr1", 50, 100)
+      .getStreamReadsRequest(prototype2),
+      new Contig("chr1", 100, 150)
+      .getStreamReadsRequest(prototype2),
+      new Contig("chr2", 25, 75)
+      .getStreamReadsRequest(prototype2),
+      new Contig("chr2", 75, 125)
+      .getStreamReadsRequest(prototype2),
+      new Contig("chr2", 125, 175)
+      .getStreamReadsRequest(prototype2),
+      new Contig("chr2", 175, 225)
+      .getStreamReadsRequest(prototype2),
+      new Contig("chr2", 225, 250)
+      .getStreamReadsRequest(prototype2),
+    };
+
+    List<StreamReadsRequest> requests = ShardUtils.getReadRequests(Arrays.asList(prototype1, prototype2),
+        50, "chr1:0:150,chr2:25:250");
+    assertThat(requests, CoreMatchers.allOf(CoreMatchers.hasItems(EXPECTED_RESULT)));
+
+    // Call it a second time, expect the same set of shards but in a different order.
+    List<StreamReadsRequest> requests2 = ShardUtils.getReadRequests(Arrays.asList(prototype1, prototype2),
+        50, "chr1:0:150,chr2:25:250");
+    assertThat(requests2, CoreMatchers.allOf(CoreMatchers.hasItems(EXPECTED_RESULT)));
+
+    // Lists have different orders for their elements.
+    assertThat(requests, is(not(requests2)));
+  }
+
+  @Test
+  @Deprecated
   public void testGetVariantRequestsStringStringLong() {
     final StreamVariantsRequest[] EXPECTED_RESULT = {
         new Contig("chr17", 41196311, 41246311)
@@ -46,6 +178,7 @@ public class ShardUtilsTest {
   }
 
   @Test
+  @Deprecated
   public void testGetReadRequestsListOfStringStringLong() {
     final StreamReadsRequest[] EXPECTED_RESULT = {
         new Contig("chr17", 41196311, 41246311)
@@ -62,7 +195,8 @@ public class ShardUtilsTest {
   }
 
   @Test
-  public void testVariantShardsAreShuffled() throws Exception {
+  @Deprecated
+  public void testVariantShardsAreShuffledDeprecated() throws Exception {
     final StreamVariantsRequest[] EXPECTED_RESULT = {
       new Contig("chr1", 0, 50)
       .getStreamVariantsRequest("variantset1"),
@@ -94,7 +228,8 @@ public class ShardUtilsTest {
   }
 
   @Test
-  public void testReadShardsAreShuffled() throws Exception {
+  @Deprecated
+  public void testReadShardsAreShuffledDeprecated() throws Exception {
     final StreamReadsRequest[] EXPECTED_RESULT = {
       new Contig("chr1", 0, 50)
       .getStreamReadsRequest("readset1"),

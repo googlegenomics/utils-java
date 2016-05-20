@@ -40,14 +40,19 @@ import java.util.List;
 
 @RunWith(JUnit4.class)
 public class VariantStreamIteratorITCase {
+  public static final StreamVariantsRequest PROTOTYPE = StreamVariantsRequest.newBuilder()
+      .setVariantSetId(IntegrationTestHelper.PLATINUM_GENOMES_VARIANTSET)
+      .setProjectId(IntegrationTestHelper.getTEST_PROJECT())
+      .build();
+
   @Rule
   public ExpectedException thrown = ExpectedException.none();
 
   @Test
   public void testBasic() throws IOException, GeneralSecurityException {
     ImmutableList<StreamVariantsRequest> requests =
-        ShardUtils.getVariantRequests(IntegrationTestHelper.PLATINUM_GENOMES_VARIANTSET,
-            IntegrationTestHelper.PLATINUM_GENOMES_KLOTHO_REFERENCES, 100L);
+        ShardUtils.getVariantRequests(PROTOTYPE,
+            100L, IntegrationTestHelper.PLATINUM_GENOMES_KLOTHO_REFERENCES);
     assertEquals(1, requests.size());
 
     Iterator<StreamVariantsResponse> iter =
@@ -77,8 +82,8 @@ public class VariantStreamIteratorITCase {
   @Test
   public void testEmptyRegion() throws IOException, GeneralSecurityException {
     ImmutableList<StreamVariantsRequest> requests =
-        ShardUtils.getVariantRequests(IntegrationTestHelper.PLATINUM_GENOMES_VARIANTSET,
-            "chrDoesNotExist:100:200", 100L);
+        ShardUtils.getVariantRequests(PROTOTYPE,
+            100L, "chrDoesNotExist:100:200");
     assertEquals(1, requests.size());
 
     Iterator<StreamVariantsResponse> iter =
@@ -97,8 +102,8 @@ public class VariantStreamIteratorITCase {
   @Test
   public void testPartialResponses() throws IOException, GeneralSecurityException {
     ImmutableList<StreamVariantsRequest> requests =
-        ShardUtils.getVariantRequests(IntegrationTestHelper.PLATINUM_GENOMES_VARIANTSET,
-            IntegrationTestHelper.PLATINUM_GENOMES_KLOTHO_REFERENCES, 100L);
+        ShardUtils.getVariantRequests(PROTOTYPE,
+            100L, IntegrationTestHelper.PLATINUM_GENOMES_KLOTHO_REFERENCES);
     assertEquals(1, requests.size());
 
     Iterator<StreamVariantsResponse> iter =
@@ -125,8 +130,8 @@ public class VariantStreamIteratorITCase {
         + "At a minimum include 'variants(start)' to enforce a strict shard boundary."));
 
     ImmutableList<StreamVariantsRequest> requests =
-        ShardUtils.getVariantRequests(IntegrationTestHelper.PLATINUM_GENOMES_VARIANTSET,
-            IntegrationTestHelper.PLATINUM_GENOMES_KLOTHO_REFERENCES, 100L);
+        ShardUtils.getVariantRequests(PROTOTYPE,
+            100L, IntegrationTestHelper.PLATINUM_GENOMES_KLOTHO_REFERENCES);
     assertEquals(1, requests.size());
 
     Iterator<StreamVariantsResponse> iter =

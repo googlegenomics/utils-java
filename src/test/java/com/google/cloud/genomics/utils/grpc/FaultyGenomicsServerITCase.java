@@ -42,6 +42,10 @@ import java.util.Random;
 @RunWith(JUnit4.class)
 public class FaultyGenomicsServerITCase {
   public static final String SERVER_NAME = "integrationTest";
+  public static final StreamVariantsRequest PROTOTYPE = StreamVariantsRequest.newBuilder()
+      .setProjectId(IntegrationTestHelper.getTEST_PROJECT())
+      .setVariantSetId(IntegrationTestHelper.PLATINUM_GENOMES_VARIANTSET)
+      .build();
 
   protected static Server server;
   protected static ManagedChannel genomicsChannel;
@@ -131,8 +135,8 @@ public class FaultyGenomicsServerITCase {
   @Test
   public void testVariantRetries() {
     ImmutableList<StreamVariantsRequest> requests =
-        ShardUtils.getVariantRequests(IntegrationTestHelper.PLATINUM_GENOMES_VARIANTSET,
-            IntegrationTestHelper.PLATINUM_GENOMES_BRCA1_REFERENCES, 1000000000L);
+        ShardUtils.getVariantRequests(PROTOTYPE,
+            1000000000L, IntegrationTestHelper.PLATINUM_GENOMES_BRCA1_REFERENCES);
     VariantStreamIterator iter = VariantStreamIterator.enforceShardBoundary(createChannel(), requests.get(0),
         ShardBoundary.Requirement.STRICT, null);
     // Dev Note: this data currently comes back as 20 separate lists but this is controlled server-side.

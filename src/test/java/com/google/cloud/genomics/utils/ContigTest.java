@@ -20,9 +20,10 @@ import static com.google.common.collect.Lists.newArrayList;
 import static org.hamcrest.Matchers.containsString;
 import static org.junit.Assert.assertEquals;
 
-import com.google.api.services.genomics.model.SearchReadsRequest;
-import com.google.api.services.genomics.model.SearchVariantsRequest;
 import com.google.common.base.Joiner;
+import com.google.common.collect.ImmutableSet;
+import com.google.genomics.v1.StreamReadsRequest;
+import com.google.genomics.v1.StreamVariantsRequest;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -64,20 +65,74 @@ public class ContigTest {
 
   @Test
   public void testGetVariantsRequest() throws Exception {
-    SearchVariantsRequest request = new Contig("1", 0, 9).getSearchVariantsRequest("vs");
-    assertEquals("vs", request.getVariantSetIds().get(0));
+    StreamVariantsRequest prototype = StreamVariantsRequest.newBuilder()
+        .setProjectId("theProjectId")
+        .setVariantSetId("theVariantSetId")
+        .build();
+    StreamVariantsRequest request = new Contig("1", 0, 9)
+      .getStreamVariantsRequest(prototype);
+    assertEquals("theProjectId", request.getProjectId());
+    assertEquals("theVariantSetId", request.getVariantSetId());
     assertEquals("1", request.getReferenceName());
-    assertEquals(0, request.getStart().longValue());
-    assertEquals(9, request.getEnd().longValue());
+    assertEquals(0, request.getStart());
+    assertEquals(9, request.getEnd());
+  }
+
+  @Test
+  public void testGetVariantsRequestWithCallSetIds() throws Exception {
+    ImmutableSet<String> callSetIds = ImmutableSet.<String>builder()
+        .add("callSetId-0")
+        .add("callSetId-1")
+        .build();
+    StreamVariantsRequest prototype = StreamVariantsRequest.newBuilder()
+        .setProjectId("theProjectId")
+        .setVariantSetId("theVariantSetId")
+        .addAllCallSetIds(callSetIds)
+        .build();
+    StreamVariantsRequest request = new Contig("1", 0, 9)
+      .getStreamVariantsRequest(prototype);
+    assertEquals("theProjectId", request.getProjectId());
+    assertEquals("theVariantSetId", request.getVariantSetId());
+    assertEquals(2, request.getCallSetIdsList().size());
+    assertEquals("callSetId-0", request.getCallSetIds(0));
+    assertEquals("callSetId-1", request.getCallSetIds(1));
+    assertEquals("1", request.getReferenceName());
+    assertEquals(0, request.getStart());
+    assertEquals(9, request.getEnd());
+  }
+
+  @Test
+  public void testGetVariantsRequestWithEmptyCallSetIds() throws Exception {
+    ImmutableSet<String> callSetIds = ImmutableSet.<String>builder()
+        .build();
+    StreamVariantsRequest prototype = StreamVariantsRequest.newBuilder()
+        .setProjectId("theProjectId")
+        .setVariantSetId("theVariantSetId")
+        .addAllCallSetIds(callSetIds)
+        .build();
+    StreamVariantsRequest request = new Contig("1", 0, 9)
+      .getStreamVariantsRequest(prototype);
+    assertEquals("theProjectId", request.getProjectId());
+    assertEquals("theVariantSetId", request.getVariantSetId());
+    assertEquals(0, request.getCallSetIdsList().size());
+    assertEquals("1", request.getReferenceName());
+    assertEquals(0, request.getStart());
+    assertEquals(9, request.getEnd());
   }
 
   @Test
   public void testGetReadsRequest() throws Exception {
-    SearchReadsRequest request = new Contig("1", 0, 9).getSearchReadsRequest("rs");
-    assertEquals("rs", request.getReadGroupSetIds().get(0));
+    StreamReadsRequest prototype = StreamReadsRequest.newBuilder()
+        .setProjectId("theProjectId")
+        .setReadGroupSetId("theReadGroupSetId")
+        .build();
+    StreamReadsRequest request = new Contig("1", 0, 9)
+      .getStreamReadsRequest(prototype);
+    assertEquals("theProjectId", request.getProjectId());
+    assertEquals("theReadGroupSetId", request.getReadGroupSetId());
     assertEquals("1", request.getReferenceName());
-    assertEquals(0, request.getStart().longValue());
-    assertEquals(9, request.getEnd().longValue());
+    assertEquals(0, request.getStart());
+    assertEquals(9, request.getEnd());
   }
 
   @Test
