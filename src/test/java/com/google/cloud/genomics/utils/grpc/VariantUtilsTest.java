@@ -13,97 +13,188 @@
  */
 package com.google.cloud.genomics.utils.grpc;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import com.google.genomics.v1.Variant;
-import com.google.genomics.v1.VariantCall;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+
 @RunWith(JUnit4.class)
 public class VariantUtilsTest {
 
+  // For test readability, create alias for this constant.
+  public static final String GATK_ALT = VariantUtils.GATK_NON_VARIANT_SEGMENT_ALT;
+
   @Test
   public void testIsSNP() {
-    assertTrue(VariantUtils.IS_SNP.apply(Variant.newBuilder().setReferenceName("chr7")
-        .setStart(200000).setEnd(200001).setReferenceBases("A").addAlternateBases("C").build()));
+    assertTrue(VariantUtils.IS_SNP.apply(
+        TestHelper.makeVariant("chr17", 100, "C", Arrays.asList("G"), "het-RA").build()));
 
     // Deletion
-    assertFalse(VariantUtils.IS_SNP.apply(Variant.newBuilder().setReferenceName("chr7")
-        .setStart(200000).setEnd(200001).setReferenceBases("CA").addAlternateBases("C").build()));
+    assertFalse(VariantUtils.IS_SNP.apply(
+        TestHelper.makeVariant("chr17", 100, "CA", Arrays.asList("C"), "het-RA").build()));
 
     // Insertion
-    assertFalse(VariantUtils.IS_SNP.apply(Variant.newBuilder().setReferenceName("chr7")
-        .setStart(200000).setEnd(200001).setReferenceBases("C").addAlternateBases("CA").build()));
+    assertFalse(VariantUtils.IS_SNP.apply(
+        TestHelper.makeVariant("chr17", 100, "C", Arrays.asList("CA"), "het-RA").build()));
 
     // SNP and Insertion
-    assertFalse(VariantUtils.IS_SNP.apply(Variant.newBuilder().setReferenceName("chr7")
-        .setStart(200000).setEnd(200001).setReferenceBases("C").addAlternateBases("A")
-        .addAlternateBases("CA").build()));
+    assertFalse(VariantUtils.IS_SNP.apply(
+        TestHelper.makeVariant("chr17", 100, "C", Arrays.asList("G", "CA"), "het-AA").build()));
 
     // Block Records
-    assertFalse(VariantUtils.IS_SNP.apply(Variant.newBuilder().setReferenceName("chr7")
-        .setStart(200000).setEnd(200001).setReferenceBases("A").build()));
-    assertFalse(VariantUtils.IS_SNP.apply(Variant.newBuilder().setReferenceName("chr7")
-        .setStart(200000).setEnd(200001).setReferenceBases("A")
-        .addAlternateBases(VariantUtils.GATK_NON_VARIANT_SEGMENT_ALT).build()));
+    assertFalse(VariantUtils.IS_SNP.apply(
+        TestHelper.makeBlockRecord("chr17", 100, 200, "C", TestHelper.EMPTY_ALT_LIST).build()));
+    assertFalse(VariantUtils.IS_SNP.apply(
+        TestHelper.makeBlockRecord("chr17", 100, 200, "C", Arrays.asList(GATK_ALT)).build()));
+    assertFalse(VariantUtils.IS_SNP.apply(
+        TestHelper.makeBlockRecord("chr17", 100, 200, "C", Arrays.asList("G", GATK_ALT)).build()));
   }
 
   @Test
-  public void testIsVariant() {
+  public void testIsNonVariantSegment() {
     // SNPs
-    assertFalse(VariantUtils.IS_NON_VARIANT_SEGMENT.apply(Variant.newBuilder()
-        .setReferenceName("chr7").setStart(200000).setEnd(200001).setReferenceBases("A")
-        .addAlternateBases("C").build()));
+    assertFalse(VariantUtils.IS_NON_VARIANT_SEGMENT.apply(
+        TestHelper.makeVariant("chr17", 100, "C", Arrays.asList("G"), "het-RA").build()));
 
     // Insertions
-    assertFalse(VariantUtils.IS_NON_VARIANT_SEGMENT.apply(Variant.newBuilder()
-        .setReferenceName("chr7").setStart(200000).setEnd(200001).setReferenceBases("A")
-        .addAlternateBases("AC").build()));
+    assertFalse(VariantUtils.IS_NON_VARIANT_SEGMENT.apply(
+        TestHelper.makeVariant("chr17", 100, "C", Arrays.asList("CA"), "het-RA").build()));
 
-    // Deletions NOTE: These are all the same mutation, just encoded in different ways.
-    assertFalse(VariantUtils.IS_NON_VARIANT_SEGMENT.apply(Variant.newBuilder()
-        .setReferenceName("chr7").setStart(200000).setEnd(200001).setReferenceBases("CAG")
-        .addAlternateBases("C").build()));
-    assertFalse(VariantUtils.IS_NON_VARIANT_SEGMENT.apply(Variant.newBuilder()
-        .setReferenceName("chr7").setStart(200000).setEnd(200001).setReferenceBases("AG").build()));
+    // Deletions NOTE: These two are the same mutation, just encoded in different ways.
+    assertFalse(VariantUtils.IS_NON_VARIANT_SEGMENT.apply(
+        TestHelper.makeVariant("chr17", 100, "CAG", Arrays.asList("C"), "het-RA").build()));
+    assertFalse(VariantUtils.IS_NON_VARIANT_SEGMENT.apply(
+        TestHelper.makeVariant("chr17", 100, "", Arrays.asList("AG"), "het-RA").build()));
 
     // Multi-allelic sites
-    assertFalse(VariantUtils.IS_NON_VARIANT_SEGMENT.apply(Variant.newBuilder()
-        .setReferenceName("chr7").setStart(200000).setEnd(200001).setReferenceBases("A")
-        .addAlternateBases("C").addAlternateBases("AC").build()));
-    assertFalse(VariantUtils.IS_NON_VARIANT_SEGMENT.apply(Variant.newBuilder()
-        .setReferenceName("chr7").setStart(200000).setEnd(200001).setReferenceBases("A")
-        .addAlternateBases("C").addAlternateBases("G").build()));
+    assertFalse(VariantUtils.IS_NON_VARIANT_SEGMENT.apply(
+        TestHelper.makeVariant("chr17", 100, "C", Arrays.asList("G", "CA"), "het-AA").build()));
+    assertFalse(VariantUtils.IS_NON_VARIANT_SEGMENT.apply(
+        TestHelper.makeVariant("chr17", 100, "C", Arrays.asList("G", "T"), "het-AA").build()));
 
     // Non-Variant Block Records
-    assertTrue(VariantUtils.IS_NON_VARIANT_SEGMENT.apply(Variant.newBuilder()
-        .setReferenceName("chr7").setStart(200000).setEnd(200001).setReferenceBases("A").build()));
-    assertTrue(VariantUtils.IS_NON_VARIANT_SEGMENT.apply(Variant.newBuilder()
-        .setReferenceName("chr7").setStart(200000).setEnd(200001).setReferenceBases("A")
-        .addAlternateBases(VariantUtils.GATK_NON_VARIANT_SEGMENT_ALT).build()));
-    assertTrue(VariantUtils.IS_NON_VARIANT_SEGMENT.apply(Variant.newBuilder()
-        .setReferenceName("chr7").setStart(200000).setEnd(200001).setReferenceBases("A")
-        .addAlternateBases("T")
-        .addAlternateBases(VariantUtils.GATK_NON_VARIANT_SEGMENT_ALT)
-        .build()));
+    assertTrue(VariantUtils.IS_NON_VARIANT_SEGMENT.apply(
+        TestHelper.makeVariant("chr17", 100, "C", TestHelper.EMPTY_ALT_LIST, "hom-RR").build()));
+    assertTrue(VariantUtils.IS_NON_VARIANT_SEGMENT.apply(
+        TestHelper.makeVariant("chr17", 100, "C", Arrays.asList(GATK_ALT), "hom-RR").build()));
+    assertTrue(VariantUtils.IS_NON_VARIANT_SEGMENT.apply(
+        TestHelper.makeVariant("chr17", 100, "C", Arrays.asList("G", GATK_ALT), "hom-RR").build()));
   }
 
   @Test
-  public void testCallComparator() {
-    assertTrue(0 == VariantUtils.CALL_COMPARATOR.compare(
-        VariantCall.newBuilder().setCallSetName("NA12883").build(),
-        VariantCall.newBuilder().setCallSetName("NA12883").build()));
+  public void testIsOverlapping() {
+    Variant blockRecord = TestHelper.makeBlockRecord("chr17", 100, 200, "C", TestHelper.EMPTY_ALT_LIST).build();
 
-    assertTrue(0 > VariantUtils.CALL_COMPARATOR.compare(
-        VariantCall.newBuilder().setCallSetName("NA12883").build(),
-        VariantCall.newBuilder().setCallSetName("NA12884").build()));
+    // SNPs
+    assertFalse(VariantUtils.isOverlapping(blockRecord,
+        TestHelper.makeVariant("chr17", 99, "C", Arrays.asList("G"), "hom-AA").build()));
+    assertTrue(VariantUtils.isOverlapping(blockRecord,
+        TestHelper.makeVariant("chr17", 100, "C", Arrays.asList("G"), "hom-AA").build()));
+    assertTrue(VariantUtils.isOverlapping(blockRecord,
+        TestHelper.makeVariant("chr17", 150, "C", Arrays.asList("G"), "hom-AA").build()));
+    assertTrue(VariantUtils.isOverlapping(blockRecord,
+        TestHelper.makeVariant("chr17", 199, "C", Arrays.asList("G"), "hom-AA").build()));
+    assertFalse(VariantUtils.isOverlapping(blockRecord,
+        TestHelper.makeVariant("chr17", 200, "C", Arrays.asList("G"), "hom-AA").build()));
 
-    assertTrue(0 < VariantUtils.CALL_COMPARATOR.compare(
-        VariantCall.newBuilder().setCallSetName("NA12884").build(),
-        VariantCall.newBuilder().setCallSetName("NA12883").build()));
+    // Insertions
+    assertFalse(VariantUtils.isOverlapping(blockRecord,
+        TestHelper.makeVariant("chr17", 99, "C", Arrays.asList("CGG"), "hom-AA").build()));
+    assertTrue(VariantUtils.isOverlapping(blockRecord,
+        TestHelper.makeVariant("chr17", 100, "C", Arrays.asList("CGG"), "hom-AA").build()));
+    assertTrue(VariantUtils.isOverlapping(blockRecord,
+        TestHelper.makeVariant("chr17", 199, "C", Arrays.asList("CGG"), "hom-AA").build()));
+    assertFalse(VariantUtils.isOverlapping(blockRecord,
+        TestHelper.makeVariant("chr17", 200, "C", Arrays.asList("CGG"), "hom-AA").build()));
+
+    // Deletions
+    assertFalse(VariantUtils.isOverlapping(blockRecord,
+        TestHelper.makeVariant("chr17", 99, "CAA", Arrays.asList("C"), "hom-AA").build()));
+    assertTrue(VariantUtils.isOverlapping(blockRecord,
+        TestHelper.makeVariant("chr17", 100, "CAA", Arrays.asList("C"), "hom-AA").build()));
+    assertTrue(VariantUtils.isOverlapping(blockRecord,
+        TestHelper.makeVariant("chr17", 199, "CAA", Arrays.asList("C"), "hom-AA").build()));
+    assertFalse(VariantUtils.isOverlapping(blockRecord,
+        TestHelper.makeVariant("chr17", 200, "CAA", Arrays.asList("C"), "hom-AA").build()));
+  }
+
+  @Test
+  public void testIsSameVariantSite() {
+    // SNP and insertion
+    assertTrue(VariantUtils.isSameVariantSite(
+        TestHelper.makeVariant("chr17", 100, "C", Arrays.asList("G"), "hom-AA"),
+        TestHelper.makeVariant("chr17", 100, "C", Arrays.asList("CA"), "het-RA").build()));
+
+    // SNP and deletion
+    assertFalse(VariantUtils.isSameVariantSite(
+        TestHelper.makeVariant("chr17", 100, "C", Arrays.asList("G"), "hom-AA"),
+        TestHelper.makeVariant("chr17", 100, "CCT", Arrays.asList("C"), "hom-AA").build()));
+
+    // Insertion and deletion
+    assertFalse(VariantUtils.isSameVariantSite(
+        TestHelper.makeVariant("chr17", 100, "C", Arrays.asList("CA"), "het-RA"),
+        TestHelper.makeVariant("chr17", 100, "CCT", Arrays.asList("C"), "hom-AA").build()));
+  }
+
+  @Test
+  public void testVariantComparator() {
+    Comparator<Variant> comparator = VariantUtils.NON_VARIANT_SEGMENT_COMPARATOR;
+
+    assertTrue(0 > comparator.compare(
+        TestHelper.makeVariant("2", 10, 11, "A", Arrays.asList("C")).build(),
+        TestHelper.makeVariant("2", 10, 11, "A", Arrays.asList("G")).build()));
+
+    assertTrue(0 > comparator.compare(
+        TestHelper.makeVariant("2", 10, 11, "A", Arrays.asList("C")).build(),
+        TestHelper.makeVariant("2", 10, 11, "A", Arrays.asList("C", "G")).build()));
+
+    assertTrue(0 > comparator.compare(
+        TestHelper.makeVariant("2", 10, 11, "A", Arrays.asList("C", "G")).build(),
+        TestHelper.makeVariant("2", 10, 11, "A", Arrays.asList("G")).build()));
+
+    assertTrue(0 > comparator.compare(
+        TestHelper.makeVariant("2", 10, 11, "A", TestHelper.EMPTY_ALT_LIST).build(),
+        TestHelper.makeVariant("2", 10, 11, "A", Arrays.asList("C")).build()));
+
+    assertTrue(0 > comparator.compare(
+        TestHelper.makeVariant("2", 10, 11, "A", Arrays.asList(GATK_ALT)).build(),
+        TestHelper.makeVariant("2", 10, 11, "A", Arrays.asList("C")).build()));
+
+    assertTrue(0 > comparator.compare(
+        TestHelper.makeVariant("2", 10, 11, "A", Arrays.asList("G", GATK_ALT)).build(),
+        TestHelper.makeVariant("2", 10, 11, "A", Arrays.asList("C")).build()));
+  }
+
+  @Test
+  public void testVariantComparator_Collection() {
+    Variant insert1BiAllelic = TestHelper.makeVariant("chr2", 100, "C", Arrays.asList("CA"), "het-RA").build();
+    Variant insert2BiAllelic = TestHelper.makeVariant("chr2", 100, "C", Arrays.asList("CAAA"), "het-RA").build();
+    Variant snpInsertMultiAllelic = TestHelper.makeVariant("chr2", 100, "C", Arrays.asList("G","CA"), "het-AA").build();
+
+    Variant delete1BiAllelic = TestHelper.makeVariant("chr2", 100, "CCT", Arrays.asList("C"), "hom-AA").build();
+    Variant deleteMultiAllelic = TestHelper.makeVariant("chr2", 100, "CCT", Arrays.asList("C","CC"), "het-AA").build();
+
+    Variant delete2BiAllelic = TestHelper.makeVariant("chr2", 100, "CC", Arrays.asList("C"), "het-RA").build();
+    Variant indelMultiAllelic = TestHelper.makeVariant("chr2", 100, "CC", Arrays.asList("C","CCA"), "het-AA").build();
+
+    List<Variant> input = Arrays.asList(delete1BiAllelic, deleteMultiAllelic, delete2BiAllelic, indelMultiAllelic,
+        insert1BiAllelic, insert2BiAllelic, snpInsertMultiAllelic);
+
+    Comparator<Variant> comparator = VariantUtils.NON_VARIANT_SEGMENT_COMPARATOR;
+
+    Collections.shuffle(input);  // This will check a different permutation each time this test runs.
+    Collections.sort(input, comparator);
+    assertEquals(input, Arrays.asList(insert1BiAllelic, insert2BiAllelic, snpInsertMultiAllelic,
+        delete2BiAllelic, indelMultiAllelic, delete1BiAllelic, deleteMultiAllelic));
   }
 }
