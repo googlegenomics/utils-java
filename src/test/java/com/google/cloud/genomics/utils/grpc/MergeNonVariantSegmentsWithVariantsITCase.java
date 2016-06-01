@@ -121,7 +121,7 @@ public class MergeNonVariantSegmentsWithVariantsITCase {
         .addCalls(TestHelper.makeCall("NA12884", 0, 0))
         .build();
 
-    VariantMergeStrategyTest.mergeTest(iter.next().getVariantsList(),
+    VariantMergeStrategyTestHelper.mergeTest(iter.next().getVariantsList(),
         Arrays.asList(expectedOutput1, expectedOutput2),
         MergeNonVariantSegmentsWithVariants.class);
   }

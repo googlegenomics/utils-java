@@ -100,7 +100,7 @@ public class MergeAllVariantsAtSameSiteITCase {
         .addCalls(TestHelper.makeCall("NA12886", 0, 0))
         .build();
 
-    VariantMergeStrategyTest.mergeTest(iter.next().getVariantsList(),
+    VariantMergeStrategyTestHelper.mergeTest(iter.next().getVariantsList(),
         Arrays.asList(expectedOutput1),
         MergeAllVariantsAtSameSite.class);
   }

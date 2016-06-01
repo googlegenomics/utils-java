@@ -51,7 +51,7 @@ public class MergeNonVariantSegmentsWithVariantsTest {
         .addCalls(TestHelper.makeCall("hom-RR-[]", 0,0))
         .build();
 
-    VariantMergeStrategyTest.mergeTest(Arrays.asList(snp1, snp2, insert, blockRecord1, blockRecord2),
+    VariantMergeStrategyTestHelper.mergeTest(Arrays.asList(snp1, snp2, insert, blockRecord1, blockRecord2),
         Arrays.asList(expectedInsert, expectedSnp1, expectedSnp2),
         MergeNonVariantSegmentsWithVariants.class);
   }
