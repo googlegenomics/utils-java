@@ -100,7 +100,7 @@ public class VariantUtils {
   public static final Predicate<Variant> IS_NON_VARIANT_SEGMENT_WITH_GATK_ALT = new Predicate<Variant>() {
         @Override
         public boolean apply(Variant variant) {
-          return Iterables.any(variant.getAlternateBasesList(),
+          return Iterables.all(variant.getAlternateBasesList(),
               Predicates.equalTo(GATK_NON_VARIANT_SEGMENT_ALT));
         }
       };
