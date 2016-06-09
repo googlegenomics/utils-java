@@ -14,10 +14,8 @@
 package com.google.cloud.genomics.utils;
 
 import com.google.api.client.util.Strings;
-import com.google.cloud.genomics.utils.grpc.VariantUtils;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;
-import com.google.common.base.Predicates;
 import com.google.genomics.v1.Read;
 import com.google.genomics.v1.Variant;
 
@@ -42,11 +40,6 @@ public class ShardBoundary {
    * Use STRICT if data overlapping the start of the shard should be excluded.
    */
   STRICT,
-  /**
-   * Use NON_VARIANT_OVERLAPS when non-variant segments overlapping the start of the shard should be
-   * retained but variants overlapping the start of the shard should be excluded.
-   */
-  NON_VARIANT_OVERLAPS
   }
 
   private static final Pattern READ_FIELD_PATTERN = Pattern.compile(".*\\p{Punct}alignment\\p{Punct}.*");
@@ -90,16 +83,5 @@ public class ShardBoundary {
         return read.getAlignment().getPosition().getPosition() >= start;
       }
     };
-  }
-
-  /**
-   * Predicate expressing the logic for which variants and non-variant segments should and should
-   * not be included in the shard.
-   *
-   * @param start The start position of the shard.
-   * @return Whether the variant would be included in a non-variant overlaps shard boundary.
-   */
-  public static Predicate<Variant> getNonVariantOverlapsPredicate(final long start, final String fields) {
-    return Predicates.or(VariantUtils.IS_NON_VARIANT_SEGMENT, getStrictVariantPredicate(start, fields));
   }
 }

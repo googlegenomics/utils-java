@@ -15,9 +15,7 @@ package com.google.cloud.genomics.utils;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
@@ -105,22 +103,4 @@ public class ShardBoundaryTest {
         + "At a minimum include 'alignments(alignment)' to enforce a strict shard boundary."));
     ShardBoundary.getStrictReadPredicate(123, "alignments(alignedSequence)");
   }
-
-  @Test
-  public void testGetNonVariantOverlapsPredicate() {
-    long start = 1000L;
-
-    Variant overlapStart = Variant.newBuilder().setReferenceBases("T").addAlternateBases("A").setStart(900L).build();
-    Variant overlapStartNonVariant = Variant.newBuilder().setReferenceBases("T").setStart(900L).setEnd(1005L).build();
-    Variant overlapStartGatkNonVariant = Variant.newBuilder().setReferenceBases("T")
-        .addAlternateBases("A").addAlternateBases(VariantUtils.GATK_NON_VARIANT_SEGMENT_ALT)
-        .setStart(900L).setEnd(1005L).build();
-
-    Predicate<Variant> shardPredicate = ShardBoundary.getNonVariantOverlapsPredicate(start, null);
-
-    assertFalse(shardPredicate.apply(overlapStart));
-    assertTrue(shardPredicate.apply(overlapStartNonVariant));
-    assertTrue(shardPredicate.apply(overlapStartGatkNonVariant));
-  }
-
 }

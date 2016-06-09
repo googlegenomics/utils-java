@@ -47,11 +47,11 @@ import java.util.List;
 public class MergeAllVariantsAtSameSite implements VariantMergeStrategy {
 
   @Override
-  public void merge(Iterable<Variant> variants, VariantEmitterStrategy emitter) {
+  public void merge(Long windowStart, Iterable<Variant> variants, VariantEmitterStrategy emitter) {
     // The sort order is critical here so that candidate overlapping reference matching blocks
-    // occur prior to any variants they may overlap.
-    // TODO optimization: remove this sort by restructuring the code to depend upon the order in which data
-    // is returned by the the genomics API which is sorted by (variantset id, contig, start pos, variant id).
+    // occur prior to any variants they may overlap.  Additionally, this ensures that merged variants
+    // always wind up with the same ordering on alternate bases and re-written genotypes regardless of
+    // the order of the input data.
     List<Variant> records = Lists.newArrayList(variants);  // Get a modifiable list.
     Collections.sort(records, VariantUtils.NON_VARIANT_SEGMENT_COMPARATOR);
 
@@ -65,6 +65,12 @@ public class MergeAllVariantsAtSameSite implements VariantMergeStrategy {
       if (VariantUtils.IS_NON_VARIANT_SEGMENT.apply(record)) {
         blockRecords.add(record);
       } else {
+        if (record.getStart() < windowStart) {
+          // This is a variant that begins before our window.  Skip it for now.
+          // TODO: do more here to allow for an accurate calculation of AN for variants
+          // in this window.
+          continue;
+        }
         if (null != updatedRecord && VariantUtils.isSameVariantSite(updatedRecord, record)) {
           // This is another variant at the same position; merge it with the current variant.
           mergeVariants(updatedRecord, record);

@@ -24,8 +24,9 @@ import java.util.List;
 
 /**
  * This strategy converts data with non-variant segments (such as data that was in
- * source format Genome VCF (gVCF) or Complete Genomics) to variant-only data with calls from
- * non-variant-segments merged into the variants with which they overlap.
+ * source format Genome VCF (gVCF) or Complete Genomics) to variant-only data occurring
+ * within the genomic window with calls from non-variant-segments merged into the
+ * variants with which they overlap.
  *
  * Dealing with ambiguous data:
  *  If a particular sample has both a variant and one or more non-variant segments that overlap it,
@@ -34,11 +35,9 @@ import java.util.List;
 public class MergeNonVariantSegmentsWithVariants implements VariantMergeStrategy {
 
   @Override
-  public void merge(Iterable<Variant> variants, VariantEmitterStrategy emitter) {
+  public void merge(Long windowStart, Iterable<Variant> variants, VariantEmitterStrategy emitter) {
     // The sort order is critical here so that candidate overlapping reference matching blocks
     // occur prior to any variants they may overlap.
-    // TODO optimization: remove this sort by restructuring the code to depend upon the order in which data
-    // is returned by the the genomics API which is sorted by (variantset id, contig, start pos, variant id).
     List<Variant> records = Lists.newArrayList(variants);  // Get a modifiable list.
     Collections.sort(records, VariantUtils.NON_VARIANT_SEGMENT_COMPARATOR);
 
@@ -48,6 +47,10 @@ public class MergeNonVariantSegmentsWithVariants implements VariantMergeStrategy
 
     for (Variant record : records) {
       if (!VariantUtils.IS_NON_VARIANT_SEGMENT.apply(record)) {
+        if (record.getStart() < windowStart) {
+          // This is a variant that begins before our window.  Skip it.
+          continue;
+        }
         Builder updatedRecord = Variant.newBuilder(record);
         for (Iterator<Variant> iterator = blockRecords.iterator(); iterator.hasNext();) {
           Variant blockRecord = iterator.next();

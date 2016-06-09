@@ -21,15 +21,13 @@ import com.google.genomics.v1.Variant;
 public interface VariantMergeStrategy {
 
   /**
-   * Given an ordered collection of variants and non-variant segments that overlap a genomic region,
+   * Given a collection of variants and non-variant segments that overlap a genomic region,
    * emit their merged representation via the emitter.
    *
-   * The ordering of the input is assumed to be the order in which data is returned by the the
-   * genomics API which is sorted by (variantset id, contig, start pos, variant id).
-   *
-   * @param variants
-   * @param emitter
+   * @param windowStart - use this to identify records that begin prior to the region we are computing, but overlap it
+   * @param variants - the variants that overlap the region we are computing
+   * @param emitter - the strategy instance to use to emit results
    */
-  public void merge(Iterable<Variant> variants, VariantEmitterStrategy emitter);
+  public void merge(Long windowStart, Iterable<Variant> variants, VariantEmitterStrategy emitter);
 
 }

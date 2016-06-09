@@ -35,13 +35,13 @@ public class VariantMergeStrategyTestHelper {
     }
   }
 
-  public static void mergeTest(List<Variant> input, List<Variant> expectedOutput,
+  public static void mergeTest(Long windowStart, List<Variant> input, List<Variant> expectedOutput,
       Class<? extends VariantMergeStrategy> clazz) throws InstantiationException, IllegalAccessException {
     VariantMergeStrategy merger = clazz.newInstance();
     VariantMergeStrategyTestHelper.AccumulatingVariantEmitter emitter =
         new VariantMergeStrategyTestHelper.AccumulatingVariantEmitter();
 
-    merger.merge(input, emitter);
+    merger.merge(windowStart, input, emitter);
     List<Variant> output = emitter.getVariants();
     assertEquals(expectedOutput.size(), output.size());
 
