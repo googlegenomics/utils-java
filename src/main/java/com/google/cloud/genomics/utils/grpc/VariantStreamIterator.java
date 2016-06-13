@@ -72,8 +72,6 @@ public class VariantStreamIterator
     Predicate<Variant> shardPredicate;
     if(ShardBoundary.Requirement.STRICT == shardBoundary) {
       shardPredicate = ShardBoundary.getStrictVariantPredicate(request.getStart(), fields);
-    } else if(ShardBoundary.Requirement.NON_VARIANT_OVERLAPS == shardBoundary) {
-      shardPredicate = ShardBoundary.getNonVariantOverlapsPredicate(request.getStart(), fields);
     } else {
       shardPredicate = null;
     }

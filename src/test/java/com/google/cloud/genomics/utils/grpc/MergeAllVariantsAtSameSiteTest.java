@@ -47,13 +47,13 @@ public class MergeAllVariantsAtSameSiteTest {
         .addCalls(TestHelper.makeCall("het-RA-[T]", 0, 3))
         .build();
 
-    VariantMergeStrategyTest.mergeTest(input, Arrays.asList(expectedOutput),
+    VariantMergeStrategyTestHelper.mergeTest(100L, input, Arrays.asList(expectedOutput),
         MergeAllVariantsAtSameSite.class);
 
     // Ensure that the result is stable regardless of the input order of these Variants.
     for (int i = 0; i < 5; i++) {
       Collections.shuffle(input);
-      VariantMergeStrategyTest.mergeTest(input, Arrays.asList(expectedOutput),
+      VariantMergeStrategyTestHelper.mergeTest(100L, input, Arrays.asList(expectedOutput),
           MergeAllVariantsAtSameSite.class);
     }
   }
@@ -84,13 +84,13 @@ public class MergeAllVariantsAtSameSiteTest {
         .addCalls(TestHelper.makeCall("het-AA-[C, CC]", 1, 2))
         .build();
 
-    VariantMergeStrategyTest.mergeTest(Arrays.asList(insert1BiAllelic, insert2BiAllelic, snpInsertMultiAllelic),
+    VariantMergeStrategyTestHelper.mergeTest(100L, Arrays.asList(insert1BiAllelic, insert2BiAllelic, snpInsertMultiAllelic),
         Arrays.asList(expectedOutput1),
         MergeAllVariantsAtSameSite.class);
-    VariantMergeStrategyTest.mergeTest(Arrays.asList(delete2BiAllelic, indelMultiAllelic),
+    VariantMergeStrategyTestHelper.mergeTest(100L, Arrays.asList(delete2BiAllelic, indelMultiAllelic),
         Arrays.asList(expectedOutput2),
         MergeAllVariantsAtSameSite.class);
-    VariantMergeStrategyTest.mergeTest(Arrays.asList(delete1BiAllelic, deleteMultiAllelic),
+    VariantMergeStrategyTestHelper.mergeTest(100L, Arrays.asList(delete1BiAllelic, deleteMultiAllelic),
         Arrays.asList(expectedOutput3),
         MergeAllVariantsAtSameSite.class);
 
@@ -99,7 +99,7 @@ public class MergeAllVariantsAtSameSiteTest {
         insert1BiAllelic, insert2BiAllelic, snpInsertMultiAllelic);
     for (int i = 0; i < 5; i++) {
       Collections.shuffle(input);
-      VariantMergeStrategyTest.mergeTest(input,
+      VariantMergeStrategyTestHelper.mergeTest(100L, input,
           Arrays.asList(expectedOutput1, expectedOutput2, expectedOutput3),
           MergeAllVariantsAtSameSite.class);
     }

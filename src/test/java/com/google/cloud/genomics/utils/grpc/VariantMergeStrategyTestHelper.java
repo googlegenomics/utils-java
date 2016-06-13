@@ -20,7 +20,7 @@ import com.google.genomics.v1.Variant;
 import java.util.ArrayList;
 import java.util.List;
 
-public class VariantMergeStrategyTest {
+public class VariantMergeStrategyTestHelper {
 
   public static class AccumulatingVariantEmitter implements VariantEmitterStrategy {
     private List<Variant> results = new ArrayList();
@@ -35,13 +35,13 @@ public class VariantMergeStrategyTest {
     }
   }
 
-  public static void mergeTest(List<Variant> input, List<Variant> expectedOutput,
+  public static void mergeTest(Long windowStart, List<Variant> input, List<Variant> expectedOutput,
       Class<? extends VariantMergeStrategy> clazz) throws InstantiationException, IllegalAccessException {
     VariantMergeStrategy merger = clazz.newInstance();
-    VariantMergeStrategyTest.AccumulatingVariantEmitter emitter =
-        new VariantMergeStrategyTest.AccumulatingVariantEmitter();
+    VariantMergeStrategyTestHelper.AccumulatingVariantEmitter emitter =
+        new VariantMergeStrategyTestHelper.AccumulatingVariantEmitter();
 
-    merger.merge(input, emitter);
+    merger.merge(windowStart, input, emitter);
     List<Variant> output = emitter.getVariants();
     assertEquals(expectedOutput.size(), output.size());
 

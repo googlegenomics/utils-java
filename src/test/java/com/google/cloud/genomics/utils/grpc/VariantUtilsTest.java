@@ -87,7 +87,9 @@ public class VariantUtilsTest {
         TestHelper.makeVariant("chr17", 100, "C", TestHelper.EMPTY_ALT_LIST, "hom-RR").build()));
     assertTrue(VariantUtils.IS_NON_VARIANT_SEGMENT.apply(
         TestHelper.makeVariant("chr17", 100, "C", Arrays.asList(GATK_ALT), "hom-RR").build()));
-    assertTrue(VariantUtils.IS_NON_VARIANT_SEGMENT.apply(
+
+    // A variant with a <NON_REF> alternate.
+    assertFalse(VariantUtils.IS_NON_VARIANT_SEGMENT.apply(
         TestHelper.makeVariant("chr17", 100, "C", Arrays.asList("G", GATK_ALT), "hom-RR").build()));
   }
 
@@ -170,7 +172,7 @@ public class VariantUtilsTest {
         TestHelper.makeVariant("2", 10, 11, "A", Arrays.asList(GATK_ALT)).build(),
         TestHelper.makeVariant("2", 10, 11, "A", Arrays.asList("C")).build()));
 
-    assertTrue(0 > comparator.compare(
+    assertTrue(0 < comparator.compare(
         TestHelper.makeVariant("2", 10, 11, "A", Arrays.asList("G", GATK_ALT)).build(),
         TestHelper.makeVariant("2", 10, 11, "A", Arrays.asList("C")).build()));
   }

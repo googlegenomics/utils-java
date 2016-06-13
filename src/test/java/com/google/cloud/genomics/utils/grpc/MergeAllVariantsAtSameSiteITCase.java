@@ -73,7 +73,7 @@ public class MergeAllVariantsAtSameSiteITCase {
     Iterator<StreamVariantsResponse> iter =
         VariantStreamIterator.enforceShardBoundary(IntegrationTestHelper.getAuthFromApplicationDefaultCredential(),
             requests.get(0),
-            ShardBoundary.Requirement.NON_VARIANT_OVERLAPS,
+            ShardBoundary.Requirement.OVERLAPS,
             "variants(alternateBases,calls(callSetName,genotype),end,referenceBases,referenceName,start)");
 
     // Platinum genomes has both a snp and an insertion at this genomic site
@@ -100,7 +100,7 @@ public class MergeAllVariantsAtSameSiteITCase {
         .addCalls(TestHelper.makeCall("NA12886", 0, 0))
         .build();
 
-    VariantMergeStrategyTest.mergeTest(iter.next().getVariantsList(),
+    VariantMergeStrategyTestHelper.mergeTest(requests.get(0).getStart(), iter.next().getVariantsList(),
         Arrays.asList(expectedOutput1),
         MergeAllVariantsAtSameSite.class);
   }
