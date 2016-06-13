@@ -22,13 +22,16 @@ import com.google.common.collect.ImmutableList;
 import com.google.genomics.v1.StreamVariantsRequest;
 import com.google.genomics.v1.StreamVariantsResponse;
 import com.google.genomics.v1.Variant;
+import com.google.protobuf.ListValue;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 /**
  * To run the test: mvn -Dit.test=MergeAllVariantsAtSameSiteITCase verify
@@ -76,20 +79,24 @@ public class MergeAllVariantsAtSameSiteITCase {
             ShardBoundary.Requirement.OVERLAPS,
             "variants(alternateBases,calls(callSetName,genotype),end,referenceBases,referenceName,start)");
 
+    Map<String, ListValue> emptyInfo = new HashMap<String, ListValue>();
+    emptyInfo.put(MergeAllVariantsAtSameSite.OVERLAPPING_CALLSETS_FIELD, ListValue.newBuilder().build());
+
     // Platinum genomes has both a snp and an insertion at this genomic site
     // but merging the calls together yields an ambiguous result.
     Variant expectedOutput1 = TestHelper.makeVariant("chr17", 41204796, 41204797, "A", Arrays.asList("AAC", "C"))
         .addCalls(TestHelper.makeCall("NA12882", 1, 1))  // ambiguous
         .addCalls(TestHelper.makeCall("NA12879", 1, 1))  // ambiguous
-        .addCalls(TestHelper.makeCall("NA12891", 0, 1))
-        .addCalls(TestHelper.makeCall("NA12878", 0, 1))
-        .addCalls(TestHelper.makeCall("NA12884", 1, 1))
+        .addCalls(TestHelper.makeCall("NA12891", 0, 1))  // ambiguous
+        .addCalls(TestHelper.makeCall("NA12878", 0, 1))  // ambiguous
+        .addCalls(TestHelper.makeCall("NA12884", 1, 1))  // ambiguous
         .addCalls(TestHelper.makeCall("NA12882", 0, 2))  // ambiguous
         .addCalls(TestHelper.makeCall("NA12879", 0, 2))  // ambiguous
         .addCalls(TestHelper.makeCall("NA12892", 0, 0))
         .addCalls(TestHelper.makeCall("NA12893", 0, 0))
         .addCalls(TestHelper.makeCall("NA12890", 0, 0))
         .addCalls(TestHelper.makeCall("NA12883", 0, 0))
+        .addCalls(TestHelper.makeCall("NA12891", 0, 0))  // ambiguous
         .addCalls(TestHelper.makeCall("NA12880", 0, 0))
         .addCalls(TestHelper.makeCall("NA12877", 0, 0))
         .addCalls(TestHelper.makeCall("NA12885", 0, 0))
@@ -98,6 +105,9 @@ public class MergeAllVariantsAtSameSiteITCase {
         .addCalls(TestHelper.makeCall("NA12881", 0, 0))
         .addCalls(TestHelper.makeCall("NA12888", 0, 0))
         .addCalls(TestHelper.makeCall("NA12886", 0, 0))
+        .addCalls(TestHelper.makeCall("NA12878", 0, 0))  // ambiguous
+        .addCalls(TestHelper.makeCall("NA12884", 0, 0))  // ambiguous
+        .putAllInfo(emptyInfo)
         .build();
 
     VariantMergeStrategyTestHelper.mergeTest(requests.get(0).getStart(), iter.next().getVariantsList(),
