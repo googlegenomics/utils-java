@@ -276,9 +276,8 @@
       <executions>
         <execution>
           <goals>
-<!-- Uncomment these goals to generate java source from protos. -->
-<!--            <goal>compile</goal>  -->
-<!--            <goal>compile-custom</goal> -->
+            <goal>compile</goal>
+            <goal>compile-custom</goal>
           </goals>
         </execution>
       </executions>

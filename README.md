@@ -73,12 +73,6 @@ MAVEN_OPTS="-Xbootclasspath/p:/YOUR/PATH/TO/alpn-boot-YOUR-VERSION.jar" \
 mvn exec:java -Dexec.mainClass=com.google.cloud.genomics.utils.grpc.Example
 ```
 
-###Generating gRPC code
-Users should typically **not** need to generate gRPC code themselves, as pre-generated code can be found
-in [src/main/java/com/google/genomics/v1](src/main/java/com/google/genomics/v1). For developers, code can be generated with
- * Gradle by running `gradle :generateProto` which will create code in target/generated-sources/main.
- * Maven by uncommenting the goals for `maven-protoc-plugin` in pom.xml.
-
 ##Code Layout
 
 * [com.google.cloud.genomics.utils](src/main/java/com/google/cloud/genomics/utils)
@@ -90,12 +84,6 @@ in [src/main/java/com/google/genomics/v1](src/main/java/com/google/genomics/v1).
 * [proto](src/main/proto)
   * [Protocol Buffer](http://www.grpc.io/docs/#working-with-protocol-buffers
 ) files defing the gRPC interface to the Genomics API.
-  * code auto-generated from the protobufs (do not edit, but easier to read than the protobuf files)
-    * [com.google.api](src/main/java/com/google/api)
-    * [com.google.genomics.v1](src/main/java/com/google/genomics/v1)
-    * [com.google.longrunning](src/main/java/com/google/longrunning)
-    * [com.google.protobuf](src/main/java/com/google/protobuf)
-    * [com.google.rpc](src/main/java/com/google/rpc)
   
 ##Releasing new versions
 
