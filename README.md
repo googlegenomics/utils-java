@@ -50,6 +50,7 @@ dependencies {
 1. Use a recent version of [Apache Maven](http://maven.apache.org/download.cgi) (e.g., version 3.3.3) to build this code:
 ```
 cd utils-java
+git submodule update --init --recursive
 mvn package
 ```
 
