@@ -60,6 +60,38 @@ public class TestHelper {
         .addAllGenotype(Arrays.asList(gt));
   }
 
+  public static Variant.Builder makeVariant(String chr, long start, String ref, String... alts) {
+    return Variant.newBuilder()
+        .addFilter("PASS")
+        .setReferenceName(chr)
+        .setStart(start)
+        .setEnd(start + ref.length())
+        .setReferenceBases(ref)
+        .addAllAlternateBases(Arrays.asList(alts));
+  }
+
+  public static Variant.Builder makeVariant(
+      String chr, String id, String ref, String alt, List<VariantCall> calls) {
+    return Variant.newBuilder()
+        .addFilter("PASS")
+        .setReferenceName(chr)
+        .setId(id)
+        .setReferenceBases(ref)
+        .addAlternateBases(alt)
+        .addAllCalls(calls);
+  }
+
+  public static Variant.Builder makeVariant(String chr, long start, String ref, String alt, double quality) {
+    return Variant.newBuilder()
+        .addFilter("PASS")
+        .setReferenceName(chr)
+        .setStart(start)
+        .setEnd(start + ref.length())
+        .setReferenceBases(ref)
+        .addAlternateBases(alt)
+        .setQuality(quality);
+  }
+
   public static Variant.Builder makeVariant(String chr, long start, long end, String ref, List<String> alts) {
     return Variant.newBuilder()
         .setReferenceName(chr)
@@ -76,6 +108,10 @@ public class TestHelper {
     }
     return makeVariant(chr, start, start + ref.length(), ref, alts)
         .addAllCalls(calls);
+  }
+
+  public static Position makePosition(String chr, long pos) {
+    return Position.newBuilder().setReferenceName(chr).setPosition(pos).build();
   }
 
   public static Variant.Builder makeBlockRecord(String chr, long start, long end, String ref, List<String> alts) {

@@ -14,7 +14,12 @@
 package com.google.cloud.genomics.utils.grpc;
 
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertThat;
+import static org.hamcrest.Matchers.containsInAnyOrder;
 
+import com.google.common.collect.FluentIterable;
+import com.google.common.collect.ImmutableList;
+import com.google.genomics.v1.Variant;
 import com.google.genomics.v1.VariantCall;
 
 import org.junit.Test;
@@ -37,6 +42,59 @@ public class VariantCallUtilsTest {
     assertTrue(0 < VariantCallUtils.CALL_COMPARATOR.compare(
         VariantCall.newBuilder().setCallSetName("NA12884").build(),
         VariantCall.newBuilder().setCallSetName("NA12883").build()));
+  }
+
+  @Test
+  public void testNonRefCalls() {
+    Variant bothRefHomozygous =
+        TestHelper.makeVariant(
+            "Chr1",
+            "Variant1",
+            "C",
+            "G",
+            ImmutableList.of(
+                TestHelper.makeCall("Sample1", 0, 0).build(),
+                TestHelper.makeCall("Sample2", 0, 0).build())).build();
+
+    Variant bothHeterozygous =
+        TestHelper.makeVariant(
+            "Chr1",
+            "Variant2",
+            "A",
+            "G",
+            ImmutableList.of(
+                TestHelper.makeCall("Sample1", 0, 1).build(),
+                TestHelper.makeCall("Sample2", 0, 1).build())).build();
+
+    Variant oneOfEach =
+        TestHelper.makeVariant(
+            "Chr1",
+            "Variant3",
+            "T",
+            "C",
+            ImmutableList.of(
+                TestHelper.makeCall("Sample1", 0, 0).build(),
+                TestHelper.makeCall("Sample2", 0, 1).build())).build();
+
+    assertTrue(
+        FluentIterable.from(bothRefHomozygous.getCallsList())
+            .filter(new VariantCallUtils.NonRefCallsPredicate())
+            .toList().size() == 0);
+
+    assertThat(
+        FluentIterable.from(bothHeterozygous.getCallsList())
+            .filter(new VariantCallUtils.NonRefCallsPredicate())
+            .toList(),
+        containsInAnyOrder(
+            TestHelper.makeCall("Sample1", 0, 1).build(),
+            TestHelper.makeCall("Sample2", 0, 1).build()));
+
+    assertThat(
+        FluentIterable.from(oneOfEach.getCallsList())
+            .filter(new VariantCallUtils.NonRefCallsPredicate())
+            .toList(),
+        containsInAnyOrder(
+            TestHelper.makeCall("Sample2", 0, 1).build()));
   }
 
 }
