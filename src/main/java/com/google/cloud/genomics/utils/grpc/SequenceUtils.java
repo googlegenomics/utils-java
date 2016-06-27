@@ -37,7 +37,7 @@ public class SequenceUtils {
    * Classifies a genotype based on zygosity and ploidy.
    *
    * @param genotype list of integers representing a genotype within which 0 represents the
-   *    reference allele and values > 0 represent alternatives.
+   *    reference allele and values greater than 0 represent alternatives.
    * @return Classification of this genotype base on zygosity, with special handling for haploids.
    */
   public static final GenotypeCategory classifyGenotype(List<Integer> genotype) {
@@ -67,7 +67,7 @@ public class SequenceUtils {
    *
    * <p>ref should be a sequence of reference bases starting immediately at refAllele. This function
    * splices out the refAllele bases from ref and replaces those with altAllele, returning the new
-   * haplotype. This is the core "substitution" operation of a Variant, where a variant AG => A
+   * haplotype. This is the core "substitution" operation of a Variant, where a variant AG to A
    * generates a new haplotype by first removing the AG bases and then replacing them with the A
    * base. For example:
    * {@literal

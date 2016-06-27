@@ -48,8 +48,8 @@ public class VariantUtils {
   /**
    * Classifies mutation based on nucleotide changes. Assumes the variant is a SNP.
    *
-   * @param allele integer representing an allele. 0 represents the reference allele and values > 0
-   *    represent alternatives.
+   * @param allele integer representing an allele. 0 represents the reference allele and values greater
+   *    than 0 represent alternatives.
    * @param variant variant specifying the reference and alternative bases for this allele.
    * @return a classification of the allele as reference, transition, or transversion.
    */
