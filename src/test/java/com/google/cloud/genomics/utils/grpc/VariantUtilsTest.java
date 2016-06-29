@@ -39,6 +39,15 @@ public class VariantUtilsTest {
   // For test readability, create alias for this constant.
   public static final String GATK_ALT = VariantUtils.GATK_NON_VARIANT_SEGMENT_ALT;
 
+  private Variant.Builder makeVariant(String chr, long start, String ref, String... alts) {
+    return TestHelper.makeVariant(chr, null, start, ref, Arrays.asList(alts), null, -1, null);
+  }
+
+  private Variant.Builder makeVariant(String chr, long start, String ref, String alt,
+                                      double quality) {
+    return TestHelper.makeVariant(chr, null, start, ref, Arrays.asList(alt), null, quality, null);
+  }
+
   @Test
   public void SnpTitvStatus() {
     Variant variant =
@@ -97,7 +106,7 @@ public class VariantUtilsTest {
   @Test
   public void testGetVariantQualityMeasure() {
     final Double firstVariantQuality = VariantUtils.getVariantQualityMeasure(
-        TestHelper.makeVariant("chr1", 100, "A", "C", 0.0).build());
+        makeVariant("chr1", 100, "A", "C", 0.0).build());
     assertTrue(firstVariantQuality >= -1E-6 && firstVariantQuality <= 1E-6);
 
     final Double vqslod = -0.001;
@@ -128,7 +137,7 @@ public class VariantUtilsTest {
   @Test
   public void testGetPosition() {
     assertEquals(
-        VariantUtils.getPosition(TestHelper.makeVariant("chr1", 100, "A", "C", 0.0).build()),
+        VariantUtils.getPosition(makeVariant("chr1", 100, "A", "C", 0.0).build()),
         TestHelper.makePosition("chr1", 100));
 
     final double vqslod = -0.001;
@@ -186,7 +195,7 @@ public class VariantUtilsTest {
 
   @Test
   public void testHasVariation() {
-    Variant template = TestHelper.makeVariant("chr1", 100, "A", "C").build();
+    Variant template = makeVariant("chr1", 100, "A", "C").build();
     VariantCall homRef = VariantCall.newBuilder().addGenotype(0).addGenotype(0).build();
     VariantCall het1 = VariantCall.newBuilder().addGenotype(0).addGenotype(1).build();
     VariantCall het2 = VariantCall.newBuilder().addGenotype(1).addGenotype(0).build();
@@ -209,7 +218,7 @@ public class VariantUtilsTest {
                 .build()));
 
     Variant multiTemplate =
-        TestHelper.makeVariant("chr2", 200, "G", "GT")
+        makeVariant("chr2", 200, "G", "GT")
             .addAlternateBases("T")
             .build();
     VariantCall multiAlt = VariantCall.newBuilder().addGenotype(1).addGenotype(2).build();
@@ -224,7 +233,7 @@ public class VariantUtilsTest {
     Variant variant =
         Variant.newBuilder()
             .setId("Var1")
-            .addFilter("PASS")
+            .addFilter(VariantUtils.PASSES_FILTERS)
             .setReferenceBases("A")
             .addAlternateBases("G")
             .addAlternateBases("C")
@@ -235,7 +244,7 @@ public class VariantUtilsTest {
     variant =
         Variant.newBuilder()
             .setId("Var2")
-            .addFilter(".")
+            .addFilter(VariantUtils.MISSING_VALUE)
             .setReferenceBases("A")
             .addAlternateBases("G")
             .addAlternateBases("C")
@@ -530,15 +539,15 @@ public class VariantUtilsTest {
 
   @Test
   public void testChromosomalOrdering() {
-    Variant first = TestHelper.makeVariant("chr1", 100, "A", "C").build();
-    Variant second = TestHelper.makeVariant("chr1", 100, "A", "T").build();
-    Variant third = TestHelper.makeVariant("chr1", 100, "A", "C", "T").build();
-    Variant fourth = TestHelper.makeVariant("chr1", 100, "C", "A").build();
-    Variant fifth = TestHelper.makeVariant("chr1", 100, "AA", "A").build();
-    Variant sixth = TestHelper.makeVariant("chr1", 102, "A", "C").build();
-    Variant seventh = TestHelper.makeVariant("chr2", 10, "A", "C").build();
-    Variant eighth = TestHelper.makeVariant("chr2", 20, "A", "C", "T", "G").build();
-    Variant ninth = TestHelper.makeVariant("chr2", 20, "A", "T", "C", "G").build();
+    Variant first = makeVariant("chr1", 100, "A", "C").build();
+    Variant second = makeVariant("chr1", 100, "A", "T").build();
+    Variant third = makeVariant("chr1", 100, "A", "C", "T").build();
+    Variant fourth = makeVariant("chr1", 100, "C", "A").build();
+    Variant fifth = makeVariant("chr1", 100, "AA", "A").build();
+    Variant sixth = makeVariant("chr1", 102, "A", "C").build();
+    Variant seventh = makeVariant("chr2", 10, "A", "C").build();
+    Variant eighth = makeVariant("chr2", 20, "A", "C", "T", "G").build();
+    Variant ninth = makeVariant("chr2", 20, "A", "T", "C", "G").build();
 
     List<Variant> actual =
         Arrays.asList(ninth, seventh, eighth, first, sixth, fifth, fourth, second, third);
@@ -549,4 +558,5 @@ public class VariantUtilsTest {
     Collections.sort(actual, VariantUtils.CHROMOSOMAL_ORDER);
     assertTrue(actual.equals(expected));
   }
+
 }

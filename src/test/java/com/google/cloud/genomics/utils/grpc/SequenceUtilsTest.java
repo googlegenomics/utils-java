@@ -142,4 +142,5 @@ public class SequenceUtilsTest {
             .toList();
     assertTrue(nonRefAlleles.size() == 0);
   }
+
 }

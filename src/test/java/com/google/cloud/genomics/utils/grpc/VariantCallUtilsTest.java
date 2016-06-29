@@ -26,8 +26,16 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
+import java.util.Arrays;
+import java.util.List;
+
 @RunWith(JUnit4.class)
 public class VariantCallUtilsTest {
+
+  private Variant.Builder makeVariant(String chr, String id, String ref, String alt,
+                                      List<VariantCall> calls) {
+    return TestHelper.makeVariant(chr, id, -1, ref, Arrays.asList(alt), null, -1, calls);
+  }
 
   @Test
   public void testCallComparator() {
@@ -47,7 +55,7 @@ public class VariantCallUtilsTest {
   @Test
   public void testNonRefCalls() {
     Variant bothRefHomozygous =
-        TestHelper.makeVariant(
+        makeVariant(
             "Chr1",
             "Variant1",
             "C",
@@ -57,7 +65,7 @@ public class VariantCallUtilsTest {
                 TestHelper.makeCall("Sample2", 0, 0).build())).build();
 
     Variant bothHeterozygous =
-        TestHelper.makeVariant(
+        makeVariant(
             "Chr1",
             "Variant2",
             "A",
@@ -67,7 +75,7 @@ public class VariantCallUtilsTest {
                 TestHelper.makeCall("Sample2", 0, 1).build())).build();
 
     Variant oneOfEach =
-        TestHelper.makeVariant(
+        makeVariant(
             "Chr1",
             "Variant3",
             "T",

@@ -60,36 +60,30 @@ public class TestHelper {
         .addAllGenotype(Arrays.asList(gt));
   }
 
-  public static Variant.Builder makeVariant(String chr, long start, String ref, String... alts) {
-    return Variant.newBuilder()
-        .addFilter("PASS")
+  public static Variant.Builder makeVariant(String chr, String id, long start, String ref, List<String> alts,
+                                            String filter, double quality, List<VariantCall> calls) {
+    Variant.Builder toReturn = Variant.newBuilder()
+        .addFilter(VariantUtils.PASSES_FILTERS)
         .setReferenceName(chr)
-        .setStart(start)
-        .setEnd(start + ref.length())
         .setReferenceBases(ref)
-        .addAllAlternateBases(Arrays.asList(alts));
-  }
+        .addAllAlternateBases(alts);
+    if (start != -1) {
+      toReturn.setStart(start).setEnd(start + ref.length());
+    }
+    if (id != null) {
+      toReturn.setId(id);
+    }
+    if (quality != -1) {
+      toReturn.setQuality(quality);
+    }
+    if (filter != null) {
+      toReturn.addFilter(filter);
+    }
+    if (calls != null) {
+      toReturn.addAllCalls(calls);
+    }
 
-  public static Variant.Builder makeVariant(
-      String chr, String id, String ref, String alt, List<VariantCall> calls) {
-    return Variant.newBuilder()
-        .addFilter("PASS")
-        .setReferenceName(chr)
-        .setId(id)
-        .setReferenceBases(ref)
-        .addAlternateBases(alt)
-        .addAllCalls(calls);
-  }
-
-  public static Variant.Builder makeVariant(String chr, long start, String ref, String alt, double quality) {
-    return Variant.newBuilder()
-        .addFilter("PASS")
-        .setReferenceName(chr)
-        .setStart(start)
-        .setEnd(start + ref.length())
-        .setReferenceBases(ref)
-        .addAlternateBases(alt)
-        .setQuality(quality);
+    return toReturn;
   }
 
   public static Variant.Builder makeVariant(String chr, long start, long end, String ref, List<String> alts) {
@@ -163,4 +157,5 @@ public class TestHelper {
     assertEquals("confirm that all data received is unique", uniqueReceivedIds.size(),
         numItemsReceived);
   }
+
 }

@@ -13,8 +13,6 @@
  */
 package com.google.cloud.genomics.utils.grpc;
 
-import com.google.cloud.genomics.utils.grpc.SequenceUtils;
-
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
@@ -23,7 +21,6 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Ordering;
 import com.google.genomics.v1.Position;
 import com.google.genomics.v1.Variant;
-import com.google.genomics.v1.VariantCall;
 import com.google.protobuf.ListValue;
 
 import java.util.Comparator;
@@ -36,14 +33,26 @@ import java.util.List;
  */
 public class VariantUtils {
 
+  public static final String INFO_FIELD_ANNOTATION_VQSLOD = "VQSLOD"; // assigned by the GATK's VQSR
+
+  /**
+   * For data processed by GATK the value of ALT is "&lt;NON_REF&gt;" for non-variant
+   * segments.
+   *
+   * See https://www.broadinstitute.org/gatk/guide/article?id=4017 for more detail.
+   */
+  public static final String GATK_NON_VARIANT_SEGMENT_ALT = "<NON_REF>";
+
+  public static final String PASSES_FILTERS = "PASS";
+
+  public static final String MISSING_VALUE = ".";
+
   /** Types of SNP mutations. <code>REFERENCE</code> corresponds to no mutation. */
   public enum SnpTitvStatus {
     REFERENCE,
     TRANSITION,
     TRANSVERSION
   }
-
-  public static final String INFO_FIELD_ANNOTATION_VQSLOD = "VQSLOD"; // assigned by the GATK's VQSR
 
   /**
    * Classifies mutation based on nucleotide changes. Assumes the variant is a SNP.
@@ -127,14 +136,6 @@ public class VariantUtils {
   }
 
   /**
-   * For data processed by GATK the value of ALT is "&lt;NON_REF&gt;" for non-variant
-   * segments.
-   *
-   * See https://www.broadinstitute.org/gatk/guide/article?id=4017 for more detail.
-   */
-  public static final String GATK_NON_VARIANT_SEGMENT_ALT = "<NON_REF>";
-
-  /**
    * Determines if the variant has at least one non-reference allele in at least one individual.
    */
   public static final Predicate<Variant> HAS_VARIATION = new Predicate<Variant>() {
@@ -176,8 +177,8 @@ public class VariantUtils {
     @Override
     public boolean apply(Variant variant) {
       return variant.getFilterCount() != 0 && !((variant.getFilterCount() == 1)
-          && (variant.getFilter(0).equalsIgnoreCase("PASS") ||
-          variant.getFilter(0).equalsIgnoreCase(".")));
+          && (variant.getFilter(0).equalsIgnoreCase(PASSES_FILTERS) ||
+          variant.getFilter(0).equalsIgnoreCase(MISSING_VALUE)));
     }
   };
 
@@ -216,7 +217,7 @@ public class VariantUtils {
         return true;
       }
       for (String alt : variant.getAlternateBasesList()) {
-        if (alt.length() != refSize) {
+        if (alt.length() > refSize) {
           return true;
         }
       }
@@ -392,4 +393,5 @@ public class VariantUtils {
         && variant1.getReferenceBases().equals(variant2.getReferenceBases())
         && variant1.getStart() == variant2.getStart();
   }
+
 }
