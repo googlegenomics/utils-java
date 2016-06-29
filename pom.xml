@@ -57,16 +57,6 @@
     </repository>
   </distributionManagement>
 
-  <!-- This repository is for grpc-java snapshot builds. -->
-  <repositories>
-    <repository>
-      <id>ossrh-snapshots</id>
-      <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
-      <releases><enabled>false</enabled></releases>
-      <snapshots><enabled>true</enabled></snapshots>
-    </repository>
-  </repositories>
-
   <!-- This repository is for grpc-java protoc plugin. -->
   <pluginRepositories>
     <pluginRepository>
@@ -318,9 +308,9 @@
     <junit.version>4.11</junit.version>
     <google.api.version>1.22.0</google.api.version>
     <google.auth.version>0.4.0</google.auth.version>
-    <google.api.genomics.version>v1-rev79-1.22.0</google.api.genomics.version>
+    <google.api.genomics.version>v1-rev87-1.22.0</google.api.genomics.version>
     <google.guava.version>19.0</google.guava.version>
-    <io.grpc.version>0.14.0</io.grpc.version>
+    <io.grpc.version>0.14.1</io.grpc.version>
     <mockito.version>1.10.8</mockito.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.build.targetEncoding>UTF-8</project.build.targetEncoding>
