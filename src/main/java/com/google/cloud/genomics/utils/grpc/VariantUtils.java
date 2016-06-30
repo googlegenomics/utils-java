@@ -182,6 +182,20 @@ public class VariantUtils {
   }
 
   /**
+   * Determine whether the first variant overlaps the second variant.
+   *
+   * This is particularly useful when determining whether a non-variant segment overlaps a variant.
+   *
+   * @param blockRecord
+   * @param variant
+   * @return true, if the first variant overlaps the second variant
+   */
+  public static boolean isOverlapping(Variant blockRecord, Variant.Builder variant) {
+    return blockRecord.getStart() <= variant.getStart()
+        && blockRecord.getEnd() >= variant.getStart() + 1;
+  }
+
+  /**
    * Determine whether two variants occur at the same site in the genome, where "site"
    * is defined by reference name, start position, and reference bases.
    *

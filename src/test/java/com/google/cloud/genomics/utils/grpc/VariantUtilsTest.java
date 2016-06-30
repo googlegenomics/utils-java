@@ -131,6 +131,17 @@ public class VariantUtilsTest {
   }
 
   @Test
+  public void testIsOverlappingBuilderParam() {
+    Variant blockRecord = TestHelper.makeBlockRecord("chr17", 100, 200, "C", TestHelper.EMPTY_ALT_LIST).build();
+
+    // SNPs
+    assertFalse(VariantUtils.isOverlapping(blockRecord,
+        TestHelper.makeVariant("chr17", 99, "C", Arrays.asList("G"), "hom-AA")));
+    assertTrue(VariantUtils.isOverlapping(blockRecord,
+        TestHelper.makeVariant("chr17", 100, "C", Arrays.asList("G"), "hom-AA")));
+  };
+
+  @Test
   public void testIsSameVariantSite() {
     // SNP and insertion
     assertTrue(VariantUtils.isSameVariantSite(
