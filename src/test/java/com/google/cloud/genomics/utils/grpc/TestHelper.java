@@ -60,6 +60,32 @@ public class TestHelper {
         .addAllGenotype(Arrays.asList(gt));
   }
 
+  public static Variant.Builder makeVariant(String chr, String id, long start, String ref, List<String> alts,
+                                            String filter, double quality, List<VariantCall> calls) {
+    Variant.Builder toReturn = Variant.newBuilder()
+        .addFilter(VariantUtils.PASSES_FILTERS)
+        .setReferenceName(chr)
+        .setReferenceBases(ref)
+        .addAllAlternateBases(alts);
+    if (start != -1) {
+      toReturn.setStart(start).setEnd(start + ref.length());
+    }
+    if (id != null) {
+      toReturn.setId(id);
+    }
+    if (quality != -1) {
+      toReturn.setQuality(quality);
+    }
+    if (filter != null) {
+      toReturn.addFilter(filter);
+    }
+    if (calls != null) {
+      toReturn.addAllCalls(calls);
+    }
+
+    return toReturn;
+  }
+
   public static Variant.Builder makeVariant(String chr, long start, long end, String ref, List<String> alts) {
     return Variant.newBuilder()
         .setReferenceName(chr)
@@ -76,6 +102,10 @@ public class TestHelper {
     }
     return makeVariant(chr, start, start + ref.length(), ref, alts)
         .addAllCalls(calls);
+  }
+
+  public static Position makePosition(String chr, long pos) {
+    return Position.newBuilder().setReferenceName(chr).setPosition(pos).build();
   }
 
   public static Variant.Builder makeBlockRecord(String chr, long start, long end, String ref, List<String> alts) {
@@ -127,4 +157,5 @@ public class TestHelper {
     assertEquals("confirm that all data received is unique", uniqueReceivedIds.size(),
         numItemsReceived);
   }
+
 }
