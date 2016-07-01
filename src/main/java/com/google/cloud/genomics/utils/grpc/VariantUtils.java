@@ -16,6 +16,7 @@ package com.google.cloud.genomics.utils.grpc;
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
+import com.google.common.collect.ComparisonChain;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Ordering;
 import com.google.genomics.v1.Variant;
@@ -36,6 +37,28 @@ public class VariantUtils {
    * See https://www.broadinstitute.org/gatk/guide/article?id=4017 for more detail.
    */
   public static final String GATK_NON_VARIANT_SEGMENT_ALT = "<NON_REF>";
+
+  /**
+   * Determines whether a variant represents a multi-nucleotide change.
+   */
+  public static final Predicate<Variant> IS_MULTI_NUCLEOTIDE = new Predicate<Variant>() {
+    @Override
+    public boolean apply(Variant variant) {
+      int refSize = variant.getReferenceBases().length();
+      if (refSize < 1) {
+        return false;
+      } else if (refSize > 1) {
+        return true;
+      }
+      for (String alt : variant.getAlternateBasesList()) {
+        if (alt.length() > refSize) {
+          return true;
+        }
+      }
+
+      return false;
+    }
+  };
 
   /**
    * Determine whether the variant has any values in alternate bases.
@@ -166,6 +189,36 @@ public class VariantUtils {
   public static final Comparator<Variant> NON_VARIANT_SEGMENT_COMPARATOR = BY_START
       .compound(BY_NON_VARIANT_SEGMENT_STATUS.compound(BY_REFERENCE_BASES.compound(
           BY_ALTERNATE_BASES)));
+
+  /**
+   * A Comparator that orders {@code Variant} objects by chromosome, position, and alleles.
+   */
+  public static final Comparator<Variant> CHROMOSOMAL_ORDER = new ChromosomalOrderComparator();
+
+  private static final class ChromosomalOrderComparator implements Comparator<Variant> {
+    @Override
+    public int compare(Variant v1, Variant v2) {
+      int comparison =
+          ComparisonChain.start()
+              .compare(v1.getReferenceName(), v2.getReferenceName())
+              .compare(v1.getStart(), v2.getStart())
+              .compare(v1.getEnd(), v2.getEnd())
+              .compare(v1.getReferenceBases(), v2.getReferenceBases())
+              .compare(v1.getAlternateBasesList().size(), v2.getAlternateBasesList().size())
+              .result();
+
+      // If there is no difference yet, compare based on alternate alleles until one is found.
+      // This is a safe iteration since the list sizes are determined to be equal in the above
+      // chain.
+      int ix = 0;
+      int numAlternateAlleles = v1.getAlternateBasesList().size();
+      while (comparison == 0 && ix < numAlternateAlleles) {
+        comparison = v1.getAlternateBases(ix).compareTo(v2.getAlternateBases(ix));
+        ix++;
+      }
+      return comparison;
+    }
+  }
 
   /**
    * Determine whether the first variant overlaps the second variant.

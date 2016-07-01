@@ -35,6 +35,48 @@ public class VariantUtilsTest {
   public static final String GATK_ALT = VariantUtils.GATK_NON_VARIANT_SEGMENT_ALT;
 
   @Test
+  public void testIsMultiNucleotide() {
+    // missing reference
+    assertFalse(VariantUtils.IS_MULTI_NUCLEOTIDE.apply(Variant.newBuilder().addAlternateBases("G").build()));
+
+    // Standard SNP
+    assertFalse(VariantUtils.IS_MULTI_NUCLEOTIDE.apply(
+        Variant.newBuilder().setReferenceBases("A").addAlternateBases("G").build()));
+
+    // Triallelic SNV
+    assertFalse(VariantUtils.IS_MULTI_NUCLEOTIDE.apply(
+        Variant.newBuilder()
+            .setReferenceBases("A")
+            .addAlternateBases("G")
+            .addAlternateBases("C")
+            .build()));
+
+    // Quad-allelic SNV
+    assertFalse(VariantUtils.IS_MULTI_NUCLEOTIDE.apply(
+        Variant.newBuilder()
+            .setReferenceBases("A")
+            .addAlternateBases("G")
+            .addAlternateBases("C")
+            .addAlternateBases("T")
+            .build()));
+
+    // Unknown multi-nucleotide variant
+    assertTrue(VariantUtils.IS_MULTI_NUCLEOTIDE.apply(Variant.newBuilder().setReferenceBases("AT").build()));
+
+    // Standard deletion
+    assertTrue(VariantUtils.IS_MULTI_NUCLEOTIDE.apply(
+        Variant.newBuilder().setReferenceBases("AT").addAlternateBases("A").build()));
+
+    // Standard insertion
+    assertTrue(VariantUtils.IS_MULTI_NUCLEOTIDE.apply(
+        Variant.newBuilder().setReferenceBases("T").addAlternateBases("TAA").build()));
+
+    // Weird MNP
+    assertTrue(VariantUtils.IS_MULTI_NUCLEOTIDE.apply(
+        Variant.newBuilder().setReferenceBases("TCC").addAlternateBases("TAA").build()));
+  }
+
+  @Test
   public void testIsSNP() {
     assertTrue(VariantUtils.IS_SNP.apply(
         TestHelper.makeVariant("chr17", 100, "C", Arrays.asList("G"), "het-RA").build()));
@@ -209,5 +251,27 @@ public class VariantUtilsTest {
     Collections.sort(input, comparator);
     assertEquals(input, Arrays.asList(insert1BiAllelic, insert2BiAllelic, snpInsertMultiAllelic,
         delete2BiAllelic, indelMultiAllelic, delete1BiAllelic, deleteMultiAllelic));
+  }
+
+  @Test
+  public void testChromosomalOrdering() {
+    Variant first = TestHelper.makeVariant("chr1", 100, "A", "C").build();
+    Variant second = TestHelper.makeVariant("chr1", 100, "A", "T").build();
+    Variant third = TestHelper.makeVariant("chr1", 100, "A", "C", "T").build();
+    Variant fourth = TestHelper.makeVariant("chr1", 100, "C", "A").build();
+    Variant fifth = TestHelper.makeVariant("chr1", 100, "AA", "A").build();
+    Variant sixth = TestHelper.makeVariant("chr1", 102, "A", "C").build();
+    Variant seventh = TestHelper.makeVariant("chr2", 10, "A", "C").build();
+    Variant eighth = TestHelper.makeVariant("chr2", 20, "A", "C", "T", "G").build();
+    Variant ninth = TestHelper.makeVariant("chr2", 20, "A", "T", "C", "G").build();
+
+    List<Variant> actual =
+        Arrays.asList(ninth, seventh, eighth, first, sixth, fifth, fourth, second, third);
+    List<Variant> expected =
+        Arrays.asList(first, second, third, fourth, fifth, sixth, seventh, eighth, ninth);
+
+    assertTrue(!actual.equals(expected));
+    Collections.sort(actual, VariantUtils.CHROMOSOMAL_ORDER);
+    assertTrue(actual.equals(expected));
   }
 }

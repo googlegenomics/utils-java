@@ -69,6 +69,16 @@ public class TestHelper {
         .addAllAlternateBases(alts);
   }
 
+  public static Variant.Builder makeVariant(String chr, long start, String ref, String... alts) {
+    return Variant.newBuilder()
+        .addFilter("PASS")
+        .setReferenceName(chr)
+        .setStart(start)
+        .setEnd(start + ref.length())
+        .setReferenceBases(ref)
+        .addAllAlternateBases(Arrays.asList(alts));
+  }
+
   public static Variant.Builder makeVariant(String chr, long start, String ref, List<String> alts, String... callTypes) {
     List<VariantCall> calls = Lists.newArrayList();
     for (String callType : callTypes) {
