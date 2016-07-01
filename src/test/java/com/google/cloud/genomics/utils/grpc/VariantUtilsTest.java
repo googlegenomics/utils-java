@@ -244,15 +244,15 @@ public class VariantUtilsTest {
 
   @Test
   public void testChromosomalOrdering() {
-    Variant first = makeVariant("chr1", 100, "A", "C").build();
-    Variant second = makeVariant("chr1", 100, "A", "T").build();
-    Variant third = makeVariant("chr1", 100, "A", "C", "T").build();
-    Variant fourth = makeVariant("chr1", 100, "C", "A").build();
-    Variant fifth = makeVariant("chr1", 100, "AA", "A").build();
-    Variant sixth = makeVariant("chr1", 102, "A", "C").build();
-    Variant seventh = makeVariant("chr2", 10, "A", "C").build();
-    Variant eighth = makeVariant("chr2", 20, "A", "C", "T", "G").build();
-    Variant ninth = makeVariant("chr2", 20, "A", "T", "C", "G").build();
+    Variant first = TestHelper.makeVariant("chr1", 100, "A", "C").build();
+    Variant second = TestHelper.makeVariant("chr1", 100, "A", "T").build();
+    Variant third = TestHelper.makeVariant("chr1", 100, "A", "C", "T").build();
+    Variant fourth = TestHelper.makeVariant("chr1", 100, "C", "A").build();
+    Variant fifth = TestHelper.makeVariant("chr1", 100, "AA", "A").build();
+    Variant sixth = TestHelper.makeVariant("chr1", 102, "A", "C").build();
+    Variant seventh = TestHelper.makeVariant("chr2", 10, "A", "C").build();
+    Variant eighth = TestHelper.makeVariant("chr2", 20, "A", "C", "T", "G").build();
+    Variant ninth = TestHelper.makeVariant("chr2", 20, "A", "T", "C", "G").build();
 
     List<Variant> actual =
         Arrays.asList(ninth, seventh, eighth, first, sixth, fifth, fourth, second, third);

@@ -16,6 +16,7 @@ package com.google.cloud.genomics.utils.grpc;
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
+import com.google.common.collect.ComparisonChain;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Ordering;
 import com.google.genomics.v1.Variant;
