@@ -249,6 +249,30 @@
         <artifactId>coveralls-maven-plugin</artifactId>
         <version>2.2.0</version>
       </plugin>
+      <!-- Takes care of populating the git submodule for protocol buffer definitions. -->
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <inherited>false</inherited> <!-- only execute these in the parent -->
+        <executions>
+          <execution>
+            <id>git submodule update</id>
+            <phase>initialize</phase>
+            <configuration>
+              <executable>git</executable>
+              <arguments>
+                <argument>submodule</argument>
+                <argument>update</argument>
+                <argument>--init</argument>
+                <argument>--recursive</argument>
+              </arguments>
+            </configuration>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
       <plugin>
         <groupId>org.xolstice.maven.plugins</groupId>
         <artifactId>protobuf-maven-plugin</artifactId>
