@@ -250,9 +250,9 @@
         <version>2.2.0</version>
       </plugin>
       <plugin>
-        <groupId>com.google.protobuf.tools</groupId>
-        <artifactId>maven-protoc-plugin</artifactId>
-        <version>0.4.2</version>
+        <groupId>org.xolstice.maven.plugins</groupId>
+        <artifactId>protobuf-maven-plugin</artifactId>
+        <version>0.5.0</version>
         <configuration>
           <!--
               The version of protoc must match protobuf-java. If you don't depend on
@@ -262,12 +262,14 @@
         <protocArtifact>com.google.protobuf:protoc:3.0.0-beta-2:exe:${os.detected.classifier}</protocArtifact>
         <pluginId>grpc-java</pluginId>
         <pluginArtifact>io.grpc:protoc-gen-grpc-java:${io.grpc.version}:exe:${os.detected.classifier}</pluginArtifact>
+        <checkStaleness>true</checkStaleness>
       </configuration>
       <executions>
         <execution>
           <goals>
             <goal>compile</goal>
             <goal>compile-custom</goal>
+            <goal>test-compile</goal>
           </goals>
         </execution>
       </executions>
