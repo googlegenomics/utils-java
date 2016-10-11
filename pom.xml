@@ -290,9 +290,9 @@
     <junit.version>4.11</junit.version>
     <google.api.version>1.22.0</google.api.version>
     <google.auth.version>0.4.0</google.auth.version>
-    <google.api.genomics.version>v1-rev103-1.22.0</google.api.genomics.version>
+    <google.api.genomics.version>v1-rev109-1.22.0</google.api.genomics.version>
     <google.guava.version>19.0</google.guava.version>
-    <io.grpc.version>0.15.0</io.grpc.version>
+    <io.grpc.version>1.0.1</io.grpc.version>
     <mockito.version>1.10.8</mockito.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.build.targetEncoding>UTF-8</project.build.targetEncoding>
