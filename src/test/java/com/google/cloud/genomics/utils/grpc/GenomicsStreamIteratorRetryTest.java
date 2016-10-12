@@ -90,13 +90,12 @@ public class GenomicsStreamIteratorRetryTest {
 
   protected Server server;
 
-  protected static class UnitServerImpl implements StreamingReadServiceGrpc.StreamingReadService,
-      StreamingVariantServiceGrpc.StreamingVariantService {
+  protected static class FaultInjector {
 
     protected final InjectionSite injectionSite;
     protected volatile boolean failNow;  // Accessed by the InProcess Server executor threads.
 
-    protected UnitServerImpl(InjectionSite targetSite) {
+    protected FaultInjector(InjectionSite targetSite) {
       injectionSite = targetSite;
       failNow = true;
     }
@@ -107,18 +106,6 @@ public class GenomicsStreamIteratorRetryTest {
           return true;
         }
         return false;
-    }
-
-    @Override
-    public void streamReads(StreamReadsRequest request,
-        StreamObserver<StreamReadsResponse> responseObserver) {
-      respondWithFaults(responseObserver, READ_RESPONSES);
-    }
-
-    @Override
-    public void streamVariants(StreamVariantsRequest request,
-        StreamObserver<StreamVariantsResponse> responseObserver) {
-      respondWithFaults(responseObserver, VARIANT_RESPONSES);
     }
 
     protected synchronized void respondWithFaults(StreamObserver responseObserver, Message[] responses) {
@@ -156,6 +143,34 @@ public class GenomicsStreamIteratorRetryTest {
     }
   }
 
+  protected static class ReadUnitServerImpl extends StreamingReadServiceGrpc.StreamingReadServiceImplBase {
+    final FaultInjector faultInjector;
+
+    public ReadUnitServerImpl(InjectionSite targetSite) {
+      faultInjector = new FaultInjector(targetSite);
+    }
+
+    @Override
+    public void streamReads(StreamReadsRequest request,
+        StreamObserver<StreamReadsResponse> responseObserver) {
+      faultInjector.respondWithFaults(responseObserver, READ_RESPONSES);
+    }
+  }
+
+  protected static class VariantUnitServerImpl extends StreamingVariantServiceGrpc.StreamingVariantServiceImplBase {
+    final FaultInjector faultInjector;
+
+    public VariantUnitServerImpl(InjectionSite targetSite) {
+      faultInjector = new FaultInjector(targetSite);
+    }
+
+    @Override
+    public void streamVariants(StreamVariantsRequest request,
+        StreamObserver<StreamVariantsResponse> responseObserver) {
+      faultInjector.respondWithFaults(responseObserver, VARIANT_RESPONSES);
+    }
+  }
+
   /**
    * Starts the in-process server configured to inject one fault at the specified target site.
    *
@@ -165,8 +180,8 @@ public class GenomicsStreamIteratorRetryTest {
     try {
       server =
           InProcessServerBuilder.forName(testName.getMethodName())
-              .addService(StreamingReadServiceGrpc.bindService(new UnitServerImpl(targetSite)))
-              .addService(StreamingVariantServiceGrpc.bindService(new UnitServerImpl(targetSite)))
+              .addService(new ReadUnitServerImpl(targetSite))
+              .addService(new VariantUnitServerImpl(targetSite))
               .build()
               .start();
     } catch (IOException ex) {

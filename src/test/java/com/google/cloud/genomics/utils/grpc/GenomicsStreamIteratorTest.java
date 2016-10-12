@@ -61,8 +61,8 @@ public class GenomicsStreamIteratorTest {
   public static void startServer() {
     try {
       server = InProcessServerBuilder.forName(SERVER_NAME)
-        .addService(StreamingReadServiceGrpc.bindService(new ReadsUnitServerImpl()))
-        .addService(StreamingVariantServiceGrpc.bindService(new VariantsUnitServerImpl()))
+        .addService(new ReadsUnitServerImpl())
+        .addService(new VariantsUnitServerImpl())
         .build().start();
     } catch (IOException ex) {
       throw new RuntimeException(ex);
@@ -74,7 +74,7 @@ public class GenomicsStreamIteratorTest {
     server.shutdownNow();
   }
 
-  protected static class ReadsUnitServerImpl implements StreamingReadServiceGrpc.StreamingReadService {
+  protected static class ReadsUnitServerImpl extends StreamingReadServiceGrpc.StreamingReadServiceImplBase {
     @Override
     public void streamReads(StreamReadsRequest request,
         StreamObserver<StreamReadsResponse> responseObserver) {
@@ -88,7 +88,7 @@ public class GenomicsStreamIteratorTest {
     }
   }
 
-  protected static class VariantsUnitServerImpl implements StreamingVariantServiceGrpc.StreamingVariantService {
+  protected static class VariantsUnitServerImpl extends StreamingVariantServiceGrpc.StreamingVariantServiceImplBase {
     @Override
     public void streamVariants(StreamVariantsRequest request,
         StreamObserver<StreamVariantsResponse> responseObserver) {

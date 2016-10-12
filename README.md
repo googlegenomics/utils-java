@@ -10,14 +10,14 @@ If you have duplicate code appearing in your projects, or see useful functions i
 Note: you can find the latest available version of this project in [Maven's central repository](https://search.maven.org/#search%7Cga%7C1%7Ca%3A%22google-genomics-utils%22).
 
 ### Maven
-Add the following to your `pom.xml` file:
+Add the following to your `pom.xml` file, updating the version to [the most recent release](https://search.maven.org/#search%7Cgav%7C1%7Cg%3A%22com.google.cloud.genomics%22%20AND%20a%3A%22google-genomics-utils%22):
 ```
 <project>
   <dependencies>
     <dependency>
       <groupId>com.google.cloud.genomics</groupId>
       <artifactId>google-genomics-utils</artifactId>
-      <version>v1beta2-0.1</version>
+      <version>v1-0.7</version>
     </dependency>
   </dependencies>
 </project>
@@ -65,7 +65,7 @@ If you wish to modify this code while also modifying a project that depends upon
 
 ##gRPC
 
-See [Example.java](src/main/java/com/google/cloud/genomics/utils/grpc/Example.java) for some example code that uses gRPC. The protocol buffer schema for the API can be found in [src/main/proto/google/genomics/v1](src/main/proto/google/genomics/v1).
+See [Example.java](src/main/java/com/google/cloud/genomics/utils/grpc/Example.java) for some example code that uses gRPC. The protocol buffer schema for the API can be found in [https://github.com/googleapis/googleapis/tree/master/google/genomics](https://github.com/googleapis/googleapis/tree/master/google/genomics).
 
 * To run the example:
 ```
@@ -79,12 +79,9 @@ mvn exec:java -Dexec.mainClass=com.google.cloud.genomics.utils.grpc.Example
   * [GenomicsFactory.java](src/main/java/com/google/cloud/genomics/utils/GenomicsFactory.java) Makes it easier to construct an authenticated Genomics service.
   * [Paginator.java](src/main/java/com/google/cloud/genomics/utils/Paginator.java) Lazily paginates through readsets, reads, variants, callsets, etc...
 * [com.google.cloud.genomics.utils.grpc](src/main/java/com/google/cloud/genomics/utils/grpc)
-  * [Channels.java](src/main/java/com/google/cloud/genomics/utils/grpc/Channels.java) Makes it easier to creating gRPC channels to the Google Genomics API.
+  * [GenomicsChannel.java](src/main/java/com/google/cloud/genomics/utils/grpc/GenomicsChannel.java) Makes it easier to creating gRPC channels to the Google Genomics API.
   * [Example.java](src/main/java/com/google/cloud/genomics/utils/grpc/Example.java) Demonstrates usage of gRPC via a minimal example.
-* [proto](src/main/proto)
-  * [Protocol Buffer](http://www.grpc.io/docs/#working-with-protocol-buffers
-) files defing the gRPC interface to the Genomics API.
-  
+
 ##Releasing new versions
 
 This section contains details on getting a new release into Maven central and can be safely ignored by most people. If you need a new release of this code, go ahead and just [file an issue](https://github.com/googlegenomics/utils-java/issues/new).
@@ -113,9 +110,9 @@ This section contains details on getting a new release into Maven central and ca
 mvn release:prepare && mvn release:perform
 ```
 > ...  
-> **What is the release version for "Google Genomics Utils"?:** \<the next version, e.g. 'v1beta2-0.26'\>  
+> **What is the release version for "Google Genomics Utils"?:** \<the next version, e.g. 'v1-0.7'\>  
 > **What is SCM release tag or label for "Google Genomics Utils"?:** \<ENTER\>  
-> **What is the new development version for "Google Genomics Utils"?** \<the next, next version with a -SNAPSHOT suffix, e.g. v1beta2-0.27-SNAPSHOT\>  
+> **What is the new development version for "Google Genomics Utils"?** \<the next, next version with a -SNAPSHOT suffix, e.g. v1-0.8-SNAPSHOT\>  
 
 2. Find the repository at https://oss.sonatype.org/#stagingRepositories and close it.
 3. If closing succeeds, then release it. See the [detailed instructions](http://central.sonatype.org/pages/releasing-the-deployment.html#close-and-drop-or-release-your-staging-repository) for more info.
