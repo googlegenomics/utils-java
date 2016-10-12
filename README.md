@@ -24,14 +24,14 @@ Add the following to your `pom.xml` file:
 ```
 
 ### Gradle
-Add the following to your `build.gradle` file:
+Add the following to your `build.gradle` file, updating the version to [the most recent release](https://search.maven.org/#search%7Cgav%7C1%7Cg%3A%22com.google.cloud.genomics%22%20AND%20a%3A%22google-genomics-utils%22):
 ```
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    compile 'com.google.cloud.genomics:google-genomics-utils:v1beta2-0.1'
+    compile 'com.google.cloud.genomics:google-genomics-utils:v1-0.7'
 }
 ```
 
