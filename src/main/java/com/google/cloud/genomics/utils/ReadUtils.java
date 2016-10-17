@@ -272,9 +272,6 @@ public class ReadUtils {
     return result != null ? result : "Z";
   }
 
-  /** Codec used for converting know SAM tags and their values, from strings to Objects */
-  private static TextTagCodec textTagCodec = new TextTagCodec();
-
   public static final SAMRecord makeSAMRecord(Read read, SAMFileHeader header) {
     SAMRecord record = new SAMRecord(header);
     if (read.getFragmentName() != null) {
@@ -347,6 +344,7 @@ public class ReadUtils {
       record.setBaseQualities(qualityArray);
     }
 
+    TextTagCodec textTagCodec = new TextTagCodec();
     Map<String, List<Object>> tags = read.getInfo();
     if (tags != null) {
       for (String tag : tags.keySet()) {
