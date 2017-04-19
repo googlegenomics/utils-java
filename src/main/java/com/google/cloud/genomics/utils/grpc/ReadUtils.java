@@ -239,9 +239,6 @@ public class ReadUtils extends com.google.cloud.genomics.utils.ReadUtils {
     if (read.getFragmentName() != null) {
       record.setReadName(read.getFragmentName());
     }
-    if (read.getReadGroupId() != null && !read.getReadGroupId().isEmpty()) {
-      record.setAttribute("RG" ,read.getReadGroupId());
-    }
     // Set flags, as advised in http://google-genomics.readthedocs.org/en/latest/migrating_tips.html
     int flags = getFlags(read);
     record.setFlags(flags);
