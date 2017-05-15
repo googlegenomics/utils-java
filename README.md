@@ -35,7 +35,7 @@ dependencies {
 }
 ```
 
-##Building this project
+## Building this project
 
 1. git clone this repository.
  
@@ -63,7 +63,7 @@ If you wish to modify this code while also modifying a project that depends upon
   4. IntelliJ users:
     * Import the project via File > Open and then double-click on the pom.xml file.
 
-##gRPC
+## gRPC
 
 See [Example.java](src/main/java/com/google/cloud/genomics/utils/grpc/Example.java) for some example code that uses gRPC. The protocol buffer schema for the API can be found in [src/main/proto/google/genomics/v1](src/main/proto/google/genomics/v1).
 
@@ -73,7 +73,7 @@ MAVEN_OPTS="-Xbootclasspath/p:/YOUR/PATH/TO/alpn-boot-YOUR-VERSION.jar" \
 mvn exec:java -Dexec.mainClass=com.google.cloud.genomics.utils.grpc.Example
 ```
 
-##Code Layout
+## Code Layout
 
 * [com.google.cloud.genomics.utils](src/main/java/com/google/cloud/genomics/utils)
   * [GenomicsFactory.java](src/main/java/com/google/cloud/genomics/utils/GenomicsFactory.java) Makes it easier to construct an authenticated Genomics service.
@@ -85,11 +85,11 @@ mvn exec:java -Dexec.mainClass=com.google.cloud.genomics.utils.grpc.Example
   * [Protocol Buffer](http://www.grpc.io/docs/#working-with-protocol-buffers
 ) files defing the gRPC interface to the Genomics API.
   
-##Releasing new versions
+## Releasing new versions
 
 This section contains details on getting a new release into Maven central and can be safely ignored by most people. If you need a new release of this code, go ahead and just [file an issue](https://github.com/googlegenomics/utils-java/issues/new).
 
-###Prereqs
+### Prereqs
 * [Create a Sonatype Jira Account](http://central.sonatype.org/pages/ossrh-guide.html#initial-setup)
 * [File a ticket](https://issues.sonatype.org/browse/OSSRH-11629) to get access to the Sonatype com.google.cloud.genomics group 
 * [Setup gpg](http://central.sonatype.org/pages/working-with-pgp-signatures.html) (Don't forget to publish a public key)
@@ -107,7 +107,7 @@ This section contains details on getting a new release into Maven central and ca
 </settings> 
 ```
 
-###Making a new release
+### Making a new release
 1. Use Maven to tag the code, up the pom version and release into the Sonatype staging area.
 ```
 mvn release:prepare && mvn release:perform
