@@ -5,7 +5,7 @@ This project's goal is to reduce duplicate code across different Google Genomics
 
 If you have duplicate code appearing in your projects, or see useful functions in the other [googlegenomics Java repositories](https://github.com/googlegenomics?query=-java) that you want to depend on, please [contribute](CONTRIBUTING.rst)!
 
-##Depending on this project
+## Depending on this project
 
 Note: you can find the latest available version of this project in [Maven's central repository](https://search.maven.org/#search%7Cga%7C1%7Ca%3A%22google-genomics-utils%22).
 
