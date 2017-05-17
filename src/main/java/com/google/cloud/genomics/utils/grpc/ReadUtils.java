@@ -97,10 +97,11 @@ public class ReadUtils extends com.google.cloud.genomics.utils.ReadUtils {
 
     int flags = 0;
 
-    flags += Integer.valueOf(2).equals(read.getNumberReads()) ? 1 : 0; // read_paired
+    boolean paired = Integer.valueOf(2).equals(read.getNumberReads());
+    flags += paired ? 1 : 0; // read_paired
     flags += Boolean.TRUE.equals(read.getProperPlacement()) ? 2 : 0; // read_proper_pair
     flags += isUnmapped(position) ? 4 : 0; // read_unmapped
-    flags += isUnmapped(nextMatePosition) ? 8 : 0; // mate_unmapped
+    flags += paired && isUnmapped(nextMatePosition) ? 8 : 0; // mate_unmapped
     flags += isReverseStrand(position) ? 16 : 0 ; // read_reverse_strand
     flags += isReverseStrand(nextMatePosition) ? 32 : 0; // mate_reverse_strand
     flags += read.getNumberReads() > 0 && Integer.valueOf(0).equals(read.getReadNumber()) ? 64 : 0; // first_in_pair
