@@ -61,8 +61,8 @@ public class ReadUtilsTest {
   public void testGetFlags() throws Exception {
     Read.Builder read = Read.newBuilder();
 
-    // Read unmapped (4) + Mate unmapped (8)
-    assertEquals(12, ReadUtils.getFlags(read.build()));
+    // Read unmapped (4)
+    assertEquals(4, ReadUtils.getFlags(read.build()));
 
     // All conditions false
     Position position = Position.newBuilder().setPosition(1L).build();
