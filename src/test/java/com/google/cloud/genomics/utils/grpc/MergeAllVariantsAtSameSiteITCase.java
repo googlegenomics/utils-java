@@ -70,7 +70,7 @@ public class MergeAllVariantsAtSameSiteITCase {
   public void testMerge() throws Exception {
     ImmutableList<StreamVariantsRequest> requests =
         ShardUtils.getVariantRequests(PROTOTYPE,
-            100L, "chr17:41204796:41204797");
+            100L, "chr17:41198773:41198774");
     assertEquals(1, requests.size());
 
     Iterator<StreamVariantsResponse> iter =
@@ -84,29 +84,15 @@ public class MergeAllVariantsAtSameSiteITCase {
 
     // Platinum genomes has both a snp and an insertion at this genomic site
     // but merging the calls together yields an ambiguous result.
-    Variant expectedOutput1 = TestHelper.makeVariant("chr17", 41204796, 41204797, "A", Arrays.asList("AAC", "C"))
-        .addCalls(TestHelper.makeCall("NA12882", 1, 1))  // ambiguous
-        .addCalls(TestHelper.makeCall("NA12879", 1, 1))  // ambiguous
-        .addCalls(TestHelper.makeCall("NA12891", 0, 1))  // ambiguous
+    Variant expectedOutput1 = TestHelper.makeVariant("chr17", 41198773, 41198774, "C", Arrays.asList("A", "CA"))
         .addCalls(TestHelper.makeCall("NA12878", 0, 1))  // ambiguous
-        .addCalls(TestHelper.makeCall("NA12884", 1, 1))  // ambiguous
-        .addCalls(TestHelper.makeCall("NA12882", 0, 2))  // ambiguous
-        .addCalls(TestHelper.makeCall("NA12879", 0, 2))  // ambiguous
-        .addCalls(TestHelper.makeCall("NA12892", 0, 0))
-        .addCalls(TestHelper.makeCall("NA12893", 0, 0))
-        .addCalls(TestHelper.makeCall("NA12890", 0, 0))
-        .addCalls(TestHelper.makeCall("NA12883", 0, 0))
-        .addCalls(TestHelper.makeCall("NA12891", 0, 0))  // ambiguous
-        .addCalls(TestHelper.makeCall("NA12880", 0, 0))
+        .addCalls(TestHelper.makeCall("NA12892", 0, 2))  // ambiguous
+        .addCalls(TestHelper.makeCall("NA12878", 0, 2))  // ambiguous
         .addCalls(TestHelper.makeCall("NA12877", 0, 0))
-        .addCalls(TestHelper.makeCall("NA12885", 0, 0))
         .addCalls(TestHelper.makeCall("NA12889", 0, 0))
-        .addCalls(TestHelper.makeCall("NA12887", 0, 0))
-        .addCalls(TestHelper.makeCall("NA12881", 0, 0))
-        .addCalls(TestHelper.makeCall("NA12888", 0, 0))
-        .addCalls(TestHelper.makeCall("NA12886", 0, 0))
-        .addCalls(TestHelper.makeCall("NA12878", 0, 0))  // ambiguous
-        .addCalls(TestHelper.makeCall("NA12884", 0, 0))  // ambiguous
+        .addCalls(TestHelper.makeCall("NA12891", 0, 0))
+        .addCalls(TestHelper.makeCall("NA12892", 0, 0))  // ambiguous
+        .addCalls(TestHelper.makeCall("NA12890", 0, 0))
         .putAllInfo(emptyInfo)
         .build();
 
