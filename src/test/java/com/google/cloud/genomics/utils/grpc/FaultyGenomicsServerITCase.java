@@ -63,7 +63,7 @@ public class FaultyGenomicsServerITCase {
   public static void startServer() throws IOException, GeneralSecurityException {
     try {
       server = InProcessServerBuilder.forName(SERVER_NAME)
-              .addService(StreamingVariantServiceGrpc.bindService(new VariantsIntegrationServerImpl()))
+              .addService(new VariantsIntegrationServerImpl())
               .build().start();
     } catch (IOException ex) {
       throw new RuntimeException(ex);
@@ -76,8 +76,8 @@ public class FaultyGenomicsServerITCase {
     server.shutdownNow();
   }
 
-  protected static class VariantsIntegrationServerImpl implements
-      StreamingVariantServiceGrpc.StreamingVariantService {
+  protected static class VariantsIntegrationServerImpl extends
+      StreamingVariantServiceGrpc.StreamingVariantServiceImplBase {
     final Random random = new Random();
 
     @Override

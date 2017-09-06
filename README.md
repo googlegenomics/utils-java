@@ -5,7 +5,7 @@ This project's goal is to reduce duplicate code across different Google Genomics
 
 If you have duplicate code appearing in your projects, or see useful functions in the other [googlegenomics Java repositories](https://github.com/googlegenomics?query=-java) that you want to depend on, please [contribute](CONTRIBUTING.rst)!
 
-##Depending on this project
+## Depending on this project
 
 Note: you can find the latest available version of this project in [Maven's central repository](https://search.maven.org/#search%7Cga%7C1%7Ca%3A%22google-genomics-utils%22).
 
@@ -17,7 +17,7 @@ Add the following to your `pom.xml` file:
     <dependency>
       <groupId>com.google.cloud.genomics</groupId>
       <artifactId>google-genomics-utils</artifactId>
-      <version>v1beta2-0.1</version>
+      <version>v1-0.8</version>
     </dependency>
   </dependencies>
 </project>
@@ -31,7 +31,7 @@ repositories {
 }
 
 dependencies {
-    compile 'com.google.cloud.genomics:google-genomics-utils:v1-0.7'
+    compile 'com.google.cloud.genomics:google-genomics-utils:v1-0.8'
 }
 ```
 
@@ -113,9 +113,9 @@ This section contains details on getting a new release into Maven central and ca
 mvn release:prepare && mvn release:perform
 ```
 > ...  
-> **What is the release version for "Google Genomics Utils"?:** \<the next version, e.g. 'v1beta2-0.26'\>  
+> **What is the release version for "Google Genomics Utils"?:** \<the next version, e.g. 'v1-0.9'\>  
 > **What is SCM release tag or label for "Google Genomics Utils"?:** \<ENTER\>  
-> **What is the new development version for "Google Genomics Utils"?** \<the next, next version with a -SNAPSHOT suffix, e.g. v1beta2-0.27-SNAPSHOT\>  
+> **What is the new development version for "Google Genomics Utils"?** \<the next, next version with a -SNAPSHOT suffix, e.g. v1-0.10-SNAPSHOT\>  
 
 2. Find the repository at https://oss.sonatype.org/#stagingRepositories and close it.
 3. If closing succeeds, then release it. See the [detailed instructions](http://central.sonatype.org/pages/releasing-the-deployment.html#close-and-drop-or-release-your-staging-repository) for more info.
