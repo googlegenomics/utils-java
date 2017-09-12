@@ -67,7 +67,7 @@ public class MergeNonVariantSegmentsWithSnpsITCase {
   public void testMerge() throws Exception {
     ImmutableList<StreamVariantsRequest> requests =
         ShardUtils.getVariantRequests(PROTOTYPE,
-            100, "chr17:41204796:41204797");
+            100, "chr17:41198773:41198774");
     assertEquals(1, requests.size());
 
     Iterator<StreamVariantsResponse> iter =
@@ -77,32 +77,18 @@ public class MergeNonVariantSegmentsWithSnpsITCase {
             "variants(alternateBases,calls(callSetName,genotype),end,referenceBases,referenceName,start)");
 
     // Platinum genomes has both a snp and an insertion at this genomic site.
-    Variant expectedOutput1 = TestHelper.makeVariant("chr17", 41204796, 41204797, "A", Arrays.asList("AAC"))
-        .addCalls(TestHelper.makeCall("NA12882", 1, 1))
-        .addCalls(TestHelper.makeCall("NA12879", 1, 1))
-        .addCalls(TestHelper.makeCall("NA12891", 0, 1))
+    Variant expectedOutput1 = TestHelper.makeVariant("chr17", 41198773, 41198774, "C", Arrays.asList("A"))
         .addCalls(TestHelper.makeCall("NA12878", 0, 1))
-        .addCalls(TestHelper.makeCall("NA12884", 1, 1))
+        .addCalls(TestHelper.makeCall("NA12877", 0, 0))
+        .addCalls(TestHelper.makeCall("NA12889", 0, 0))
+        .addCalls(TestHelper.makeCall("NA12891", 0, 0))
+        .addCalls(TestHelper.makeCall("NA12892", 0, 0))
+        .addCalls(TestHelper.makeCall("NA12890", 0, 0))
         .build();
 
-    Variant expectedOutput2 = TestHelper.makeVariant("chr17", 41204796, 41204797, "A", Arrays.asList("C"))
-        .addCalls(TestHelper.makeCall("NA12882", 0, 1))
-        .addCalls(TestHelper.makeCall("NA12879", 0, 1))
-        .addCalls(TestHelper.makeCall("NA12892", 0, 0))
-        .addCalls(TestHelper.makeCall("NA12893", 0, 0))
-        .addCalls(TestHelper.makeCall("NA12890", 0, 0))
-        .addCalls(TestHelper.makeCall("NA12883", 0, 0))
-        .addCalls(TestHelper.makeCall("NA12891", 0, 0))
-        .addCalls(TestHelper.makeCall("NA12880", 0, 0))
-        .addCalls(TestHelper.makeCall("NA12877", 0, 0))
-        .addCalls(TestHelper.makeCall("NA12885", 0, 0))
-        .addCalls(TestHelper.makeCall("NA12889", 0, 0))
-        .addCalls(TestHelper.makeCall("NA12887", 0, 0))
-        .addCalls(TestHelper.makeCall("NA12881", 0, 0))
-        .addCalls(TestHelper.makeCall("NA12888", 0, 0))
-        .addCalls(TestHelper.makeCall("NA12886", 0, 0))
-        .addCalls(TestHelper.makeCall("NA12878", 0, 0))
-        .addCalls(TestHelper.makeCall("NA12884", 0, 0))
+    Variant expectedOutput2 = TestHelper.makeVariant("chr17", 41198773, 41198774, "C", Arrays.asList("CA"))
+        .addCalls(TestHelper.makeCall("NA12892", 0, 1))
+        .addCalls(TestHelper.makeCall("NA12878", 0, 1))
         .build();
 
     VariantMergeStrategyTestHelper.mergeTest(requests.get(0).getStart(), iter.next().getVariantsList(),
