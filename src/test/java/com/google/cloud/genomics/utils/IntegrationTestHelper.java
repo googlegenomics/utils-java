@@ -36,22 +36,12 @@ public class IntegrationTestHelper {
     "NA12878",
   };
   public static final String[] PLATINUM_GENOMES_READGROUPSETS = {
-    "CMvnhpKTFhCAv6TKo6Dglgg",
-    "CMvnhpKTFhDw8e3V6aCB-Q8",
-    "CMvnhpKTFhDo08GNkfe-jxo",
     "CMvnhpKTFhD3he72j4KZuyc",
-    "CMvnhpKTFhCIy4KD0qrtjzA",
     "CMvnhpKTFhCyz5LDrZ7Jozs",
-    "CMvnhpKTFhDyy__v0qfPpkw",
     "CMvnhpKTFhDIr8bKjdbdolc",
-    "CMvnhpKTFhC1m-r_6Omp5X0",
-    "CMvnhpKTFhCw5I3dqMq6mYMB",
-    "CMvnhpKTFhD_tKnl__-RqJwB",
-    "CMvnhpKTFhDLyY-4kYvurqsB",
     "CMvnhpKTFhCoyJTFk73Eyq0B",
     "CMvnhpKTFhDE9a7F7Yai2rAB",
     "CMvnhpKTFhCUpIDDveWE-r0B",
-    "CMvnhpKTFhCrvIOEw4Ol__sB",
   };
   public static final String PLATINUM_GENOMES_REFERENCE_SET_ID = "CNfS6aHAoved2AEQ6PnzkOzw15rqAQ";
   public static final String PLATINUM_GENOMES_BRCA1_REFERENCES = "chr17:41196311:41277499";

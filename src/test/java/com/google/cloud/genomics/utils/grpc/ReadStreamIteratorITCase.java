@@ -65,7 +65,7 @@ public class ReadStreamIteratorITCase {
 
     assertTrue(iter.hasNext());
     StreamReadsResponse readResponse = iter.next();
-    assertEquals(57, readResponse.getAlignmentsList().size());
+    assertEquals(63, readResponse.getAlignmentsList().size());
     assertFalse(iter.hasNext());
 
     iter = ReadStreamIterator.enforceShardBoundary(IntegrationTestHelper.getAuthFromApplicationDefaultCredential(),
@@ -97,7 +97,7 @@ public class ReadStreamIteratorITCase {
     assertFalse(iter.hasNext());
 
     assertEquals("chr13", reads.get(0).getAlignment().getPosition().getReferenceName());
-    assertEquals(33628134, reads.get(0).getAlignment().getPosition().getPosition());
+    assertEquals(33628135, reads.get(0).getAlignment().getPosition().getPosition());
     assertTrue(Strings.isNullOrEmpty(reads.get(0).getAlignedSequence()));
   }
 
