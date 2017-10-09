@@ -20,4 +20,4 @@ GOOGLE_API_KEY="$GOOGLE_API_KEY"
 GOOGLE_APPLICATION_CREDENTIALS="$GOOGLE_APPLICATION_CREDENTIALS"
 
 echo -e "\n\n\nRunning unit tests"
-mvn test javadoc:javadoc
+mvn test javadoc:javadoc verify
