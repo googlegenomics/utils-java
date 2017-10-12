@@ -18,6 +18,7 @@ set -o errexit
 # Check that required variables are explicitly set.
 GOOGLE_API_KEY="$GOOGLE_API_KEY"
 GOOGLE_APPLICATION_CREDENTIALS="$GOOGLE_APPLICATION_CREDENTIALS"
+TEST_PROJECT="$TEST_PROJECT"
 
-echo -e "\n\n\nRunning unit tests"
+echo -e "\n\n\nRunning unit and integration tests."
 mvn test javadoc:javadoc verify
