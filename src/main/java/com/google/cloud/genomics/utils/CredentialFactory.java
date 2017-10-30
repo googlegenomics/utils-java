@@ -78,7 +78,12 @@ public class CredentialFactory {
    */
   public static GoogleCredential getApplicationDefaultCredential() {
     try {
-      return GoogleCredential.getApplicationDefault();
+      GoogleCredential credential = GoogleCredential.getApplicationDefault();
+      if (credential.createScopedRequired()) {
+        credential =
+          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/genomics"));
+      }
+      return credential;
     } catch (IOException e) {
       throw new RuntimeException(MISSING_ADC_EXCEPTION_MESSAGE, e);
     }
